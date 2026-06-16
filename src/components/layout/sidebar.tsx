@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Network,
@@ -9,6 +12,8 @@ import {
 } from "lucide-react";
 
 export function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="w-64 border-r bg-white flex flex-col hidden md:flex">
       <div className="p-6 border-b">
@@ -20,27 +25,31 @@ export function Sidebar() {
           href="/"
           icon={<BarChart3 size={20} />}
           label="Tổng quan lớp"
-          active
+          active={pathname === "/"}
         />
         <NavItem
           href="/interaction-graph"
           icon={<Network size={20} />}
           label="Mạng tương tác"
+          active={pathname === "/interaction-graph"}
         />
         <NavItem
           href="/heatmap"
           icon={<Activity size={20} />}
           label="Heatmap hoạt động"
+          active={pathname === "/heatmap"}
         />
         <NavItem
           href="/burndown"
           icon={<Calendar size={20} />}
           label="Tiến độ Task"
+          active={pathname === "/burndown"}
         />
         <NavItem
           href="/contribution"
           icon={<Users size={20} />}
           label="Đóng góp cá nhân"
+          active={pathname === "/contribution"}
         />
       </nav>
       <div className="p-4 border-t">
@@ -48,6 +57,7 @@ export function Sidebar() {
           href="/settings"
           icon={<Settings size={20} />}
           label="Cài đặt"
+          active={pathname === "/settings"}
         />
       </div>
     </aside>
