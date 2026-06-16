@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Student Activity Graph-Based Continuous Assessment System",
 };
 
-export default function RootLayout({
+export default function RootLayout({ 
   children,
 }: Readonly<{
   children: React.ReactNode;
