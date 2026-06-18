@@ -23,10 +23,10 @@ export function Sidebar() {
 
       <nav className="flex-1 p-4 space-y-3">
         <NavItem
-          href="/"
+          href="/dashboard"
           icon={<BarChart3 size={20} />}
           label="Tổng quan lớp"
-          active={pathname === "/"}
+          active={pathname === "/dashboard"}
         />
         <NavItem
           href="/interaction-graph"

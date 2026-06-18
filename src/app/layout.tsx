@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/sidebar";
-import { Header } from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -25,22 +21,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-slate-50 text-slate-900 antialiased`}
       >
-        <div className="flex min-h-screen">
-          {/* Sidebar cố định bên trái */}
-          <Sidebar />
-
-          <div className="flex flex-col flex-1 w-full">
-            {/* Header chứa thông tin user/context */}
-            <Header />
-
-            {/* Main content area */}
-            <main className="flex-1 p-6 overflow-x-hidden overflow-y-auto">
-              <div className="mx-auto max-w-7xl">{children}</div>
-            </main>
-
-            <Footer />
-          </div>
-        </div>
+        {children}
       </body>
     </html>
   );
