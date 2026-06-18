@@ -3,15 +3,19 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SAGA Dashboard - Continuous Assessment",
   description: "Student Activity Graph-Based Continuous Assessment System",
+  icons: {
+    icon: "/logo-ico.png",
+  },
 };
 
-export default function RootLayout({ 
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -33,6 +37,8 @@ export default function RootLayout({
             <main className="flex-1 p-6 overflow-x-hidden overflow-y-auto">
               <div className="mx-auto max-w-7xl">{children}</div>
             </main>
+
+            <Footer />
           </div>
         </div>
       </body>

@@ -17,10 +17,11 @@ export function Sidebar() {
   return (
     <aside className="w-64 border-r bg-white flex flex-col hidden md:flex">
       <div className="p-6 border-b">
-        <h1 className="text-2xl font-bold text-indigo-600">SAGA</h1>
-        <p className="text-sm text-slate-500">Continuous Assessment</p>
+        <h1 className="text-lg font-bold text-slate-800">Tên người dùng</h1>
+        <p className="text-sm text-slate-500">Sinh viên</p>
       </div>
-      <nav className="flex-1 p-4 space-y-2">
+
+      <nav className="flex-1 p-4 space-y-3">
         <NavItem
           href="/"
           icon={<BarChart3 size={20} />}
@@ -52,6 +53,7 @@ export function Sidebar() {
           active={pathname === "/contribution"}
         />
       </nav>
+
       <div className="p-4 border-t">
         <NavItem
           href="/settings"
@@ -78,14 +80,14 @@ function NavItem({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+      className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-colors ${
         active
-          ? "bg-indigo-50 text-indigo-600 font-medium"
+          ? "bg-indigo-50 text-indigo-700 font-medium"
           : "text-slate-600 hover:bg-slate-100"
       }`}
     >
       {icon}
-      <span>{label}</span>
+      <span className="text-[15px]">{label}</span>
     </Link>
   );
 }
