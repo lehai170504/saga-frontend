@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,10 +15,56 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, User, AtSign } from "lucide-react";
+import { Mail, Lock, User, AtSign, Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 export function AuthModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  // Register form state (mock - chỉ hiển thị toast thành công)
+  const [regName, setRegName] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    if (!loginEmail || !loginPassword) {
+      toast.error("Vui lòng nhập email và mật khẩu!");
+      return;
+    }
+    setIsLoggingIn(true);
+    try {
+      await login(loginEmail, loginPassword);
+      toast.success("Đăng nhập thành công! Đang chuyển hướng...");
+      setIsOpen(false);
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Đã xảy ra lỗi";
+      toast.error(message);
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleRegister = () => {
+    if (!regName || !regEmail || !regPassword) {
+      toast.error("Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+    toast.success(
+      `Tài khoản "${regName}" đã được tạo! Hệ thống sẽ liên hệ qua email.`,
+      { duration: 4000 }
+    );
+    setIsOpen(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -27,58 +74,65 @@ export function AuthModal() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden bg-white rounded-2xl border-slate-200 shadow-xl">
+      <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden rounded-2xl">
         <div className="p-6 pb-2">
           <DialogHeader>
             <DialogTitle className="text-2xl font-extrabold text-center bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
               SAGA Dashboard
             </DialogTitle>
-            <DialogDescription className="text-center text-slate-500 font-medium">
+            <DialogDescription className="text-center text-muted-foreground font-medium">
               Hệ thống đánh giá liên tục PBL
             </DialogDescription>
           </DialogHeader>
         </div>
 
+        {/* Demo hint */}
+        <div className="mx-6 mb-2 px-3 py-2 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl">
+          <p className="text-xs text-blue-700 dark:text-blue-400 font-medium">
+            💡 Demo: <code>haile@student.edu.vn</code> / <code>123456</code>
+          </p>
+        </div>
+
         <Tabs defaultValue="login" className="w-full">
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100/80 p-1 rounded-xl">
+            <TabsList className="grid w-full grid-cols-2 bg-muted p-1 rounded-xl">
               <TabsTrigger
                 value="login"
-                className="rounded-lg font-semibold data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
+                className="rounded-lg font-semibold data-[state=active]:bg-background data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
               >
                 Đăng nhập
               </TabsTrigger>
               <TabsTrigger
                 value="register"
-                className="rounded-lg font-semibold data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
+                className="rounded-lg font-semibold data-[state=active]:bg-background data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
               >
                 Đăng ký
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <div className="p-6 pt-4 bg-slate-50/50 mt-2">
+          <div className="p-6 pt-4 bg-muted/30 mt-2">
             {/* Form Đăng Nhập */}
             <TabsContent value="login" className="space-y-4 mt-0 outline-none">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-700 font-semibold">
+                <Label htmlFor="email" className="font-semibold">
                   Email / Tài khoản
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="email"
                     placeholder="student@example.com"
-                    className="pl-9 bg-white border-slate-200 focus-visible:ring-orange-500 rounded-xl"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                   />
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label
-                    htmlFor="password"
-                    className="text-slate-700 font-semibold"
-                  >
+                  <Label htmlFor="password" className="font-semibold">
                     Mật khẩu
                   </Label>
                   <a
@@ -89,72 +143,86 @@ export function AuthModal() {
                   </a>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="password"
                     type="password"
                     placeholder="••••••••"
-                    className="pl-9 bg-white border-slate-200 focus-visible:ring-orange-500 rounded-xl"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                   />
                 </div>
               </div>
-              <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl h-11 mt-2">
-                Đăng nhập
+              <Button
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl h-11 mt-2"
+                onClick={handleLogin}
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang đăng nhập...
+                  </>
+                ) : (
+                  "Đăng nhập"
+                )}
               </Button>
             </TabsContent>
 
             {/* Form Đăng Ký */}
-            <TabsContent
-              value="register"
-              className="space-y-4 mt-0 outline-none"
-            >
+            <TabsContent value="register" className="space-y-4 mt-0 outline-none">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-slate-700 font-semibold">
+                <Label htmlFor="name" className="font-semibold">
                   Họ và Tên
                 </Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="name"
                     placeholder="Nguyễn Văn A"
-                    className="pl-9 bg-white border-slate-200 focus-visible:ring-orange-500 rounded-xl"
+                    value={regName}
+                    onChange={(e) => setRegName(e.target.value)}
+                    className="pl-9 focus-visible:ring-orange-500 rounded-xl"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label
-                  htmlFor="reg-email"
-                  className="text-slate-700 font-semibold"
-                >
+                <Label htmlFor="reg-email" className="font-semibold">
                   Email sinh viên
                 </Label>
                 <div className="relative">
-                  <AtSign className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <AtSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="reg-email"
                     placeholder="sv@edu.vn"
-                    className="pl-9 bg-white border-slate-200 focus-visible:ring-orange-500 rounded-xl"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    className="pl-9 focus-visible:ring-orange-500 rounded-xl"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label
-                  htmlFor="reg-password"
-                  className="text-slate-700 font-semibold"
-                >
+                <Label htmlFor="reg-password" className="font-semibold">
                   Mật khẩu
                 </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="reg-password"
                     type="password"
                     placeholder="••••••••"
-                    className="pl-9 bg-white border-slate-200 focus-visible:ring-orange-500 rounded-xl"
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    className="pl-9 focus-visible:ring-orange-500 rounded-xl"
                   />
                 </div>
               </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl h-11 mt-2">
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl h-11 mt-2"
+                onClick={handleRegister}
+              >
                 Tạo tài khoản
               </Button>
             </TabsContent>
@@ -162,10 +230,10 @@ export function AuthModal() {
             {/* Divider & Social Login */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-200" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-slate-50 px-2 text-slate-500 font-medium">
+                <span className="bg-muted/30 px-2 text-muted-foreground font-medium">
                   Hoặc đăng nhập với
                 </span>
               </div>
@@ -174,9 +242,9 @@ export function AuthModal() {
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="outline"
-                className="rounded-xl border-slate-200 hover:bg-slate-100 font-semibold text-slate-700 h-11"
+                className="rounded-xl font-semibold h-11"
+                onClick={() => toast.info("Tính năng GitHub OAuth sẽ sớm ra mắt!")}
               >
-                {/* Đã thay Github icon từ thư viện bằng Inline SVG */}
                 <svg
                   className="mr-2 h-4 w-4 fill-current"
                   viewBox="0 0 24 24"
@@ -188,7 +256,8 @@ export function AuthModal() {
               </Button>
               <Button
                 variant="outline"
-                className="rounded-xl border-slate-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 font-semibold text-slate-700 h-11 transition-colors"
+                className="rounded-xl font-semibold h-11 hover:text-blue-600 hover:border-blue-300"
+                onClick={() => toast.info("Tính năng Jira OAuth sẽ sớm ra mắt!")}
               >
                 <svg
                   className="mr-2 h-4 w-4 fill-current text-[#0052CC]"

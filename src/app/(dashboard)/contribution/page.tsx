@@ -36,6 +36,17 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { GitCommit } from "lucide-react";
+import { toast } from "sonner";
+
+interface TeamMemberContribution {
+  id: string;
+  name: string;
+  role: string;
+  commits: number;
+  PRs: number;
+  tasks: number;
+  score: number;
+}
 
 const avatarColors = [
   "bg-slate-500",
@@ -49,12 +60,25 @@ const avatarColors = [
 
 export default function ContributionPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [selectedUser, setSelectedUser] = useState<TeamMemberContribution | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleSelectUser = (row: TeamMemberContribution) => {
+    setSelectedUser(row);
+    toast.loading(`Đang tải phân tích của ${row.name}...`, {
+      id: "member-loading",
+      duration: 1000,
+    });
+    setTimeout(() => {
+      toast.success(`Đã tải xong báo cáo của ${row.name}`, {
+        id: "member-loading",
+      });
+    }, 1000);
+  };
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen">
@@ -172,17 +196,17 @@ export default function ContributionPage() {
                         </TableRow>
                       ))
                     : teamContributionRows.map((row, index) => {
-                        let scoreBadgeClass =
+                        const scoreBadgeClass =
                           row.score >= 8.0
-                            ? "bg-emerald-100/80 text-emerald-600"
+                            ? "bg-emerald-100/80 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
                             : row.score >= 5.0
-                              ? "bg-orange-100/80 text-orange-600"
-                              : "bg-red-100/80 text-red-500";
+                              ? "bg-orange-100/80 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400"
+                              : "bg-red-100/80 text-red-500 dark:bg-red-950/40 dark:text-red-400";
                         return (
                           <TableRow
                             key={row.id}
-                            onClick={() => setSelectedUser(row)}
-                            className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer"
+                            onClick={() => handleSelectUser(row)}
+                            className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer"
                           >
                             <TableCell className="pl-6 font-medium text-slate-400 text-sm">
                               {index + 1}
