@@ -36,6 +36,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { GitCommit } from "lucide-react";
+import { toast } from "sonner";
 
 interface TeamMemberContribution {
   id: string;
@@ -66,37 +67,48 @@ export default function ContributionPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleSelectUser = (row: TeamMemberContribution) => {
+    setSelectedUser(row);
+    toast.loading(`Đang tải phân tích của ${row.name}...`, {
+      id: "member-loading",
+      duration: 1000,
+    });
+    setTimeout(() => {
+      toast.success(`Đã tải xong báo cáo của ${row.name}`, {
+        id: "member-loading",
+      });
+    }, 1000);
+  };
+
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen">
       <PageHeader
-        title="Đóng góp cá nhân"
-        description="Hồ sơ năng lực đa chiều và xếp hạng thành viên — Sprint 4"
+        title="Individual Contribution"
+        description="Multi-dimensional skill profile and team ranking — Sprint 4"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <Card className="lg:col-span-1 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
           <SectionHeader
-            title="Đồ thị năng lực"
-            description="Minh Anh so với Trung bình nhóm"
+            title="Skill radar"
+            description="Minh Anh vs Group average"
           />
           <CardContent className="px-6 pb-6 pt-4 flex-1 flex items-center justify-center">
             <div className="w-full h-80 flex items-center justify-center">
               {isLoading ? (
                 <Skeleton className="w-[280px] h-[280px] rounded-full opacity-40" />
               ) : (
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <ResponsiveContainer width="100%" height="100%">
                   <RadarChart
                     cx="50%"
                     cy="50%"
-                    outerRadius="48%"
+                    outerRadius="65%"
                     data={studentSkillData}
-                    margin={{ top: 10, right: 30, bottom: 10, left: 30 }}
                   >
                     <PolarGrid stroke="#f1f5f9" />
                     <PolarAngleAxis
                       dataKey="subject"
-                      tick={{ fill: "#64748b", fontSize: 10 }}
-                      tickFormatter={(value) => value.replace(/\s*\(.*\)/, "")}
+                      tick={{ fill: "#64748b", fontSize: 11 }}
                     />
                     <PolarRadiusAxis
                       angle={30}
@@ -120,7 +132,7 @@ export default function ContributionPage() {
                       fillOpacity={0.2}
                     />
                     <Radar
-                      name="Trung bình nhóm"
+                      name="Group Avg"
                       dataKey="B"
                       stroke="#2563eb"
                       strokeWidth={2}
@@ -135,8 +147,8 @@ export default function ContributionPage() {
 
         <Card className="lg:col-span-2 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
           <SectionHeader
-            title="Xếp hạng nhóm"
-            description="Bấm vào thành viên để xem chi tiết"
+            title="Group ranking"
+            description="Click vào thành viên để xem chi tiết"
           />
           <CardContent className="px-0 pb-2">
             {teamContributionRows.length === 0 && !isLoading ? (
@@ -149,87 +161,87 @@ export default function ContributionPage() {
                       #
                     </TableHead>
                     <TableHead className="text-xs font-semibold text-slate-500 uppercase">
-                      Thành viên
+                      Member
                     </TableHead>
                     <TableHead className="text-right text-xs font-semibold text-slate-500 uppercase">
-                      Số Commits
+                      Commits
                     </TableHead>
                     <TableHead className="text-right pr-6 text-xs font-semibold text-slate-500 uppercase">
-                      Điểm số
+                      Score
                     </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading
                     ? Array.from({ length: 5 }).map((_, idx) => (
-                      <TableRow
-                        key={idx}
-                        className="border-b border-slate-50"
-                      >
-                        <TableCell className="pl-6">
-                          <Skeleton className="h-4 w-4" />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Skeleton className="w-9 h-9 rounded-full" />
-                            <Skeleton className="h-4 w-24" />
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-8 ml-auto" />
-                        </TableCell>
-                        <TableCell className="pr-6">
-                          <Skeleton className="h-6 w-10 rounded-full ml-auto" />
-                        </TableCell>
-                      </TableRow>
-                    ))
-                    : teamContributionRows.map((row, index) => {
-                      const scoreBadgeClass =
-                        row.score >= 8.0
-                          ? "bg-emerald-100/80 text-emerald-600"
-                          : row.score >= 5.0
-                            ? "bg-orange-100/80 text-orange-600"
-                            : "bg-red-100/80 text-red-500";
-                      return (
                         <TableRow
-                          key={row.id}
-                          onClick={() => setSelectedUser(row)}
-                          className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer"
+                          key={idx}
+                          className="border-b border-slate-50"
                         >
-                          <TableCell className="pl-6 font-medium text-slate-400 text-sm">
-                            {index + 1}
+                          <TableCell className="pl-6">
+                            <Skeleton className="h-4 w-4" />
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <UserAvatar
-                                name={row.name}
-                                bgColorClass={
-                                  avatarColors[index % avatarColors.length]
-                                }
-                              />
-                              <div className="flex flex-col">
-                                <span className="font-semibold text-slate-900 text-sm">
-                                  {row.name}
-                                </span>
-                                <span className="text-xs text-slate-500">
-                                  {row.role}
-                                </span>
-                              </div>
+                              <Skeleton className="w-9 h-9 rounded-full" />
+                              <Skeleton className="h-4 w-24" />
                             </div>
                           </TableCell>
-                          <TableCell className="text-right font-medium text-slate-700 text-sm">
-                            {row.commits}
+                          <TableCell>
+                            <Skeleton className="h-4 w-8 ml-auto" />
                           </TableCell>
-                          <TableCell className="text-right pr-6">
-                            <span
-                              className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${scoreBadgeClass}`}
-                            >
-                              {row.score.toFixed(1)}
-                            </span>
+                          <TableCell className="pr-6">
+                            <Skeleton className="h-6 w-10 rounded-full ml-auto" />
                           </TableCell>
                         </TableRow>
-                      );
-                    })}
+                      ))
+                    : teamContributionRows.map((row, index) => {
+                        const scoreBadgeClass =
+                          row.score >= 8.0
+                            ? "bg-emerald-100/80 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+                            : row.score >= 5.0
+                              ? "bg-orange-100/80 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400"
+                              : "bg-red-100/80 text-red-500 dark:bg-red-950/40 dark:text-red-400";
+                        return (
+                          <TableRow
+                            key={row.id}
+                            onClick={() => handleSelectUser(row)}
+                            className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer"
+                          >
+                            <TableCell className="pl-6 font-medium text-slate-400 text-sm">
+                              {index + 1}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <UserAvatar
+                                  name={row.name}
+                                  bgColorClass={
+                                    avatarColors[index % avatarColors.length]
+                                  }
+                                />
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-slate-900 text-sm">
+                                    {row.name}
+                                  </span>
+                                  <span className="text-xs text-slate-500">
+                                    {row.role}
+                                  </span>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right font-medium text-slate-700 text-sm">
+                              {row.commits}
+                            </TableCell>
+                            <TableCell className="text-right pr-6">
+                              <span
+                                className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${scoreBadgeClass}`}
+                              >
+                                {row.score.toFixed(1)}
+                              </span>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                 </TableBody>
               </Table>
             )}
