@@ -1,5 +1,6 @@
 import React from "react";
 import { AlertTriangle, Inbox } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function EmptyState({ message = "Chưa có dữ liệu để hiển thị" }) {
   return (
@@ -22,12 +23,13 @@ export function ErrorState({
       <AlertTriangle size={48} className="mb-4 opacity-50" />
       <p className="font-medium text-red-500 mb-4">{message}</p>
       {onRetry && (
-        <button
+        <Button
+          variant="outline"
           onClick={onRetry}
-          className="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors"
+          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
         >
           Thử lại
-        </button>
+        </Button>
       )}
     </div>
   );

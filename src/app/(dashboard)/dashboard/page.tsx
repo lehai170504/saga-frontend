@@ -24,8 +24,8 @@ import {
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { Button } from "@/components/ui/button";
 
-// Mở rộng dữ liệu mẫu để có tính năng "Empty State" và "Status"
 const recentActivities = [
   {
     user: "Minh Anh",
@@ -68,7 +68,6 @@ export default function OverviewDashboard() {
         description="Group PBL-07 · CSE391 Software Engineering"
       />
 
-      {/* KPI Cards */}
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
@@ -98,7 +97,6 @@ export default function OverviewDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Chart */}
         <Card className="lg:col-span-2 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
           <SectionHeader
             title="Code vs Interaction"
@@ -137,7 +135,6 @@ export default function OverviewDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Activity với Empty State */}
         <Card className="lg:col-span-1 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
           <SectionHeader title="Recent activity" />
           <CardContent className="p-6">
@@ -157,10 +154,13 @@ export default function OverviewDashboard() {
                       <p className="text-sm font-bold">{act.user}</p>
                       <p className="text-xs text-slate-500">{act.action}</p>
                     </div>
-                    {/* Nút hành động Drill-down */}
-                    <button className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-slate-100 rounded-full transition-all">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="opacity-0 group-hover:opacity-100 rounded-full transition-all"
+                    >
                       <ArrowRight className="h-4 w-4 text-slate-400" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>

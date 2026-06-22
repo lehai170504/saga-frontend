@@ -1,24 +1,29 @@
 import React from "react";
 import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function MobileMenuButton({ onClick }: { onClick: () => void }) {
   return (
-    <button
-      className="lg:hidden pl-4 text-slate-600 hover:text-slate-900 focus:outline-none shrink-0"
+    <Button
+      variant="ghost"
+      size="icon"
+      className="lg:hidden ml-2 text-slate-600 hover:text-slate-900 shrink-0"
       onClick={onClick}
     >
       <Menu className="w-6 h-6" />
-    </button>
+    </Button>
   );
 }
 
 export function MobileCloseButton({ onClick }: { onClick: () => void }) {
   return (
-    <button
-      className="text-slate-500 hover:text-slate-900 focus:outline-none"
+    <Button
+      variant="ghost"
+      size="icon"
+      className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
       onClick={onClick}
     >
       <X className="w-6 h-6" />
-    </button>
+    </Button>
   );
 }
