@@ -34,11 +34,10 @@ export default function InteractionGraphPage() {
   const [timeRange, setTimeRange] = useState("14days");
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false); // Demo error state
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Giả lập lỗi nếu chọn "Cả Sprint"
       if (timeRange === "sprint") {
         setIsError(true);
       }
@@ -60,16 +59,16 @@ export default function InteractionGraphPage() {
   const onPaneClick = useCallback(() => setSelectedNode(null), []);
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen flex flex-col">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen flex flex-col">
       <PageHeader
         title="Đồ thị tương tác"
         description="Phân tích mạng lưới giao tiếp và đóng góp của nhóm — Sprint 4"
       >
         <Select value={timeRange} onValueChange={handleTimeRangeChange}>
-          <SelectTrigger className="w-full sm:w-[140px] h-10 bg-white border-slate-200 rounded-lg text-sm font-medium">
+          <SelectTrigger className="w-full sm:w-[140px] h-10 bg-background border-input rounded-lg text-sm font-medium">
             <SelectValue placeholder="Thời gian" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-xl bg-popover text-popover-foreground">
             <SelectItem value="7days">7 ngày qua</SelectItem>
             <SelectItem value="14days">14 ngày qua</SelectItem>
             <SelectItem value="sprint">Cả Sprint (Test Lỗi)</SelectItem>
@@ -77,10 +76,10 @@ export default function InteractionGraphPage() {
         </Select>
       </PageHeader>
 
-      <Card className="border-slate-200/60 shadow-sm rounded-2xl bg-white overflow-hidden flex flex-col lg:flex-row min-h-[650px] lg:h-[750px]">
-        <div className="flex-1 relative bg-slate-50/50 overflow-hidden min-h-[400px] lg:min-h-0 flex items-center justify-center">
+      <Card className="border-border shadow-sm rounded-2xl bg-card text-card-foreground overflow-hidden flex flex-col lg:flex-row min-h-[650px] lg:h-[750px]">
+        <div className="flex-1 relative bg-muted/20 overflow-hidden min-h-[400px] lg:min-h-0 flex items-center justify-center">
           {isLoading ? (
-            <Skeleton className="w-full h-full rounded-none opacity-40 absolute inset-0" />
+            <Skeleton className="w-full h-full rounded-none opacity-40 absolute inset-0 bg-muted" />
           ) : isError ? (
             <ErrorState
               message="Lỗi khi phân tích dữ liệu mạng lưới. Dữ liệu Sprint quá lớn."
@@ -97,38 +96,38 @@ export default function InteractionGraphPage() {
               fitView
               className="z-0"
             >
-              <Controls className="bg-white border-slate-200 rounded-lg shadow-md fill-slate-600 mb-4 ml-4" />
+              <Controls className="bg-background border-border rounded-lg shadow-md fill-foreground mb-4 ml-4" />
               <Background
                 variant={BackgroundVariant.Dots}
                 gap={20}
                 size={1.5}
-                color="#cbd5e1"
+                color="var(--muted-foreground)"
               />
             </ReactFlow>
           )}
         </div>
 
-        <div className="w-full lg:w-[320px] xl:w-[350px] shrink-0 bg-white border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col z-10">
-          <div className="p-5 xl:p-6 border-b border-slate-100 flex-1 overflow-y-auto">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Info className="h-4 w-4 text-slate-400" />
+        <div className="w-full lg:w-[320px] xl:w-[350px] shrink-0 bg-card border-t lg:border-t-0 lg:border-l border-border flex flex-col z-10">
+          <div className="p-5 xl:p-6 border-b border-border flex-1 overflow-y-auto">
+            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Info className="h-4 w-4 text-muted-foreground" />
               Chi tiết thành viên
             </h3>
             {isLoading || isError ? (
-              <Skeleton className="h-[200px] w-full rounded-xl" />
+              <Skeleton className="h-[200px] w-full rounded-xl bg-muted" />
             ) : selectedNode ? (
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div className="flex items-center gap-3">
                   <UserAvatar
                     name={selectedNode.data?.label || "Không rõ"}
                     className="w-12 h-12 text-lg"
-                    bgColorClass="bg-orange-100 text-orange-600"
+                    bgColorClass="bg-orange-100/80 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400"
                   />
                   <div className="min-w-0">
-                    <p className="font-bold text-slate-900 truncate">
+                    <p className="font-bold text-foreground truncate">
                       {selectedNode.data?.label || "Thành viên không xác định"}
                     </p>
-                    <p className="text-xs text-slate-500 font-medium">
+                    <p className="text-xs text-muted-foreground font-medium">
                       Mã Node: {selectedNode.id}
                     </p>
                   </div>
@@ -148,10 +147,10 @@ export default function InteractionGraphPage() {
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-3 opacity-60 py-8">
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-slate-400" />
+                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                  <Users className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <p className="text-sm text-slate-500 max-w-[200px]">
+                <p className="text-sm text-muted-foreground max-w-[200px]">
                   Bấm vào một thành viên trên đồ thị để xem chỉ số tương tác.
                 </p>
               </div>

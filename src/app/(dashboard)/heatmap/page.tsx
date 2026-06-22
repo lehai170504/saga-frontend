@@ -29,29 +29,29 @@ export default function HeatmapPage() {
   const getLevelClass = (level: number) => {
     switch (level) {
       case 1:
-        return "bg-orange-100 border-orange-200 text-orange-700";
+        return "bg-orange-100 border-orange-200 text-orange-700 dark:bg-orange-950/40 dark:border-orange-900/50 dark:text-orange-400";
       case 2:
-        return "bg-orange-300 border-orange-400 text-orange-900";
+        return "bg-orange-300 border-orange-400 text-orange-900 dark:bg-orange-900/60 dark:border-orange-800/60 dark:text-orange-200";
       case 3:
-        return "bg-orange-500 border-orange-600 text-white shadow-sm";
+        return "bg-orange-500 border-orange-600 text-white shadow-sm dark:bg-orange-600 dark:border-orange-500";
       case 4:
-        return "bg-orange-600 border-orange-700 text-white shadow-sm";
+        return "bg-orange-600 border-orange-700 text-white shadow-sm dark:bg-orange-500 dark:border-orange-400";
       default:
-        return "bg-slate-50 border-slate-200 text-slate-400";
+        return "bg-slate-50 border-slate-200 text-slate-400 dark:bg-muted/50 dark:border-border dark:text-muted-foreground";
     }
   };
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
         title="Biểu đồ nhiệt hoạt động"
         description="Giám sát tính liên tục trong hoạt động làm việc nhóm và commit code."
       >
         <Select defaultValue="all">
-          <SelectTrigger className="w-[140px] h-10 bg-white border-slate-200 rounded-lg text-sm font-medium shadow-sm focus:ring-orange-500">
+          <SelectTrigger className="w-[140px] h-10 bg-background border-input rounded-lg text-sm font-medium shadow-sm focus:ring-primary">
             <SelectValue placeholder="Loại hoạt động" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-xl bg-popover text-popover-foreground">
             <SelectItem value="all">Tất cả hoạt động</SelectItem>
             <SelectItem value="commits">Chỉ Commits</SelectItem>
             <SelectItem value="prs">Pull Requests</SelectItem>
@@ -59,39 +59,39 @@ export default function HeatmapPage() {
         </Select>
 
         <Select defaultValue="group-1">
-          <SelectTrigger className="w-35 h-10 bg-white border-slate-200 rounded-lg text-sm font-medium shadow-sm focus:ring-orange-500">
+          <SelectTrigger className="w-35 h-10 bg-background border-input rounded-lg text-sm font-medium shadow-sm focus:ring-primary">
             <SelectValue placeholder="Chọn nhóm" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-xl bg-popover text-popover-foreground">
             <SelectItem value="group-1">Team Alpha</SelectItem>
             <SelectItem value="group-2">Team Beta</SelectItem>
           </SelectContent>
         </Select>
 
         <Select defaultValue="30days">
-          <SelectTrigger className="w-35 h-10 bg-white border-slate-200 rounded-lg text-sm font-medium shadow-sm focus:ring-orange-500">
+          <SelectTrigger className="w-35 h-10 bg-background border-input rounded-lg text-sm font-medium shadow-sm focus:ring-primary">
             <SelectValue placeholder="Thời gian" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-xl bg-popover text-popover-foreground">
             <SelectItem value="14days">14 ngày qua</SelectItem>
             <SelectItem value="30days">30 ngày qua</SelectItem>
           </SelectContent>
         </Select>
       </PageHeader>
 
-      <Card className="border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
+      <Card className="border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col pt-2">
         <SectionHeader
           title="Tần suất đóng góp hệ thống"
           description="Hiển thị mật độ hoạt động theo từng ngày"
           rightElement={
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
               <span>Ít</span>
               <div className="flex gap-1.5">
-                <div className="w-4 h-4 rounded-sm bg-slate-50 border border-slate-200"></div>
-                <div className="w-4 h-4 rounded-sm bg-orange-100 border border-orange-200"></div>
-                <div className="w-4 h-4 rounded-sm bg-orange-300 border border-orange-400"></div>
-                <div className="w-4 h-4 rounded-sm bg-orange-500 border border-orange-600"></div>
-                <div className="w-4 h-4 rounded-sm bg-orange-600 border border-orange-700"></div>
+                <div className="w-4 h-4 rounded-sm bg-slate-50 border border-slate-200 dark:bg-muted/50 dark:border-border"></div>
+                <div className="w-4 h-4 rounded-sm bg-orange-100 border border-orange-200 dark:bg-orange-950/40 dark:border-orange-900/50"></div>
+                <div className="w-4 h-4 rounded-sm bg-orange-300 border border-orange-400 dark:bg-orange-900/60 dark:border-orange-800/60"></div>
+                <div className="w-4 h-4 rounded-sm bg-orange-500 border border-orange-600 dark:bg-orange-600 dark:border-orange-500"></div>
+                <div className="w-4 h-4 rounded-sm bg-orange-600 border border-orange-700 dark:bg-orange-500 dark:border-orange-400"></div>
               </div>
               <span>Nhiều</span>
             </div>
@@ -104,14 +104,14 @@ export default function HeatmapPage() {
               ? Array.from({ length: 45 }).map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl opacity-60"
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl opacity-60 bg-muted"
                   />
                 ))
               : heatmapData.map((item, index) => (
                   <div
                     key={index}
                     onClick={() => setSelectedDate(item.date)}
-                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl border flex flex-col items-center justify-center text-sm font-bold transition-all hover:-translate-y-1 hover:shadow-md hover:ring-2 hover:ring-orange-400/50 hover:ring-offset-2 cursor-pointer ${getLevelClass(
+                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl border flex flex-col items-center justify-center text-sm font-bold transition-all hover:-translate-y-1 hover:shadow-md hover:ring-2 hover:ring-primary/50 hover:ring-offset-2 hover:ring-offset-background cursor-pointer ${getLevelClass(
                       item.level,
                     )}`}
                     title={`${item.date}: ${item.count} hoạt động`}

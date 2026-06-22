@@ -60,7 +60,8 @@ const avatarColors = [
 
 export default function ContributionPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<TeamMemberContribution | null>(null);
+  const [selectedUser, setSelectedUser] =
+    useState<TeamMemberContribution | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
@@ -81,14 +82,15 @@ export default function ContributionPage() {
   };
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
         title="Individual Contribution"
         description="Multi-dimensional skill profile and team ranking — Sprint 4"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <Card className="lg:col-span-1 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
+        {/* Radar Chart Card */}
+        <Card className="lg:col-span-1 border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col pt-2">
           <SectionHeader
             title="Skill radar"
             description="Minh Anh vs Group average"
@@ -96,7 +98,7 @@ export default function ContributionPage() {
           <CardContent className="px-6 pb-6 pt-4 flex-1 flex items-center justify-center">
             <div className="w-full h-80 flex items-center justify-center">
               {isLoading ? (
-                <Skeleton className="w-[280px] h-[280px] rounded-full opacity-40" />
+                <Skeleton className="w-[280px] h-[280px] rounded-full opacity-40 bg-muted" />
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart
@@ -105,10 +107,14 @@ export default function ContributionPage() {
                     outerRadius="65%"
                     data={studentSkillData}
                   >
-                    <PolarGrid stroke="#f1f5f9" />
+                    <PolarGrid stroke="var(--border)" />
                     <PolarAngleAxis
                       dataKey="subject"
-                      tick={{ fill: "#64748b", fontSize: 11 }}
+                      tick={{
+                        fill: "var(--muted-foreground)",
+                        fontSize: 11,
+                        fontWeight: 500,
+                      }}
                     />
                     <PolarRadiusAxis
                       angle={30}
@@ -118,24 +124,30 @@ export default function ContributionPage() {
                     />
                     <Tooltip
                       contentStyle={{
+                        backgroundColor: "var(--card)",
+                        borderColor: "var(--border)",
+                        color: "var(--card-foreground)",
                         borderRadius: "12px",
-                        border: "none",
                         boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.1)",
+                      }}
+                      itemStyle={{
+                        color: "var(--foreground)",
+                        fontWeight: 600,
                       }}
                     />
                     <Radar
                       name="Minh Anh"
                       dataKey="A"
-                      stroke="#f97316"
+                      stroke="var(--primary)"
                       strokeWidth={2.5}
-                      fill="#f97316"
-                      fillOpacity={0.2}
+                      fill="var(--primary)"
+                      fillOpacity={0.25}
                     />
                     <Radar
                       name="Group Avg"
                       dataKey="B"
-                      stroke="#2563eb"
-                      strokeWidth={2}
+                      stroke="var(--secondary)"
+                      strokeWidth={2.5}
                       fill="none"
                     />
                   </RadarChart>
@@ -145,7 +157,8 @@ export default function ContributionPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
+        {/* Group Ranking Table Card */}
+        <Card className="lg:col-span-2 border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col pt-2">
           <SectionHeader
             title="Group ranking"
             description="Click vào thành viên để xem chi tiết"
@@ -156,17 +169,17 @@ export default function ContributionPage() {
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-y border-slate-100 hover:bg-transparent">
-                    <TableHead className="w-[50px] pl-6 text-xs font-semibold text-slate-500 uppercase">
+                  <TableRow className="border-y border-border hover:bg-transparent">
+                    <TableHead className="w-[50px] pl-6 text-xs font-semibold text-muted-foreground uppercase">
                       #
                     </TableHead>
-                    <TableHead className="text-xs font-semibold text-slate-500 uppercase">
+                    <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
                       Member
                     </TableHead>
-                    <TableHead className="text-right text-xs font-semibold text-slate-500 uppercase">
+                    <TableHead className="text-right text-xs font-semibold text-muted-foreground uppercase">
                       Commits
                     </TableHead>
-                    <TableHead className="text-right pr-6 text-xs font-semibold text-slate-500 uppercase">
+                    <TableHead className="text-right pr-6 text-xs font-semibold text-muted-foreground uppercase">
                       Score
                     </TableHead>
                   </TableRow>
@@ -174,41 +187,38 @@ export default function ContributionPage() {
                 <TableBody>
                   {isLoading
                     ? Array.from({ length: 5 }).map((_, idx) => (
-                        <TableRow
-                          key={idx}
-                          className="border-b border-slate-50"
-                        >
+                        <TableRow key={idx} className="border-b border-border">
                           <TableCell className="pl-6">
-                            <Skeleton className="h-4 w-4" />
+                            <Skeleton className="h-4 w-4 bg-muted" />
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <Skeleton className="w-9 h-9 rounded-full" />
-                              <Skeleton className="h-4 w-24" />
+                              <Skeleton className="w-9 h-9 rounded-full bg-muted" />
+                              <Skeleton className="h-4 w-24 bg-muted" />
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Skeleton className="h-4 w-8 ml-auto" />
+                            <Skeleton className="h-4 w-8 ml-auto bg-muted" />
                           </TableCell>
                           <TableCell className="pr-6">
-                            <Skeleton className="h-6 w-10 rounded-full ml-auto" />
+                            <Skeleton className="h-6 w-10 rounded-full ml-auto bg-muted" />
                           </TableCell>
                         </TableRow>
                       ))
                     : teamContributionRows.map((row, index) => {
                         const scoreBadgeClass =
                           row.score >= 8.0
-                            ? "bg-emerald-100/80 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+                            ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
                             : row.score >= 5.0
-                              ? "bg-orange-100/80 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400"
-                              : "bg-red-100/80 text-red-500 dark:bg-red-950/40 dark:text-red-400";
+                              ? "bg-orange-100/80 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400"
+                              : "bg-red-100/80 text-red-600 dark:bg-red-950/40 dark:text-red-400";
                         return (
                           <TableRow
                             key={row.id}
                             onClick={() => handleSelectUser(row)}
-                            className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer"
+                            className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer group"
                           >
-                            <TableCell className="pl-6 font-medium text-slate-400 text-sm">
+                            <TableCell className="pl-6 font-medium text-muted-foreground text-sm">
                               {index + 1}
                             </TableCell>
                             <TableCell>
@@ -220,21 +230,21 @@ export default function ContributionPage() {
                                   }
                                 />
                                 <div className="flex flex-col">
-                                  <span className="font-semibold text-slate-900 text-sm">
+                                  <span className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
                                     {row.name}
                                   </span>
-                                  <span className="text-xs text-slate-500">
+                                  <span className="text-xs text-muted-foreground">
                                     {row.role}
                                   </span>
                                 </div>
                               </div>
                             </TableCell>
-                            <TableCell className="text-right font-medium text-slate-700 text-sm">
+                            <TableCell className="text-right font-medium text-foreground text-sm">
                               {row.commits}
                             </TableCell>
                             <TableCell className="text-right pr-6">
                               <span
-                                className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${scoreBadgeClass}`}
+                                className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${scoreBadgeClass}`}
                               >
                                 {row.score.toFixed(1)}
                               </span>
@@ -249,43 +259,49 @@ export default function ContributionPage() {
         </Card>
       </div>
 
-      {/* Drill-down Drawer */}
+      {/* Drill-down Drawer (Sheet) */}
       <Sheet open={!!selectedUser} onOpenChange={() => setSelectedUser(null)}>
-        <SheetContent className="bg-white sm:max-w-md">
+        <SheetContent className="bg-background border-l border-border sm:max-w-md">
           <SheetHeader>
-            <SheetTitle className="text-xl">Báo cáo cá nhân</SheetTitle>
-            <SheetDescription>
+            <SheetTitle className="text-xl text-foreground">
+              Báo cáo cá nhân
+            </SheetTitle>
+            <SheetDescription className="text-muted-foreground">
               Phân tích hiệu suất của {selectedUser?.name}
             </SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
-            <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            {/* User Profile Card within Drawer */}
+            <div className="flex items-center gap-4 bg-muted/40 p-4 rounded-xl border border-border">
               <UserAvatar
                 name={selectedUser?.name || "U"}
                 className="w-14 h-14 text-xl"
               />
               <div>
-                <h3 className="font-bold text-lg text-slate-900">
+                <h3 className="font-bold text-lg text-foreground">
                   {selectedUser?.name}
                 </h3>
-                <p className="text-slate-500 text-sm">{selectedUser?.role}</p>
+                <p className="text-muted-foreground text-sm">
+                  {selectedUser?.role}
+                </p>
               </div>
             </div>
-            <h4 className="font-bold text-slate-700 pt-4 border-b pb-2">
+
+            <h4 className="font-bold text-foreground pt-4 border-b border-border pb-2">
               Commits gần đây
             </h4>
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="flex gap-3 items-start p-3 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+                  className="flex gap-3 items-start p-3 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer"
                 >
-                  <GitCommit className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                  <GitCommit className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-bold text-slate-800">
+                    <p className="text-sm font-bold text-foreground">
                       fix: Handle API response error state
                     </p>
-                    <p className="text-xs text-slate-500">2 giờ trước</p>
+                    <p className="text-xs text-muted-foreground">2 giờ trước</p>
                   </div>
                 </div>
               ))}
