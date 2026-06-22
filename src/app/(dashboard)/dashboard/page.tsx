@@ -1,9 +1,17 @@
-// src/app/page.tsx
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { kpiStats, weeklyActivityData } from "@/mock-data/overview";
-import { Users, GitCommit, AlertTriangle, CheckCircle2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { weeklyActivityData } from "@/mock-data/overview";
+import {
+  GitCommit,
+  MessageSquare,
+  AlertTriangle,
+  CheckCircle2,
+  TrendingUp,
+  TrendingDown,
+  ArrowRight,
+} from "lucide-react";
 import {
   LineChart,
   Line,
@@ -12,155 +20,154 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { SectionHeader } from "@/components/shared/SectionHeader";
+import { Skeleton } from "@/components/shared/Skeleton";
 
-const iconMap = {
-  "Tổng số Commits (Tuần này)": (
-    <div className="p-2.5 bg-orange-50 rounded-xl border border-orange-100 shadow-sm">
-      <GitCommit className="h-5 w-5 text-orange-600" />
-    </div>
-  ),
-  "Tương tác nội bộ nhóm": (
-    <div className="p-2.5 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
-      <Users className="h-5 w-5 text-blue-600" />
-    </div>
-  ),
-  "Sinh viên nguy cơ (Ít hoạt động)": (
-    <div className="p-2.5 bg-red-50 rounded-xl border border-red-100 shadow-sm">
-      <AlertTriangle className="h-5 w-5 text-red-500" />
-    </div>
-  ),
-  "Task đã hoàn thành": (
-    <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-100 shadow-sm">
-      <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-    </div>
-  ),
-};
+// Mở rộng dữ liệu mẫu để có tính năng "Empty State" và "Status"
+const recentActivities = [
+  {
+    user: "Minh Anh",
+    action: "merged PR #142",
+    time: "2 min ago",
+    status: "Success",
+    bg: "bg-orange-50",
+    icon: <GitCommit className="h-4 w-4 text-orange-500" />,
+  },
+  {
+    user: "Hoang Long",
+    action: "commented on Jira PBL-118",
+    time: "11 min ago",
+    status: "Active",
+    bg: "bg-blue-50",
+    icon: <MessageSquare className="h-4 w-4 text-blue-500" />,
+  },
+  {
+    user: "Thu Hien",
+    action: "closed task 'DB scripts'",
+    time: "34 min ago",
+    status: "Done",
+    bg: "bg-emerald-50",
+    icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+  },
+];
 
 export default function OverviewDashboard() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header Section */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60">
-        <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-          Tổng quan lớp học
-        </h2>
-        <p className="text-slate-500 mt-1 font-medium">
-          Theo dõi tiến độ, hiệu suất và hoạt động của sinh viên trong toàn bộ
-          dự án.
-        </p>
-      </div>
+    <div className="p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-500 bg-slate-50/50 min-h-screen">
+      <PageHeader
+        title="Overview — Sprint 4"
+        description="Group PBL-07 · CSE391 Software Engineering"
+      />
 
-      {/* KPI Cards Grid */}
+      {/* KPI Cards */}
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {kpiStats.map((kpi, index) => (
-          <Card
-            key={index}
-            className="border-slate-200/60 shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:-translate-y-1 bg-white"
-          >
-            <CardHeader className="flex flex-row items-start justify-between pb-2">
-              <CardTitle className="text-sm font-bold text-slate-600 w-2/3 leading-snug">
-                {kpi.title}
-              </CardTitle>
-              {iconMap[kpi.title as keyof typeof iconMap]}
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-extrabold text-slate-800 tracking-tight">
-                {kpi.value}
-              </div>
-              <p className="text-xs font-medium mt-3 flex items-center gap-1.5">
-                <span
-                  className={`px-1.5 py-0.5 rounded-md font-semibold tracking-wide ${
-                    kpi.trend === "up"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : kpi.trend === "down"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-slate-100 text-slate-600"
-                  }`}
-                >
-                  {kpi.change}
-                </span>
-                <span className="text-slate-500">so với tuần trước</span>
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-32 rounded-2xl" />
+            ))
+          : [...Array(4)].map((_, i) => (
+              <Card
+                key={i}
+                className="border-slate-200/60 shadow-sm rounded-2xl bg-white p-5 hover:shadow-md transition-all"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-2.5 rounded-xl bg-slate-100">
+                    <GitCommit className="h-5 w-5" />
+                  </div>
+                  <div className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full text-xs font-bold">
+                    +12%
+                  </div>
+                </div>
+                <h3 className="text-3xl font-extrabold text-slate-800">
+                  1,284
+                </h3>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  Total Commits
+                </p>
+              </Card>
+            ))}
       </div>
 
-      {/* Chart Section */}
-      <Card className="border-slate-200/60 shadow-sm rounded-2xl overflow-hidden">
-        <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
-          <CardTitle className="text-lg text-slate-800 flex items-center gap-2">
-            <span className="w-2 h-6 bg-orange-500 rounded-full inline-block"></span>
-            Biểu đồ hoạt động tổng thể
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={weeklyActivityData}
-                margin={{ top: 20, right: 20, bottom: 5, left: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="4 4"
-                  vertical={false}
-                  stroke="#f1f5f9"
-                />
-                <XAxis
-                  dataKey="name"
-                  stroke="#64748b"
-                  fontSize={12}
-                  fontWeight={500}
-                  tickLine={false}
-                  axisLine={false}
-                  dy={10}
-                />
-                <YAxis
-                  stroke="#64748b"
-                  fontSize={12}
-                  fontWeight={500}
-                  tickLine={false}
-                  axisLine={false}
-                  dx={-10}
-                />
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: "12px",
-                    border: "1px solid #e2e8f0",
-                    boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                    backgroundColor: "rgba(255, 255, 255, 0.98)",
-                  }}
-                  itemStyle={{ fontWeight: 600 }}
-                />
-                <Legend
-                  iconType="circle"
-                  wrapperStyle={{ paddingTop: "20px", fontWeight: 500 }}
-                />
-                <Line
-                  type="monotone"
-                  name="Commits (Code)"
-                  dataKey="commits"
-                  stroke="#f97316" /* Orange SAGA */
-                  strokeWidth={3.5}
-                  dot={{ r: 4, fill: "#f97316", strokeWidth: 0 }}
-                  activeDot={{ r: 7, stroke: "#fff", strokeWidth: 2 }}
-                />
-                <Line
-                  type="monotone"
-                  name="Comments (Tương tác)"
-                  dataKey="comments"
-                  stroke="#0052CC" /* Jira Blue */
-                  strokeWidth={3.5}
-                  dot={{ r: 4, fill: "#0052CC", strokeWidth: 0 }}
-                  activeDot={{ r: 7, stroke: "#fff", strokeWidth: 2 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Chart */}
+        <Card className="lg:col-span-2 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
+          <SectionHeader
+            title="Code vs Interaction"
+            description="Daily activities metrics"
+          />
+          <CardContent className="px-2 pb-6">
+            <div className="h-80 w-full mt-4">
+              {isLoading ? (
+                <Skeleton className="w-full h-full rounded-xl" />
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={weeklyActivityData}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#e2e8f0"
+                    />
+                    <XAxis dataKey="name" hide />
+                    <Tooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="commits"
+                      stroke="#f97316"
+                      strokeWidth={3}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="comments"
+                      stroke="#3b82f6"
+                      strokeWidth={3}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Activity với Empty State */}
+        <Card className="lg:col-span-1 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
+          <SectionHeader title="Recent activity" />
+          <CardContent className="p-6">
+            {recentActivities.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-slate-400 py-10">
+                <AlertTriangle className="mb-2" />
+                <p className="text-sm">Chưa có hoạt động mới</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {recentActivities.map((act, i) => (
+                  <div key={i} className="flex gap-4 items-center group">
+                    <div className={`p-2 rounded-full ${act.bg} shrink-0`}>
+                      {act.icon}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold">{act.user}</p>
+                      <p className="text-xs text-slate-500">{act.action}</p>
+                    </div>
+                    {/* Nút hành động Drill-down */}
+                    <button className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-slate-100 rounded-full transition-all">
+                      <ArrowRight className="h-4 w-4 text-slate-400" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
