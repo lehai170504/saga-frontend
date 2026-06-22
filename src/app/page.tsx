@@ -3,12 +3,10 @@
 
 import { AuthModal } from "@/components/auth-modal";
 import {
-  Activity,
   GitPullRequest,
   Users,
   ArrowRight,
   BarChart3,
-  ShieldCheck,
   Zap,
 } from "lucide-react";
 import Image from "next/image";
@@ -189,7 +187,7 @@ export default function LandingPage() {
               </h3>
               <p className="text-slate-500 font-medium leading-relaxed">
                 Sử dụng đồ thị Node-Edge (Graph) để trực quan hóa cách các thành
-                viên giao tiếp, cảnh báo sớm sinh viên "mất tích".
+                viên giao tiếp, cảnh báo sớm sinh viên &quot;mất tích&quot;.
               </p>
             </div>
           </div>

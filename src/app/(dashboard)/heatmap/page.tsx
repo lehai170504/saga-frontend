@@ -13,9 +13,12 @@ import {
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { DrillDownDrawer } from "@/components/shared/DrillDownDrawer";
 
 export default function HeatmapPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -41,7 +44,7 @@ export default function HeatmapPage() {
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen">
       <PageHeader
-        title="Activity Heatmap"
+        title="Biểu đồ nhiệt hoạt động"
         description="Giám sát tính liên tục trong hoạt động làm việc nhóm và commit code."
       >
         <Select defaultValue="all">
@@ -107,6 +110,7 @@ export default function HeatmapPage() {
               : heatmapData.map((item, index) => (
                   <div
                     key={index}
+                    onClick={() => setSelectedDate(item.date)}
                     className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl border flex flex-col items-center justify-center text-sm font-bold transition-all hover:-translate-y-1 hover:shadow-md hover:ring-2 hover:ring-orange-400/50 hover:ring-offset-2 cursor-pointer ${getLevelClass(
                       item.level,
                     )}`}
@@ -122,6 +126,12 @@ export default function HeatmapPage() {
           </div>
         </CardContent>
       </Card>
+
+      <DrillDownDrawer
+        open={!!selectedDate}
+        onClose={() => setSelectedDate(null)}
+        date={selectedDate}
+      />
     </div>
   );
 }

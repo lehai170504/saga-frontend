@@ -6,17 +6,13 @@ import { weeklyActivityData } from "@/mock-data/overview";
 import {
   GitCommit,
   MessageSquare,
-  AlertTriangle,
   CheckCircle2,
-  TrendingUp,
-  TrendingDown,
   ArrowRight,
 } from "lucide-react";
 import {
   LineChart,
   Line,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
@@ -25,28 +21,29 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/shared/DataState";
 
 const recentActivities = [
   {
     user: "Minh Anh",
-    action: "merged PR #142",
-    time: "2 min ago",
+    action: "đã merge PR #142",
+    time: "2 phút trước",
     status: "Success",
     bg: "bg-orange-50",
     icon: <GitCommit className="h-4 w-4 text-orange-500" />,
   },
   {
     user: "Hoang Long",
-    action: "commented on Jira PBL-118",
-    time: "11 min ago",
+    action: "đã bình luận trên Jira PBL-118",
+    time: "11 phút trước",
     status: "Active",
     bg: "bg-blue-50",
     icon: <MessageSquare className="h-4 w-4 text-blue-500" />,
   },
   {
     user: "Thu Hien",
-    action: "closed task 'DB scripts'",
-    time: "34 min ago",
+    action: "đã đóng task 'DB scripts'",
+    time: "34 phút trước",
     status: "Done",
     bg: "bg-emerald-50",
     icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
@@ -64,8 +61,8 @@ export default function OverviewDashboard() {
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-500 bg-slate-50/50 min-h-screen">
       <PageHeader
-        title="Overview — Sprint 4"
-        description="Group PBL-07 · CSE391 Software Engineering"
+        title="Tổng quan — Sprint 4"
+        description="Nhóm PBL-07 · CSE391 Công nghệ phần mềm"
       />
 
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -87,10 +84,10 @@ export default function OverviewDashboard() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-extrabold text-slate-800">
-                  1,284
+                  1.284
                 </h3>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Total Commits
+                  Tổng số Commits
                 </p>
               </Card>
             ))}
@@ -99,15 +96,15 @@ export default function OverviewDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
           <SectionHeader
-            title="Code vs Interaction"
-            description="Daily activities metrics"
+            title="Mã nguồn & Tương tác"
+            description="Chỉ số hoạt động hàng ngày"
           />
           <CardContent className="px-2 pb-6">
             <div className="h-80 w-full mt-4">
               {isLoading ? (
                 <Skeleton className="w-full h-full rounded-xl" />
               ) : (
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <LineChart data={weeklyActivityData}>
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -136,13 +133,10 @@ export default function OverviewDashboard() {
         </Card>
 
         <Card className="lg:col-span-1 border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-2">
-          <SectionHeader title="Recent activity" />
+          <SectionHeader title="Hoạt động gần đây" />
           <CardContent className="p-6">
             {recentActivities.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-slate-400 py-10">
-                <AlertTriangle className="mb-2" />
-                <p className="text-sm">Chưa có hoạt động mới</p>
-              </div>
+              <EmptyState message="Chưa có hoạt động mới" />
             ) : (
               <div className="space-y-6">
                 {recentActivities.map((act, i) => (

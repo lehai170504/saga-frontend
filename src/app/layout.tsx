@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-const inter = Inter({ subsets: ["latin"] });
+const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SAGA Dashboard - Continuous Assessment",
+  title: "SAGA - Continuous Assessment",
   description: "Student Activity Graph-Based Continuous Assessment System",
   icons: {
     icon: "/logo-ico.png",
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
-        className={`${inter.className} bg-slate-50 text-slate-900 antialiased`}
+        className={`${geist.className} bg-slate-50 text-slate-900 antialiased`}
       >
         {children}
         <Toaster

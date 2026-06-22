@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback, useEffect } from "react";
 import ReactFlow, {
-  MiniMap,
   Controls,
   Background,
   useNodesState,
@@ -28,19 +27,16 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { ErrorState } from "@/components/shared/DataState";
 
 export default function InteractionGraphPage() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
-  const [interactionType, setInteractionType] = useState("all");
   const [timeRange, setTimeRange] = useState("14days");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false); // Demo error state
 
   useEffect(() => {
-    setIsLoading(true);
-    setIsError(false);
     const timer = setTimeout(() => {
       // Giả lập lỗi nếu chọn "Cả Sprint"
       if (timeRange === "sprint") {
@@ -49,7 +45,13 @@ export default function InteractionGraphPage() {
       setIsLoading(false);
     }, 800);
     return () => clearTimeout(timer);
-  }, [interactionType, timeRange]);
+  }, [timeRange]);
+
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value);
+    setIsLoading(true);
+    setIsError(false);
+  };
 
   const onNodeClick = useCallback(
     (event: React.MouseEvent, node: Node) => setSelectedNode(node),
@@ -60,10 +62,10 @@ export default function InteractionGraphPage() {
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen flex flex-col">
       <PageHeader
-        title="Interaction Graph"
-        description="Network analysis of team collaboration and code reviews — Sprint 4"
+        title="Đồ thị tương tác"
+        description="Phân tích mạng lưới giao tiếp và đóng góp của nhóm — Sprint 4"
       >
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        <Select value={timeRange} onValueChange={handleTimeRangeChange}>
           <SelectTrigger className="w-full sm:w-[140px] h-10 bg-white border-slate-200 rounded-lg text-sm font-medium">
             <SelectValue placeholder="Thời gian" />
           </SelectTrigger>
@@ -110,7 +112,7 @@ export default function InteractionGraphPage() {
           <div className="p-5 xl:p-6 border-b border-slate-100 flex-1 overflow-y-auto">
             <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
               <Info className="h-4 w-4 text-slate-400" />
-              Node Details
+              Chi tiết thành viên
             </h3>
             {isLoading || isError ? (
               <Skeleton className="h-[200px] w-full rounded-xl" />
@@ -118,27 +120,27 @@ export default function InteractionGraphPage() {
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div className="flex items-center gap-3">
                   <UserAvatar
-                    name={selectedNode.data?.label || "Unknown"}
+                    name={selectedNode.data?.label || "Không rõ"}
                     className="w-12 h-12 text-lg"
                     bgColorClass="bg-orange-100 text-orange-600"
                   />
                   <div className="min-w-0">
                     <p className="font-bold text-slate-900 truncate">
-                      {selectedNode.data?.label || "Unknown Node"}
+                      {selectedNode.data?.label || "Thành viên không xác định"}
                     </p>
                     <p className="text-xs text-slate-500 font-medium">
-                      Node ID: {selectedNode.id}
+                      Mã Node: {selectedNode.id}
                     </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <MetricCard
-                    title="Outgoing"
+                    title="Tương tác gửi"
                     value={12}
                     icon={<GitCommit className="h-3 w-3 shrink-0" />}
                   />
                   <MetricCard
-                    title="Incoming"
+                    title="Tương tác nhận"
                     value={8}
                     icon={<MessageSquare className="h-3 w-3 shrink-0" />}
                   />
@@ -150,8 +152,7 @@ export default function InteractionGraphPage() {
                   <Users className="h-5 w-5 text-slate-400" />
                 </div>
                 <p className="text-sm text-slate-500 max-w-[200px]">
-                  Click on a student node in the graph to see their interaction
-                  metrics.
+                  Bấm vào một thành viên trên đồ thị để xem chỉ số tương tác.
                 </p>
               </div>
             )}

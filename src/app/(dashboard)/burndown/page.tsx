@@ -25,10 +25,16 @@ import {
 } from "@/components/ui/sheet";
 import { CheckCircle2 } from "lucide-react";
 
+interface BurndownDay {
+  day: string;
+  ideal: number;
+  actual: number;
+}
+
 export default function BurndownPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<any | null>(null);
+  const [selectedDay, setSelectedDay] = useState<BurndownDay | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
@@ -38,8 +44,8 @@ export default function BurndownPage() {
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-slate-50/50 min-h-screen">
       <PageHeader
-        title="Sprint Burndown"
-        description="Story points remaining — Sprint 4 of PBL-07"
+        title="Biểu đồ Burndown"
+        description="Số Story Points còn lại — Sprint 4 của PBL-07"
       />
 
       <Card className="border-slate-200/60 shadow-sm rounded-2xl bg-white flex flex-col pt-6">
@@ -47,11 +53,11 @@ export default function BurndownPage() {
           <div className="flex items-center gap-6 text-sm font-medium text-slate-700">
             <div className="flex items-center gap-2">
               <span className="w-6 border-b-2 border-dashed border-blue-600"></span>
-              Ideal progress
+              Tiến độ lý tưởng
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-6 border-b-2 border-orange-500"></span>Actual
-              progress
+              <span className="w-6 border-b-2 border-orange-500"></span>Tiến độ
+              thực tế
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -63,11 +69,11 @@ export default function BurndownPage() {
             ) : (
               <>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-500 rounded-full text-xs font-semibold">
-                  Committed{" "}
+                  Cam kết{" "}
                   <span className="text-slate-900 font-bold text-sm">80</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100/50 text-orange-400 rounded-full text-xs font-semibold">
-                  Remaining{" "}
+                  Còn lại{" "}
                   <span className="text-orange-500 font-bold text-sm">24</span>
                 </div>
               </>
@@ -84,13 +90,16 @@ export default function BurndownPage() {
             ) : isError ? (
               <ErrorState onRetry={() => setIsError(false)} />
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <ComposedChart
                   data={burndownData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                  onClick={(e: any) => {
-                    if (e && e.activePayload && e.activePayload.length > 0) {
-                      setSelectedDay(e.activePayload[0].payload);
+                  onClick={(e) => {
+                    if (e && typeof e === "object" && "activePayload" in e) {
+                      const activePayload = (e as { activePayload?: { payload: BurndownDay }[] }).activePayload;
+                      if (activePayload && activePayload.length > 0) {
+                        setSelectedDay(activePayload[0].payload);
+                      }
                     }
                   }}
                   className="cursor-pointer"

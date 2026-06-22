@@ -88,7 +88,7 @@ export default function SettingsPage() {
               </Button>
             </div>
             <p className="text-xs text-slate-500">
-              Cần quyền 'repo' để đọc dữ liệu pull requests và commits.
+              Cần quyền {"'repo'"} để đọc dữ liệu pull requests và commits.
             </p>
           </div>
 

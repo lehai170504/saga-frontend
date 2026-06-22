@@ -1,4 +1,4 @@
-import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 
 interface SectionHeaderProps {
