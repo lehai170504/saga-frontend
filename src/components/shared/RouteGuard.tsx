@@ -2,18 +2,33 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, User } from "@/context/AuthContext";
 import { Skeleton } from "@/components/shared/Skeleton";
 
-export function RouteGuard({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+interface RouteGuardProps {
+  children: React.ReactNode;
+  allowedRoles?: User["role"][];
+}
+
+export function RouteGuard({ children, allowedRoles }: RouteGuardProps) {
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/");
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        router.replace("/");
+        return;
+      }
+      if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+        let redirectPath = "/student";
+        if (user.role === "admin") redirectPath = "/admin";
+        if (user.role === "lecturer") redirectPath = "/lecturer";
+
+        router.replace(redirectPath);
+      }
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, user, allowedRoles, router]);
 
   if (isLoading) {
     return (
@@ -26,6 +41,10 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
+    return null;
+  }
+
+  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
     return null;
   }
 

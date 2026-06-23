@@ -50,13 +50,6 @@ export function AuthModal() {
             </DialogDescription>
           </DialogHeader>
         </div>
-
-        <div className="mx-6 mb-2 px-3 py-2 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl">
-          <p className="text-xs text-blue-700 dark:text-blue-400 font-medium">
-            Demo: <code>haile@student.edu.vn</code> / <code>123456</code>
-          </p>
-        </div>
-
         <Tabs defaultValue="login" className="w-full">
           <div className="px-6">
             <TabsList className="grid w-full grid-cols-2 bg-muted p-1 rounded-xl">

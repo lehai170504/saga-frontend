@@ -20,17 +20,59 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const { login } = useAuth();
   const router = useRouter();
 
+  // Hàm hỗ trợ điền nhanh tài khoản demo
+  const fillDemoAccount = (role: string) => {
+    setPassword("123456");
+    if (role === "admin") setEmail("admin@saga.edu.vn");
+    if (role === "lecturer") setEmail("gv@saga.edu.vn");
+    if (role === "leader") setEmail("leader@student.edu.vn");
+    if (role === "student") setEmail("member@student.edu.vn");
+  };
+
   const handleLogin = async () => {
     if (!email || !password) {
       toast.error("Vui lòng nhập email và mật khẩu!");
       return;
     }
+
     setIsLoggingIn(true);
+
     try {
       await login(email, password);
-      toast.success("Đăng nhập thành công! Đang chuyển hướng...");
+
+      // Phân quyền theo email nhập vào (Giả lập FE)
+      let userRole = "student";
+      if (email.includes("admin")) userRole = "admin";
+      else if (email.includes("gv") || email.includes("lecturer"))
+        userRole = "lecturer";
+      else if (email.includes("leader")) userRole = "student_leader";
+
+      let redirectPath = "/dashboard";
+      let roleName = "Sinh viên";
+
+      switch (userRole) {
+        case "admin":
+          redirectPath = "/admin";
+          roleName = "Quản trị viên";
+          break;
+        case "lecturer":
+          redirectPath = "/lecturer";
+          roleName = "Giảng viên";
+          break;
+        case "student_leader":
+          redirectPath = "/student";
+          roleName = "Trưởng nhóm";
+          break;
+        case "student":
+        default:
+          redirectPath = "/student";
+          roleName = "Thành viên";
+          break;
+      }
+
+      toast.success(`Đăng nhập thành công! Vai trò: ${roleName}`);
       onSuccess();
-      router.push("/dashboard");
+      router.push(redirectPath);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Đã xảy ra lỗi";
       toast.error(message);
@@ -41,6 +83,47 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <div className="space-y-4">
+      {/* Khu vực chọn nhanh tài khoản Demo */}
+      <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4">
+        <Label className="text-xs font-semibold text-slate-500 mb-2 block">
+          Tài khoản Demo (Click để điền nhanh):
+        </Label>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => fillDemoAccount("admin")}
+          >
+            Admin
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => fillDemoAccount("lecturer")}
+          >
+            Giảng viên
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => fillDemoAccount("leader")}
+          >
+            Trưởng nhóm
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => fillDemoAccount("student")}
+          >
+            Sinh viên
+          </Button>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="email" className="font-semibold">
           Email / Tài khoản
@@ -49,7 +132,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="email"
-            placeholder="student@example.com"
+            placeholder="Nhập email..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="pl-9 focus-visible:ring-orange-500 rounded-xl"
@@ -90,7 +173,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         {isLoggingIn ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Đang đăng nhập...
+            Đang xử lý...
           </>
         ) : (
           "Đăng nhập"

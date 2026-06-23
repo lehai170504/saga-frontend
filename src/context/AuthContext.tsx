@@ -1,12 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: "student" | "instructor";
+  role: "admin" | "lecturer" | "student" | "student_leader";
   avatarInitials: string;
   group?: string;
 }
@@ -25,20 +31,37 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const MOCK_USERS: (User & { password: string })[] = [
   {
     id: "u001",
-    name: "Lê Hoàng Hải",
-    email: "haile@student.edu.vn",
-    role: "student",
-    avatarInitials: "LH",
-    group: "Nhóm PBL-07",
+    name: "Quản trị viên",
+    email: "admin@saga.edu.vn",
+    role: "admin",
+    avatarInitials: "AD",
     password: "123456",
   },
   {
     id: "u002",
-    name: "Giảng viên Hướng dẫn",
-    email: "instructor@university.edu",
-    role: "instructor",
+    name: "Giảng viên",
+    email: "gv@saga.edu.vn",
+    role: "lecturer",
     avatarInitials: "GV",
-    password: "admin",
+    password: "123456",
+  },
+  {
+    id: "u003",
+    name: "Trưởng nhóm",
+    email: "leader@student.edu.vn",
+    role: "student_leader",
+    avatarInitials: "LD",
+    group: "Nhóm PBL-07",
+    password: "123456",
+  },
+  {
+    id: "u004",
+    name: "Thành viên",
+    email: "member@student.edu.vn",
+    role: "student",
+    avatarInitials: "MB",
+    group: "Nhóm PBL-07",
+    password: "123456",
   },
 ];
 
@@ -50,7 +73,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Kiểm tra phiên đăng nhập đã lưu trong localStorage
     try {
       const token = localStorage.getItem(TOKEN_KEY);
       const savedUser = localStorage.getItem(USER_KEY);
@@ -58,18 +80,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(JSON.parse(savedUser));
       }
     } catch {
-      // Bỏ qua lỗi parse
+      // Ignore parse errors
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    // Giả lập API call (delay 600ms)
+    // API call simulation
     await new Promise((res) => setTimeout(res, 600));
 
     const found = MOCK_USERS.find(
-      (u) => u.email === email && u.password === password
+      (u) => u.email === email && u.password === password,
     );
 
     if (!found) {
@@ -101,6 +123,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth phải dùng bên trong AuthProvider");
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
   return ctx;
 }

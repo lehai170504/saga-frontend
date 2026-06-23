@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/select";
 import { useFilter } from "@/context/FilterContext";
 import { useAuth } from "@/context/AuthContext";
+
+const roleDisplay = {
+  admin: "Quản trị viên",
+  lecturer: "Giảng viên",
+  student_leader: "Trưởng nhóm",
+  student: "Thành viên",
+};
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -41,17 +48,21 @@ export function Header() {
 
       {/* Global Filters */}
       <div className="flex items-center gap-2 flex-1 justify-center">
-        <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-          <SelectTrigger className="w-[130px] h-9 text-xs font-medium bg-background border-border">
-            <SelectValue placeholder="Chọn nhóm" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pbl-07">Nhóm PBL-07</SelectItem>
-            <SelectItem value="pbl-08">Nhóm PBL-08</SelectItem>
-            <SelectItem value="pbl-09">Nhóm PBL-09</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Chi hien thi chon Nhom cho Admin hoac Giang vien */}
+        {(user?.role === "admin" || user?.role === "lecturer") && (
+          <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+            <SelectTrigger className="w-[130px] h-9 text-xs font-medium bg-background border-border">
+              <SelectValue placeholder="Chọn nhóm" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pbl-07">Nhóm PBL-07</SelectItem>
+              <SelectItem value="pbl-08">Nhóm PBL-08</SelectItem>
+              <SelectItem value="pbl-09">Nhóm PBL-09</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
 
+        {/* Tat ca deu duoc chon Sprint */}
         <Select value={selectedSprint} onValueChange={setSelectedSprint}>
           <SelectTrigger className="w-[120px] h-9 text-xs font-medium bg-background border-border">
             <SelectValue placeholder="Chọn Sprint" />
@@ -81,13 +92,14 @@ export function Header() {
 
         {/* User info */}
         <div className="text-right hidden sm:block">
-          <p className="text-sm font-semibold text-foreground leading-tight">
+          <p className="text-sm font-semibold text-foreground leading-tight flex justify-end items-center gap-1">
+            {user?.role === "admin" && (
+              <ShieldCheck size={14} className="text-emerald-500" />
+            )}
             {user?.name ?? "Khách"}
           </p>
           <p className="text-xs text-muted-foreground">
-            {user?.role === "instructor"
-              ? "Giảng viên"
-              : (user?.group ?? "Sinh viên")}
+            {user?.role ? roleDisplay[user.role] : "Chưa xác định"}
           </p>
         </div>
         <Avatar className="h-9 w-9">

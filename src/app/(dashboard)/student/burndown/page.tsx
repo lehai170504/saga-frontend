@@ -31,7 +31,7 @@ interface BurndownDay {
   actual: number;
 }
 
-export default function BurndownPage() {
+export default function StudentBurndownPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [selectedDay, setSelectedDay] = useState<BurndownDay | null>(null);
@@ -186,7 +186,6 @@ export default function BurndownPage() {
         </CardContent>
       </Card>
 
-      {/* Drill-down Drawer */}
       <Sheet open={!!selectedDay} onOpenChange={() => setSelectedDay(null)}>
         <SheetContent className="bg-background border-l border-border sm:max-w-md">
           <SheetHeader>
