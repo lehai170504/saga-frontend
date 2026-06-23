@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "SAGA Dashboard - Continuous Assessment",
   description: "Student Activity Graph-Based Continuous Assessment System",
   icons: {
-    icon: "/logo-ico.png",
+    icon: "/logo-web.png",
   },
 };
 

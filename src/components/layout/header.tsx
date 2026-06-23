@@ -28,7 +28,7 @@ export function Header() {
       <div className="flex items-center gap-3 shrink-0">
         <Link href="/" className="hidden lg:block">
           <Image
-            src="/logo-header.png"
+            src="/logo-nav.png"
             alt="SAGA Logo"
             width={240}
             height={72}
@@ -85,7 +85,9 @@ export function Header() {
             {user?.name ?? "Khách"}
           </p>
           <p className="text-xs text-muted-foreground">
-            {user?.role === "instructor" ? "Giảng viên" : user?.group ?? "Sinh viên"}
+            {user?.role === "instructor"
+              ? "Giảng viên"
+              : (user?.group ?? "Sinh viên")}
           </p>
         </div>
         <Avatar className="h-9 w-9">
