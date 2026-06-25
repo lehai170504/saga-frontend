@@ -48,25 +48,25 @@ export function DrillDownDrawer({ open, onClose, date }: DrillDownDrawerProps) {
 
   return (
     <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent className="h-[85vh] bg-slate-50 flex flex-col outline-none">
+      <DrawerContent className="h-[85vh] bg-background flex flex-col outline-none">
         <div className="mx-auto w-full max-w-3xl flex-1 flex flex-col">
-          <DrawerHeader className="bg-white border-b border-slate-100 pb-6 pt-8 rounded-t-xl px-6">
-            <DrawerTitle className="text-2xl font-extrabold text-slate-800 text-left">
+          <DrawerHeader className="bg-card border-b border-border pb-6 pt-8 rounded-t-xl px-6">
+            <DrawerTitle className="text-2xl font-extrabold text-foreground text-left">
               Chi tiết hoạt động
             </DrawerTitle>
-            <DrawerDescription className="text-sm font-medium text-slate-500 mt-1 text-left">
+            <DrawerDescription className="text-sm font-medium text-muted-foreground mt-1 text-left">
               Dữ liệu tổng hợp ngày {date || "đang chọn"}
             </DrawerDescription>
           </DrawerHeader>
 
           <div className="p-6 flex-1 overflow-y-auto">
-            <div className="bg-white rounded-2xl border border-slate-100 p-2 shadow-sm">
+            <div className="bg-card rounded-2xl border border-border p-2 shadow-sm">
               {mockDetails.map((item, index) => (
                 <div
                   key={item.id}
-                  className={`flex items-start gap-4 p-4 hover:bg-slate-50 transition-colors ${
+                  className={`flex items-start gap-4 p-4 hover:bg-muted/50 transition-colors ${
                     index !== mockDetails.length - 1
-                      ? "border-b border-slate-50"
+                      ? "border-b border-border"
                       : ""
                   }`}
                 >
@@ -77,14 +77,14 @@ export function DrillDownDrawer({ open, onClose, date }: DrillDownDrawerProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-slate-900 text-sm truncate">
+                      <span className="font-bold text-foreground text-sm truncate">
                         {item.user}
                       </span>
-                      <span className="text-xs font-medium text-slate-400 shrink-0">
+                      <span className="text-xs font-medium text-muted-foreground shrink-0">
                         • {item.time}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-600 truncate">
+                    <p className="text-sm text-muted-foreground truncate">
                       {item.action}
                     </p>
                   </div>

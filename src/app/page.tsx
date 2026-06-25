@@ -13,7 +13,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-orange-100 selection:text-orange-900 flex flex-col">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 selection:text-primary flex flex-col">
       <FloatingHeader />
 
       <main className="flex-1 overflow-hidden">
@@ -27,7 +27,7 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer
         id="about"
-        className="bg-white border-t border-slate-200/60 py-10 mt-auto"
+        className="bg-card border-t border-border py-10 mt-auto"
       >
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
@@ -40,18 +40,18 @@ export default function LandingPage() {
             />
           </div>
 
-          <p className="text-slate-400 text-sm font-medium">
+          <p className="text-muted-foreground text-sm font-medium">
             © {new Date().getFullYear()} SAGA Capstone. All rights reserved.
           </p>
 
-          <div className="flex gap-6 text-sm font-semibold text-slate-500">
-            <a href="#" className="hover:text-orange-600 transition-colors">
+          <div className="flex gap-6 text-sm font-semibold text-muted-foreground">
+            <a href="#" className="hover:text-primary transition-colors">
               Privacy
             </a>
-            <a href="#" className="hover:text-orange-600 transition-colors">
+            <a href="#" className="hover:text-primary transition-colors">
               Terms
             </a>
-            <a href="#" className="hover:text-orange-600 transition-colors">
+            <a href="#" className="hover:text-primary transition-colors">
               Contact
             </a>
           </div>

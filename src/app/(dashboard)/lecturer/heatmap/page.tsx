@@ -37,7 +37,7 @@ export default function HeatmapPage() {
       case 4:
         return "bg-orange-600 border-orange-700 text-white shadow-sm dark:bg-orange-500 dark:border-orange-400";
       default:
-        return "bg-slate-50 border-slate-200 text-slate-400 dark:bg-muted/50 dark:border-border dark:text-muted-foreground";
+        return "bg-muted/50 border-border text-muted-foreground";
     }
   };
 
@@ -87,7 +87,7 @@ export default function HeatmapPage() {
             <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
               <span>Ít</span>
               <div className="flex gap-1.5">
-                <div className="w-4 h-4 rounded-sm bg-slate-50 border border-slate-200 dark:bg-muted/50 dark:border-border"></div>
+                <div className="w-4 h-4 rounded-sm bg-muted/50 border border-border"></div>
                 <div className="w-4 h-4 rounded-sm bg-orange-100 border border-orange-200 dark:bg-orange-950/40 dark:border-orange-900/50"></div>
                 <div className="w-4 h-4 rounded-sm bg-orange-300 border border-orange-400 dark:bg-orange-900/60 dark:border-orange-800/60"></div>
                 <div className="w-4 h-4 rounded-sm bg-orange-500 border border-orange-600 dark:bg-orange-600 dark:border-orange-500"></div>

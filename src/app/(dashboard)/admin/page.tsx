@@ -17,7 +17,7 @@ export default function AdminDashboard() {
           <Button variant="outline" className="rounded-xl">
             Xuất báo cáo
           </Button>
-          <Button className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white">
+          <Button className="rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground">
             Đồng bộ dữ liệu ngay
           </Button>
         </div>
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">
+            <div className="text-4xl font-extrabold text-foreground">
               45
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">
+            <div className="text-4xl font-extrabold text-foreground">
               1,248
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -63,7 +63,7 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">
+            <div className="text-4xl font-extrabold text-foreground">
               32
             </div>
             <p className="text-xs text-emerald-600 font-medium mt-1">
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">
+            <div className="text-4xl font-extrabold text-foreground">
               14.2k
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-lg">Trạng thái Tích hợp API</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex justify-between items-center p-4 border rounded-xl bg-slate-50 dark:bg-slate-900/50">
+            <div className="flex justify-between items-center p-4 border rounded-xl bg-muted/50">
               <div>
                 <p className="font-semibold text-foreground">
                   Jira Software Cloud
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex justify-between items-center p-4 border rounded-xl bg-slate-50 dark:bg-slate-900/50">
+            <div className="flex justify-between items-center p-4 border rounded-xl bg-muted/50">
               <div>
                 <p className="font-semibold text-foreground">
                   GitHub Organization
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="flex justify-between items-center p-4 border rounded-xl bg-slate-50 dark:bg-slate-900/50">
+            <div className="flex justify-between items-center p-4 border rounded-xl bg-muted/50">
               <div>
                 <p className="font-semibold text-foreground">
                   Hệ thống FAP (Nội bộ)

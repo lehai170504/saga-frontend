@@ -84,8 +84,8 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   return (
     <div className="space-y-4">
       {/* Khu vực chọn nhanh tài khoản Demo */}
-      <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4">
-        <Label className="text-xs font-semibold text-slate-500 mb-2 block">
+      <div className="bg-muted p-3 rounded-xl mb-4">
+        <Label className="text-xs font-semibold text-muted-foreground mb-2 block">
           Tài khoản Demo (Click để điền nhanh):
         </Label>
         <div className="grid grid-cols-2 gap-2">
@@ -135,7 +135,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             placeholder="Nhập email..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+            className="pl-9 focus-visible:ring-ring rounded-xl"
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           />
         </div>
@@ -147,7 +147,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           </Label>
           <a
             href="#"
-            className="text-xs text-orange-600 hover:text-orange-700 font-medium"
+            className="text-xs text-primary hover:text-primary/90 font-medium"
           >
             Quên mật khẩu?
           </a>
@@ -160,13 +160,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+            className="pl-9 focus-visible:ring-ring rounded-xl"
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           />
         </div>
       </div>
       <Button
-        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl h-11 mt-2"
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl h-11 mt-2"
         onClick={handleLogin}
         disabled={isLoggingIn}
       >

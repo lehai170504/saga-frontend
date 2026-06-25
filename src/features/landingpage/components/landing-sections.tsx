@@ -15,7 +15,7 @@ export function HeroSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-400/15 blur-[120px] rounded-full pointer-events-none -z-10" />
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/4 w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-slate-600 mb-8 cursor-default">
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border shadow-sm text-sm font-bold text-muted-foreground mb-8 cursor-default">
         <span className="relative flex h-2.5 w-2.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-600" />
@@ -23,14 +23,14 @@ export function HeroSection() {
         SAGA Capstone System v1.0 đã sẵn sàng
       </div>
 
-      <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 max-w-4xl leading-tight">
+      <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 max-w-4xl leading-tight">
         Đánh giá tiến độ liên tục với <br className="hidden md:block" />
         <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
           Dữ liệu Thực tế
         </span>
       </h1>
 
-      <p className="text-lg md:text-xl text-slate-500 mb-10 max-w-2xl font-medium leading-relaxed">
+      <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl font-medium leading-relaxed">
         Hệ thống phân tích và trực quan hóa hoạt động của sinh viên dựa trên đồ
         thị tương tác, Git Logs và quản lý Task từ Jira. Tạm biệt báo cáo thủ
         công.
@@ -42,7 +42,7 @@ export function HeroSection() {
         </div>
         <Link
           href="#features"
-          className="inline-flex items-center justify-center px-6 py-2.5 text-slate-600 font-semibold bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors h-11"
+          className="inline-flex items-center justify-center px-6 py-2.5 text-foreground font-semibold bg-card border border-border rounded-xl hover:bg-accent transition-colors h-11"
         >
           Khám phá tính năng
           <ArrowRight className="ml-2 h-4 w-4" />
@@ -54,8 +54,8 @@ export function HeroSection() {
 
 export function StatsSection() {
   return (
-    <section className="border-y border-slate-200/60 bg-white/50 backdrop-blur-sm py-10">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-slate-200/60">
+    <section className="border-y border-border bg-card/50 backdrop-blur-sm py-10">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-border">
         {[
           { value: "100%", label: "Đồng bộ Tự động" },
           { value: "+10k", label: "Commits Phân tích" },
@@ -63,10 +63,10 @@ export function StatsSection() {
           { value: "3", label: "Nền tảng Tích hợp" },
         ].map((stat, i) => (
           <div key={i}>
-            <div className="text-3xl md:text-4xl font-extrabold text-slate-800">
+            <div className="text-3xl md:text-4xl font-extrabold text-foreground">
               {stat.value}
             </div>
-            <div className="text-sm font-medium text-slate-500 mt-2">
+            <div className="text-sm font-medium text-muted-foreground mt-2">
               {stat.label}
             </div>
           </div>
@@ -80,10 +80,10 @@ export function FeaturesSection() {
   return (
     <section id="features" className="py-24 px-6 max-w-7xl mx-auto">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
           Tại sao chọn <span className="text-orange-500">SAGA</span>?
         </h2>
-        <p className="text-slate-500 font-medium max-w-2xl mx-auto">
+        <p className="text-muted-foreground font-medium max-w-2xl mx-auto">
           Công cụ mạnh mẽ giúp giảng viên và sinh viên nắm bắt chính xác tiến
           độ, hiệu suất và sự đóng góp của từng thành viên trong nhóm.
         </p>
@@ -117,21 +117,21 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="py-24 bg-slate-100/50 border-t border-slate-200/60"
+      className="py-24 bg-muted/50 border-t border-border"
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
             Hoạt động như thế nào?
           </h2>
-          <p className="text-slate-500 font-medium max-w-2xl mx-auto">
+          <p className="text-muted-foreground font-medium max-w-2xl mx-auto">
             Chỉ với 3 bước đơn giản để thiết lập và bắt đầu theo dõi dự án của
             bạn.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-          <div className="hidden md:block absolute top-8 left-[15%] right-[15%] h-[2px] bg-slate-200 -z-10" />
+          <div className="hidden md:block absolute top-8 left-[15%] right-[15%] h-[2px] bg-border -z-10" />
           {[
             {
               step: "01",
@@ -150,13 +150,13 @@ export function HowItWorksSection() {
             },
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-white border-4 border-slate-50 text-orange-500 font-extrabold text-xl flex items-center justify-center shadow-sm mb-6">
+              <div className="w-16 h-16 rounded-full bg-card border-4 border-muted text-orange-500 font-extrabold text-xl flex items-center justify-center shadow-sm mb-6">
                 {item.step}
               </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 {item.title}
               </h3>
-              <p className="text-slate-500 font-medium">{item.desc}</p>
+              <p className="text-muted-foreground font-medium">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -168,12 +168,12 @@ export function HowItWorksSection() {
 export function CtaSection() {
   return (
     <section className="py-24 px-6 max-w-4xl mx-auto text-center">
-      <div className="bg-slate-900 rounded-3xl p-10 md:p-16 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/20 blur-[80px] rounded-full pointer-events-none" />
-        <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6 relative z-10">
+      <div className="bg-primary text-primary-foreground rounded-3xl p-10 md:p-16 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 blur-[80px] rounded-full pointer-events-none" />
+        <h2 className="text-3xl md:text-4xl font-extrabold mb-6 relative z-10">
           Sẵn sàng tối ưu hóa quy trình đánh giá?
         </h2>
-        <p className="text-slate-300 font-medium mb-10 max-w-xl mx-auto relative z-10">
+        <p className="text-primary-foreground/80 font-medium mb-10 max-w-xl mx-auto relative z-10">
           Tham gia hệ thống ngay hôm nay để quản lý dự án PBL một cách minh bạch
           và hiệu quả nhất.
         </p>
@@ -205,14 +205,14 @@ function FeatureCard({
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl transition-all hover:-translate-y-2 group">
+    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm hover:shadow-xl transition-all hover:-translate-y-2 group">
       <div
         className={`w-14 h-14 border rounded-2xl flex items-center justify-center mb-6 group-hover:text-white transition-colors ${colorStyles[color]}`}
       >
         {icon}
       </div>
-      <h3 className="font-bold text-slate-800 text-xl mb-3">{title}</h3>
-      <p className="text-slate-500 font-medium leading-relaxed">{desc}</p>
+      <h3 className="font-bold text-foreground text-xl mb-3">{title}</h3>
+      <p className="text-muted-foreground font-medium leading-relaxed">{desc}</p>
     </div>
   );
 }
