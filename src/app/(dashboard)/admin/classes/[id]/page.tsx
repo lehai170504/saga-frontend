@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, Search, Plus, Upload, Download, MoreHorizontal,
   Edit, Trash2, Users, UsersRound, FolderKanban, Settings, Mail,
-  GraduationCap
+  GraduationCap, Sparkles
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -183,21 +183,23 @@ export default function ClassDetailsPage() {
   }, []);
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in-50">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       {/* Header section */}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded-full shadow-sm"
-            onClick={() => router.push('/admin/classes')}
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-            Quay lại danh sách lớp
-          </span>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative z-10">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full shadow-sm bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/80 transition-all"
+              onClick={() => router.push('/admin/classes')}
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
+              <Sparkles size={16} className="animate-pulse" />
+              <span>Workspace Quản trị</span>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -208,9 +210,9 @@ export default function ClassDetailsPage() {
             </div>
           ) : (
             <div>
-              <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+              <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
                 Lớp {mockClassDetails.className}
-                <span className="text-xs px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-md font-bold align-middle uppercase tracking-wider">
+                <span className="text-xs px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
                   {mockClassDetails.status}
                 </span>
               </h1>
@@ -232,8 +234,7 @@ export default function ClassDetailsPage() {
             </Button>
           </div>
         </div>
-      </div>
-
+      
       {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
