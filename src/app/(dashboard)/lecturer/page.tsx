@@ -1,231 +1,147 @@
 "use client";
 
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PageHeader } from "@/components/shared/PageHeader";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { BookOpen, Users, Calendar, ArrowRight, Activity } from "lucide-react";
+import { Skeleton } from "@/components/shared/Skeleton";
 
-// Mock data for activity timeline
-const activityData = [
-  { date: "01/05", commits: 45, prs: 12, issues: 20, comments: 15 },
-  { date: "05/05", commits: 78, prs: 25, issues: 35, comments: 28 },
-  { date: "10/05", commits: 112, prs: 40, issues: 45, comments: 50 },
-  { date: "15/05", commits: 156, prs: 65, issues: 58, comments: 85 },
-  { date: "20/05", commits: 130, prs: 55, issues: 40, comments: 65 },
-  { date: "25/05", commits: 180, prs: 80, issues: 75, comments: 110 },
-  { date: "31/05", commits: 245, prs: 110, issues: 90, comments: 145 },
+// Mock data for classes
+const MOCK_CLASSES = [
+  {
+    id: "SE102-1",
+    name: "Nhập môn Kỹ thuật phần mềm",
+    semester: "Học kỳ 1 - 2026",
+    studentCount: 45,
+    status: "active",
+    color: "from-blue-500 to-cyan-400",
+    shadow: "shadow-blue-500/20",
+  },
+  {
+    id: "SE104-2",
+    name: "Kiến trúc phần mềm",
+    semester: "Học kỳ 1 - 2026",
+    studentCount: 38,
+    status: "active",
+    color: "from-orange-500 to-amber-400",
+    shadow: "shadow-orange-500/20",
+  },
+  {
+    id: "SE114-1",
+    name: "Quản lý dự án phần mềm",
+    semester: "Học kỳ 1 - 2026",
+    studentCount: 50,
+    status: "active",
+    color: "from-emerald-500 to-teal-400",
+    shadow: "shadow-emerald-500/20",
+  },
+  {
+    id: "SE102-3",
+    name: "Nhập môn Kỹ thuật phần mềm",
+    semester: "Học kỳ 2 - 2025",
+    studentCount: 42,
+    status: "completed",
+    color: "from-gray-400 to-slate-400",
+    shadow: "shadow-gray-400/20",
+  },
 ];
 
-// Mock data for activity distribution
-const distributionData = [
-  { name: "Commit", value: 487, color: "#3b82f6" }, // blue-500
-  { name: "Issue Activity", value: 346, color: "#22c55e" }, // green-500
-  { name: "Pull Request", value: 224, color: "#f97316" }, // orange-500
-  { name: "Comment", value: 158, color: "#a855f7" }, // purple-500
-  { name: "Review", value: 101, color: "#ef4444" }, // red-500
-];
+export default function ClassSelectionPage() {
+  const [loading, setLoading] = useState(true);
 
-export default function LecturerDashboard() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6">
-      <PageHeader
-        title="Tổng quan hoạt động lớp (Overview)"
-        description="SE102 - PBL Project | Khoảng thời gian: 01/05/2026 - 31/05/2026"
-      />
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Sinh viên
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-blue-600">25</div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Tasks
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-orange-500">142</div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Commits
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-emerald-600">578</div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Pull Requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-purple-600">186</div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Comments & Reviews
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-rose-500">324</div>
-          </CardContent>
-        </Card>
+    <div className="p-6 max-w-[1200px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Xin chào, Giảng viên!
+        </h1>
+        <p className="text-muted-foreground text-lg">
+          Dưới đây là tổng quan các lớp học bạn đang phụ trách.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
-        {/* Line Chart Section */}
-        <Card className="lg:col-span-3 rounded-2xl shadow-sm border-border">
-          <CardHeader>
-            <CardTitle className="text-lg">Hoạt động theo thời gian</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[350px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={activityData}
-                  margin={{ top: 5, right: 20, left: -20, bottom: 0 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="var(--border)"
-                  />
-                  <XAxis
-                    dataKey="date"
-                    stroke="var(--muted-foreground)"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="var(--muted-foreground)"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--card)",
-                      borderColor: "var(--border)",
-                      borderRadius: "8px",
-                      color: "var(--foreground)",
-                    }}
-                  />
-                  <Legend
-                    wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="commits"
-                    name="Commits"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="prs"
-                    name="Pull Requests"
-                    stroke="#f97316"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="issues"
-                    name="Issues"
-                    stroke="#22c55e"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="comments"
-                    name="Comments"
-                    stroke="#a855f7"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Donut Chart Section */}
-        <Card className="lg:col-span-2 rounded-2xl shadow-sm border-border">
-          <CardHeader>
-            <CardTitle className="text-lg">
-              Phân bố hoạt động theo loại
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[350px] w-full flex flex-col items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={distributionData}
-                    cx="50%"
-                    cy="45%"
-                    innerRadius={80}
-                    outerRadius={120}
-                    paddingAngle={2}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {distributionData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--card)",
-                      borderColor: "var(--border)",
-                      borderRadius: "8px",
-                      color: "var(--foreground)",
-                    }}
-                  />
-                  <Legend
-                    layout="horizontal"
-                    verticalAlign="bottom"
-                    align="center"
-                    wrapperStyle={{ fontSize: "12px" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold flex items-center gap-2">
+          <BookOpen className="text-primary" />
+          Lớp học của bạn
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Card key={i} className="rounded-2xl border-border overflow-hidden">
+                  <div className="h-2 w-full bg-muted" />
+                  <CardHeader>
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex gap-4">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    <Skeleton className="h-10 w-full rounded-xl" />
+                  </CardContent>
+                </Card>
+              ))
+            : MOCK_CLASSES.map((cls) => (
+                <Link href={`/lecturer/${cls.id}`} key={cls.id} className="group">
+                  <Card className={`rounded-2xl border-border overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1 h-full flex flex-col ${cls.shadow} bg-card/50 backdrop-blur-sm border-white/10`}>
+                    <div className={`h-2 w-full bg-gradient-to-r ${cls.color} transition-all duration-500 group-hover:h-3`} />
+                    <CardHeader className="flex-1">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="px-3 py-1 rounded-md bg-background/80 backdrop-blur-md shadow-sm text-foreground text-xs font-bold border border-border/50">
+                          {cls.id}
+                        </div>
+                        {cls.status === "active" ? (
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-100 dark:bg-emerald-500/20 dark:text-emerald-400 px-3 py-1 rounded-full shadow-inner">
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            Đang diễn ra
+                          </div>
+                        ) : (
+                          <div className="text-xs font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border">
+                            Đã kết thúc
+                          </div>
+                        )}
+                      </div>
+                      <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 mt-2">
+                        {cls.name}
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-1.5 mt-2 font-medium">
+                        <Calendar size={14} />
+                        {cls.semester}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="mt-auto">
+                      <div className="flex items-center justify-between mb-5 text-sm text-muted-foreground font-medium bg-muted/30 p-3 rounded-lg border border-border/50">
+                        <div className="flex items-center gap-2">
+                          <Users size={16} className="text-primary" />
+                          <span>{cls.studentCount} SV</span>
+                        </div>
+                        <div className="w-[1px] h-4 bg-border"></div>
+                        <div className="flex items-center gap-2">
+                          <Activity size={16} className="text-orange-500" />
+                          <span>Hoạt động tốt</span>
+                        </div>
+                      </div>
+                      <div className="w-full py-3 bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground text-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300">
+                        Vào bảng điều khiển
+                        <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+        </div>
       </div>
     </div>
   );

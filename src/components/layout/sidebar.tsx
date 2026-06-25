@@ -10,6 +10,11 @@ import {
   Users,
   Settings,
   ShieldCheck,
+  ArrowLeft,
+  BookOpen,
+  FileText,
+  GraduationCap,
+  Share2,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -31,6 +36,9 @@ export function Sidebar({ onClose }: SidebarProps) {
 
   const getNavItems = () => {
     if (!user) return [];
+
+    const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
+    const classId = classIdMatch && classIdMatch[1] !== 'interaction-graph' && classIdMatch[1] !== 'heatmap' ? classIdMatch[1] : null;
 
     switch (user.role) {
       case "admin":
@@ -67,21 +75,55 @@ export function Sidebar({ onClose }: SidebarProps) {
           },
         ];
       case "lecturer":
+        if (classId) {
+          return [
+            {
+              href: "/lecturer",
+              icon: <ArrowLeft size={18} />,
+              label: "Chọn lớp khác",
+            },
+            {
+              href: `/lecturer/${classId}`,
+              icon: <BarChart3 size={18} />,
+              label: "Tổng quan lớp",
+            },
+            {
+              href: `/lecturer/${classId}/students`,
+              icon: <Users size={18} />,
+              label: "Quản lý sinh viên",
+            },
+            {
+              href: `/lecturer/${classId}/assignments`,
+              icon: <FileText size={18} />,
+              label: "Quản lý bài tập",
+            },
+            {
+              href: `/lecturer/${classId}/projects`,
+              icon: <Network size={18} />,
+              label: "Quản lý nhóm",
+            },
+            {
+              href: `/lecturer/${classId}/grades`,
+              icon: <GraduationCap size={18} />,
+              label: "Quản lý điểm số",
+            },
+            {
+              href: `/lecturer/${classId}/interaction-graph`,
+              icon: <Share2 size={18} />,
+              label: "Mạng tương tác",
+            },
+            {
+              href: `/lecturer/${classId}/heatmap`,
+              icon: <Activity size={18} />,
+              label: "Heatmap hoạt động",
+            },
+          ];
+        }
         return [
           {
             href: "/lecturer",
-            icon: <BarChart3 size={18} />,
-            label: "Tổng quan lớp",
-          },
-          {
-            href: "/lecturer/interaction-graph",
-            icon: <Network size={18} />,
-            label: "Mạng tương tác",
-          },
-          {
-            href: "/lecturer/heatmap",
-            icon: <Activity size={18} />,
-            label: "Heatmap hoạt động",
+            icon: <BookOpen size={18} />,
+            label: "Danh sách lớp học",
           },
         ];
       case "student_leader":
