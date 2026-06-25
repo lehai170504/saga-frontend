@@ -111,7 +111,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         }
       }}
     >
-      <DialogContent className="sm:max-w-[425px] rounded-xl">
+      <DialogContent className="sm:max-w-[500px] rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-xl text-center">
             Hồ sơ cá nhân
@@ -232,7 +232,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-4 max-h-[60vh] overflow-y-auto px-1 py-2">
+          <TabsContent value="settings" className="space-y-4 px-1 py-2">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
@@ -272,7 +272,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                       <h4 className="text-sm font-bold mb-1">Tích hợp API</h4>
                       <p className="text-xs text-muted-foreground">Kết nối với Jira và GitHub.</p>
                     </div>
-                    
+
                     <div className="space-y-3">
                       <Label className="text-xs font-bold">GitHub Personal Access Token</Label>
                       <div className="flex flex-col gap-2">
