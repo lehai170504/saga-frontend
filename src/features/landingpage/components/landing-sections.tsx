@@ -4,8 +4,6 @@ import {
   GitPullRequest,
   Users,
   Zap,
-  Activity,
-  CheckCircle2,
 } from "lucide-react";
 import { AuthModal } from "@/features/auth/components/auth-modal";
 

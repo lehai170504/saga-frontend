@@ -8,7 +8,6 @@ import {
   Activity,
   Calendar,
   Users,
-  Settings,
   ShieldCheck,
   ArrowLeft,
   BookOpen,
@@ -67,11 +66,6 @@ export function Sidebar({ onClose }: SidebarProps) {
             href: "/admin/classes",
             icon: <Network size={18} />,
             label: "Quản lý Lớp PBL",
-          },
-          {
-            href: "/admin/settings",
-            icon: <Settings size={18} />,
-            label: "Cài đặt & Tích hợp",
           },
         ];
       case "lecturer":
@@ -213,11 +207,10 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${
-        active
-          ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm"
-          : "text-muted-foreground hover:bg-accent hover:text-foreground"
-      }`}
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${active
+        ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm"
+        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+        }`}
     >
       {icon}
       <span className="text-[15px]">{label}</span>

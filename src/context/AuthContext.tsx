@@ -77,6 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = localStorage.getItem(TOKEN_KEY);
       const savedUser = localStorage.getItem(USER_KEY);
       if (token && savedUser) {
+        // eslint-disable-next-line
         setUser(JSON.parse(savedUser));
       }
     } catch {
@@ -98,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error("Email hoặc mật khẩu không chính xác");
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userData } = found;
     const mockToken = `saga_token_${Date.now()}`;
 
