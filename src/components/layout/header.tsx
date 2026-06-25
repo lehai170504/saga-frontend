@@ -69,33 +69,8 @@ export function Header() {
           <div className="h-6 w-px bg-border hidden lg:block mx-2" />
         </div>
 
-        {/* Global Filters */}
-        <div className="flex items-center gap-2 flex-1 justify-center">
-          {(user?.role === "admin" || user?.role === "lecturer") && (
-            <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-              <SelectTrigger className="w-[130px] h-9 text-xs font-medium bg-background border-border">
-                <SelectValue placeholder="Chọn nhóm" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pbl-07">Nhóm PBL-07</SelectItem>
-                <SelectItem value="pbl-08">Nhóm PBL-08</SelectItem>
-                <SelectItem value="pbl-09">Nhóm PBL-09</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-
-          <Select value={selectedSprint} onValueChange={setSelectedSprint}>
-            <SelectTrigger className="w-[120px] h-9 text-xs font-medium bg-background border-border">
-              <SelectValue placeholder="Chọn Sprint" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sprint-1">Sprint 1</SelectItem>
-              <SelectItem value="sprint-2">Sprint 2</SelectItem>
-              <SelectItem value="sprint-3">Sprint 3</SelectItem>
-              <SelectItem value="sprint-4">Sprint 4</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Spacer to push right content to the end */}
+        <div className="flex-1" />
 
         {/* Right side: Theme toggle + User Dropdown */}
         <div className="flex items-center gap-3 shrink-0">
