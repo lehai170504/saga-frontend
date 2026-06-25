@@ -1,146 +1,249 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BookOpen, Users, Calendar, ArrowRight, Activity } from "lucide-react";
-import { Skeleton } from "@/components/shared/Skeleton";
+import { BookOpen, Users, Calendar, ArrowRight, Activity, Sparkles, Network } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Mock data for classes
 const MOCK_CLASSES = [
   {
-    id: "SE102-1",
+    id: "SE1918",
     name: "Nhập môn Kỹ thuật phần mềm",
-    semester: "Học kỳ 1 - 2026",
+    semester: "Spring 2026",
     studentCount: 45,
     status: "active",
-    color: "from-blue-500 to-cyan-400",
-    shadow: "shadow-blue-500/20",
+    theme: "from-indigo-500 via-purple-500 to-pink-500",
+    bgAccent: "bg-indigo-500/10",
+    glow: "group-hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)]",
+    tasks: 120,
+    progress: 75,
   },
   {
-    id: "SE104-2",
+    id: "SE1916",
     name: "Kiến trúc phần mềm",
-    semester: "Học kỳ 1 - 2026",
+    semester: "Summer 2026",
     studentCount: 38,
     status: "active",
-    color: "from-orange-500 to-amber-400",
-    shadow: "shadow-orange-500/20",
+    theme: "from-amber-400 via-orange-500 to-rose-500",
+    bgAccent: "bg-orange-500/10",
+    glow: "group-hover:shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)]",
+    tasks: 85,
+    progress: 40,
   },
   {
-    id: "SE114-1",
+    id: "SE1912",
     name: "Quản lý dự án phần mềm",
-    semester: "Học kỳ 1 - 2026",
+    semester: "Spring 2026",
     studentCount: 50,
     status: "active",
-    color: "from-emerald-500 to-teal-400",
-    shadow: "shadow-emerald-500/20",
+    theme: "from-emerald-400 via-teal-500 to-cyan-500",
+    bgAccent: "bg-teal-500/10",
+    glow: "group-hover:shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)]",
+    tasks: 210,
+    progress: 90,
   },
   {
-    id: "SE102-3",
+    id: "SE1920",
     name: "Nhập môn Kỹ thuật phần mềm",
-    semester: "Học kỳ 2 - 2025",
+    semester: "Fall 2025",
     studentCount: 42,
     status: "completed",
-    color: "from-gray-400 to-slate-400",
-    shadow: "shadow-gray-400/20",
+    theme: "from-slate-400 via-gray-500 to-zinc-600",
+    bgAccent: "bg-slate-500/10",
+    glow: "group-hover:shadow-[0_0_40px_-10px_rgba(148,163,184,0.5)]",
+    tasks: 150,
+    progress: 100,
   },
 ];
 
 export default function ClassSelectionPage() {
   const [loading, setLoading] = useState(true);
+  const [selectedSemester, setSelectedSemester] = useState<string>("all");
+
+  const semesters = useMemo(() => {
+    const s = new Set(MOCK_CLASSES.map((c) => c.semester));
+    return Array.from(s);
+  }, []);
+
+  const filteredClasses = useMemo(() => {
+    if (selectedSemester === "all") return MOCK_CLASSES;
+    return MOCK_CLASSES.filter((c) => c.semester === selectedSemester);
+  }, [selectedSemester]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Xin chào, Giảng viên!
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Dưới đây là tổng quan các lớp học bạn đang phụ trách.
-        </p>
-      </div>
+    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
+      {/* Decorative Background Elements */}
+  
+      <div className="absolute bottom-[-10%] right-[-5%] w-[30%] h-[40%] rounded-full bg-purple-500/5 blur-[100px] pointer-events-none" />
+      
+      <div className="relative p-6 max-w-[1400px] mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-8">
+          <div className="flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
+              <Sparkles size={16} className="animate-pulse" />
+              <span>Workspace Giảng viên</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60">
+              Khởi động ngày mới, <br className="hidden md:block" />
+              Chọn lớp học để quản lý
+            </h1>
+          </div>
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <BookOpen className="text-primary" />
-          Lớp học của bạn
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i} className="rounded-2xl border-border overflow-hidden">
-                  <div className="h-2 w-full bg-muted" />
-                  <CardHeader>
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex gap-4">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-20" />
+          <div className="w-full md:w-[280px]">
+            <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+              <SelectTrigger className="w-full h-12 rounded-xl bg-card/50 backdrop-blur-xl border-border/50 text-foreground font-semibold focus:ring-primary/20 transition-all hover:bg-card/80">
+                <div className="flex items-center gap-2">
+                  <Calendar size={18} className="text-muted-foreground" />
+                  <SelectValue placeholder="Chọn học kỳ" />
+                </div>
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-border/50 backdrop-blur-xl bg-card/90 shadow-xl">
+                <SelectItem value="all" className="font-semibold py-3 cursor-pointer">
+                  Tất cả học kỳ
+                </SelectItem>
+                {semesters.map((s) => (
+                  <SelectItem key={s} value={s} className="font-semibold py-3 cursor-pointer">
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Classes Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {loading ? (
+            // Skeleton Loading State
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="relative rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl p-6 overflow-hidden h-[340px] flex flex-col">
+                <div className="absolute inset-0 bg-gradient-to-br from-muted/50 to-transparent animate-pulse" />
+                <div className="relative flex justify-between items-start mb-6">
+                  <div className="h-8 w-24 bg-muted/80 rounded-xl animate-pulse" />
+                  <div className="h-8 w-28 bg-muted/80 rounded-full animate-pulse" />
+                </div>
+                <div className="h-8 w-3/4 bg-muted/80 rounded-lg animate-pulse mb-4" />
+                <div className="h-5 w-1/2 bg-muted/80 rounded-lg animate-pulse mb-auto" />
+                
+                <div className="space-y-4 mt-8">
+                  <div className="flex justify-between">
+                    <div className="h-10 w-1/3 bg-muted/80 rounded-2xl animate-pulse" />
+                    <div className="h-10 w-1/3 bg-muted/80 rounded-2xl animate-pulse" />
+                  </div>
+                  <div className="h-12 w-full bg-muted/80 rounded-xl animate-pulse mt-4" />
+                </div>
+              </div>
+            ))
+          ) : filteredClasses.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-20 text-muted-foreground">
+              <BookOpen size={48} className="mb-4 opacity-20" />
+              <p className="text-xl font-medium">Không tìm thấy lớp học nào</p>
+              <p className="text-sm">Vui lòng chọn học kỳ khác hoặc hiển thị tất cả.</p>
+            </div>
+          ) : (
+            // Real Data State
+            filteredClasses.map((cls, idx) => (
+              <Link 
+                href={`/lecturer/${cls.id}`} 
+                key={cls.id} 
+                className={`group block relative rounded-[2rem] transition-all duration-500 ease-out hover:-translate-y-2 ${cls.glow}`}
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
+                {/* Glassmorphism Card */}
+                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-white/40 to-white/10 dark:from-white/5 dark:to-white/0 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] overflow-hidden">
+                  {/* Hover Gradient Overlay */}
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-to-br ${cls.theme}`} />
+                </div>
+
+                {/* Card Content */}
+                <div className="relative p-7 h-[340px] flex flex-col">
+                  {/* Top Header */}
+                  <div className="flex justify-between items-start mb-5">
+                    <div className={`px-4 py-1.5 rounded-xl text-sm font-black border border-white/20 dark:border-white/10 shadow-sm backdrop-blur-md ${
+                      cls.status === "active" ? "bg-white/60 dark:bg-black/40 text-foreground" : "bg-muted/50 text-muted-foreground"
+                    }`}>
+                      {cls.id}
                     </div>
-                    <Skeleton className="h-10 w-full rounded-xl" />
-                  </CardContent>
-                </Card>
-              ))
-            : MOCK_CLASSES.map((cls) => (
-                <Link href={`/lecturer/${cls.id}`} key={cls.id} className="group">
-                  <Card className={`rounded-2xl border-border overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-1 h-full flex flex-col ${cls.shadow} bg-card/50 backdrop-blur-sm border-white/10`}>
-                    <div className={`h-2 w-full bg-gradient-to-r ${cls.color} transition-all duration-500 group-hover:h-3`} />
-                    <CardHeader className="flex-1">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="px-3 py-1 rounded-md bg-background/80 backdrop-blur-md shadow-sm text-foreground text-xs font-bold border border-border/50">
-                          {cls.id}
-                        </div>
-                        {cls.status === "active" ? (
-                          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-100 dark:bg-emerald-500/20 dark:text-emerald-400 px-3 py-1 rounded-full shadow-inner">
-                            <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            Đang diễn ra
-                          </div>
-                        ) : (
-                          <div className="text-xs font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border">
-                            Đã kết thúc
-                          </div>
-                        )}
+                    {cls.status === "active" ? (
+                      <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        ĐANG DIỄN RA
                       </div>
-                      <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 mt-2">
-                        {cls.name}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-1.5 mt-2 font-medium">
-                        <Calendar size={14} />
-                        {cls.semester}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="mt-auto">
-                      <div className="flex items-center justify-between mb-5 text-sm text-muted-foreground font-medium bg-muted/30 p-3 rounded-lg border border-border/50">
-                        <div className="flex items-center gap-2">
-                          <Users size={16} className="text-primary" />
-                          <span>{cls.studentCount} SV</span>
-                        </div>
-                        <div className="w-[1px] h-4 bg-border"></div>
-                        <div className="flex items-center gap-2">
-                          <Activity size={16} className="text-orange-500" />
-                          <span>Hoạt động tốt</span>
-                        </div>
+                    ) : (
+                      <div className="text-xs font-bold text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full border border-border backdrop-blur-md">
+                        ĐÃ KẾT THÚC
                       </div>
-                      <div className="w-full py-3 bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground text-primary text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300">
-                        Vào bảng điều khiển
-                        <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                    )}
+                  </div>
+
+                  {/* Title Area */}
+                  <div className="mb-auto">
+                    <h3 className="text-2xl font-bold leading-tight text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-muted-foreground transition-all duration-300 line-clamp-2">
+                      {cls.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-3 text-muted-foreground font-medium">
+                      <Calendar size={16} />
+                      <span className="text-sm">{cls.semester}</span>
+                    </div>
+                  </div>
+
+                  {/* Stats Area */}
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div className={`flex flex-col p-3 rounded-2xl ${cls.bgAccent} border border-white/10 backdrop-blur-sm`}>
+                      <span className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-1.5">
+                        <Users size={12} /> SINH VIÊN
+                      </span>
+                      <span className="text-xl font-black text-foreground">{cls.studentCount}</span>
+                    </div>
+                    <div className={`flex flex-col p-3 rounded-2xl ${cls.bgAccent} border border-white/10 backdrop-blur-sm`}>
+                      <span className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-1.5">
+                        <Network size={12} /> NHIỆM VỤ
+                      </span>
+                      <span className="text-xl font-black text-foreground">{cls.tasks}</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Action Area */}
+                  <div className="relative h-12 w-full overflow-hidden rounded-xl bg-muted/30 border border-border/50 group-hover:border-transparent transition-colors">
+                    {/* Progress Bar Background */}
+                    <div 
+                      className={`absolute left-0 top-0 bottom-0 bg-gradient-to-r ${cls.theme} opacity-20 transition-all duration-1000 ease-out`}
+                      style={{ width: `${cls.progress}%` }}
+                    />
+                    
+                    {/* Button Text */}
+                    <div className="absolute inset-0 flex items-center justify-between px-5 font-semibold text-sm">
+                      <span className="text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-foreground/70 transition-all">
+                        Truy cập Dashboard
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-background/50 flex items-center justify-center backdrop-blur-md shadow-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+                        <ArrowRight size={16} className="text-foreground group-hover:translate-x-0.5 transition-transform" />
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </div>
     </div>
