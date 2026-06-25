@@ -14,6 +14,7 @@ import {
   FileText,
   GraduationCap,
   Share2,
+  Logs,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -53,19 +54,19 @@ export function Sidebar({ onClose }: SidebarProps) {
             label: "Quản lý Người dùng",
           },
           {
-            href: "/admin/semesters",
+            href: "/admin/academic-data",
             icon: <Calendar size={18} />,
-            label: "Quản lý Học kỳ",
-          },
-          {
-            href: "/admin/subjects",
-            icon: <Activity size={18} />,
-            label: "Quản lý Môn học",
+            label: "Quản lý Dữ liệu Học vụ",
           },
           {
             href: "/admin/classes",
             icon: <Network size={18} />,
             label: "Quản lý Lớp PBL",
+          },
+          {
+            href: "/admin/system-logs",
+            icon: <Logs size={18} />,
+            label: "Nhật ký hệ thống",
           },
         ];
       case "lecturer":

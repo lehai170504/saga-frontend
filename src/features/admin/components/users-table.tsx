@@ -18,6 +18,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
 import { Search, GraduationCap, UserCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/shared/DataState";
@@ -120,8 +127,8 @@ export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="relative w-full max-w-sm">
+      <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="relative w-full sm:max-w-sm">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Tìm kiếm theo tên..."
@@ -131,6 +138,34 @@ export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
             }
             className="pl-9 rounded-xl focus-visible:ring-ring bg-background"
           />
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Select
+            value={(table.getColumn("role")?.getFilterValue() as string) ?? "all"}
+            onValueChange={(val) => table.getColumn("role")?.setFilterValue(val === "all" ? "" : val)}
+          >
+            <SelectTrigger className="w-full sm:w-[150px] rounded-xl bg-background border-border">
+              <SelectValue placeholder="Tất cả vai trò" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả vai trò</SelectItem>
+              <SelectItem value="student">Sinh viên</SelectItem>
+              <SelectItem value="lecturer">Giảng viên</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
+            onValueChange={(val) => table.getColumn("status")?.setFilterValue(val === "all" ? "" : val)}
+          >
+            <SelectTrigger className="w-full sm:w-[160px] rounded-xl bg-background border-border">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả trạng thái</SelectItem>
+              <SelectItem value="active">Hoạt động</SelectItem>
+              <SelectItem value="inactive">Vô hiệu hóa</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
