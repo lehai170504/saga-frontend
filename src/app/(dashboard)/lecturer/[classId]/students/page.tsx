@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { UploadCloud, Search, Plus, UserPlus, FileSpreadsheet } from "lucide-react";
+import Link from "next/link";
 
 const MOCK_STUDENTS = [
   { id: "102210001", name: "Nguyễn Văn A", email: "nva@sv.dut.udn.vn", group: "Nhóm 1", status: "Hoạt động" },
@@ -122,7 +123,9 @@ export default function StudentsManagementPage({ params }: { params: { classId: 
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">Chi tiết</Button>
+                      <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80" asChild>
+                        <Link href={`/lecturer/${params.classId}/students/${student.id}`}>Chi tiết</Link>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

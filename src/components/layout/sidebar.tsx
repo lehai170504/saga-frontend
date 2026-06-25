@@ -15,6 +15,9 @@ import {
   FileText,
   GraduationCap,
   Share2,
+  LineChart,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -88,6 +91,11 @@ export function Sidebar({ onClose }: SidebarProps) {
               label: "Tổng quan lớp",
             },
             {
+              href: `/lecturer/${classId}/risks`,
+              icon: <AlertTriangle size={18} />,
+              label: "Cảnh báo rủi ro",
+            },
+            {
               href: `/lecturer/${classId}/students`,
               icon: <Users size={18} />,
               label: "Quản lý sinh viên",
@@ -116,6 +124,16 @@ export function Sidebar({ onClose }: SidebarProps) {
               href: `/lecturer/${classId}/heatmap`,
               icon: <Activity size={18} />,
               label: "Heatmap hoạt động",
+            },
+            {
+              href: `/lecturer/${classId}/burndown`,
+              icon: <LineChart size={18} />,
+              label: "Tiến độ Sprint",
+            },
+            {
+              href: `/lecturer/${classId}/timeline`,
+              icon: <Clock size={18} />,
+              label: "Nhật ký hoạt động",
             },
           ];
         }
@@ -216,7 +234,7 @@ function NavItem({
       className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${
         active
           ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm"
-          : "text-muted-foreground hover:bg-accent hover:text-foreground"
+          : "text-muted-foreground hover:bg-gray-100 hover:text-foreground dark:hover:bg-gray-800"
       }`}
     >
       {icon}

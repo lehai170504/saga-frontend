@@ -86,10 +86,6 @@ export default function ClassSelectionPage() {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      {/* Decorative Background Elements */}
-  
-      <div className="absolute bottom-[-10%] right-[-5%] w-[30%] h-[40%] rounded-full bg-purple-500/5 blur-[100px] pointer-events-none" />
-      
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
         
         {/* Header Section */}
