@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Activity, Calendar as CalendarIcon, Users, Filter, Sparkles } from "lucide-react";
@@ -45,7 +46,8 @@ const getColorClass = (count: number) => {
   return "bg-primary border-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]";
 };
 
-export default function HeatmapActivityPage({ params }: { params: { classId: string } }) {
+export default function HeatmapActivityPage() {
+  const { classId } = useLecturerClass();
   const [filterType, setFilterType] = useState("all");
   const [filterGroup, setFilterGroup] = useState("all");
 
@@ -68,7 +70,7 @@ export default function HeatmapActivityPage({ params }: { params: { classId: str
             <h1 className="text-3xl font-black tracking-tight text-foreground">
               Heatmap Hoạt động
             </h1>
-            <p className="text-muted-foreground font-medium">Bản đồ nhiệt độ theo dõi tần suất đóng góp của sinh viên lớp {params.classId}</p>
+            <p className="text-muted-foreground font-medium">Bản đồ nhiệt độ theo dõi tần suất đóng góp của sinh viên lớp {classId}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">

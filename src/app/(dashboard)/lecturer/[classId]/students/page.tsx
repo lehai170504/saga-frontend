@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +25,8 @@ const MOCK_STUDENTS = [
   { id: "102210004", name: "Phạm Thị D", email: "ptd@sv.dut.udn.vn", group: "Chưa có nhóm", status: "Không hoạt động" },
 ];
 
-export default function StudentsManagementPage({ params }: { params: { classId: string } }) {
+export default function StudentsManagementPage() {
+  const { classId } = useLecturerClass();
   const [searchTerm, setSearchTerm] = useState("");
   const [isImporting, setIsImporting] = useState(false);
 
@@ -39,7 +41,7 @@ export default function StudentsManagementPage({ params }: { params: { classId: 
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <PageHeader
-          title={`Quản lý sinh viên - Lớp ${params.classId}`}
+          title={`Quản lý sinh viên - Lớp ${classId}`}
           description="Danh sách sinh viên, thêm mới hoặc import từ file Excel."
         />
         <div className="flex gap-2">
@@ -54,7 +56,7 @@ export default function StudentsManagementPage({ params }: { params: { classId: 
               <DialogHeader>
                 <DialogTitle>Import danh sách sinh viên</DialogTitle>
                 <DialogDescription>
-                  Tải lên file Excel (.xlsx, .csv) chứa danh sách sinh viên của lớp {params.classId}.
+                  Tải lên file Excel (.xlsx, .csv) chứa danh sách sinh viên của lớp {classId}.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -124,7 +126,7 @@ export default function StudentsManagementPage({ params }: { params: { classId: 
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80" asChild>
-                        <Link href={`/lecturer/${params.classId}/students/${student.id}`}>Chi tiết</Link>
+                        <Link href={`/lecturer/${classId}/students/${student.id}`}>Chi tiết</Link>
                       </Button>
                     </TableCell>
                   </TableRow>

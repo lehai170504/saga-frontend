@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, User, GitCommit, GitPullRequest, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, ArrowUpRight } from "lucide-react";
@@ -36,7 +37,12 @@ const TIMELINE = [
   { type: "commit", text: "feat: add user profile endpoints", time: "5 ngày trước", link: "#" },
 ];
 
-export default function StudentProfilePage({ params }: { params: { classId: string, studentId: string } }) {
+import { useParams } from "next/navigation";
+
+export default function StudentProfilePage() {
+  const { classId } = useLecturerClass();
+  const routeParams = useParams();
+  const studentId = (routeParams?.studentId as string) || "undefined";
   const [note, setNote] = useState("");
   const [savedNotes, setSavedNotes] = useState([
     { id: 1, text: "Thuyết trình giữa kỳ tốt, nắm rõ kiến trúc hệ thống.", time: "10/05/2026", author: "Dr. Trần" }
@@ -57,9 +63,9 @@ export default function StudentProfilePage({ params }: { params: { classId: stri
         
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link href={`/lecturer/${params.classId}`} className="hover:text-foreground transition-colors">Dashboard</Link>
+          <Link href={`/lecturer/${classId}`} className="hover:text-foreground transition-colors">Dashboard</Link>
           <ChevronRight size={14} />
-          <Link href={`/lecturer/${params.classId}/students`} className="hover:text-foreground transition-colors">Sinh viên</Link>
+          <Link href={`/lecturer/${classId}/students`} className="hover:text-foreground transition-colors">Sinh viên</Link>
           <ChevronRight size={14} />
           <span className="text-foreground font-semibold">{STUDENT.name}</span>
         </div>
@@ -78,7 +84,7 @@ export default function StudentProfilePage({ params }: { params: { classId: stri
                 </Badge>
               </div>
               <div className="flex items-center gap-4 text-muted-foreground font-medium text-sm">
-                <span>ID: {params.studentId}</span>
+                <span>ID: {studentId}</span>
                 <span>•</span>
                 <span>{STUDENT.email}</span>
                 <span>•</span>

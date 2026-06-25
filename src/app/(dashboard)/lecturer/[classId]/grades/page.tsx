@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,8 @@ const MOCK_GRADES = [
   { id: "SV-004", name: "An Lê", group: "PBL-05", sysScore: 5.5, manualScore: 6.0, rubric: { code: 6.0, teamwork: 5.0, presentation: 7.0 }, overrideNote: "Khó khăn trong nửa đầu kỳ" },
 ];
 
-export default function GradesManagementPage({ params }: { params: { classId: string } }) {
+export default function GradesManagementPage() {
+  const { classId } = useLecturerClass();
   const [grades, setGrades] = useState(MOCK_GRADES);
   const [isSaving, setIsSaving] = useState(false);
 

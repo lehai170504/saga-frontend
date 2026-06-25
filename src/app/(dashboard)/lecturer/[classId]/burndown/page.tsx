@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Label } from "recharts";
@@ -67,7 +68,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function BurndownChartPage({ params }: { params: { classId: string } }) {
+export default function BurndownChartPage() {
+  const { classId } = useLecturerClass();
   const [selectedGroup, setSelectedGroup] = useState("Team Alpha");
   const [selectedSprint, setSelectedSprint] = useState("Sprint 2");
 

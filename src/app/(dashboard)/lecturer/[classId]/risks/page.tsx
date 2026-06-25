@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Clock, CheckCircle2, MessageSquare, Filter, ShieldAlert, ArrowUpRight, Search, Activity, MoreVertical } from "lucide-react";
@@ -54,7 +55,8 @@ const MOCK_RISKS = [
   }
 ];
 
-export default function RiskDashboardPage({ params }: { params: { classId: string } }) {
+export default function RiskDashboardPage() {
+  const { classId } = useLecturerClass();
   const [filter, setFilter] = useState("all"); // all, high, medium, low
 
   const getSeverityStyle = (severity: string) => {
@@ -100,7 +102,7 @@ export default function RiskDashboardPage({ params }: { params: { classId: strin
             <h1 className="text-3xl font-black tracking-tight text-foreground">
               Cảnh báo Rủi ro
             </h1>
-            <p className="text-muted-foreground font-medium">Hệ thống phát hiện sớm các bất thường trong tiến trình làm việc của lớp {params.classId}</p>
+            <p className="text-muted-foreground font-medium">Hệ thống phát hiện sớm các bất thường trong tiến trình làm việc của lớp {classId}</p>
           </div>
           
           <div className="flex items-center gap-3">

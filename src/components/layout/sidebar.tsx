@@ -14,6 +14,9 @@ import {
   FileText,
   GraduationCap,
   Share2,
+  AlertTriangle,
+  TrendingDown,
+  Clock,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -110,6 +113,21 @@ export function Sidebar({ onClose }: SidebarProps) {
               href: `/lecturer/${classId}/heatmap`,
               icon: <Activity size={18} />,
               label: "Heatmap hoạt động",
+            },
+            {
+              href: `/lecturer/${classId}/risks`,
+              icon: <AlertTriangle size={18} />,
+              label: "Cảnh báo rủi ro",
+            },
+            {
+              href: `/lecturer/${classId}/burndown`,
+              icon: <TrendingDown size={18} />,
+              label: "Tiến độ Sprint",
+            },
+            {
+              href: `/lecturer/${classId}/timeline`,
+              icon: <Clock size={18} />,
+              label: "Nhật ký hoạt động",
             },
           ];
         }

@@ -1,5 +1,5 @@
 "use client";
-
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -64,7 +64,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function LecturerDashboard({ params }: { params: { classId: string } }) {
+export default function LecturerDashboard() {
+  const { classId } = useLecturerClass();
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -75,7 +76,7 @@ export default function LecturerDashboard({ params }: { params: { classId: strin
               Real-time Analytics
             </div>
             <h1 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-muted-foreground">
-              Dashboard Lớp {params.classId}
+              Dashboard Lớp {classId}
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi chi tiết hiệu suất và tương tác của sinh viên</p>
           </div>

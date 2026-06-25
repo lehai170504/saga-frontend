@@ -1,5 +1,6 @@
 "use client";
 
+import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -111,7 +112,8 @@ const timelineData = [
   }
 ];
 
-export default function ActivityTimelinePage({ params }: { params: { classId: string } }) {
+export default function ActivityTimelinePage() {
+  const { classId } = useLecturerClass();
   const [filterType, setFilterType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -135,7 +137,7 @@ export default function ActivityTimelinePage({ params }: { params: { classId: st
             <h1 className="text-3xl font-black tracking-tight text-foreground">
               Nhật ký hoạt động chi tiết
             </h1>
-            <p className="text-muted-foreground font-medium">Theo dõi mọi tương tác của sinh viên lớp {params.classId} theo thời gian thực</p>
+            <p className="text-muted-foreground font-medium">Theo dõi mọi tương tác của sinh viên lớp {classId} theo thời gian thực</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
