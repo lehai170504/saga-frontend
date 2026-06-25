@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Save, Info, Search, FileSpreadsheet, CheckCircle2, ChevronDown } from "lucide-react";
+import { Save, Info, Search, FileSpreadsheet, CheckCircle2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -22,7 +22,7 @@ const MOCK_GRADES = [
   { id: "SV-004", name: "An Lê", group: "PBL-05", sysScore: 5.5, manualScore: 6.0, rubric: { code: 6.0, teamwork: 5.0, presentation: 7.0 }, overrideNote: "Khó khăn trong nửa đầu kỳ" },
 ];
 
-export default function GradesManagementPage({ params }: { params: { classId: string } }) {
+export default function GradesManagementPage() {
   const [grades, setGrades] = useState(MOCK_GRADES);
   const [isSaving, setIsSaving] = useState(false);
 

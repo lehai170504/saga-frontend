@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { Users, CheckCircle2, GitCommit, GitPullRequest, MessageSquare, TrendingUp, Sparkles, Activity } from "lucide-react";
 import {
   AreaChart,
@@ -46,12 +45,12 @@ const statsData = [
   { title: "Tương tác & Review", value: "324", icon: MessageSquare, color: "text-pink-500", bg: "bg-pink-500/10", border: "border-pink-500/20", trend: "+28%", trendUp: true },
 ];
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { color: string; name: string; value: number }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-card/80 backdrop-blur-md border border-border/50 p-4 rounded-xl shadow-xl">
         <p className="font-bold mb-2 text-foreground">{label}</p>
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry: { color: string; name: string; value: number }, index: number) => (
           <div key={index} className="flex items-center gap-2 text-sm mb-1">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
             <span className="text-muted-foreground">{entry.name}:</span>
@@ -64,7 +63,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function LecturerDashboard({ params }: { params: { classId: string } }) {
+export default function LecturerDashboard({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -75,7 +75,7 @@ export default function LecturerDashboard({ params }: { params: { classId: strin
               Real-time Analytics
             </div>
             <h1 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-muted-foreground">
-              Dashboard Lớp {params.classId}
+              Dashboard Lớp {classId}
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi chi tiết hiệu suất và tương tác của sinh viên</p>
           </div>

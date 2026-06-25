@@ -104,6 +104,7 @@ export const columns: ColumnDef<User>[] = [
 export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

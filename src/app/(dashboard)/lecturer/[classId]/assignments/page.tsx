@@ -13,12 +13,13 @@ const MOCK_ASSIGNMENTS = [
   { id: 3, title: "Báo cáo tiến độ Sprint 1", deadline: "10/05/2026", submitted: 12, total: 12, status: "completed" },
 ];
 
-export default function AssignmentsManagementPage({ params }: { params: { classId: string } }) {
+export default function AssignmentsManagementPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <PageHeader
-          title={`Quản lý bài tập - Lớp ${params.classId}`}
+          title={`Quản lý bài tập - Lớp ${classId}`}
           description="Tạo và quản lý các bài tập, yêu cầu cho các nhóm."
         />
         <Button className="gap-2">

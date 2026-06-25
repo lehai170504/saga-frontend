@@ -9,13 +9,6 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -23,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useFilter } from "@/context/FilterContext";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { ProfileModal } from "@/features/user/components/profile-modal";
@@ -37,8 +29,6 @@ const roleDisplay: Record<string, string> = {
 
 export function Header() {
   const { theme, setTheme } = useTheme();
-  const { selectedGroup, setSelectedGroup, selectedSprint, setSelectedSprint } =
-    useFilter();
   const { user, logout } = useAuth();
   const router = useRouter();
 

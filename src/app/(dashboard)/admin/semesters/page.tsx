@@ -35,7 +35,7 @@ export default function SemestersManagementPage() {
   const [isOverrideMode, setIsOverrideMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: "", startDate: "", endDate: "", status: "upcoming" as const });
+  const [formData, setFormData] = useState({ name: "", startDate: "", endDate: "", status: "upcoming" as "active" | "ended" | "upcoming" });
 
   useEffect(() => {
     const timer = setTimeout(() => {

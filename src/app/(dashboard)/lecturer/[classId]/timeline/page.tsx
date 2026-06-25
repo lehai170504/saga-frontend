@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { 
   GitCommit, 
   GitPullRequest, 
@@ -111,7 +110,8 @@ const timelineData = [
   }
 ];
 
-export default function ActivityTimelinePage({ params }: { params: { classId: string } }) {
+export default function ActivityTimelinePage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   const [filterType, setFilterType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -135,7 +135,7 @@ export default function ActivityTimelinePage({ params }: { params: { classId: st
             <h1 className="text-3xl font-black tracking-tight text-foreground">
               Nhật ký hoạt động chi tiết
             </h1>
-            <p className="text-muted-foreground font-medium">Theo dõi mọi tương tác của sinh viên lớp {params.classId} theo thời gian thực</p>
+            <p className="text-muted-foreground font-medium">Theo dõi mọi tương tác của sinh viên lớp {classId} theo thời gian thực</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
@@ -179,7 +179,7 @@ export default function ActivityTimelinePage({ params }: { params: { classId: st
                 <p className="text-sm">Vui lòng thử bộ lọc khác.</p>
               </div>
             ) : (
-              filteredTimeline.map((item, index) => (
+              filteredTimeline.map((item) => (
                 <div key={item.id} className="relative flex gap-6 md:gap-8 group">
                   {/* Time & Date Column (Hidden on very small screens, integrated into card) */}
                   <div className="hidden md:flex flex-col items-end w-[140px] pt-2 shrink-0">
