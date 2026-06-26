@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import {
   Key,
@@ -24,6 +25,7 @@ import {
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const { theme, setTheme } = useTheme();
 
   // GitHub connection states
   const [gitUsername, setGitUsername] = useState("");
@@ -39,7 +41,6 @@ export default function SettingsPage() {
   const [jiraAccount, setJiraAccount] = useState("");
 
   // General settings states
-  const [theme, setTheme] = useState("light");
   const [timezone, setTimezone] = useState("GMT+7");
 
   // Load from localStorage on mount
@@ -48,7 +49,6 @@ export default function SettingsPage() {
     const savedGitUser = localStorage.getItem("saga-git-username") || "";
     const savedJira = localStorage.getItem("saga-jira-connected") === "true";
     const savedJiraEmail = localStorage.getItem("saga-jira-email") || "";
-    const savedTheme = localStorage.getItem("saga-theme") || "light";
     const savedTimezone = localStorage.getItem("saga-timezone") || "GMT+7";
 
     setGitConnected(savedGit);
@@ -57,7 +57,6 @@ export default function SettingsPage() {
     setJiraConnected(savedJira);
     setJiraAccount(savedJiraEmail);
     setJiraEmail(savedJiraEmail);
-    setTheme(savedTheme);
     setTimezone(savedTimezone);
 
     const timer = setTimeout(() => setIsLoading(false), 500);
@@ -125,13 +124,12 @@ export default function SettingsPage() {
   };
 
   const handleSaveGeneral = () => {
-    localStorage.setItem("saga-theme", theme);
     localStorage.setItem("saga-timezone", timezone);
     toast.success("Cập nhật cấu hình cá nhân thành công!");
   };
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16 bg-background text-foreground">
       <PageHeader
         title="Kết nối tài khoản & Cài đặt"
         description="Quản lý việc liên kết tài khoản GitHub & Jira cá nhân của sinh viên để đồng bộ hóa chỉ số đóng góp mã nguồn và tiến độ công việc."
@@ -139,8 +137,8 @@ export default function SettingsPage() {
 
       {isLoading ? (
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="h-80 animate-pulse bg-slate-100/50 border border-slate-200/50" />
-          <Card className="h-80 animate-pulse bg-slate-100/50 border border-slate-200/50" />
+          <Card className="h-80 animate-pulse bg-muted border border-border" />
+          <Card className="h-80 animate-pulse bg-muted border border-border" />
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-3 items-start">
@@ -151,12 +149,12 @@ export default function SettingsPage() {
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
               
               {/* CARD 1: GITHUB CONNECTION */}
-              <Card className="relative border border-slate-200/60 shadow-sm rounded-3xl bg-white overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
-                <div className="h-2 w-full bg-slate-900" />
+              <Card className="relative border border-border shadow-sm rounded-3xl bg-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
+                <div className="h-2 w-full bg-slate-900 dark:bg-slate-950" />
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
                   <div>
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-slate-100 rounded-2xl text-slate-800 shadow-sm">
+                      <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl text-slate-800 dark:text-slate-200 shadow-sm">
                         {/* Custom GitHub SVG */}
                         <svg
                           className="h-6 w-6 fill-current"
@@ -167,20 +165,20 @@ export default function SettingsPage() {
                         </svg>
                       </div>
                       {gitConnected ? (
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
                           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                           Đã kết nối
                         </span>
                       ) : (
-                        <span className="px-3 py-1 bg-slate-50 text-slate-400 border border-slate-200/60 rounded-full text-xs font-bold">
+                        <span className="px-3 py-1 bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500 border border-slate-200/60 dark:border-slate-800 rounded-full text-xs font-bold">
                           Chưa kết nối
                         </span>
                       )}
                     </div>
 
                     <div className="mt-4">
-                      <h4 className="font-extrabold text-slate-800 text-lg">Đồng bộ GitHub</h4>
-                      <p className="text-slate-500 font-medium text-xs mt-2 leading-relaxed">
+                      <h4 className="font-extrabold text-foreground text-lg">Đồng bộ GitHub</h4>
+                      <p className="text-muted-foreground font-medium text-xs mt-2 leading-relaxed">
                         Liên kết Username GitHub để hệ thống SAGA tự động ánh xạ dữ liệu git commits và pull requests của bạn vào báo cáo nhóm.
                       </p>
                     </div>
@@ -188,35 +186,35 @@ export default function SettingsPage() {
 
                   {gitConnected ? (
                     /* Connected UI state */
-                    <div className="space-y-4 pt-4 border-t border-slate-100 animate-in fade-in duration-300">
-                      <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        <div className="w-10 h-10 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center text-sm shadow-inner">
+                    <div className="space-y-4 pt-4 border-t border-border animate-in fade-in duration-300">
+                      <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-border">
+                        <div className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-700 text-white font-bold flex items-center justify-center text-sm shadow-inner">
                           {gitAccount.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-bold text-slate-900 truncate flex items-center gap-1">
+                          <p className="text-sm font-bold text-foreground truncate flex items-center gap-1">
                             {gitAccount}
                             <a
                               href={`https://github.com/${gitAccount}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-slate-400 hover:text-slate-600 transition-colors"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
                             >
                               <ExternalLink size={12} />
                             </a>
                           </p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">Tài khoản liên kết</p>
+                          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wide mt-0.5">Tài khoản liên kết</p>
                         </div>
                         <button
                           onClick={handleDisconnectGit}
-                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 cursor-pointer"
+                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-200 cursor-pointer"
                           title="Ngắt kết nối"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <div className="text-[10px] text-slate-400 font-bold flex items-center justify-between px-1">
-                        <span className="flex items-center gap-1 text-emerald-600">
+                      <div className="text-[10px] text-muted-foreground font-bold flex items-center justify-between px-1">
+                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                           <CheckCircle2 size={10} /> Syncing Auto
                         </span>
                         <span>Đồng bộ: 5 phút trước</span>
@@ -224,25 +222,25 @@ export default function SettingsPage() {
                     </div>
                   ) : (
                     /* Connection Form UI */
-                    <form onSubmit={handleConnectGit} className="space-y-4 pt-4 border-t border-slate-100 animate-in fade-in duration-300">
+                    <form onSubmit={handleConnectGit} className="space-y-4 pt-4 border-t border-border animate-in fade-in duration-300">
                       <div className="space-y-1.5">
                         <div className="flex justify-between">
-                          <Label htmlFor="git-user" className="text-slate-600 text-xs font-bold">Username GitHub</Label>
+                          <Label htmlFor="git-user" className="text-muted-foreground text-xs font-bold">Username GitHub</Label>
                           <a
                             href="https://github.com"
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[10px] text-slate-400 hover:text-orange-500 font-bold flex items-center gap-0.5"
+                            className="text-[10px] text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 font-bold flex items-center gap-0.5"
                           >
                             Tạo tài khoản <ExternalLink size={8} />
                           </a>
                         </div>
                         <div className="relative">
-                          <span className="absolute left-3.5 top-3 text-slate-400 font-bold text-sm">@</span>
+                          <span className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500 font-bold text-sm">@</span>
                           <Input
                             id="git-user"
                             placeholder="Ví dụ: lehai1705"
-                            className="pl-8 h-11 bg-white border border-slate-200 focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-8 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
                             value={gitUsername}
                             onChange={(e) => setGitUsername(e.target.value)}
                           />
@@ -251,7 +249,7 @@ export default function SettingsPage() {
                       <button
                         type="submit"
                         disabled={isConnectingGit}
-                        className="w-full h-11 bg-slate-900 hover:bg-slate-950 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                        className="w-full h-11 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
                       >
                         {isConnectingGit ? (
                           <>
@@ -268,32 +266,32 @@ export default function SettingsPage() {
               </Card>
 
               {/* CARD 2: JIRA CONNECTION */}
-              <Card className="relative border border-slate-200/60 shadow-sm rounded-3xl bg-white overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
-                <div className="h-2 w-full bg-blue-600" />
+              <Card className="relative border border-border shadow-sm rounded-3xl bg-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
+                <div className="h-2 w-full bg-blue-600 dark:bg-blue-800" />
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
                   <div>
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl shadow-sm">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm">
                         {/* Custom Jira SVG */}
                         <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path d="M11.53 2.308a3.1 3.1 0 0 0-4.385 0L.438 9.015a3.1 3.1 0 0 0 0 4.385l6.707 6.707a3.1 3.1 0 0 0 4.385 0l6.707-6.707a3.1 3.1 0 0 0 0-4.385L11.53 2.308Zm8.769 4.385a3.1 3.1 0 0 0-4.384 0l-6.708 6.707a3.1 3.1 0 0 0 0 4.385l6.708 6.707a3.1 3.1 0 0 0 4.384 0l6.708-6.707a3.1 3.1 0 0 0 0-4.385l-6.708-6.707Z" />
                         </svg>
                       </div>
                       {jiraConnected ? (
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
                           <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                           Đã kết nối
                         </span>
                       ) : (
-                        <span className="px-3 py-1 bg-slate-50 text-slate-400 border border-slate-200/60 rounded-full text-xs font-bold">
+                        <span className="px-3 py-1 bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500 border border-slate-200/60 dark:border-slate-800 rounded-full text-xs font-bold">
                           Chưa kết nối
                         </span>
                       )}
                     </div>
 
                     <div className="mt-4">
-                      <h4 className="font-extrabold text-slate-800 text-lg">Đồng bộ Jira Cloud</h4>
-                      <p className="text-slate-500 font-medium text-xs mt-2 leading-relaxed">
+                      <h4 className="font-extrabold text-foreground text-lg">Đồng bộ Jira Cloud</h4>
+                      <p className="text-muted-foreground font-medium text-xs mt-2 leading-relaxed">
                         Kết nối tài khoản Jira Cloud để đồng bộ hóa trạng thái các Tasks (To Do, In Progress, Done) bạn phụ trách lên Burndown chart của nhóm.
                       </p>
                     </div>
@@ -301,25 +299,25 @@ export default function SettingsPage() {
 
                   {jiraConnected ? (
                     /* Connected UI state */
-                    <div className="space-y-4 pt-4 border-t border-slate-100 animate-in fade-in duration-300">
-                      <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center text-sm shadow-inner">
+                    <div className="space-y-4 pt-4 border-t border-border animate-in fade-in duration-300">
+                      <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-border">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm shadow-inner">
                           {jiraAccount.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-bold text-slate-900 truncate">{jiraAccount}</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide mt-0.5">Email Jira liên kết</p>
+                          <p className="text-sm font-bold text-foreground truncate">{jiraAccount}</p>
+                          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wide mt-0.5">Email Jira liên kết</p>
                         </div>
                         <button
                           onClick={handleDisconnectJira}
-                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 cursor-pointer"
+                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-200 cursor-pointer"
                           title="Ngắt kết nối"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <div className="text-[10px] text-slate-400 font-bold flex items-center justify-between px-1">
-                        <span className="flex items-center gap-1 text-blue-600">
+                      <div className="text-[10px] text-muted-foreground font-bold flex items-center justify-between px-1">
+                        <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                           <CheckCircle2 size={10} /> Syncing Auto
                         </span>
                         <span>Đồng bộ: 10 phút trước</span>
@@ -327,16 +325,16 @@ export default function SettingsPage() {
                     </div>
                   ) : (
                     /* Connection Form UI */
-                    <form onSubmit={handleConnectJira} className="space-y-3 pt-4 border-t border-slate-100 animate-in fade-in duration-300">
+                    <form onSubmit={handleConnectJira} className="space-y-3 pt-4 border-t border-border animate-in fade-in duration-300">
                       <div className="space-y-1">
-                        <Label htmlFor="jira-mail" className="text-slate-600 text-xs font-bold">Email tài khoản Jira</Label>
+                        <Label htmlFor="jira-mail" className="text-muted-foreground text-xs font-bold">Email tài khoản Jira</Label>
                         <div className="relative">
-                          <AtSign className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                          <AtSign className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
                           <Input
                             id="jira-mail"
                             type="email"
                             placeholder="Ví dụ: student@email.com"
-                            className="pl-10 h-11 bg-white border border-slate-200 focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
                             value={jiraEmail}
                             onChange={(e) => setJiraEmail(e.target.value)}
                           />
@@ -344,7 +342,7 @@ export default function SettingsPage() {
                       </div>
                       <div className="space-y-1">
                         <div className="flex justify-between">
-                          <Label htmlFor="jira-token" className="text-slate-600 text-xs font-bold">Jira API Token</Label>
+                          <Label htmlFor="jira-token" className="text-muted-foreground text-xs font-bold">Jira API Token</Label>
                           <a
                             href="https://id.atlassian.com/manage-profile/security/api-tokens"
                             target="_blank"
@@ -355,12 +353,12 @@ export default function SettingsPage() {
                           </a>
                         </div>
                         <div className="relative">
-                          <Key className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                          <Key className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
                           <Input
                             id="jira-token"
                             type="password"
                             placeholder="Nhập API Token bảo mật"
-                            className="pl-10 h-11 bg-white border border-slate-200 focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
                             value={jiraToken}
                             onChange={(e) => setJiraToken(e.target.value)}
                           />
@@ -369,7 +367,7 @@ export default function SettingsPage() {
                       <button
                         type="submit"
                         disabled={isConnectingJira}
-                        className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                        className="w-full h-11 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
                       >
                         {isConnectingJira ? (
                           <>
@@ -388,13 +386,13 @@ export default function SettingsPage() {
             </div>
 
             {/* INTEGRATION TIPS CARD */}
-            <Card className="border border-orange-100 bg-orange-50/30 rounded-3xl p-6 flex flex-col md:flex-row gap-4 items-start shadow-sm">
-              <div className="p-3 bg-orange-100 text-orange-600 rounded-2xl">
+            <Card className="border border-orange-100 dark:border-orange-950/40 bg-orange-50/30 dark:bg-orange-950/10 rounded-3xl p-6 flex flex-col md:flex-row gap-4 items-start shadow-sm">
+              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-2xl">
                 <Link2 size={20} />
               </div>
               <div className="space-y-1">
-                <h5 className="font-extrabold text-slate-800 text-sm">Vì sao cần kết nối tài khoản?</h5>
-                <p className="text-slate-500 text-xs font-medium leading-relaxed">
+                <h5 className="font-extrabold text-foreground text-sm">Vì sao cần kết nối tài khoản?</h5>
+                <p className="text-muted-foreground text-xs font-medium leading-relaxed">
                   SAGA Continuous Dashboard là nền tảng theo dõi và chấm điểm liên tục (Continuous Grading). Để hệ thống nhận diện đúng vai trò và số lượng đóng góp thực tế của bạn, việc kết nối thông qua Username GitHub và Jira cá nhân là bắt buộc. Hệ thống mã hóa bảo mật toàn bộ API Tokens của bạn.
                 </p>
               </div>
@@ -404,8 +402,8 @@ export default function SettingsPage() {
 
           {/* Right Preferences Settings Card (Span 1) */}
           <div className="space-y-6">
-            <Card className="border border-slate-200/60 shadow-sm rounded-3xl bg-white p-6 hover:shadow-md transition-all duration-300">
-              <h3 className="font-extrabold text-slate-800 text-base mb-6 flex items-center gap-2">
+            <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
+              <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
                 <SettingsIcon className="text-orange-500" size={18} />
                 Cấu hình cá nhân
               </h3>
@@ -413,17 +411,17 @@ export default function SettingsPage() {
                 
                 {/* Theme Selection */}
                 <div className="space-y-2">
-                  <Label className="text-slate-600 text-xs font-bold flex items-center gap-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold flex items-center gap-1.5">
                     <Sun size={14} />
                     Chế độ hiển thị
                   </Label>
-                  <div className="grid grid-cols-2 gap-2 bg-slate-100/60 p-1 rounded-xl">
+                  <div className="grid grid-cols-2 gap-2 bg-slate-100/60 dark:bg-slate-900 p-1 rounded-xl">
                     <button
                       onClick={() => setTheme("light")}
                       className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                         theme === "light"
-                          ? "bg-white text-orange-600 shadow-sm"
-                          : "text-slate-500 hover:text-slate-800"
+                          ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                       }`}
                     >
                       <Sun size={13} />
@@ -433,8 +431,8 @@ export default function SettingsPage() {
                       onClick={() => setTheme("dark")}
                       className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                         theme === "dark"
-                          ? "bg-white text-orange-600 shadow-sm"
-                          : "text-slate-500 hover:text-slate-800"
+                          ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                       }`}
                     >
                       <Moon size={13} />
@@ -445,14 +443,14 @@ export default function SettingsPage() {
 
                 {/* Timezone Selection */}
                 <div className="space-y-2">
-                  <Label htmlFor="timezone-select" className="text-slate-600 text-xs font-bold flex items-center gap-1.5">
+                  <Label htmlFor="timezone-select" className="text-muted-foreground text-xs font-bold flex items-center gap-1.5">
                     <Globe size={14} />
                     Múi giờ làm việc
                   </Label>
                   <div className="relative">
                     <select
                       id="timezone-select"
-                      className="w-full h-10 bg-white border border-slate-200 rounded-xl px-3 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-sm appearance-none cursor-pointer"
+                      className="w-full h-10 bg-background border border-border rounded-xl px-3 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-sm appearance-none cursor-pointer text-foreground"
                       value={timezone}
                       onChange={(e) => setTimezone(e.target.value)}
                     >
@@ -477,24 +475,24 @@ export default function SettingsPage() {
             </Card>
 
             {/* Quick Status / Profile Summary Card */}
-            <Card className="border border-slate-200/60 shadow-sm rounded-3xl bg-slate-50/50 p-5 space-y-4">
+            <Card className="border border-border shadow-sm rounded-3xl bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-orange-600 text-white font-extrabold flex items-center justify-center shadow-md shadow-orange-500/20">
                   LH
                 </div>
                 <div>
-                  <h6 className="font-extrabold text-slate-800 text-xs">Lê Hoàng Hải</h6>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">MSSV: 102210123</p>
+                  <h6 className="font-extrabold text-foreground text-xs">Lê Hoàng Hải</h6>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase mt-0.5">MSSV: 102210123</p>
                 </div>
               </div>
-              <div className="border-t border-slate-200/60 pt-3 space-y-2 text-[11px]">
+              <div className="border-t border-border pt-3 space-y-2 text-[11px]">
                 <div className="flex justify-between">
-                  <span className="text-slate-400 font-medium">Lớp sinh hoạt:</span>
-                  <span className="text-slate-800 font-bold">21T_DT1</span>
+                  <span className="text-muted-foreground font-medium">Lớp sinh hoạt:</span>
+                  <span className="text-foreground font-bold">21T_DT1</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400 font-medium">Vai trò dự án:</span>
-                  <span className="text-slate-800 font-bold text-orange-600">Student Developer</span>
+                  <span className="text-muted-foreground font-medium">Vai trò dự án:</span>
+                  <span className="text-orange-600 dark:text-orange-400 font-bold">Student Developer</span>
                 </div>
               </div>
             </Card>

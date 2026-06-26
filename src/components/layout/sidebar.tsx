@@ -16,6 +16,7 @@ import {
   Share2,
   Logs,
   Link2,
+  UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -144,6 +145,11 @@ export function Sidebar({ onClose }: SidebarProps) {
             href: "/student/settings",
             icon: <Link2 size={18} />,
             label: "Kết nối tài khoản",
+          },
+          {
+            href: "/student/assessment",
+            icon: <UserCheck size={18} />,
+            label: "Đánh giá thành viên",
           },
         ];
       default:
