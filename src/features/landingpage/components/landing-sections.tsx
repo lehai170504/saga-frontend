@@ -103,7 +103,7 @@ export function FeaturesSection() {
         <FeatureCard
           icon={<Users className="w-7 h-7" />}
           title="Mạng lưới tương tác"
-          desc="Sử dụng đồ thị Node-Edge (Graph) để trực quan hóa cách các thành viên giao tiếp, cảnh báo sớm sinh viên mất tích."
+          desc="Sử dụng đồ thị Node-Edge (Mạng tương tác) để trực quan hóa cách các thành viên giao tiếp, cảnh báo sớm sinh viên mất tích."
           color="emerald"
         />
       </div>

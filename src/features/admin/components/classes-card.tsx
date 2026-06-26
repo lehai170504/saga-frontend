@@ -42,7 +42,7 @@ export function ClassesGrid({ data, onViewDetails, isOverrideMode, onEdit, onDel
           <CardContent className="p-6 flex flex-col h-full relative">
             {cls.isManual && (
               <div className="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
-                MANUAL
+                THỦ CÔNG
               </div>
             )}
             <div className="flex justify-between items-start mb-6">

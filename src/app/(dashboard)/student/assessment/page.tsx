@@ -595,7 +595,7 @@ export default function PeerAssessmentPage() {
                         disabled={isSubmitted}
                         value={assessments[selectedMember.id]?.contributionShare || 20}
                         onChange={(e) => handleShareChange(parseInt(e.target.value))}
-                        className="w-full accent-orange-500 h-1.5 bg-slate-100 dark:bg-slate-900 rounded-lg appearance-none cursor-pointer"
+                        className="w-full accent-orange-500 h-1.5 bg-slate-100 dark:bg-slate-900 rounded-xl appearance-none cursor-pointer"
                       />
                       <span className="text-xs font-bold text-muted-foreground w-12 text-right">Max: 60%</span>
                     </div>

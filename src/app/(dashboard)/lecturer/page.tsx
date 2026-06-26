@@ -134,8 +134,8 @@ export default function ClassSelectionPage() {
                   <div className="h-8 w-24 bg-muted/80 rounded-xl animate-pulse" />
                   <div className="h-8 w-28 bg-muted/80 rounded-full animate-pulse" />
                 </div>
-                <div className="h-8 w-3/4 bg-muted/80 rounded-lg animate-pulse mb-4" />
-                <div className="h-5 w-1/2 bg-muted/80 rounded-lg animate-pulse mb-auto" />
+                <div className="h-8 w-3/4 bg-muted/80 rounded-xl animate-pulse mb-4" />
+                <div className="h-5 w-1/2 bg-muted/80 rounded-xl animate-pulse mb-auto" />
                 
                 <div className="space-y-4 mt-8">
                   <div className="flex justify-between">

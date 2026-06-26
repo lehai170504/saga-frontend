@@ -112,7 +112,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             {
               href: `/lecturer/${classId}/heatmap`,
               icon: <Activity size={18} />,
-              label: "Heatmap hoạt động",
+              label: "Biểu đồ nhiệt hoạt động",
             },
           ];
         }
@@ -220,7 +220,7 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${active
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all font-medium ${active
         ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm"
         : "text-muted-foreground hover:bg-accent hover:text-foreground"
         }`}

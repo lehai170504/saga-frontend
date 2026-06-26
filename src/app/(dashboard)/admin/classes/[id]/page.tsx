@@ -221,16 +221,16 @@ export default function ClassDetailsPage() {
 
       <Tabs defaultValue="settings" className="w-full">
         <TabsList className="grid w-full sm:w-[500px] grid-cols-4 mb-8 bg-muted/50 p-1 rounded-xl">
-          <TabsTrigger value="settings" className="font-bold rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="settings" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Cài đặt
           </TabsTrigger>
-          <TabsTrigger value="students" className="font-bold rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="students" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Sinh viên
           </TabsTrigger>
-          <TabsTrigger value="groups" className="font-bold rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="groups" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Nhóm
           </TabsTrigger>
-          <TabsTrigger value="projects" className="font-bold rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="projects" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Dự án
           </TabsTrigger>
         </TabsList>
@@ -364,7 +364,7 @@ export default function ClassDetailsPage() {
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0 rounded-lg">
+                              <Button variant="ghost" className="h-8 w-8 p-0 rounded-xl">
                                 <span className="sr-only">Mở menu</span>
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
@@ -395,7 +395,7 @@ export default function ClassDetailsPage() {
             <TabsContent value="groups" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-extrabold text-foreground">Danh sách Nhóm (Chỉ xem)</h2>
-                <div className="text-sm font-medium text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-lg">
+                <div className="text-sm font-medium text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-xl">
                   Việc chia nhóm do Giảng viên phụ trách
                 </div>
               </div>
@@ -443,7 +443,7 @@ export default function ClassDetailsPage() {
             <TabsContent value="projects" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-extrabold text-foreground">Danh sách Dự án (Chỉ xem)</h2>
-                <div className="text-sm font-medium text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-lg">
+                <div className="text-sm font-medium text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-xl">
                   Nội dung dự án do Giảng viên quản lý
                 </div>
               </div>

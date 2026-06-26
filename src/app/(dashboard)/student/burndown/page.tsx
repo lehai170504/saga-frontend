@@ -212,7 +212,7 @@ export default function StudentBurndownPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="flex gap-3 items-start p-3 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer"
+                  className="flex gap-3 items-start p-3 hover:bg-muted/50 rounded-xl transition-colors cursor-pointer"
                 >
                   <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-500 shrink-0 mt-0.5" />
                   <div>

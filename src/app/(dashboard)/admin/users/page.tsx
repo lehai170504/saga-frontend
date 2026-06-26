@@ -63,7 +63,7 @@ export default function UsersManagementPage() {
         <div className="flex items-center gap-4">
           <div className="text-sm text-muted-foreground flex flex-col items-end">
             <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-xs bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">
-              <CheckCircle2 className="w-3 h-3" /> Auto-sync enabled
+              <CheckCircle2 className="w-3 h-3" /> Đã bật tự động đồng bộ
             </span>
             <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
           </div>

@@ -216,7 +216,7 @@ export default function SettingsPage() {
                       </div>
                       <div className="text-[10px] text-muted-foreground font-bold flex items-center justify-between px-1">
                         <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                          <CheckCircle2 size={10} /> Syncing Auto
+                          <CheckCircle2 size={10} /> Tự động đồng bộ
                         </span>
                         <span>Đồng bộ: 5 phút trước</span>
                       </div>
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                       </div>
                       <div className="text-[10px] text-muted-foreground font-bold flex items-center justify-between px-1">
                         <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                          <CheckCircle2 size={10} /> Syncing Auto
+                          <CheckCircle2 size={10} /> Tự động đồng bộ
                         </span>
                         <span>Đồng bộ: 10 phút trước</span>
                       </div>
@@ -419,7 +419,7 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-2 gap-2 bg-slate-100/60 dark:bg-slate-900 p-1 rounded-xl">
                     <button
                       onClick={() => setTheme("light")}
-                      className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "light"
+                      className={`py-2 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "light"
                           ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
                           : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                         }`}
@@ -429,7 +429,7 @@ export default function SettingsPage() {
                     </button>
                     <button
                       onClick={() => setTheme("dark")}
-                      className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "dark"
+                      className={`py-2 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "dark"
                           ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
                           : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                         }`}

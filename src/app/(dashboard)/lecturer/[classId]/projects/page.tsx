@@ -37,7 +37,7 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
                   <div className="text-sm font-semibold text-primary mb-1">{project.name}</div>
                   <CardTitle className="text-lg line-clamp-2">{project.project}</CardTitle>
                 </div>
-                <div className="p-2 bg-accent rounded-lg text-muted-foreground">
+                <div className="p-2 bg-accent rounded-xl text-muted-foreground">
                   <FolderKanban size={20} />
                 </div>
               </div>
