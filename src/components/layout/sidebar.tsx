@@ -148,9 +148,15 @@ export function Sidebar({ onClose }: SidebarProps) {
             label: "Kết nối tài khoản",
           },
           {
+
             href: "/student/feedback",
             icon: <Inbox size={18} />,
             label: "Hộp thư nhận xét",
+          },
+          {
+            href: "/student/assessment",
+            icon: <UserCheck size={18} />,
+            label: "Đánh giá thành viên",
           },
         ];
       default:
