@@ -101,7 +101,7 @@ export default function ClassDetailsPage() {
     setIsStudentModalOpen(true);
   };
 
-  const openEditStudent = (student: any) => {
+  const openEditStudent = (student: { id: string; studentId: string; name: string; email: string; status: string }) => {
     setEditingStudentId(student.id);
     setStudentFormData({ studentId: student.studentId, name: student.name, email: student.email, status: student.status });
     setIsStudentModalOpen(true);

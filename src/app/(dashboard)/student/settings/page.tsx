@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,15 +51,16 @@ export default function SettingsPage() {
     const savedJiraEmail = localStorage.getItem("saga-jira-email") || "";
     const savedTimezone = localStorage.getItem("saga-timezone") || "GMT+7";
 
-    setGitConnected(savedGit);
-    setGitAccount(savedGitUser);
-    setGitUsername(savedGitUser);
-    setJiraConnected(savedJira);
-    setJiraAccount(savedJiraEmail);
-    setJiraEmail(savedJiraEmail);
-    setTimezone(savedTimezone);
-
-    const timer = setTimeout(() => setIsLoading(false), 500);
+    const timer = setTimeout(() => {
+      setGitConnected(savedGit);
+      setGitAccount(savedGitUser);
+      setGitUsername(savedGitUser);
+      setJiraConnected(savedJira);
+      setJiraAccount(savedJiraEmail);
+      setJiraEmail(savedJiraEmail);
+      setTimezone(savedTimezone);
+      setIsLoading(false);
+    }, 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -144,10 +145,10 @@ export default function SettingsPage() {
         <div className="grid gap-6 lg:grid-cols-3 items-start">
           {/* Main Account Integrations Column (Span 2) */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* GRID OF INTEGRATION CARDS */}
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-              
+
               {/* CARD 1: GITHUB CONNECTION */}
               <Card className="relative border border-border shadow-sm rounded-3xl bg-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
                 <div className="h-2 w-full bg-slate-900 dark:bg-slate-950" />
@@ -408,7 +409,7 @@ export default function SettingsPage() {
                 Cấu hình cá nhân
               </h3>
               <div className="space-y-6">
-                
+
                 {/* Theme Selection */}
                 <div className="space-y-2">
                   <Label className="text-muted-foreground text-xs font-bold flex items-center gap-1.5">
@@ -418,22 +419,20 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-2 gap-2 bg-slate-100/60 dark:bg-slate-900 p-1 rounded-xl">
                     <button
                       onClick={() => setTheme("light")}
-                      className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                        theme === "light"
+                      className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "light"
                           ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
                           : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                      }`}
+                        }`}
                     >
                       <Sun size={13} />
                       Sáng
                     </button>
                     <button
                       onClick={() => setTheme("dark")}
-                      className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                        theme === "dark"
+                      className={`py-2 px-3 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "dark"
                           ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
                           : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                      }`}
+                        }`}
                     >
                       <Moon size={13} />
                       Tối

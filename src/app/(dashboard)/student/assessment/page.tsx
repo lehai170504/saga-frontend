@@ -1,26 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { toast } from "sonner";
 import {
   Star,
   CheckCircle2,
-  AlertTriangle,
-  UserCheck,
-  Smile,
   MessageSquare,
-  Award,
   ShieldCheck,
   ChevronRight,
   Info,
   Save,
   Send,
-  Lock,
   RefreshCw,
 } from "lucide-react";
 
@@ -114,20 +108,22 @@ export default function PeerAssessmentPage() {
       };
     });
 
+    let newAssessments = initialAssessments;
     if (savedAssessments) {
       try {
         const parsed = JSON.parse(savedAssessments);
         // Merge with initial blank states
-        setAssessments({ ...initialAssessments, ...parsed });
-      } catch (e) {
-        setAssessments(initialAssessments);
+        newAssessments = { ...initialAssessments, ...parsed };
+      } catch {
+        // do nothing
       }
-    } else {
-      setAssessments(initialAssessments);
     }
 
-    setIsSubmitted(savedSubmitted);
-    const timer = setTimeout(() => setIsLoading(false), 500);
+    const timer = setTimeout(() => {
+      setAssessments(newAssessments);
+      setIsSubmitted(savedSubmitted);
+      setIsLoading(false);
+    }, 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -328,7 +324,7 @@ export default function PeerAssessmentPage() {
       ) : (
         /* ACTIVE FORM EVALUATION VIEW */
         <div className="grid gap-6 lg:grid-cols-3 items-start animate-in fade-in duration-300">
-          
+
           {/* LEFT COLUMN: LIST OF MEMBERS */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="border border-border shadow-sm rounded-3xl bg-card p-5 space-y-4">
@@ -351,21 +347,19 @@ export default function PeerAssessmentPage() {
                     <button
                       key={m.id}
                       onClick={() => setSelectedMember(m)}
-                      className={`w-full p-3.5 rounded-2xl border text-left flex justify-between items-center transition-all cursor-pointer ${
-                        isSelected
+                      className={`w-full p-3.5 rounded-2xl border text-left flex justify-between items-center transition-all cursor-pointer ${isSelected
                           ? "bg-orange-50/50 dark:bg-orange-950/20 border-orange-500 shadow-sm text-orange-950 dark:text-orange-300 font-bold"
                           : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-900 text-foreground hover:border-slate-300 dark:hover:border-slate-700 font-semibold"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div
-                          className={`w-8 h-8 rounded-xl font-bold flex items-center justify-center text-xs shrink-0 ${
-                            m.isSelf
+                          className={`w-8 h-8 rounded-xl font-bold flex items-center justify-center text-xs shrink-0 ${m.isSelf
                               ? "bg-orange-600 text-white shadow-md shadow-orange-500/20"
                               : isSelected
-                              ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
-                              : "bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400"
-                          }`}
+                                ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
+                                : "bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400"
+                            }`}
                         >
                           {m.name.charAt(0).toUpperCase()}
                         </div>
@@ -374,7 +368,7 @@ export default function PeerAssessmentPage() {
                           <p className="text-[10px] text-muted-foreground font-bold mt-0.5">{m.role}</p>
                         </div>
                       </div>
-                      
+
                       {/* Completion check icon or right chevron */}
                       {saved ? (
                         <span className="text-emerald-500 dark:text-emerald-400" title="Đã lưu đánh giá">
@@ -390,7 +384,7 @@ export default function PeerAssessmentPage() {
 
               {/* PROGRESS STATUS & SUBMIT BUTTON */}
               <div className="border-t border-border pt-4 space-y-4">
-                
+
                 {/* Total share tracking */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-bold">
@@ -401,9 +395,8 @@ export default function PeerAssessmentPage() {
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-slate-900 h-2 rounded-full overflow-hidden">
                     <div
-                      className={`h-full transition-all duration-500 ${
-                        currentTotalShare === 100 ? "bg-emerald-500 dark:bg-emerald-450" : "bg-orange-500"
-                      }`}
+                      className={`h-full transition-all duration-500 ${currentTotalShare === 100 ? "bg-emerald-500 dark:bg-emerald-450" : "bg-orange-500"
+                        }`}
                       style={{ width: `${Math.min(currentTotalShare, 100)}%` }}
                     />
                   </div>
@@ -441,9 +434,9 @@ export default function PeerAssessmentPage() {
             <Card className="border border-border shadow-sm rounded-3xl bg-card overflow-hidden !pt-0">
               {/* Dynamic Brand bar header */}
               <div className={`h-2 w-full ${selectedMember.isSelf ? "bg-orange-500" : "bg-slate-800 dark:bg-slate-900"}`} />
-              
+
               <div className="p-6 space-y-6">
-                
+
                 {/* MEMBER PROFILE BANNER */}
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center bg-slate-50 dark:bg-slate-950/50 p-5 rounded-2xl border border-border gap-4">
                   <div className="flex items-center gap-3">
@@ -462,7 +455,7 @@ export default function PeerAssessmentPage() {
                       <p className="text-xs text-muted-foreground font-bold mt-0.5">{selectedMember.role} · Nhóm PBL-07</p>
                     </div>
                   </div>
-                  
+
                   {/* Commits & tasks visual stats widget */}
                   <div className="flex gap-4 text-center">
                     <div className="bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-border shadow-sm">
@@ -481,7 +474,7 @@ export default function PeerAssessmentPage() {
                 </div>
 
                 <form onSubmit={handleSaveMemberAssessment} className="space-y-6">
-                  
+
                   {/* METRIC 1: CODE QUALITY */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-baseline">
@@ -502,11 +495,10 @@ export default function PeerAssessmentPage() {
                             key={star}
                             type="button"
                             onClick={() => handleRatingChange("codeQuality", star)}
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
-                              active
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
                                 ? "bg-orange-50 dark:bg-orange-950/40 border-orange-400 dark:border-orange-900/50 text-orange-500 dark:text-orange-400 scale-[1.05]"
                                 : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-slate-300 dark:hover:border-slate-600"
-                            }`}
+                              }`}
                           >
                             <Star className="h-5 w-5 fill-current" />
                           </button>
@@ -535,11 +527,10 @@ export default function PeerAssessmentPage() {
                             key={star}
                             type="button"
                             onClick={() => handleRatingChange("deadlines", star)}
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
-                              active
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
                                 ? "bg-orange-50 dark:bg-orange-950/40 border-orange-400 dark:border-orange-900/50 text-orange-500 dark:text-orange-400 scale-[1.05]"
                                 : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-slate-300 dark:hover:border-slate-600"
-                            }`}
+                              }`}
                           >
                             <Star className="h-5 w-5 fill-current" />
                           </button>
@@ -568,11 +559,10 @@ export default function PeerAssessmentPage() {
                             key={star}
                             type="button"
                             onClick={() => handleRatingChange("teamwork", star)}
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
-                              active
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
                                 ? "bg-orange-50 dark:bg-orange-950/40 border-orange-400 dark:border-orange-900/50 text-orange-500 dark:text-orange-400 scale-[1.05]"
                                 : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-slate-300 dark:hover:border-slate-600"
-                            }`}
+                              }`}
                           >
                             <Star className="h-5 w-5 fill-current" />
                           </button>
@@ -595,7 +585,7 @@ export default function PeerAssessmentPage() {
                       Phần trăm khối lượng công sức và đóng góp tổng thể của thành viên này cho thành quả Sprint 4.
                       (Mặc định là 20% mỗi người cho nhóm 5 người. Đóng góp nhiều hơn có thể tăng %, ít hơn thì giảm %).
                     </p>
-                    
+
                     <div className="flex items-center gap-4">
                       <input
                         type="range"
