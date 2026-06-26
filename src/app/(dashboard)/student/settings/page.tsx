@@ -131,7 +131,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16">
       <PageHeader
         title="Kết nối tài khoản & Cài đặt"
         description="Quản lý việc liên kết tài khoản GitHub & Jira cá nhân của sinh viên để đồng bộ hóa chỉ số đóng góp mã nguồn và tiến độ công việc."

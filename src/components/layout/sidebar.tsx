@@ -15,6 +15,7 @@ import {
   GraduationCap,
   Share2,
   Logs,
+  Link2,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -138,6 +139,11 @@ export function Sidebar({ onClose }: SidebarProps) {
             href: "/student/contribution",
             icon: <Users size={18} />,
             label: "Đóng góp cá nhân",
+          },
+          {
+            href: "/student/settings",
+            icon: <Link2 size={18} />,
+            label: "Kết nối tài khoản",
           },
         ];
       default:
