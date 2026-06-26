@@ -18,6 +18,7 @@ import {
   Link2,
   Inbox,
   UserCheck,
+  CalendarX,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -148,7 +149,6 @@ export function Sidebar({ onClose }: SidebarProps) {
             label: "Kết nối tài khoản",
           },
           {
-
             href: "/student/feedback",
             icon: <Inbox size={18} />,
             label: "Hộp thư nhận xét",
@@ -157,6 +157,11 @@ export function Sidebar({ onClose }: SidebarProps) {
             href: "/student/assessment",
             icon: <UserCheck size={18} />,
             label: "Đánh giá thành viên",
+          },
+          {
+            href: "/student/absence",
+            icon: <CalendarX size={18} />,
+            label: "Báo cáo vắng & trễ",
           },
         ];
       default:
