@@ -51,9 +51,9 @@ export default function SystemLogsPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "success": return <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-bold">SUCCESS</span>;
-      case "warning": return <span className="px-2 py-1 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold">WARNING</span>;
-      case "error": return <span className="px-2 py-1 rounded bg-destructive/10 text-destructive dark:bg-destructive/20 text-xs font-bold">ERROR</span>;
+      case "success": return <span className="px-2 py-1 rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-bold">THÀNH CÔNG</span>;
+      case "warning": return <span className="px-2 py-1 rounded-md bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold">CẢNH BÁO</span>;
+      case "error": return <span className="px-2 py-1 rounded-md bg-destructive/10 text-destructive dark:bg-destructive/20 text-xs font-bold">LỖI</span>;
       default: return null;
     }
   };
@@ -92,7 +92,7 @@ export default function SystemLogsPage() {
         />
         <MetricCard
           title="Tình trạng Server"
-          value={isLoading ? "-" : "Healthy"}
+          value={isLoading ? "-" : "Bình thường"}
           icon={<ShieldCheck className="w-4 h-4 text-emerald-500" />}
         />
         <MetricCard
@@ -131,9 +131,9 @@ export default function SystemLogsPage() {
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border">
                       <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                      <SelectItem value="success">Success</SelectItem>
-                      <SelectItem value="warning">Warning</SelectItem>
-                      <SelectItem value="error">Error</SelectItem>
+                      <SelectItem value="success">Thành công</SelectItem>
+                      <SelectItem value="warning">Cảnh báo</SelectItem>
+                      <SelectItem value="error">Lỗi</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

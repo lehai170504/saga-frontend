@@ -222,7 +222,7 @@ export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="rounded-lg h-8 px-2"
+            className="rounded-xl h-8 px-2"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -231,7 +231,7 @@ export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="rounded-lg h-8 px-2"
+            className="rounded-xl h-8 px-2"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

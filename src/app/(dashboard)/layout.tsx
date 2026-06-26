@@ -7,7 +7,6 @@ import { MainContent } from "@/components/layout/main-content";
 import { MobileOverlay } from "@/components/layout/mobile-overlay";
 import { usePathname } from "next/navigation";
 import {
-  MobileMenuButton,
   MobileCloseButton,
 } from "@/components/layout/mobile-buttons";
 import { RouteGuard } from "@/components/shared/RouteGuard";

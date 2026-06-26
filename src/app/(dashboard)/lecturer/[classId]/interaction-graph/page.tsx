@@ -84,19 +84,19 @@ export default function InteractionGraphPage({ params }: { params: Promise<{ cla
               <div className="space-y-3">
                 <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Chú giải mạng lưới</h3>
                 <div className="space-y-2 text-sm font-medium">
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
                     <div className="w-4 h-1 bg-indigo-500 rounded-full" />
                     <span>Commits & Push</span>
                   </div>
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
                     <div className="w-4 h-1 border-b-2 border-dashed border-teal-500" />
                     <span>PR Reviews</span>
                   </div>
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
                     <div className="w-4 h-1 border-b-2 border-dotted border-amber-500" />
                     <span>Comments</span>
                   </div>
-                  <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
                     <div className="w-4 h-1 bg-rose-500 rounded-full" />
                     <span>Issue Assignment</span>
                   </div>
@@ -187,14 +187,14 @@ export default function InteractionGraphPage({ params }: { params: Promise<{ cla
                   <div className="space-y-3 pt-4 border-t border-border/50">
                     <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Cộng tác nhiều nhất</h3>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-background/50 border border-border/50">
+                      <div className="flex items-center justify-between p-2 rounded-xl bg-background/50 border border-border/50">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-500 flex items-center justify-center text-xs font-bold">M</div>
                           <span className="text-sm font-medium">Minh Nguyễn</span>
                         </div>
                         <span className="text-xs font-bold text-muted-foreground">15 lần</span>
                       </div>
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-background/50 border border-border/50">
+                      <div className="flex items-center justify-between p-2 rounded-xl bg-background/50 border border-border/50">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-500 flex items-center justify-center text-xs font-bold">H</div>
                           <span className="text-sm font-medium">Huy Hoàng</span>

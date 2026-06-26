@@ -294,7 +294,7 @@ export default function ContributionPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="flex gap-3 items-start p-3 hover:bg-muted/50 rounded-lg transition-colors cursor-pointer"
+                  className="flex gap-3 items-start p-3 hover:bg-muted/50 rounded-xl transition-colors cursor-pointer"
                 >
                   <GitCommit className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                   <div>

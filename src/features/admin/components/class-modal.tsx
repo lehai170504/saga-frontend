@@ -171,7 +171,7 @@ export function ClassModal({
                       {filteredLecturers.map((lecturer, idx) => (
                         <div
                           key={idx}
-                          className="px-3 py-2 text-sm rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                          className="px-3 py-2 text-sm rounded-xl hover:bg-muted cursor-pointer transition-colors"
                           onClick={() => handleLecturerSelect(lecturer)}
                         >
                           {lecturer}

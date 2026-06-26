@@ -129,7 +129,7 @@ export default function AcademicDataPage() {
   const handleImportCSV = () => {
     toast.loading("Đang import dữ liệu từ file CSV...", { id: "import-csv" });
     setTimeout(() => {
-      toast.success("Import thành công 40 môn học (Manual Override)!", { id: "import-csv" });
+      toast.success("Import thành công 40 môn học (Thủ công)!", { id: "import-csv" });
     }, 2000);
   };
 
@@ -177,7 +177,7 @@ export default function AcademicDataPage() {
           <div className="flex items-center justify-end gap-4 w-full">
             <div className="text-sm text-muted-foreground flex flex-col items-end">
               <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-xs bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">
-                <CheckCircle2 className="w-3 h-3" /> Auto-sync enabled
+                <CheckCircle2 className="w-3 h-3" /> Đã bật tự động đồng bộ
               </span>
               <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
             </div>
@@ -222,10 +222,10 @@ export default function AcademicDataPage() {
 
       <Tabs defaultValue="semesters" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:w-[400px] h-12 rounded-xl bg-muted/50 p-1 mb-6">
-          <TabsTrigger value="semesters" className="rounded-lg font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-full">
+          <TabsTrigger value="semesters" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-full">
             <CalendarDays className="w-4 h-4 mr-2" /> Học kỳ
           </TabsTrigger>
-          <TabsTrigger value="subjects" className="rounded-lg font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-full">
+          <TabsTrigger value="subjects" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-full">
             <BookOpen className="w-4 h-4 mr-2" /> Môn học
           </TabsTrigger>
         </TabsList>
@@ -304,7 +304,7 @@ export default function AcademicDataPage() {
         <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
-              {editingSemesterId ? "Sửa học kỳ (Manual)" : "Thêm học kỳ (Manual)"}
+              {editingSemesterId ? "Sửa học kỳ (Thủ công)" : "Thêm học kỳ (Thủ công)"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
               Chỉ nên sử dụng khi hệ thống đồng bộ FAP gặp sự cố.
@@ -353,7 +353,7 @@ export default function AcademicDataPage() {
         <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
-              {editingSubjectId ? "Sửa môn học (Manual)" : "Thêm môn học (Manual)"}
+              {editingSubjectId ? "Sửa môn học (Thủ công)" : "Thêm môn học (Thủ công)"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
               Chỉ nên sử dụng khi hệ thống đồng bộ FAP gặp sự cố.
