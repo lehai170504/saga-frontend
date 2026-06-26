@@ -65,6 +65,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               height={72}
               priority
               className="h-7 w-auto object-contain transition-transform hover:scale-[1.02]"
+              style={{ width: "auto" }}
             />
           </Link>
           <div className="h-6 w-px bg-border hidden lg:block mx-2" />

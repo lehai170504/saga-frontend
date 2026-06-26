@@ -15,6 +15,7 @@ export function FloatingHeader() {
             width={120}
             height={32}
             className="h-8 w-auto object-contain drop-shadow-sm"
+            style={{ width: "auto" }}
             priority
           />
         </Link>

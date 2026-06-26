@@ -60,10 +60,12 @@ const avatarColors = [
 
 export default function ContributionPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const [selectedUser, setSelectedUser] =
     useState<TeamMemberContribution | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
@@ -84,23 +86,24 @@ export default function ContributionPage() {
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
-        title="Individual Contribution"
-        description="Multi-dimensional skill profile and team ranking — Sprint 4"
+        title="Đóng góp cá nhân"
+        description="Đánh giá chi tiết năng lực, hiệu suất và mức độ đóng góp của từng thành viên trong nhóm PBL-07."
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        {/* Radar Chart Card */}
-        <Card className="lg:col-span-1 border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col pt-2">
+      {/* Main Grid */}
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Left Column: Skill Radar */}
+        <Card className="md:col-span-1 border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col justify-between pt-2">
           <SectionHeader
             title="Skill radar"
             description="Minh Anh vs Group average"
           />
           <CardContent className="px-6 pb-6 pt-4 flex-1 flex items-center justify-center">
             <div className="w-full h-80 flex items-center justify-center">
-              {isLoading ? (
+              {!mounted || isLoading ? (
                 <Skeleton className="w-[280px] h-[280px] rounded-full opacity-40 bg-muted" />
               ) : (
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={320} minWidth={0} minHeight={0}>
                   <RadarChart
                     cx="50%"
                     cy="50%"

@@ -37,6 +37,7 @@ export default function LandingPage() {
               width={160}
               height={48}
               className="w-auto h-12 object-contain"
+              style={{ width: "auto" }}
             />
           </div>
 

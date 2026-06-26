@@ -40,6 +40,7 @@ export function AuthModal() {
               width={300}
               height={48}
               className="w-auto h-10 sm:h-12 object-contain drop-shadow-sm mb-2"
+              style={{ width: "auto" }}
               priority
             />
             <DialogTitle className="text-2xl font-extrabold text-center bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
