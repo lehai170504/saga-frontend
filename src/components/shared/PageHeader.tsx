@@ -1,23 +1,35 @@
 import React from "react";
+import { Sparkles } from "lucide-react";
 
 interface PageHeaderProps {
   title: string;
   description: string;
   children?: React.ReactNode;
+  workspace?: string;
 }
 
-export function PageHeader({ title, description, children }: PageHeaderProps) {
+export function PageHeader({ title, description, children, workspace }: PageHeaderProps) {
   return (
-    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-2 mb-8">
+      <div className="flex flex-col gap-4">
+        {workspace && (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
+            <Sparkles size={16} className="animate-pulse" />
+            <span>{workspace}</span>
+          </div>
+        )}
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60">
           {title}
         </h1>
-        <p className="text-slate-500 mt-1 text-sm font-medium">{description}</p>
+        <p className="text-muted-foreground font-medium max-w-2xl text-base">
+          {description}
+        </p>
       </div>
 
       {children && (
-        <div className="flex flex-wrap items-center gap-3">{children}</div>
+        <div className="flex gap-2 w-full md:w-auto">
+          {children}
+        </div>
       )}
     </div>
   );

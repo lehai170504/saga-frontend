@@ -8,70 +8,185 @@ import {
   Activity,
   Calendar,
   Users,
-  Settings,
+  ShieldCheck,
+  ArrowLeft,
+  BookOpen,
+  FileText,
+  GraduationCap,
+  Share2,
+  Logs,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface SidebarProps {
   onClose?: () => void;
 }
 
+const roleDisplay = {
+  admin: "Quản trị viên",
+  lecturer: "Giảng viên",
+  student_leader: "Trưởng nhóm",
+  student: "Thành viên",
+};
+
 export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  const getNavItems = () => {
+    if (!user) return [];
+
+    const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
+    const classId = classIdMatch && classIdMatch[1] !== 'interaction-graph' && classIdMatch[1] !== 'heatmap' ? classIdMatch[1] : null;
+
+    switch (user.role) {
+      case "admin":
+        return [
+          {
+            href: "/admin",
+            icon: <BarChart3 size={18} />,
+            label: "Tổng quan hệ thống",
+          },
+          {
+            href: "/admin/users",
+            icon: <Users size={18} />,
+            label: "Quản lý Người dùng",
+          },
+          {
+            href: "/admin/academic-data",
+            icon: <Calendar size={18} />,
+            label: "Quản lý Dữ liệu Học vụ",
+          },
+          {
+            href: "/admin/classes",
+            icon: <Network size={18} />,
+            label: "Quản lý Lớp PBL",
+          },
+          {
+            href: "/admin/system-logs",
+            icon: <Logs size={18} />,
+            label: "Nhật ký hệ thống",
+          },
+        ];
+      case "lecturer":
+        if (classId) {
+          return [
+            {
+              href: "/lecturer",
+              icon: <ArrowLeft size={18} />,
+              label: "Chọn lớp khác",
+            },
+            {
+              href: `/lecturer/${classId}`,
+              icon: <BarChart3 size={18} />,
+              label: "Tổng quan lớp",
+            },
+            {
+              href: `/lecturer/${classId}/students`,
+              icon: <Users size={18} />,
+              label: "Quản lý sinh viên",
+            },
+            {
+              href: `/lecturer/${classId}/assignments`,
+              icon: <FileText size={18} />,
+              label: "Quản lý bài tập",
+            },
+            {
+              href: `/lecturer/${classId}/projects`,
+              icon: <Network size={18} />,
+              label: "Quản lý nhóm",
+            },
+            {
+              href: `/lecturer/${classId}/grades`,
+              icon: <GraduationCap size={18} />,
+              label: "Quản lý điểm số",
+            },
+            {
+              href: `/lecturer/${classId}/interaction-graph`,
+              icon: <Share2 size={18} />,
+              label: "Mạng tương tác",
+            },
+            {
+              href: `/lecturer/${classId}/heatmap`,
+              icon: <Activity size={18} />,
+              label: "Heatmap hoạt động",
+            },
+          ];
+        }
+        return [
+          {
+            href: "/lecturer",
+            icon: <BookOpen size={18} />,
+            label: "Danh sách lớp học",
+          },
+        ];
+      case "student_leader":
+      case "student":
+        return [
+          {
+            href: "/student",
+            icon: <BarChart3 size={18} />,
+            label: "Tổng quan nhóm",
+          },
+          {
+            href: "/student/burndown",
+            icon: <Calendar size={18} />,
+            label: "Tiến độ Task",
+          },
+          {
+            href: "/student/contribution",
+            icon: <Users size={18} />,
+            label: "Đóng góp cá nhân",
+          },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const navItems = getNavItems();
 
   return (
-    <aside className="flex flex-col h-full bg-white text-slate-700">
-      <div className="p-6 border-b border-slate-100">
-        <h1 className="text-lg font-bold text-slate-800">Lê Hoàng Hải</h1>
-        <p className="text-sm text-slate-500">Sinh viên</p>
+    <aside className="flex flex-col h-full bg-card text-card-foreground border-r border-border">
+      {/* Mobile Profile Display (Optional, can hide on desktop if header handles it) */}
+      <div className="p-5 border-b border-border lg:hidden">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10 shrink-0">
+            <AvatarFallback className="bg-orange-100 text-orange-700 font-bold dark:bg-orange-900/40 dark:text-orange-400">
+              {user?.avatarInitials ?? "?"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <p className="font-bold text-sm text-foreground truncate">
+              {user?.name ?? "Khách"}
+            </p>
+            <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
+              {user?.role === "admin" && (
+                <ShieldCheck size={12} className="text-emerald-500" />
+              )}
+              {user?.role ? roleDisplay[user.role] : "Chưa xác định"}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        <NavItem
-          href="/dashboard"
-          icon={<BarChart3 size={20} />}
-          label="Tổng quan lớp"
-          active={pathname === "/dashboard" || pathname === "/"}
-          onClick={onClose}
-        />
-        <NavItem
-          href="/interaction-graph"
-          icon={<Network size={20} />}
-          label="Mạng tương tác"
-          active={pathname === "/interaction-graph"}
-          onClick={onClose}
-        />
-        <NavItem
-          href="/heatmap"
-          icon={<Activity size={20} />}
-          label="Heatmap hoạt động"
-          active={pathname === "/heatmap"}
-          onClick={onClose}
-        />
-        <NavItem
-          href="/burndown"
-          icon={<Calendar size={20} />}
-          label="Tiến độ Task"
-          active={pathname === "/burndown"}
-          onClick={onClose}
-        />
-        <NavItem
-          href="/contribution"
-          icon={<Users size={20} />}
-          label="Đóng góp cá nhân"
-          active={pathname === "/contribution"}
-          onClick={onClose}
-        />
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <div className="mb-4 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Menu Quản lý
+        </div>
+        {navItems.map((item) => (
+          <NavItem
+            key={item.href}
+            href={item.href}
+            icon={item.icon}
+            label={item.label}
+            active={pathname === item.href}
+            onClick={onClose}
+          />
+        ))}
       </nav>
-
-      <div className="p-4 border-t border-slate-100">
-        <NavItem
-          href="/settings"
-          icon={<Settings size={20} />}
-          label="Cài đặt"
-          active={pathname === "/settings"}
-          onClick={onClose}
-        />
-      </div>
     </aside>
   );
 }
@@ -93,11 +208,10 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${
-        active
-          ? "bg-orange-50 text-orange-600"
-          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-      }`}
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${active
+        ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm"
+        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+        }`}
     >
       {icon}
       <span className="text-[15px]">{label}</span>
