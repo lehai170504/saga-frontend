@@ -4,7 +4,7 @@ import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Save, Info, Search, FileSpreadsheet, CheckCircle2, ChevronDown } from "lucide-react";
+import { Save, Info, Search, FileSpreadsheet, CheckCircle2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -24,7 +24,6 @@ const MOCK_GRADES = [
 ];
 
 export default function GradesManagementPage() {
-  const { classId } = useLecturerClass();
   const [grades, setGrades] = useState(MOCK_GRADES);
   const [isSaving, setIsSaving] = useState(false);
 

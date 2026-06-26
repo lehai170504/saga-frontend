@@ -2,7 +2,7 @@
 
 import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Calendar as CalendarIcon, Users, Filter, Sparkles } from "lucide-react";
 import {
   Select,
@@ -46,8 +46,8 @@ const getColorClass = (count: number) => {
   return "bg-primary border-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]";
 };
 
-export default function HeatmapActivityPage() {
-  const { classId } = useLecturerClass();
+export default function HeatmapActivityPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   const [filterType, setFilterType] = useState("all");
   const [filterGroup, setFilterGroup] = useState("all");
 

@@ -2,7 +2,7 @@
 
 import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Label } from "recharts";
 import { Calendar, Users, TrendingDown, Target, CheckCircle2, AlertCircle } from "lucide-react";
 import {
@@ -48,12 +48,12 @@ const generateBurndownData = () => {
 
 const burndownData = generateBurndownData();
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { color: string; name: string; value: number }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-card/90 backdrop-blur-md border border-border/50 p-4 rounded-xl shadow-xl">
         <p className="font-bold mb-2 text-foreground">{label}</p>
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry: { color: string; name: string; value: number }, index: number) => (
           <div key={index} className="flex items-center justify-between gap-4 text-sm mb-1">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
@@ -69,7 +69,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function BurndownChartPage() {
-  const { classId } = useLecturerClass();
   const [selectedGroup, setSelectedGroup] = useState("Team Alpha");
   const [selectedSprint, setSelectedSprint] = useState("Sprint 2");
 

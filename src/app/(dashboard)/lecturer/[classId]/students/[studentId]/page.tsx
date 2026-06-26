@@ -3,7 +3,7 @@
 import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, User, GitCommit, GitPullRequest, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, ArrowUpRight } from "lucide-react";
+import { User, GitCommit, GitPullRequest, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -37,12 +37,8 @@ const TIMELINE = [
   { type: "commit", text: "feat: add user profile endpoints", time: "5 ngày trước", link: "#" },
 ];
 
-import { useParams } from "next/navigation";
-
-export default function StudentProfilePage() {
-  const { classId } = useLecturerClass();
-  const routeParams = useParams();
-  const studentId = (routeParams?.studentId as string) || "undefined";
+export default function StudentProfilePage({ params }: { params: Promise<{ classId: string, studentId: string }> }) {
+  const { classId, studentId } = React.use(params);
   const [note, setNote] = useState("");
   const [savedNotes, setSavedNotes] = useState([
     { id: 1, text: "Thuyết trình giữa kỳ tốt, nắm rõ kiến trúc hệ thống.", time: "10/05/2026", author: "Dr. Trần" }

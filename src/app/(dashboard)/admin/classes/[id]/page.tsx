@@ -4,9 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft, Search, Plus, Upload, Download, MoreHorizontal,
-  Edit, Trash2, Users, UsersRound, FolderKanban, Settings, Mail,
-  GraduationCap, Sparkles
+  ArrowLeft, Search, Plus, Download, MoreHorizontal,
+  Edit, Trash2, Users, UsersRound, FolderKanban, Mail,
+  GraduationCap, Sparkles, RefreshCw, Save
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -39,6 +39,8 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Mock Data
 const mockClassDetails = {
@@ -85,18 +87,13 @@ export default function ClassDetailsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [students, setStudents] = useState(mockStudents);
-  const [groups, setGroups] = useState(mockGroups);
 
   // Modals state
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
   const [studentFormData, setStudentFormData] = useState({ studentId: "", name: "", email: "", status: "Bình thường" });
 
-  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
-  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
-  const [groupFormData, setGroupFormData] = useState({ name: "", topic: "" });
-
-  const [isManageMembersOpen, setIsManageMembersOpen] = useState(false);
+  const [isSyncingFAP, setIsSyncingFAP] = useState(false);
 
   const openAddStudent = () => {
     setEditingStudentId(null);
@@ -104,7 +101,6 @@ export default function ClassDetailsPage() {
     setIsStudentModalOpen(true);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const openEditStudent = (student: any) => {
     setEditingStudentId(student.id);
     setStudentFormData({ studentId: student.studentId, name: student.name, email: student.email, status: student.status });
@@ -131,39 +127,6 @@ export default function ClassDetailsPage() {
     toast.success("Đã xóa sinh viên khỏi lớp!");
   };
 
-  const openAddGroup = () => {
-    setEditingGroupId(null);
-    setGroupFormData({ name: "", topic: "" });
-    setIsGroupModalOpen(true);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openEditGroup = (group: any) => {
-    setEditingGroupId(group.id);
-    setGroupFormData({ name: group.name, topic: group.topic });
-    setIsGroupModalOpen(true);
-  };
-
-  const handleSaveGroup = () => {
-    if (!groupFormData.name) {
-      toast.error("Vui lòng nhập tên nhóm!");
-      return;
-    }
-    if (editingGroupId) {
-      setGroups(groups.map(g => g.id === editingGroupId ? { ...g, ...groupFormData } : g));
-      toast.success("Cập nhật nhóm thành công!");
-    } else {
-      setGroups([...groups, { id: Date.now().toString(), members: 0, leader: "Chưa phân công", ...groupFormData }]);
-      toast.success("Tạo nhóm thành công!");
-    }
-    setIsGroupModalOpen(false);
-  };
-
-  const handleDeleteGroup = (id: string) => {
-    setGroups(groups.filter(g => g.id !== id));
-    toast.success("Đã xóa nhóm!");
-  };
-
   const handleSimulateAction = (message: string) => {
     toast.promise(
       new Promise(resolve => setTimeout(resolve, 1500)),
@@ -173,6 +136,15 @@ export default function ClassDetailsPage() {
         error: 'Có lỗi xảy ra',
       }
     );
+  };
+
+  const handleSyncFAP = () => {
+    setIsSyncingFAP(true);
+    toast.loading("Đang kết nối hệ thống FAP...", { id: "sync-fap" });
+    setTimeout(() => {
+      setIsSyncingFAP(false);
+      toast.success("Đã đồng bộ danh sách lớp mới nhất từ FAP!", { id: "sync-fap" });
+    }, 2000);
   };
 
   useEffect(() => {
@@ -185,56 +157,52 @@ export default function ClassDetailsPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       {/* Header section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative z-10">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-full shadow-sm bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/80 transition-all"
-              onClick={() => router.push('/admin/classes')}
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
-              <Sparkles size={16} className="animate-pulse" />
-              <span>Workspace Quản trị</span>
-            </div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative z-10">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full shadow-sm bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/80 transition-all"
+            onClick={() => router.push('/admin/classes')}
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
+            <Sparkles size={16} className="animate-pulse" />
+            <span>Workspace Quản trị</span>
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          {isLoading ? (
-            <div className="space-y-2">
-              <Skeleton className="h-10 w-48 rounded-xl" />
-              <Skeleton className="h-5 w-64 rounded-md" />
-            </div>
-          ) : (
-            <div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
-                Lớp {mockClassDetails.className}
-                <span className="text-xs px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
-                  {mockClassDetails.status}
-                </span>
-              </h1>
-              <p className="text-muted-foreground mt-2 flex items-center gap-2 font-medium">
-                <GraduationCap className="w-4 h-4" />
-                {mockClassDetails.subject} • Giảng viên: {mockClassDetails.lecturer} • {mockClassDetails.semester}
-              </p>
-            </div>
-          )}
-
-          <div className="flex gap-2">
-            <Button variant="outline" className="rounded-xl bg-background shadow-sm border-border" onClick={() => handleSimulateAction("Đã xuất dữ liệu thành công!")}>
-              <Download className="w-4 h-4 mr-2" />
-              Xuất dữ liệu
-            </Button>
-            <Button className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm" onClick={() => handleSimulateAction("Đã mở cài đặt lớp!")}>
-              <Settings className="w-4 h-4 mr-2" />
-              Cài đặt lớp
-            </Button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        {isLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-48 rounded-xl" />
+            <Skeleton className="h-5 w-64 rounded-md" />
           </div>
+        ) : (
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
+              Lớp {mockClassDetails.className}
+              <span className="text-xs px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
+                {mockClassDetails.status}
+              </span>
+            </h1>
+            <p className="text-muted-foreground mt-2 flex items-center gap-2 font-medium">
+              <GraduationCap className="w-4 h-4" />
+              {mockClassDetails.subject} • Giảng viên: {mockClassDetails.lecturer} • {mockClassDetails.semester}
+            </p>
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <Button variant="outline" className="rounded-xl bg-background shadow-sm border-border" onClick={() => handleSimulateAction("Đã xuất dữ liệu lớp thành công!")}>
+            <Download className="w-4 h-4 mr-2" />
+            Xuất dữ liệu
+          </Button>
         </div>
-      
+      </div>
+
       {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
@@ -251,8 +219,11 @@ export default function ClassDetailsPage() {
         ))}
       </div>
 
-      <Tabs defaultValue="students" className="w-full">
-        <TabsList className="grid w-full sm:w-[500px] grid-cols-3 mb-8 bg-muted/50 p-1 rounded-xl">
+      <Tabs defaultValue="settings" className="w-full">
+        <TabsList className="grid w-full sm:w-[500px] grid-cols-4 mb-8 bg-muted/50 p-1 rounded-xl">
+          <TabsTrigger value="settings" className="font-bold rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
+            Cài đặt
+          </TabsTrigger>
           <TabsTrigger value="students" className="font-bold rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Sinh viên
           </TabsTrigger>
@@ -272,6 +243,62 @@ export default function ClassDetailsPage() {
           </div>
         ) : (
           <>
+            <TabsContent value="settings" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
+              <Card className="rounded-2xl border-border bg-card shadow-sm">
+                <CardHeader>
+                  <CardTitle>Cài đặt chung của Lớp</CardTitle>
+                  <CardDescription>Quản lý các thông tin cốt lõi của lớp học (Chỉ dành cho Admin).</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label>Mã Lớp</Label>
+                      <Input value={mockClassDetails.className} disabled className="bg-muted/50 rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Môn học</Label>
+                      <Input value={mockClassDetails.subject} disabled className="bg-muted/50 rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Học kỳ</Label>
+                      <Input value={mockClassDetails.semester} disabled className="bg-muted/50 rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Phân công Giảng viên</Label>
+                      <Select defaultValue="gv1">
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue placeholder="Chọn giảng viên" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="gv1">Dr. Nguyen Van A</SelectItem>
+                          <SelectItem value="gv2">Dr. Tran Thi B</SelectItem>
+                          <SelectItem value="gv3">Prof. Le Minh C</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Trạng thái lớp</Label>
+                      <Select defaultValue="active">
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue placeholder="Chọn trạng thái" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Đang diễn ra</SelectItem>
+                          <SelectItem value="ended">Đã kết thúc</SelectItem>
+                          <SelectItem value="cancelled">Đã hủy</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex justify-end pt-4 border-t border-border/50">
+                    <Button className="rounded-xl font-bold bg-primary" onClick={() => toast.success("Đã lưu cài đặt lớp học!")}>
+                      <Save className="w-4 h-4 mr-2" /> Lưu thay đổi
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="students" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
               <div className="flex flex-col sm:flex-row justify-between gap-4">
                 <div className="relative w-full sm:w-80">
@@ -284,13 +311,18 @@ export default function ClassDetailsPage() {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="rounded-xl bg-background shadow-sm border-border" onClick={() => handleSimulateAction("Đã import danh sách sinh viên!")}>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Import DSSV
+                  <Button
+                    variant="outline"
+                    className="rounded-xl bg-background shadow-sm border-border text-primary font-semibold hover:bg-primary/5 hover:text-primary"
+                    onClick={handleSyncFAP}
+                    disabled={isSyncingFAP}
+                  >
+                    <RefreshCw className={`w-4 h-4 mr-2 ${isSyncingFAP ? 'animate-spin' : ''}`} />
+                    Đồng bộ từ FAP
                   </Button>
                   <Button className="rounded-xl font-bold shadow-sm" onClick={openAddStudent}>
                     <Plus className="w-4 h-4 mr-2" />
-                    Thêm sinh viên
+                    Thêm thủ công
                   </Button>
                 </div>
               </div>
@@ -344,7 +376,7 @@ export default function ClassDetailsPage() {
                                 <Mail className="mr-2 h-4 w-4" /> Gửi email
                               </DropdownMenuItem>
                               <DropdownMenuItem className="cursor-pointer rounded-md flex items-center hover:bg-muted focus:bg-muted" onClick={() => openEditStudent(student)}>
-                                <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+                                <Edit className="mr-2 h-4 w-4" /> Sửa thông tin
                               </DropdownMenuItem>
                               <DropdownMenuSeparator className="bg-border" />
                               <DropdownMenuItem className="cursor-pointer rounded-md text-destructive focus:bg-destructive/10 focus:text-destructive flex items-center" onClick={() => handleDeleteStudent(student.id)}>
@@ -362,38 +394,20 @@ export default function ClassDetailsPage() {
 
             <TabsContent value="groups" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-extrabold text-foreground">Danh sách Nhóm</h2>
-                <div className="flex gap-2">
-                  <Button variant="outline" className="rounded-xl shadow-sm bg-background border-border" onClick={() => handleSimulateAction("Đã tạo tự động các nhóm!")}>
-                    Tạo tự động
-                  </Button>
-                  <Button className="rounded-xl font-bold shadow-sm" onClick={openAddGroup}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Tạo nhóm mới
-                  </Button>
+                <h2 className="text-xl font-extrabold text-foreground">Danh sách Nhóm (Chỉ xem)</h2>
+                <div className="text-sm font-medium text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-lg">
+                  Việc chia nhóm do Giảng viên phụ trách
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {groups.map((group) => (
-                  <div key={group.id} className="p-6 rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all group flex flex-col h-full">
+                {mockGroups.map((group) => (
+                  <div key={group.id} className="p-6 rounded-2xl border border-border bg-card shadow-sm flex flex-col h-full">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="font-extrabold text-xl text-foreground">{group.name}</h3>
                         <p className="text-sm text-muted-foreground mt-1 font-medium">{group.members} thành viên</p>
                       </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-xl bg-card border-border">
-                          <DropdownMenuItem className="cursor-pointer rounded-md hover:bg-muted focus:bg-muted" onClick={() => setIsManageMembersOpen(true)}><Users className="mr-2 h-4 w-4" /> Quản lý thành viên</DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer rounded-md hover:bg-muted focus:bg-muted" onClick={() => openEditGroup(group)}><Edit className="mr-2 h-4 w-4" /> Sửa nhóm</DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer rounded-md text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => handleDeleteGroup(group.id)}><Trash2 className="mr-2 h-4 w-4" /> Xóa nhóm</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
                     </div>
 
                     <div className="flex-1">
@@ -428,15 +442,15 @@ export default function ClassDetailsPage() {
 
             <TabsContent value="projects" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-extrabold text-foreground">Danh sách Dự án</h2>
+                <h2 className="text-xl font-extrabold text-foreground">Danh sách Dự án (Chỉ xem)</h2>
                 <div className="text-sm font-medium text-muted-foreground px-3 py-1.5 bg-muted/50 rounded-lg">
-                  Chỉ xem (Admin không có quyền chỉnh sửa)
+                  Nội dung dự án do Giảng viên quản lý
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {mockProjects.map((project) => (
-                  <div key={project.id} className="p-6 rounded-2xl border border-border bg-card shadow-sm hover:border-primary/50 transition-colors flex flex-col gap-4">
+                  <div key={project.id} className="p-6 rounded-2xl border border-border bg-card shadow-sm flex flex-col gap-4">
                     <div className="flex justify-between items-start gap-4">
                       <div className="space-y-1">
                         <h3 className="font-extrabold text-primary text-xl leading-tight">{project.name}</h3>
@@ -475,10 +489,10 @@ export default function ClassDetailsPage() {
         <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
-              {editingStudentId ? "Sửa thông tin sinh viên" : "Thêm sinh viên mới"}
+              {editingStudentId ? "Sửa thông tin sinh viên" : "Thêm sinh viên thủ công"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Vui lòng nhập các thông tin cần thiết.
+              Chỉ dùng chức năng này khi FAP bị lỗi hoặc không thể tự động đồng bộ.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -512,80 +526,6 @@ export default function ClassDetailsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Group Modal */}
-      <Dialog open={isGroupModalOpen} onOpenChange={setIsGroupModalOpen}>
-        <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-foreground">
-              {editingGroupId ? "Sửa thông tin nhóm" : "Tạo nhóm mới"}
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Vui lòng nhập các thông tin cần thiết.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right font-medium">Tên nhóm</Label>
-              <Input
-                className="col-span-3 rounded-xl focus-visible:ring-primary bg-background border-input"
-                value={groupFormData.name}
-                onChange={(e) => setGroupFormData({ ...groupFormData, name: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right font-medium">Đề tài</Label>
-              <Input
-                className="col-span-3 rounded-xl focus-visible:ring-primary bg-background border-input"
-                value={groupFormData.topic}
-                onChange={(e) => setGroupFormData({ ...groupFormData, topic: e.target.value })}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleSaveGroup} className="rounded-xl font-bold">Lưu thay đổi</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Manage Members Modal */}
-      <Dialog open={isManageMembersOpen} onOpenChange={setIsManageMembersOpen}>
-        <DialogContent className="sm:max-w-[500px] rounded-2xl border-border bg-card">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-foreground">Quản lý thành viên nhóm</DialogTitle>
-            <DialogDescription className="text-muted-foreground">Thêm hoặc xóa sinh viên khỏi nhóm hiện tại.</DialogDescription>
-          </DialogHeader>
-          <div className="py-4 space-y-4">
-            <div className="flex gap-2">
-              <Input placeholder="Nhập mã hoặc tên sinh viên..." className="rounded-xl focus-visible:ring-primary bg-background border-input" />
-              <Button className="rounded-xl font-bold shrink-0">Thêm vào nhóm</Button>
-            </div>
-            <div className="border border-border rounded-xl divide-y divide-border max-h-[300px] overflow-y-auto bg-background">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex justify-between items-center p-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={`https://i.pravatar.cc/150?u=m${i}`} />
-                      <AvatarFallback>SV</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-bold">Sinh viên {i + 1}</p>
-                      <p className="text-xs text-muted-foreground">SE180{i}</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="icon" className="text-destructive h-8 w-8 rounded-lg hover:bg-destructive/10 hover:text-destructive">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setIsManageMembersOpen(false)} className="rounded-xl font-bold">Hoàn tất</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
     </div>
   );
 }

@@ -55,8 +55,8 @@ const MOCK_RISKS = [
   }
 ];
 
-export default function RiskDashboardPage() {
-  const { classId } = useLecturerClass();
+export default function RiskDashboardPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   const [filter, setFilter] = useState("all"); // all, high, medium, low
 
   const getSeverityStyle = (severity: string) => {

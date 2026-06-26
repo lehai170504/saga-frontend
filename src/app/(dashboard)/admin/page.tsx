@@ -57,12 +57,12 @@ export default function AdminDashboard() {
             <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
           </div>
 
-          <Button 
-            onClick={handleSync} 
+          <Button
+            onClick={handleSync}
             disabled={isSyncing}
             className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
           >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? "animate-spin" : ""}`} /> 
+            <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? "animate-spin" : ""}`} />
             {isSyncing ? "Đang đồng bộ..." : "Force Sync All"}
           </Button>
         </div>
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
                       <svg viewBox="0 0 24 24" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="currentColor">
-                        <path d="M11.53 2c0 2.4-1.97 4.35-4.35 4.35h-5C1 6.35 0 7.35 0 8.53v5c0 1.18 1 2.15 2.18 2.15h5c2.38 0 4.35 1.95 4.35 4.35v2.82c0 1.18 1 2.15 2.18 2.15h5c1.18 0 2.18-1 2.18-2.15v-5c0-2.4 1.95-4.35 4.35-4.35h2.82c1.18 0 2.15-1 2.15-2.18v-5c0-1.18-1-2.15-2.15-2.15h-5c-2.4 0-4.35-1.95-4.35-4.35V1C13.71 0 12.71 0 11.53 0v2zm-4.35 12.53c-2.4 0-4.35 1.95-4.35 4.35v2.82c0 1.18 1 2.15 2.18 2.15h5c1.18 0 2.18-1 2.18-2.15v-5c0-2.4-1.97-4.35-4.35-4.35h-.66z" />
+                        <path d="M12.004 0c-2.35 2.395-2.365 6.185.133 8.585l3.412 3.413-3.197 3.198a6.501 6.501 0 0 1 1.412 7.04l9.566-9.566a.95.95 0 0 0 0-1.344L12.004 0zm-1.748 1.74L.67 11.327a.95.95 0 0 0 0 1.344C4.45 16.44 8.22 20.244 12 24c2.295-2.298 2.395-6.096-.08-8.533l-3.47-3.469 3.2-3.2c-1.918-1.955-2.363-4.725-1.394-7.057z" />
                       </svg>
                     </div>
                     <div>

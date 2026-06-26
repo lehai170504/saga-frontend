@@ -14,8 +14,8 @@ const MOCK_PROJECTS = [
   { id: 3, name: "Nhóm 3", project: "Website học trực tuyến", members: 5, leader: "Trần Thị B" },
 ];
 
-export default function ProjectsManagementPage() {
-  const { classId } = useLecturerClass();
+export default function ProjectsManagementPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { UploadCloud, Search, Plus, UserPlus, FileSpreadsheet } from "lucide-react";
+import { UploadCloud, Search, UserPlus, FileSpreadsheet } from "lucide-react";
 import Link from "next/link";
 
 const MOCK_STUDENTS = [
@@ -25,8 +25,8 @@ const MOCK_STUDENTS = [
   { id: "102210004", name: "Phạm Thị D", email: "ptd@sv.dut.udn.vn", group: "Chưa có nhóm", status: "Không hoạt động" },
 ];
 
-export default function StudentsManagementPage() {
-  const { classId } = useLecturerClass();
+export default function StudentsManagementPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
   const [searchTerm, setSearchTerm] = useState("");
   const [isImporting, setIsImporting] = useState(false);
 

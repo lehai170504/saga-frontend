@@ -3,7 +3,6 @@
 import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { 
   GitCommit, 
   GitPullRequest, 
@@ -181,7 +180,7 @@ export default function ActivityTimelinePage() {
                 <p className="text-sm">Vui lòng thử bộ lọc khác.</p>
               </div>
             ) : (
-              filteredTimeline.map((item, index) => (
+              filteredTimeline.map((item) => (
                 <div key={item.id} className="relative flex gap-6 md:gap-8 group">
                   {/* Time & Date Column (Hidden on very small screens, integrated into card) */}
                   <div className="hidden md:flex flex-col items-end w-[140px] pt-2 shrink-0">

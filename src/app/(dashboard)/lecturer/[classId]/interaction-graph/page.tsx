@@ -3,7 +3,7 @@
 import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Share2, Users, Filter, CheckCircle2, MessageSquare, GitCommit, Search, GitPullRequest } from "lucide-react";
+import { Share2, Users, Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -35,9 +35,9 @@ const edges = [
   { source: "4", target: "7", width: 2, type: "issue" },
 ];
 
-export default function InteractionGraphPage() {
-  const { classId } = useLecturerClass();
-  const [selectedNode, setSelectedNode] = useState<any>(nodes[2]); // Default select An Lê
+export default function InteractionGraphPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
+  const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number, x: number, y: number, color: string, interactions: number } | null>(nodes[2]); // Default select An Lê
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">

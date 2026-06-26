@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Download } from "lucide-react";
+import { Download, Search, Filter, Activity, AlertTriangle, ShieldCheck, Clock } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MetricCard } from "@/components/shared/MetricCard";
 import {
   Table,
   TableBody,
@@ -36,6 +39,8 @@ const mockLogs: AuditLog[] = [
 export default function SystemLogsPage() {
   const [logs] = useState<AuditLog[]>(mockLogs);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,6 +58,14 @@ export default function SystemLogsPage() {
     }
   };
 
+  const filteredLogs = logs.filter(log => {
+    const matchesSearch = log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.details.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || log.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <PageHeader
@@ -65,6 +78,30 @@ export default function SystemLogsPage() {
         </Button>
       </PageHeader>
 
+      {/* Stats cards to make the page look more like a Dashboard */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <MetricCard
+          title="Tổng sự kiện (24h)"
+          value={isLoading ? "-" : "1,248"}
+          icon={<Activity className="w-4 h-4 text-blue-500" />}
+        />
+        <MetricCard
+          title="Cảnh báo / Lỗi"
+          value={isLoading ? "-" : "12"}
+          icon={<AlertTriangle className="w-4 h-4 text-rose-500" />}
+        />
+        <MetricCard
+          title="Tình trạng Server"
+          value={isLoading ? "-" : "Healthy"}
+          icon={<ShieldCheck className="w-4 h-4 text-emerald-500" />}
+        />
+        <MetricCard
+          title="Đồng bộ FAP gần nhất"
+          value={isLoading ? "-" : "4h trước"}
+          icon={<Clock className="w-4 h-4 text-amber-500" />}
+        />
+      </div>
+
       <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden">
         <CardContent className="p-6">
           {isLoading ? (
@@ -75,42 +112,78 @@ export default function SystemLogsPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-border overflow-hidden bg-card">
-              <Table>
-                <TableHeader className="bg-muted/30">
-                  <TableRow className="border-border hover:bg-transparent">
-                    <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Thời gian</TableHead>
-                    <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Hành động</TableHead>
-                    <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Người thực hiện</TableHead>
-                    <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Trạng thái</TableHead>
-                    <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Chi tiết</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {logs.map((log) => (
-                    <TableRow key={log.id} className="border-border hover:bg-muted/40 transition-colors">
-                      <TableCell className="py-3 text-sm text-muted-foreground whitespace-nowrap">
-                        {log.timestamp}
-                      </TableCell>
-                      <TableCell className="py-3 font-semibold text-foreground whitespace-nowrap">
-                        {log.action}
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-foreground">{log.user}</span>
-                          <span className="text-[11px] text-muted-foreground">IP: {log.ip}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3 whitespace-nowrap">
-                        {getStatusBadge(log.status)}
-                      </TableCell>
-                      <TableCell className="py-3 text-sm text-muted-foreground max-w-xs truncate" title={log.details}>
-                        {log.details}
-                      </TableCell>
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row justify-between gap-4">
+                <div className="relative w-full sm:max-w-md">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Tìm kiếm theo hành động, người dùng, chi tiết..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 rounded-xl focus-visible:ring-primary bg-background border-border"
+                  />
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-full sm:w-[160px] rounded-xl bg-background border-border">
+                      <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
+                      <SelectValue placeholder="Lọc trạng thái" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-border">
+                      <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                      <SelectItem value="success">Success</SelectItem>
+                      <SelectItem value="warning">Warning</SelectItem>
+                      <SelectItem value="error">Error</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border overflow-hidden bg-card">
+                <Table>
+                  <TableHeader className="bg-muted/30">
+                    <TableRow className="border-border hover:bg-transparent">
+                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Thời gian</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Hành động</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Người thực hiện</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Trạng thái</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Chi tiết</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredLogs.length > 0 ? (
+                      filteredLogs.map((log) => (
+                        <TableRow key={log.id} className="border-border hover:bg-muted/40 transition-colors">
+                          <TableCell className="py-3 text-sm text-muted-foreground whitespace-nowrap">
+                            {log.timestamp}
+                          </TableCell>
+                          <TableCell className="py-3 font-semibold text-foreground whitespace-nowrap">
+                            {log.action}
+                          </TableCell>
+                          <TableCell className="py-3">
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium text-foreground">{log.user}</span>
+                              <span className="text-[11px] text-muted-foreground">IP: {log.ip}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-3 whitespace-nowrap">
+                            {getStatusBadge(log.status)}
+                          </TableCell>
+                          <TableCell className="py-3 text-sm text-muted-foreground max-w-xs truncate" title={log.details}>
+                            {log.details}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                          Không tìm thấy nhật ký hệ thống nào.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           )}
         </CardContent>
