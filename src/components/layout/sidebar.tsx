@@ -72,6 +72,11 @@ export function Sidebar({ onClose }: SidebarProps) {
             icon: <Logs size={18} />,
             label: "Nhật ký hệ thống",
           },
+          {
+            href: "/admin/guide",
+            icon: <BookOpen size={18} />,
+            label: "Hướng dẫn sử dụng",
+          },
         ];
       case "lecturer":
         if (classId) {
