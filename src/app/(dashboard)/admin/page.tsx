@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { SyncActivityChart } from "@/features/admin/components/sync-activity-chart";
+import { UserDistributionChart } from "@/features/admin/components/user-distribution-chart";
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -155,6 +157,16 @@ export default function AdminDashboard() {
             </Card>
           </>
         )}
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="lg:col-span-2">
+          <SyncActivityChart />
+        </div>
+        <div className="lg:col-span-1">
+          <UserDistributionChart />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">

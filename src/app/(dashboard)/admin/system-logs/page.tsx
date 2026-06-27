@@ -139,50 +139,52 @@ export default function SystemLogsPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-border overflow-hidden bg-card">
-                <Table>
-                  <TableHeader className="bg-muted/30">
-                    <TableRow className="border-border hover:bg-transparent">
-                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Thời gian</TableHead>
-                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Hành động</TableHead>
-                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Người thực hiện</TableHead>
-                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Trạng thái</TableHead>
-                      <TableHead className="text-xs font-semibold text-muted-foreground uppercase">Chi tiết</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredLogs.length > 0 ? (
-                      filteredLogs.map((log) => (
-                        <TableRow key={log.id} className="border-border hover:bg-muted/40 transition-colors">
-                          <TableCell className="py-3 text-sm text-muted-foreground whitespace-nowrap">
-                            {log.timestamp}
-                          </TableCell>
-                          <TableCell className="py-3 font-semibold text-foreground whitespace-nowrap">
-                            {log.action}
-                          </TableCell>
-                          <TableCell className="py-3">
-                            <div className="flex flex-col">
-                              <span className="text-sm font-medium text-foreground">{log.user}</span>
-                              <span className="text-[11px] text-muted-foreground">IP: {log.ip}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="py-3 whitespace-nowrap">
-                            {getStatusBadge(log.status)}
-                          </TableCell>
-                          <TableCell className="py-3 text-sm text-muted-foreground max-w-xs truncate" title={log.details}>
+              <div className="rounded-xl border border-border/20 overflow-hidden bg-[#0c0c0c] shadow-inner">
+                {/* Terminal Header */}
+                <div className="bg-[#18181b] px-4 py-2 flex items-center gap-2 border-b border-border/20">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                  </div>
+                  <span className="text-xs text-zinc-500 font-mono ml-2 flex-1 text-center">root@saga-server:~# tail -f /var/log/saga.log</span>
+                </div>
+                
+                {/* Terminal Body */}
+                <div className="p-4 h-[500px] overflow-y-auto font-mono text-[13px] leading-relaxed">
+                  {filteredLogs.length > 0 ? (
+                    filteredLogs.map((log) => {
+                      const isError = log.status === "error";
+                      const isWarning = log.status === "warning";
+                      
+                      return (
+                        <div key={log.id} className="flex gap-3 hover:bg-white/5 px-2 py-1 -mx-2 rounded transition-colors group">
+                          <span className="text-zinc-500 shrink-0">[{log.timestamp}]</span>
+                          <span className={`shrink-0 font-bold ${
+                            isError ? "text-red-400" : isWarning ? "text-yellow-400" : "text-green-400"
+                          }`}>
+                            [{log.status.toUpperCase()}]
+                          </span>
+                          <span className="text-sky-400 shrink-0">[{log.user}]</span>
+                          <span className="text-purple-400 shrink-0">{log.action}:</span>
+                          <span className={isError ? "text-red-200" : "text-zinc-300"}>
                             {log.details}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
-                          Không tìm thấy nhật ký hệ thống nào.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                            <span className="text-zinc-600 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">(IP: {log.ip})</span>
+                          </span>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <div className="text-zinc-500 italic flex items-center justify-center h-full">
+                      No logs found matching your criteria.
+                    </div>
+                  )}
+                  <div className="flex gap-3 px-2 py-1 mt-2">
+                    <span className="text-zinc-500 shrink-0">[{new Date().toISOString().replace('T', ' ').substring(0, 19)}]</span>
+                    <span className="text-blue-400 shrink-0 font-bold">[SYSTEM]</span>
+                    <span className="text-zinc-300">Listening for new events... <span className="inline-block w-2 h-4 bg-zinc-400 animate-pulse align-middle ml-1"></span></span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
