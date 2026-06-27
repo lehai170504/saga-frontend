@@ -9,14 +9,6 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MetricCard } from "@/components/shared/MetricCard";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 type AuditLog = {
   id: string;
@@ -48,15 +40,6 @@ export default function SystemLogsPage() {
     }, 1200);
     return () => clearTimeout(timer);
   }, []);
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "success": return <span className="px-2 py-1 rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-bold">THÀNH CÔNG</span>;
-      case "warning": return <span className="px-2 py-1 rounded-md bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold">CẢNH BÁO</span>;
-      case "error": return <span className="px-2 py-1 rounded-md bg-destructive/10 text-destructive dark:bg-destructive/20 text-xs font-bold">LỖI</span>;
-      default: return null;
-    }
-  };
 
   const filteredLogs = logs.filter(log => {
     const matchesSearch = log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||

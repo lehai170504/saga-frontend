@@ -19,7 +19,7 @@ export function FeaturesSection() {
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
           className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg"
         >
-          Giao diện được thiết kế tối giản, tập trung hiển thị các dữ liệu cốt lõi, giúp giảng viên phát hiện sớm sinh viên "lười biếng" và khen thưởng các cá nhân xuất sắc.
+          Giao diện được thiết kế tối giản, tập trung hiển thị các dữ liệu cốt lõi, giúp giảng viên phát hiện sớm sinh viên &quot;lười biếng&quot; và khen thưởng các cá nhân xuất sắc.
         </motion.p>
       </div>
 
@@ -73,7 +73,7 @@ export function FeaturesSection() {
           </div>
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-3">Mạng Tương tác</h3>
-            <p className="text-muted-foreground font-medium">Phân tích Graph Node-Edge để tìm ra người "gánh team".</p>
+            <p className="text-muted-foreground font-medium">Phân tích Graph Node-Edge để tìm ra người &quot;gánh team&quot;.</p>
           </div>
         </motion.div>
 
