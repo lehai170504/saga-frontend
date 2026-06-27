@@ -16,7 +16,6 @@ import {
   ChevronLeft,
   Send,
   Calendar,
-  User,
   ShieldCheck,
   AlertCircle,
   Check,
@@ -153,8 +152,9 @@ export default function InstructorFeedbackInbox() {
     const saved = localStorage.getItem("saga-instructor-feedbacks");
     if (saved) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setFeedbacks(JSON.parse(saved));
-      } catch (e) {
+      } catch {
         setFeedbacks(initialFeedbackData);
       }
     } else {
@@ -191,7 +191,7 @@ export default function InstructorFeedbackInbox() {
     saveToStorage(updated);
   };
 
-  const handleAcknowledge = (id: string) => {
+  const handleAcknowledge = () => {
     toast.success("Đã xác nhận đã đọc phản hồi của giảng viên!");
   };
 
@@ -543,7 +543,7 @@ export default function InstructorFeedbackInbox() {
                   {/* ACKNOWLEDGE ACTIONS */}
                   <div className="pt-2 border-t border-border flex justify-end">
                     <Button
-                      onClick={() => handleAcknowledge(selectedFeedback.id)}
+                      onClick={() => handleAcknowledge()}
                       className="h-10 px-5 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <CheckCircle size={14} />

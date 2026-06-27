@@ -2,9 +2,9 @@
 
 import React from "react";
 import {
-  BookOpen, FileText, Users, Calendar, Logs, HelpCircle,
+  BookOpen, FileText, Users, Calendar, HelpCircle,
   Network, ShieldCheck, ArrowRight, Settings, CheckCircle2,
-  AlertTriangle, RefreshCw, Server
+  AlertTriangle, Server
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -272,14 +272,14 @@ export default function AdminGuidePage() {
                 </AccordionItem>
 
                 <AccordionItem value="faq-3" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Hệ thống báo "Lỗi rate limit API từ GitHub", tôi cần làm gì?</AccordionTrigger>
+                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Hệ thống báo &quot;Lỗi rate limit API từ GitHub&quot;, tôi cần làm gì?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
                     Trường hợp này xảy ra khi hệ thống xử lý lượng lớn dữ liệu commit/PR cùng một lúc. Bạn không cần can thiệp thủ công; Background Worker của SAGA được thiết kế để tự động backoff và thử lại sau 15-30 phút. Bạn có thể theo dõi tiến trình trong mục <span className="font-semibold text-foreground">Nhật ký Hệ thống</span>.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="faq-4" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi đồng bộ FAP bị treo trạng thái "Đang tải..."?</AccordionTrigger>
+                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi đồng bộ FAP bị treo trạng thái &quot;Đang tải...&quot;?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
                     Nếu quá trình đồng bộ diễn ra lâu hơn 5 phút, có thể do kết nối mạng tới Server FAP không ổn định. Vui lòng làm mới (F5) trang và kiểm tra lại trạng thái trong <strong>Nhật ký Hệ thống</strong>. Nếu trạng thái là <Badge variant="outline" className="text-destructive border-destructive">Lỗi</Badge>, hãy bấm đồng bộ lại lần nữa.
                   </AccordionContent>

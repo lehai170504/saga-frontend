@@ -38,6 +38,7 @@ export default function StudentBurndownPage() {
   const [selectedDay, setSelectedDay] = useState<BurndownDay | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,12 +11,10 @@ import {
   CalendarX,
   Clock,
   FileText,
-  AlertTriangle,
   Upload,
   History,
   CheckCircle,
   XCircle,
-  HelpCircle,
   Send,
   Trash2,
   Calendar,
@@ -96,7 +94,7 @@ const initialHistory: ReportItem[] = [
 export default function AbsenceDelayReporting() {
   const [activeTab, setActiveTab] = useState<"absence" | "delay">("absence");
   const [history, setHistory] = useState<ReportItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   // Form State - Absence
   const [absenceDate, setAbsenceDate] = useState("");
@@ -117,8 +115,9 @@ export default function AbsenceDelayReporting() {
     const saved = localStorage.getItem("saga-student-reports");
     if (saved) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHistory(JSON.parse(saved));
-      } catch (e) {
+      } catch {
         setHistory(initialHistory);
       }
     } else {
