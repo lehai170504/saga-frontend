@@ -74,7 +74,7 @@ const mockGroups = Array.from({ length: 9 }).map((_, i) => ({
 
 const mockProjects = Array.from({ length: 9 }).map((_, i) => ({
   id: `p${i + 1}`,
-  name: `Đồ án ${i + 1}: ${i % 2 === 0 ? "Quản lý thư viện" : "Bán hàng trực tuyến"}`,
+  name: `Dự án môn học ${i + 1}: ${i % 2 === 0 ? "Quản lý thư viện" : "Bán hàng trực tuyến"}`,
   group: `Nhóm ${i + 1}`,
   status: i % 3 === 0 ? "Hoàn thành" : "Đang thực hiện",
   progress: i % 3 === 0 ? 100 : Math.floor(Math.random() * 60) + 40

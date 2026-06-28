@@ -54,7 +54,7 @@ export function HeroSection() {
         variants={fadeUp}
         className="text-5xl md:text-[5.5rem] font-black text-foreground tracking-tight mb-8 max-w-5xl leading-[1.05]"
       >
-        Quản lý Đồ án chuyên sâu với <br className="hidden md:block" />
+        Theo dõi Tiến độ Đa môn học với <br className="hidden md:block" />
         <span className="relative inline-block mt-2">
           <span className="relative z-10 bg-gradient-to-br from-orange-500 via-amber-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
             Dữ liệu Thực tế
@@ -73,7 +73,7 @@ export function HeroSection() {
         transition={{ delay: 0.1 }}
         className="text-lg md:text-2xl text-muted-foreground mb-12 max-w-3xl font-medium leading-relaxed"
       >
-        Nền tảng phân tích và trực quan hóa hoạt động đồ án sinh viên chuyên sâu. Tích hợp dữ liệu từ GitHub, Jira, tự động hóa toàn bộ quy trình đánh giá.
+        Hệ thống phân tích, đánh giá đồ thị liên tục và theo dõi tiến độ sinh viên qua nhiều môn học. Tích hợp GitHub, Jira, tự động hóa quy trình đánh giá.
       </motion.p>
 
       <motion.div

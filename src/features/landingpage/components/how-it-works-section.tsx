@@ -12,7 +12,7 @@ export function HowItWorksSection() {
             Quy trình <span className="text-orange-500">Tối giản</span>
           </h2>
           <p className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg">
-            Không cần thay đổi thói quen làm việc. Bạn cứ tập trung code, SAGA sẽ lo phần báo cáo.
+            Không cần thay đổi thói quen làm việc ở các môn học. Bạn cứ tập trung học và code, SAGA sẽ đánh giá quá trình.
           </p>
         </div>
 

@@ -46,7 +46,7 @@ export function SiteFooter() {
           </div>
 
           <p className="text-muted-foreground text-sm font-medium">
-            © {new Date().getFullYear()} SAGA Capstone. All rights reserved.
+            © {new Date().getFullYear()} SAGA. All rights reserved.
           </p>
 
           <div className="flex gap-6 text-sm font-semibold text-muted-foreground">

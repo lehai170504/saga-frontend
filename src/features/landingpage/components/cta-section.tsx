@@ -19,10 +19,10 @@ export function CtaSection() {
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/30 blur-[100px] rounded-full pointer-events-none group-hover:bg-blue-500/50 transition-colors duration-700" />
         
         <h2 className="text-4xl md:text-6xl font-black text-background mb-8 relative z-10 tracking-tight leading-tight">
-          Sẵn sàng Nâng tầm<br />Chất lượng Đồ án?
+          Sẵn sàng Theo dõi<br />Tiến độ Toàn diện?
         </h2>
         <p className="text-background/80 font-medium mb-14 max-w-2xl mx-auto relative z-10 text-xl leading-relaxed">
-          Tạo tài khoản và trải nghiệm hệ thống quản lý đồ án minh bạch, công bằng và hiệu quả nhất từ trước đến nay.
+          Tạo tài khoản và trải nghiệm hệ thống đánh giá liên tục minh bạch, công bằng qua nhiều môn học.
         </p>
         <div className="relative z-10 inline-block scale-110 hover:scale-125 transition-transform duration-300">
           <AuthModal />

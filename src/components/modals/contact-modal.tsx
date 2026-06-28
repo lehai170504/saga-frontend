@@ -30,7 +30,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
             <DialogHeader className="mb-8 p-0 text-left">
               <DialogTitle className="text-2xl font-black mb-2">Liên hệ Hỗ trợ</DialogTitle>
               <DialogDescription>
-                Bạn gặp sự cố khi đồng bộ dữ liệu đồ án? Hãy để lại lời nhắn cho chúng tôi.
+                Bạn gặp sự cố khi đồng bộ dữ liệu học tập? Hãy để lại lời nhắn cho chúng tôi.
               </DialogDescription>
             </DialogHeader>
 

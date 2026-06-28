@@ -19,7 +19,7 @@ export function FeaturesSection() {
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
           className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg"
         >
-          Giao diện được thiết kế tối giản, tập trung hiển thị các dữ liệu cốt lõi, giúp giảng viên phát hiện sớm sinh viên &quot;lười biếng&quot; và khen thưởng các cá nhân xuất sắc.
+          Giao diện được thiết kế tối giản, hiển thị dữ liệu cốt lõi, giúp giảng viên theo dõi sát sao tiến độ học tập qua từng môn học, phát hiện sớm rủi ro.
         </motion.p>
       </div>
 
