@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { SyncActivityChart } from "@/features/admin/components/sync-activity-chart";
-import { UserDistributionChart } from "@/features/admin/components/user-distribution-chart";
+import { GraphProcessingChart } from "@/features/admin/components/graph-processing-chart";
+import { SystemAnomalyChart } from "@/features/admin/components/system-anomaly-chart";
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -142,16 +142,16 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  API Requests (24h)
+                  Khối lượng Đồ thị (24h)
                 </CardTitle>
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
-                  <Activity className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
+                  <Network className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold text-foreground">14.2k</div>
+                <div className="text-4xl font-extrabold text-foreground">24.5k</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium">
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">99.9%</span> Success rate
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Đỉnh & Cạnh</span> đã trích xuất
                 </p>
               </CardContent>
             </Card>
@@ -162,10 +162,10 @@ export default function AdminDashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <div className="lg:col-span-2">
-          <SyncActivityChart />
+          <GraphProcessingChart />
         </div>
         <div className="lg:col-span-1">
-          <UserDistributionChart />
+          <SystemAnomalyChart />
         </div>
       </div>
 
@@ -276,24 +276,24 @@ export default function AdminDashboard() {
             ) : (
               <div className="space-y-6 pl-2">
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <Database className="h-4 w-4" />
+                  <div className="h-10 w-10 rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                    <GitCommit className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-orange-600 dark:text-orange-500">Cron Job (FAP)</span> vừa tự động tạo thêm <strong>32 Lớp học</strong> cho học kỳ mới.
+                      <span className="font-bold text-red-600 dark:text-red-500">Tiến trình MSR</span> vừa quét và đánh dấu 15 <span className="font-bold">Task Ảo</span> do thiếu liên kết Code (Task-Code Linkage).
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">{lastSync}</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <Users className="h-4 w-4" />
+                  <div className="h-10 w-10 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                    <Activity className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-orange-600 dark:text-orange-500">Cron Job (FAP)</span> đã map xong danh sách <strong>1,248 sinh viên</strong> vào các lớp.
+                      <span className="font-bold text-amber-600 dark:text-amber-500">Process Mining</span> ghi nhận hiện tượng <span className="font-bold">Cày Deadline (Burst)</span> tăng 25% ở nhóm các lớp sáng thứ 2.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">15 phút trước</p>
                   </div>
@@ -301,23 +301,23 @@ export default function AdminDashboard() {
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
                   <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <GitCommit className="h-4 w-4" />
+                    <Network className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-purple-600 dark:text-purple-400">GitHub Webhook</span> xác thực kết nối organization thành công.
+                      <span className="font-bold text-purple-600 dark:text-purple-400">SNA Module</span> đã hoàn tất tính toán <span className="font-bold">Độ bao phủ cộng tác</span> cho 32 đồ thị lớp học mới.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">5 giờ trước</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 flex items-center justify-center font-black text-xs shrink-0 z-10 ring-4 ring-card">
-                    AD
+                  <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                    <Database className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold">Quản trị viên</span> đã vô hiệu hóa tài khoản sinh viên vi phạm nội quy.
+                      <span className="font-bold text-emerald-600 dark:text-emerald-500">Cron Job (FAP)</span> vừa tự động đồng bộ và map xong danh sách <strong>1,248 sinh viên</strong> vào hệ thống đồ thị.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">1 ngày trước</p>
                   </div>

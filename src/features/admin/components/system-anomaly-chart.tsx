@@ -2,21 +2,21 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 const data = [
-  { name: "Sinh viên", value: 1248, color: "#f97316" }, // orange-500
-  { name: "Giảng viên", value: 45, color: "#3b82f6" }, // blue-500
-  { name: "Admin", value: 3, color: "#8b5cf6" }, // purple-500
+  { name: "Task Ảo (MSR)", value: 342, color: "#ef4444" }, // red-500
+  { name: "Cày Deadline (Process)", value: 520, color: "#f59e0b" }, // amber-500
+  { name: "Cô Lập (SNA)", value: 145, color: "#8b5cf6" }, // purple-500
 ];
 
-export function UserDistributionChart() {
+export function SystemAnomalyChart() {
   return (
     <Card className="rounded-[2rem] shadow-sm border-border bg-card/40 backdrop-blur-xl">
       <CardHeader>
         <CardTitle className="text-lg font-bold flex items-center gap-2">
-          <Users className="h-5 w-5 text-orange-500" />
-          Phân bố Người dùng
+          <AlertTriangle className="h-5 w-5 text-amber-500" />
+          Tín hiệu Cảnh báo (Toàn hệ thống)
         </CardTitle>
       </CardHeader>
       <CardContent>
