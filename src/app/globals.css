@@ -145,3 +145,22 @@
     @apply font-sans;
   }
 }
+
+/* Premium Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--border) 80%, black);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--border) 80%, white);
+}

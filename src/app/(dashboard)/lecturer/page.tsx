@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { BookOpen, Users, Calendar, ArrowRight, Sparkles, Network } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
 import {
   Select,
   SelectContent,
@@ -88,18 +89,12 @@ export default function ClassSelectionPage() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
         
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-8">
-          <div className="flex flex-col gap-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
-              <Sparkles size={16} className="animate-pulse" />
-              <span>Workspace Giảng viên</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60">
-              Khởi động ngày mới, <br className="hidden md:block" />
-              Chọn lớp học để quản lý
-            </h1>
-          </div>
+          <PageHeader
+            workspace="Workspace Giảng viên"
+            title="Khởi động ngày mới, Chọn lớp học để quản lý"
+            description="Lựa chọn một lớp học để bắt đầu theo dõi tiến độ và quản lý dự án."
+          />
 
           <div className="w-full md:w-[280px]">
             <Select value={selectedSemester} onValueChange={setSelectedSemester}>

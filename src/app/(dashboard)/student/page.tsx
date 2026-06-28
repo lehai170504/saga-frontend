@@ -59,8 +59,11 @@ const recentActivities = [
 
 export default function OverviewDashboard() {
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
@@ -108,10 +111,10 @@ export default function OverviewDashboard() {
           />
           <CardContent className="px-2 pb-6">
             <div className="h-80 w-full mt-4">
-              {isLoading ? (
+              {!mounted || isLoading ? (
                 <Skeleton className="w-full h-full rounded-xl" />
               ) : (
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <ResponsiveContainer width="100%" height={320} minWidth={0}>
                   <LineChart data={weeklyActivityData}>
                     <CartesianGrid
                       strokeDasharray="3 3"

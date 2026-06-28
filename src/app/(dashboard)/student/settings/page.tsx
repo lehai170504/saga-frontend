@@ -21,6 +21,10 @@ import {
   Globe,
   ExternalLink,
   ChevronRight,
+  Eye,
+  EyeOff,
+  Shield,
+  Lock,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -42,6 +46,14 @@ export default function SettingsPage() {
 
   // General settings states
   const [timezone, setTimezone] = useState("GMT+7");
+
+  // Change Password states
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -127,6 +139,26 @@ export default function SettingsPage() {
   const handleSaveGeneral = () => {
     localStorage.setItem("saga-timezone", timezone);
     toast.success("Cập nhật cấu hình cá nhân thành công!");
+  };
+
+  const handleChangePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.error("Vui lòng điền đầy đủ thông tin mật khẩu!");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Mật khẩu mới không khớp!");
+      return;
+    }
+    setIsChangingPassword(true);
+    setTimeout(() => {
+      setIsChangingPassword(false);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      toast.success("Đổi mật khẩu thành công!");
+    }, 1500);
   };
 
   return (
@@ -275,7 +307,7 @@ export default function SettingsPage() {
                       <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm">
                         {/* Custom Jira SVG */}
                         <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M11.53 2.308a3.1 3.1 0 0 0-4.385 0L.438 9.015a3.1 3.1 0 0 0 0 4.385l6.707 6.707a3.1 3.1 0 0 0 4.385 0l6.707-6.707a3.1 3.1 0 0 0 0-4.385L11.53 2.308Zm8.769 4.385a3.1 3.1 0 0 0-4.384 0l-6.708 6.707a3.1 3.1 0 0 0 0 4.385l6.708 6.707a3.1 3.1 0 0 0 4.384 0l6.708-6.707a3.1 3.1 0 0 0 0-4.385l-6.708-6.707Z" />
+                          <path d="M12.004 0c-2.35 2.395-2.365 6.185.133 8.585l3.412 3.413-3.197 3.198a6.501 6.501 0 0 1 1.412 7.04l9.566-9.566a.95.95 0 0 0 0-1.344L12.004 0zm-1.748 1.74L.67 11.327a.95.95 0 0 0 0 1.344C4.45 16.44 8.22 20.244 12 24c2.295-2.298 2.395-6.096-.08-8.533l-3.47-3.469 3.2-3.2c-1.918-1.955-2.363-4.725-1.394-7.057z" />
                         </svg>
                       </div>
                       {jiraConnected ? (
@@ -410,35 +442,7 @@ export default function SettingsPage() {
               </h3>
               <div className="space-y-6">
 
-                {/* Theme Selection */}
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground text-xs font-bold flex items-center gap-1.5">
-                    <Sun size={14} />
-                    Chế độ hiển thị
-                  </Label>
-                  <div className="grid grid-cols-2 gap-2 bg-slate-100/60 dark:bg-slate-900 p-1 rounded-xl">
-                    <button
-                      onClick={() => setTheme("light")}
-                      className={`py-2 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "light"
-                          ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
-                          : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                        }`}
-                    >
-                      <Sun size={13} />
-                      Sáng
-                    </button>
-                    <button
-                      onClick={() => setTheme("dark")}
-                      className={`py-2 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "dark"
-                          ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
-                          : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                        }`}
-                    >
-                      <Moon size={13} />
-                      Tối
-                    </button>
-                  </div>
-                </div>
+
 
                 {/* Timezone Selection */}
                 <div className="space-y-2">
@@ -471,6 +475,86 @@ export default function SettingsPage() {
                   Lưu cấu hình cá nhân
                 </Button>
               </div>
+            </Card>
+
+            {/* Change Password Card */}
+            <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
+              <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
+                <Shield className="text-orange-500" size={18} />
+                Đổi mật khẩu
+              </h3>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold">Mật khẩu hiện tại</Label>
+                  <div className="relative flex items-center">
+                    <Key className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showOldPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold">Mật khẩu mới</Label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold">Xác nhận mật khẩu mới</Label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  className="w-full h-10 mt-2 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                >
+                  {isChangingPassword ? (
+                    <>
+                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    "Cập nhật mật khẩu"
+                  )}
+                </Button>
+              </form>
             </Card>
 
             {/* Quick Status / Profile Summary Card */}

@@ -34,9 +34,12 @@ interface BurndownDay {
 export default function StudentBurndownPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [selectedDay, setSelectedDay] = useState<BurndownDay | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
@@ -88,14 +91,14 @@ export default function StudentBurndownPage() {
 
         <CardContent className="px-2 pb-6">
           <div className="h-[450px] w-full">
-            {isLoading ? (
+            {!mounted || isLoading ? (
               <div className="w-full h-full px-6">
                 <Skeleton className="w-full h-full rounded-xl opacity-50 bg-muted" />
               </div>
             ) : isError ? (
               <ErrorState onRetry={() => setIsError(false)} />
             ) : (
-              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+              <ResponsiveContainer width="100%" height={450} minWidth={0}>
                 <ComposedChart
                   data={burndownData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}

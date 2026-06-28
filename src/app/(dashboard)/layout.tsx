@@ -28,7 +28,10 @@ export default function DashboardLayout({
     <RouteGuard>
       <FilterProvider>
         {/* Changed layout direction to Column to put Header on top */}
-        <div className="flex flex-col h-screen w-full overflow-hidden bg-background text-foreground">
+        <div className="flex flex-col h-screen w-full overflow-hidden bg-background text-foreground relative">
+          {/* Ambient Background Glows */}
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[150px] pointer-events-none opacity-50 dark:opacity-20" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[150px] pointer-events-none opacity-50 dark:opacity-20" />
 
           {/* Full-width Header */}
           <div className="flex-none w-full z-40 relative">

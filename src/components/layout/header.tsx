@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
-import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search } from "lucide-react";
+import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -49,38 +49,40 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <>
-      <header className="h-16 border-b bg-card/80 backdrop-blur-md border-border flex items-center justify-between px-2 sm:px-6 sticky top-0 z-40 gap-2 sm:gap-4 shadow-sm w-full">
+      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
         {/* Logo and Mobile Menu */}
-        <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0 relative z-10">
           {onMenuClick && (
             <div className="lg:hidden flex items-center">
               <MobileMenuButton onClick={onMenuClick} />
             </div>
           )}
-          <Link href="/" className="hidden lg:block">
+          <Link href="/" className="hidden lg:flex items-center group relative">
+            <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Image
               src="/logo-nav.png"
               alt="SAGA Logo"
               width={240}
               height={72}
               priority
-              className="h-7 w-auto object-contain transition-transform hover:scale-[1.02]"
+              className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105 relative z-10"
+              style={{ width: "auto" }}
             />
           </Link>
-          <div className="h-6 w-px bg-border hidden lg:block mx-2" />
+          <div className="h-8 w-px bg-border/40 hidden lg:block mx-2" />
         </div>
 
         {/* Global Search */}
-        <div className="flex-1 max-w-2xl px-2 hidden md:flex items-center">
+        <div className="flex-1 max-w-2xl px-2 hidden md:flex items-center relative z-10">
           <div className="relative w-full group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input
-              placeholder="Tìm kiếm lớp học, sinh viên, tài liệu... (Ctrl+K)"
-              className="w-full pl-9 bg-muted/40 border-transparent hover:bg-muted/60 focus-visible:ring-1 focus-visible:ring-primary focus-visible:bg-background transition-all rounded-full h-10 shadow-sm"
+              placeholder="Tìm kiếm lớp học, sinh viên, tài liệu..."
+              className="w-full pl-10 bg-primary/5 border-transparent hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:bg-background transition-all duration-300 rounded-full h-11 shadow-sm text-[15px]"
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:flex items-center gap-1">
-              <kbd className="inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                <span className="text-xs">⌘</span>K
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:flex items-center gap-1.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
+              <kbd className="inline-flex h-6 items-center gap-1 rounded-md border border-border/50 bg-background/50 px-2 font-mono text-[10px] font-medium text-muted-foreground shadow-sm">
+                <Command size={12} /> K
               </kbd>
             </div>
           </div>
@@ -88,45 +90,35 @@ export function Header({ onMenuClick }: HeaderProps) {
         <div className="flex-1 md:hidden" />
 
         {/* Right side: Notifications + Theme toggle + User Dropdown */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          
+        <div className="flex items-center gap-2.5 shrink-0 relative z-10">
+
           {/* Notifications */}
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 rounded-full relative hover:bg-muted"
+            className="h-10 w-10 rounded-full relative bg-muted/30 hover:bg-muted/80 border border-transparent hover:border-border/50 transition-all duration-300 hover:scale-105"
             aria-label="Thông báo"
             onClick={() => toast.info("Tính năng thông báo đang được phát triển")}
           >
-            <Bell className="h-[18px] w-[18px] text-muted-foreground" />
-            <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-card animate-pulse"></span>
+            <Bell className="h-5 w-5 text-muted-foreground" />
+            <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-background animate-pulse shadow-[0_0_8px_rgba(243,24,66,0.8)]"></span>
           </Button>
 
-          {/* Dark Mode Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-full hover:bg-muted"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label="Chuyển đổi giao diện"
-          >
-            <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-muted-foreground" />
-            <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-muted-foreground" />
-          </Button>
 
-          <div className="h-5 w-px bg-border mx-1 hidden sm:block" />
+
+          <div className="h-6 w-px bg-border/40 mx-2 hidden sm:block" />
 
           {/* User Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-auto p-1 sm:pl-3 gap-3 rounded-full hover:bg-accent cursor-pointer border border-transparent hover:border-border/50 transition-all"
+                className="h-auto p-1 sm:pl-4 sm:pr-1 gap-3 rounded-full hover:bg-primary/5 cursor-pointer border border-transparent hover:border-primary/20 transition-all duration-300 group"
               >
-                <div className="text-right hidden sm:block">
+                <div className="text-right hidden sm:block transition-transform duration-300 group-hover:-translate-x-1">
                   <p className="text-sm font-bold text-foreground leading-tight flex justify-end items-center gap-1.5">
                     {user?.role === "admin" && (
-                      <ShieldCheck size={14} className="text-emerald-500" />
+                      <ShieldCheck size={14} className="text-emerald-500 drop-shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
                     )}
                     {user?.name ?? "Khách"}
                   </p>
@@ -134,30 +126,43 @@ export function Header({ onMenuClick }: HeaderProps) {
                     {user?.role ? roleDisplay[user.role] : "Chưa xác định"}
                   </p>
                 </div>
-                <Avatar className="h-9 w-9 border-2 border-background shadow-sm ring-1 ring-border/50">
+                <Avatar className="h-10 w-10 border-2 border-background shadow-md ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300 group-hover:scale-105">
                   <AvatarImage src="" alt={user?.name ?? "User"} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-black text-sm">
                     {user?.avatarInitials ?? "?"}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-lg border-border/50">
-              <DropdownMenuLabel className="font-bold">Tài khoản của tôi</DropdownMenuLabel>
-              <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="w-64 rounded-2xl shadow-2xl border-border/40 bg-background/95 backdrop-blur-xl p-2 animate-in slide-in-from-top-2">
+              <DropdownMenuLabel className="font-black text-xs text-muted-foreground uppercase tracking-widest px-3 pt-2 pb-1">Tài khoản của tôi</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
-                className="cursor-pointer rounded-md font-medium"
+                className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
                 onClick={() => setIsProfileOpen(true)}
               >
-                <UserIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                <UserIcon className="mr-3 h-4 w-4" />
                 <span>Hồ sơ cá nhân</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTheme(theme === "dark" ? "light" : "dark");
+                }}
+              >
+                <div className="mr-3 relative h-4 w-4 flex items-center justify-center">
+                  <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
+                  <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
+                </div>
+                <span>Giao diện: {theme === "dark" ? "Sáng" : "Tối"}</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="cursor-pointer font-bold text-rose-600 focus:text-rose-700 focus:bg-rose-50 dark:focus:bg-rose-950/30 rounded-md"
+                className="cursor-pointer font-bold text-rose-600 focus:text-rose-700 focus:bg-rose-50 dark:focus:bg-rose-950/30 rounded-xl px-3 py-2.5 transition-colors group"
               >
-                <LogOut className="mr-2 h-4 w-4" />
+                <LogOut className="mr-3 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 <span>Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

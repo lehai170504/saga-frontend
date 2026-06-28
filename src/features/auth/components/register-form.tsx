@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { User, AtSign, Lock } from "lucide-react";
+import { User, AtSign, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 interface RegisterFormProps {
@@ -15,7 +15,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [studentType, setStudentType] = useState("regular");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = () => {
     if (!name || !email || !password) {
@@ -23,7 +23,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       return;
     }
 
-    const roleName = studentType === "leader" ? "Trưởng nhóm" : "Thành viên";
+    const roleName = "Sinh viên";
 
     toast.success(
       `Tài khoản "${name}" (${roleName}) đã được tạo! Hệ thống sẽ liên hệ qua email.`,
@@ -45,7 +45,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             placeholder="Nguyễn Văn A"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+            className="pl-9 focus-visible:ring-ring rounded-xl"
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             placeholder="sv@student.edu.vn"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+            className="pl-9 focus-visible:ring-ring rounded-xl"
           />
         </div>
       </div>
@@ -70,43 +70,28 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         <Label htmlFor="reg-password" className="font-semibold">
           Mật khẩu
         </Label>
-        <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        <div className="relative flex items-center">
+          <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="reg-password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="pl-9 focus-visible:ring-orange-500 rounded-xl"
+            className="pl-9 pr-10 focus-visible:ring-ring rounded-xl"
           />
-        </div>
-      </div>
-
-      <div className="space-y-2 pt-1 border-t border-muted-foreground/20">
-        <Label className="font-semibold text-sm">Bạn là:</Label>
-        <div className="grid grid-cols-2 gap-2">
-          <Button
+          <button
             type="button"
-            variant={studentType === "regular" ? "default" : "outline"}
-            className={`rounded-xl h-9 text-xs ${studentType === "regular" ? "bg-orange-500 hover:bg-orange-600 text-white" : ""}`}
-            onClick={() => setStudentType("regular")}
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
-            Thành viên nhóm
-          </Button>
-          <Button
-            type="button"
-            variant={studentType === "leader" ? "default" : "outline"}
-            className={`rounded-xl h-9 text-xs ${studentType === "leader" ? "bg-orange-500 hover:bg-orange-600 text-white" : ""}`}
-            onClick={() => setStudentType("leader")}
-          >
-            Trưởng nhóm (Leader)
-          </Button>
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
         </div>
       </div>
 
       <Button
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl h-11 mt-2"
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl h-11 mt-2"
         onClick={handleRegister}
       >
         Tạo tài khoản sinh viên
