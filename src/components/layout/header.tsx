@@ -25,7 +25,6 @@ import { MobileMenuButton } from "@/components/layout/mobile-buttons";
 const roleDisplay: Record<string, string> = {
   admin: "Quản trị viên",
   lecturer: "Giảng viên",
-  student_leader: "Trưởng nhóm",
   student: "Thành viên",
 };
 
@@ -90,7 +89,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         {/* Right side: Notifications + Theme toggle + User Dropdown */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          
+
           {/* Notifications */}
           <Button
             variant="ghost"

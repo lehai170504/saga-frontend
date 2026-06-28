@@ -12,7 +12,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "lecturer" | "student" | "student_leader";
+  role: "admin" | "lecturer" | "student";
+  isLeader?: boolean;
   avatarInitials: string;
   group?: string;
 }
@@ -49,7 +50,8 @@ const MOCK_USERS: (User & { password: string })[] = [
     id: "u003",
     name: "Trưởng nhóm",
     email: "leader@student.edu.vn",
-    role: "student_leader",
+    role: "student",
+    isLeader: true,
     avatarInitials: "LD",
     group: "Nhóm PBL-07",
     password: "123456",

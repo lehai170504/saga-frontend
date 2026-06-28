@@ -119,18 +119,99 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Dashboard Image */}
-          <div className="aspect-[16/9] bg-[#0a0a0a] relative overflow-hidden group/image">
-            {/* Real Dashboard Image from Unsplash */}
-            <Image
-              src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-              alt="SAGA Dashboard Interface"
-              fill
-              className="object-cover group-hover/image:scale-105 transition-transform duration-1000 ease-out"
-              unoptimized
-            />
-            {/* Overlay Gradient for tech feel */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-10 pointer-events-none" />
+          {/* Dashboard Skeleton UI */}
+          <div className="aspect-[16/9] bg-[#0a0a0a] relative overflow-hidden group/image p-3 sm:p-5 flex gap-3 sm:gap-5 select-none">
+            {/* Sidebar Skeleton */}
+            <div className="w-12 sm:w-16 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center py-4 gap-4 shrink-0 shadow-inner">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 mb-2 sm:mb-6 shadow-lg shadow-orange-500/20" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/10" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/10" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/10" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/5 mt-auto" />
+            </div>
+
+            {/* Main Content Skeleton */}
+            <div className="flex-1 flex flex-col gap-3 sm:gap-5 overflow-hidden">
+              {/* Header */}
+              <div className="h-10 sm:h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between px-4 shrink-0">
+                <div className="w-1/3 h-3 sm:h-4 rounded-full bg-white/10" />
+                <div className="flex gap-2 items-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/20 bg-white/5" />
+                </div>
+              </div>
+
+              {/* Stats Row */}
+              <div className="grid grid-cols-4 gap-3 sm:gap-5 shrink-0 h-16 sm:h-24">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col justify-center gap-2 sm:gap-3 group-hover/image:bg-white/[0.07] transition-colors duration-500">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-orange-500/50" />
+                    </div>
+                    <div className="w-1/2 h-2 sm:h-3 rounded-full bg-white/20" />
+                    <div className="w-3/4 h-3 sm:h-4 rounded-full bg-white/40" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Middle Row (Git Graph) */}
+              <div className="h-28 sm:h-40 rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col gap-2 shrink-0">
+                <div className="w-1/4 h-3 sm:h-4 rounded-full bg-white/20 mb-1 sm:mb-2" />
+                <div className="flex-1 flex overflow-hidden">
+                  {/* Create a grid of tiny blocks resembling github contributions */}
+                  <div className="flex flex-col flex-wrap gap-[2px] sm:gap-1 h-full w-full opacity-80 mix-blend-screen">
+                    {[...Array(200)].map((_, i) => {
+                      // Pseudo-random intensity based on index to avoid hydration mismatch
+                      const val = (i * 29) % 100;
+                      let bgClass = "bg-white/5";
+                      if (val > 85) bgClass = "bg-emerald-400";
+                      else if (val > 60) bgClass = "bg-emerald-500/70";
+                      else if (val > 30) bgClass = "bg-emerald-500/40";
+                      return <div key={i} className={`w-[6px] h-[6px] sm:w-[10px] sm:h-[10px] rounded-[2px] ${bgClass}`} />
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Row */}
+              <div className="flex-1 flex gap-3 sm:gap-5 min-h-0">
+                {/* Bar chart */}
+                <div className="flex-[2] rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col gap-2 relative overflow-hidden">
+                  <div className="w-1/3 h-3 sm:h-4 rounded-full bg-white/20 mb-2" />
+                  <div className="flex-1 flex items-end justify-between gap-1 sm:gap-2 px-1 sm:px-2 z-10">
+                    {[40, 70, 45, 90, 65, 80, 55, 30, 85].map((h, i) => (
+                      <div key={i} className="w-full bg-blue-500/20 rounded-t-md relative group-hover/image:bg-blue-500/30 transition-colors duration-700 delay-75" style={{ height: `${h}%` }}>
+                        <div className="absolute top-0 left-0 w-full bg-blue-400 rounded-t-md" style={{ height: '4px' }} />
+                      </div>
+                    ))}
+                  </div>
+                  {/* Chart Grid Lines */}
+                  <div className="absolute inset-0 flex flex-col justify-end px-4 py-4 z-0 pointer-events-none opacity-20">
+                    <div className="w-full border-t border-dashed border-white/30 h-1/4" />
+                    <div className="w-full border-t border-dashed border-white/30 h-1/4" />
+                    <div className="w-full border-t border-dashed border-white/30 h-1/4" />
+                    <div className="w-full border-t border-white/40 h-0" />
+                  </div>
+                </div>
+
+                {/* Donut Chart */}
+                <div className="flex-[1] rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col items-center justify-center relative">
+                  {/* Fake Donut Chart via Borders */}
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full border-[8px] sm:border-[12px] border-white/5 relative group-hover/image:scale-105 transition-transform duration-700">
+                    <div className="absolute inset-[-8px] sm:inset-[-12px] rounded-full border-[8px] sm:border-[12px] border-orange-500 border-r-transparent border-t-transparent rotate-45" />
+                    <div className="absolute inset-[-8px] sm:inset-[-12px] rounded-full border-[8px] sm:border-[12px] border-blue-500 border-l-transparent border-b-transparent -rotate-12 opacity-80" />
+                  </div>
+                  <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none">
+                    <div className="text-base sm:text-xl font-black text-white">85%</div>
+                    <div className="text-[8px] sm:text-[10px] text-white/50 uppercase tracking-widest font-bold">Tiến độ</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Overlay Gradient for depth */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a0a] via-transparent to-[#0a0a0a]/40 pointer-events-none" />
           </div>
         </div>
 

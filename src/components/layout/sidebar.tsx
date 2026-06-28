@@ -30,7 +30,6 @@ interface SidebarProps {
 const roleDisplay = {
   admin: "Quản trị viên",
   lecturer: "Giảng viên",
-  student_leader: "Trưởng nhóm",
   student: "Thành viên",
 };
 
@@ -130,7 +129,6 @@ export function Sidebar({ onClose }: SidebarProps) {
             label: "Danh sách lớp học",
           },
         ];
-      case "student_leader":
       case "student":
         return [
           {

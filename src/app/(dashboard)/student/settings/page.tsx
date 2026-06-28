@@ -21,6 +21,10 @@ import {
   Globe,
   ExternalLink,
   ChevronRight,
+  Eye,
+  EyeOff,
+  Shield,
+  Lock,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -42,6 +46,14 @@ export default function SettingsPage() {
 
   // General settings states
   const [timezone, setTimezone] = useState("GMT+7");
+
+  // Change Password states
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -127,6 +139,26 @@ export default function SettingsPage() {
   const handleSaveGeneral = () => {
     localStorage.setItem("saga-timezone", timezone);
     toast.success("Cập nhật cấu hình cá nhân thành công!");
+  };
+
+  const handleChangePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.error("Vui lòng điền đầy đủ thông tin mật khẩu!");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Mật khẩu mới không khớp!");
+      return;
+    }
+    setIsChangingPassword(true);
+    setTimeout(() => {
+      setIsChangingPassword(false);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      toast.success("Đổi mật khẩu thành công!");
+    }, 1500);
   };
 
   return (
@@ -471,6 +503,86 @@ export default function SettingsPage() {
                   Lưu cấu hình cá nhân
                 </Button>
               </div>
+            </Card>
+
+            {/* Change Password Card */}
+            <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
+              <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
+                <Shield className="text-orange-500" size={18} />
+                Đổi mật khẩu
+              </h3>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold">Mật khẩu hiện tại</Label>
+                  <div className="relative flex items-center">
+                    <Key className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showOldPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold">Mật khẩu mới</Label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground text-xs font-bold">Xác nhận mật khẩu mới</Label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  className="w-full h-10 mt-2 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                >
+                  {isChangingPassword ? (
+                    <>
+                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    "Cập nhật mật khẩu"
+                  )}
+                </Button>
+              </form>
             </Card>
 
             {/* Quick Status / Profile Summary Card */}

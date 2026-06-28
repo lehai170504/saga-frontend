@@ -9,7 +9,7 @@ export default function StudentLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RouteGuard allowedRoles={["student", "student_leader"]}>
+    <RouteGuard allowedRoles={["student"]}>
       <div className="min-h-screen bg-background">
         <main className="w-full">{children}</main>
       </div>

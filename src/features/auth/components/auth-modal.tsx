@@ -26,7 +26,7 @@ export function AuthModal() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl px-6 shadow-sm transition-all hover:-translate-y-0.5">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl px-6 shadow-sm transition-all hover:-translate-y-0.5">
           Đăng nhập / Đăng ký
         </Button>
       </DialogTrigger>
@@ -56,13 +56,13 @@ export function AuthModal() {
             <TabsList className="grid w-full grid-cols-2 bg-muted p-1 rounded-xl">
               <TabsTrigger
                 value="login"
-                className="rounded-xl font-semibold data-[state=active]:bg-background data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
+                className="rounded-xl font-semibold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
               >
                 Đăng nhập
               </TabsTrigger>
               <TabsTrigger
                 value="register"
-                className="rounded-xl font-semibold data-[state=active]:bg-background data-[state=active]:text-orange-600 data-[state=active]:shadow-sm"
+                className="rounded-xl font-semibold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
               >
                 Đăng ký
               </TabsTrigger>
