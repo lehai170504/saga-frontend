@@ -104,17 +104,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-background animate-pulse shadow-[0_0_8px_rgba(243,24,66,0.8)]"></span>
           </Button>
 
-          {/* Dark Mode Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-full bg-muted/30 hover:bg-muted/80 border border-transparent hover:border-border/50 transition-all duration-300 hover:scale-105"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label="Chuyển đổi giao diện"
-          >
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 text-amber-500" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100 text-indigo-400" />
-          </Button>
+
 
           <div className="h-6 w-px bg-border/40 mx-2 hidden sm:block" />
 
@@ -153,6 +143,19 @@ export function Header({ onMenuClick }: HeaderProps) {
               >
                 <UserIcon className="mr-3 h-4 w-4" />
                 <span>Hồ sơ cá nhân</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTheme(theme === "dark" ? "light" : "dark");
+                }}
+              >
+                <div className="mr-3 relative h-4 w-4 flex items-center justify-center">
+                  <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
+                  <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
+                </div>
+                <span>Giao diện: {theme === "dark" ? "Sáng" : "Tối"}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem

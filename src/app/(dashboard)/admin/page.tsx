@@ -162,10 +162,18 @@ export default function AdminDashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <div className="lg:col-span-2">
-          <GraphProcessingChart />
+          {isLoading ? (
+            <Skeleton className="h-[400px] w-full rounded-3xl" />
+          ) : (
+            <GraphProcessingChart />
+          )}
         </div>
         <div className="lg:col-span-1">
-          <SystemAnomalyChart />
+          {isLoading ? (
+            <Skeleton className="h-[400px] w-full rounded-3xl" />
+          ) : (
+            <SystemAnomalyChart />
+          )}
         </div>
       </div>
 

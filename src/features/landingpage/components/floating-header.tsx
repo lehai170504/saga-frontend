@@ -3,10 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AuthModal } from "@/features/auth/components/auth-modal";
-
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function FloatingHeader() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <motion.div 
       initial={{ y: -100 }}
@@ -48,7 +51,15 @@ export function FloatingHeader() {
           </Link>
         </nav>
 
-        <div className="pr-1">
+        <div className="pr-1 flex items-center gap-2">
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted/80 transition-all duration-300 cursor-pointer relative"
+            aria-label="Chuyển đổi giao diện"
+          >
+            <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 text-amber-500" />
+            <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100 text-indigo-400" />
+          </button>
           <AuthModal />
         </div>
       </header>

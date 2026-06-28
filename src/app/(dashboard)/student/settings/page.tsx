@@ -442,35 +442,7 @@ export default function SettingsPage() {
               </h3>
               <div className="space-y-6">
 
-                {/* Theme Selection */}
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground text-xs font-bold flex items-center gap-1.5">
-                    <Sun size={14} />
-                    Chế độ hiển thị
-                  </Label>
-                  <div className="grid grid-cols-2 gap-2 bg-slate-100/60 dark:bg-slate-900 p-1 rounded-xl">
-                    <button
-                      onClick={() => setTheme("light")}
-                      className={`py-2 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "light"
-                        ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
-                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                        }`}
-                    >
-                      <Sun size={13} />
-                      Sáng
-                    </button>
-                    <button
-                      onClick={() => setTheme("dark")}
-                      className={`py-2 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${theme === "dark"
-                        ? "bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm"
-                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                        }`}
-                    >
-                      <Moon size={13} />
-                      Tối
-                    </button>
-                  </div>
-                </div>
+
 
                 {/* Timezone Selection */}
                 <div className="space-y-2">

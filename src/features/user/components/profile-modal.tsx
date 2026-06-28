@@ -148,9 +148,11 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               <TabsTrigger value="security" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
                 <ShieldCheck className="w-4 h-4 mr-2" /> Bảo mật
               </TabsTrigger>
-              <TabsTrigger value="settings" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
-                <Mail className="w-4 h-4 mr-2" /> Cài đặt
-              </TabsTrigger>
+              {user.role === "student" && (
+                <TabsTrigger value="settings" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
+                  <Mail className="w-4 h-4 mr-2" /> Cài đặt
+                </TabsTrigger>
+              )}
             </TabsList>
           </div>
 
@@ -336,83 +338,66 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               </form>
             </TabsContent>
 
-            <TabsContent value="settings" className="mt-0 space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-sm font-bold">Chế độ tối (Dark Mode)</Label>
-                    <p className="text-xs text-muted-foreground">Chuyển đổi giao diện sang nền tối.</p>
-                  </div>
-                  <Switch
-                    checked={theme === "dark"}
-                    onCheckedChange={(checked) => {
-                      setTheme(checked ? "dark" : "light");
-                      toast.success(checked ? "Đã bật chế độ tối 🌙" : "Đã bật chế độ sáng ☀️");
-                    }}
-                  />
-                </div>
+            {user.role === "student" && (
+              <TabsContent value="settings" className="mt-0 space-y-4">
+                <div className="space-y-4">
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold mb-1">Tích hợp API</h4>
+                      <p className="text-xs text-muted-foreground">Kết nối với Jira và GitHub.</p>
+                    </div>
 
-                {(user.role === "student") && (
-                  <>
-                    <div className="h-px bg-border my-4" />
-                    <div className="space-y-4">
-                      <div>
-                        <h4 className="text-sm font-bold mb-1">Tích hợp API</h4>
-                        <p className="text-xs text-muted-foreground">Kết nối với Jira và GitHub.</p>
-                      </div>
-
-                      <div className="space-y-3">
-                        <Label className="text-xs font-bold">GitHub Personal Access Token</Label>
-                        <div className="flex flex-col gap-2">
-                          <Input
-                            type="password"
-                            placeholder="ghp_xxxxxxxxxxxx"
-                            value={githubToken}
-                            onChange={(e) => setGithubToken(e.target.value)}
-                            className="bg-background border-border focus-visible:ring-orange-500"
-                          />
-                          <Button
-                            variant="secondary"
-                            className="w-full shrink-0"
-                            onClick={() => handleValidateToken("github")}
-                            disabled={isValidatingGithub}
-                          >
-                            {isValidatingGithub ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Xác thực...</> : "Xác thực Token"}
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3">
-                        <Label className="text-xs font-bold">Jira API Token</Label>
-                        <div className="flex flex-col gap-2">
-                          <Input
-                            type="password"
-                            placeholder="Nhập Jira token..."
-                            value={jiraToken}
-                            onChange={(e) => setJiraToken(e.target.value)}
-                            className="bg-background border-border focus-visible:ring-orange-500"
-                          />
-                          <Button
-                            variant="secondary"
-                            className="w-full shrink-0"
-                            onClick={() => handleValidateToken("jira")}
-                            disabled={isValidatingJira}
-                          >
-                            {isValidatingJira ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Xác thực...</> : "Xác thực Token"}
-                          </Button>
-                        </div>
+                    <div className="space-y-3">
+                      <Label className="text-xs font-bold">GitHub Personal Access Token</Label>
+                      <div className="flex flex-col gap-2">
+                        <Input
+                          type="password"
+                          placeholder="ghp_xxxxxxxxxxxx"
+                          value={githubToken}
+                          onChange={(e) => setGithubToken(e.target.value)}
+                          className="bg-background border-border focus-visible:ring-orange-500"
+                        />
+                        <Button
+                          variant="secondary"
+                          className="w-full shrink-0"
+                          onClick={() => handleValidateToken("github")}
+                          disabled={isValidatingGithub}
+                        >
+                          {isValidatingGithub ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Xác thực...</> : "Xác thực Token"}
+                        </Button>
                       </div>
                     </div>
-                  </>
-                )}
-              </div>
 
-              <div className="flex justify-end mt-4 pt-4 border-t border-border">
-                <Button variant="default" onClick={handleSaveSettings} disabled={isSavingSettings} className="bg-primary hover:bg-primary/90 font-bold text-primary-foreground rounded-xl w-full h-11">
-                  {isSavingSettings ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang lưu...</> : "Lưu cấu hình"}
-                </Button>
-              </div>
-            </TabsContent>
+                    <div className="space-y-3">
+                      <Label className="text-xs font-bold">Jira API Token</Label>
+                      <div className="flex flex-col gap-2">
+                        <Input
+                          type="password"
+                          placeholder="Nhập Jira token..."
+                          value={jiraToken}
+                          onChange={(e) => setJiraToken(e.target.value)}
+                          className="bg-background border-border focus-visible:ring-orange-500"
+                        />
+                        <Button
+                          variant="secondary"
+                          className="w-full shrink-0"
+                          onClick={() => handleValidateToken("jira")}
+                          disabled={isValidatingJira}
+                        >
+                          {isValidatingJira ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Xác thực...</> : "Xác thực Token"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end mt-4 pt-4 border-t border-border">
+                  <Button variant="default" onClick={handleSaveSettings} disabled={isSavingSettings} className="bg-primary hover:bg-primary/90 font-bold text-primary-foreground rounded-xl w-full h-11">
+                    {isSavingSettings ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang lưu...</> : "Lưu cấu hình"}
+                  </Button>
+                </div>
+              </TabsContent>
+            )}
           </div>
         </Tabs>
       </DialogContent>
