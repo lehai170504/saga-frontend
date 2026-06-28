@@ -7,7 +7,6 @@ import { MainContent } from "@/components/layout/main-content";
 import { MobileOverlay } from "@/components/layout/mobile-overlay";
 import { usePathname } from "next/navigation";
 import {
-  MobileMenuButton,
   MobileCloseButton,
 } from "@/components/layout/mobile-buttons";
 import { RouteGuard } from "@/components/shared/RouteGuard";
@@ -66,7 +65,7 @@ export default function DashboardLayout({
               </div>
             )}
 
-            <div className="flex-1 h-full min-w-0 overflow-hidden bg-background">
+            <div className="flex flex-col flex-1 h-full min-w-0 overflow-hidden bg-background">
               <MainContent>{children}</MainContent>
             </div>
           </div>

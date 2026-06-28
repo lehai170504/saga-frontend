@@ -220,7 +220,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
           <Card className="lg:col-span-1 rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6 flex items-center gap-2">
-                <Edit3 size={16} /> Ghi chú Giảng viên (Override)
+                <Edit3 size={16} /> Ghi chú Giảng viên (Thủ công)
               </h3>
               
               <div className="flex-1 flex flex-col justify-end space-y-6">

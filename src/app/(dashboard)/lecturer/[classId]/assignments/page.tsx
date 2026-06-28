@@ -34,7 +34,7 @@ export default function AssignmentsManagementPage({ params }: { params: Promise<
           <Card key={assignment.id} className="rounded-2xl shadow-sm border-border hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex justify-between items-start">
-                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg">
+                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl">
                   <FileText size={20} />
                 </div>
                 {assignment.status === "ongoing" ? (

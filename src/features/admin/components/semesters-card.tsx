@@ -59,7 +59,7 @@ export function SemestersGrid({ data, isOverrideMode, onEdit, onDelete }: Semest
           <CardContent className="p-6 pt-7">
             {semester.isManual && (
               <div className="absolute top-1.5 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
-                MANUAL
+                THỦ CÔNG
               </div>
             )}
             <div className="flex justify-between items-start mb-6">

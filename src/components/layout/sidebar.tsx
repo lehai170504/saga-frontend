@@ -18,6 +18,8 @@ import {
   TrendingDown,
   Clock,
   Logs,
+  Link2,
+  UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -121,7 +123,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
             {
               href: `/lecturer/${classId}/heatmap`,
               icon: <Activity size={18} />,
-              label: "Heatmap hoạt động",
+              label: "Biểu đồ nhiệt hoạt động",
             },
             {
               href: `/lecturer/${classId}/risks`,
@@ -158,6 +160,16 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
             href: "/student/contribution",
             icon: <Users size={18} />,
             label: "Đóng góp cá nhân",
+          },
+          {
+            href: "/student/settings",
+            icon: <Link2 size={18} />,
+            label: "Kết nối tài khoản",
+          },
+          {
+            href: "/student/assessment",
+            icon: <UserCheck size={18} />,
+            label: "Đánh giá thành viên",
           },
         ];
       default:
@@ -259,10 +271,10 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium ${active
-        ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm font-semibold"
-        : "text-muted-foreground hover:bg-orange-50 hover:text-orange-600 dark:hover:bg-orange-950/40 dark:hover:text-orange-400"
-        } ${isCollapsed ? "justify-center" : ""}`}
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all font-medium ${active
+        ? "bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 shadow-sm"
+        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+        }`}
     >
       <div className="shrink-0">{icon}</div>
       {!isCollapsed && <span className="text-[14px] truncate">{label}</span>}

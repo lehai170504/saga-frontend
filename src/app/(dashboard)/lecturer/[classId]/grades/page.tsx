@@ -84,7 +84,7 @@ export default function GradesManagementPage() {
                   className="pl-9 bg-background border-border/50 rounded-xl"
                 />
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-3 py-1.5 rounded-lg border border-border/50">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-3 py-1.5 rounded-xl border border-border/50">
                 <Info size={14} className="text-primary" />
                 <span>Điểm Hệ thống = 40% Code + 30% Teamwork + 30% Presentation</span>
               </div>

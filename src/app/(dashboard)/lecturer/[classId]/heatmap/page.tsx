@@ -68,7 +68,7 @@ export default function HeatmapActivityPage({ params }: { params: Promise<{ clas
               Density Analysis
             </div>
             <h1 className="text-3xl font-black tracking-tight text-foreground">
-              Heatmap Hoạt động
+              Biểu đồ nhiệt Hoạt động
             </h1>
             <p className="text-muted-foreground font-medium">Bản đồ nhiệt độ theo dõi tần suất đóng góp của sinh viên lớp {classId}</p>
           </div>
@@ -169,7 +169,7 @@ export default function HeatmapActivityPage({ params }: { params: Promise<{ clas
                             className={`w-full aspect-square rounded-[4px] border transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer ${getColorClass(dayData.count)}`}
                           />
                           {/* Custom Tooltip on Hover */}
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-3 py-1.5 bg-foreground text-background text-xs font-bold rounded-lg opacity-0 invisible group-hover/cell:opacity-100 group-hover/cell:visible transition-all z-20 shadow-xl pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground">
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-3 py-1.5 bg-foreground text-background text-xs font-bold rounded-xl opacity-0 invisible group-hover/cell:opacity-100 group-hover/cell:visible transition-all z-20 shadow-xl pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground">
                             {dayData.count === 0 ? 'Không có hoạt động' : `${dayData.count} hoạt động`} vào Ngày {dayData.day}
                           </div>
                         </div>
