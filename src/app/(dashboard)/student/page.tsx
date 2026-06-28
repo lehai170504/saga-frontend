@@ -60,47 +60,173 @@ const recentActivities = [
 export default function OverviewDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedClass, setSelectedClass] = useState("");
+
+  // Semester and Class descriptions mapping (matching layout.tsx)
+  const semestersData = [
+    { id: "summer-2026", name: "Summer 2026" },
+    { id: "spring-2026", name: "Spring 2026" },
+    { id: "fall-2025", name: "Fall 2025" },
+  ];
+
+  interface Subject {
+    id: string;
+    code: string;
+    name: string;
+    icon: string;
+    classes: { id: string; name: string; project: string }[];
+  }
+
+  const subjectsData: Record<string, Subject[]> = {
+    "summer-2026": [
+      {
+        id: "cse391",
+        code: "CSE391",
+        name: "Công nghệ phần mềm",
+        icon: "code",
+        classes: [
+          { id: "cse391-pbl07", name: "Lớp SE102.O12", project: "Nhóm PBL-07" },
+          { id: "cse391-pbl08", name: "Lớp SE102.O13", project: "Nhóm PBL-08" },
+        ]
+      },
+      {
+        id: "prn231",
+        code: "PRN231",
+        name: "Lập trình Web với .NET",
+        icon: "globe",
+        classes: [
+          { id: "prn231-pbl02", name: "Lớp SE103.A11", project: "Nhóm PBL-02" },
+          { id: "prn231-pbl03", name: "Lớp SE103.A12", project: "Nhóm PBL-03" },
+        ]
+      }
+    ],
+    "spring-2026": [
+      {
+        id: "swp391",
+        code: "SWP391",
+        name: "Dự án Phát triển Phần mềm",
+        icon: "terminal",
+        classes: [
+          { id: "swp391-pbl03", name: "Lớp SE104.M21", project: "Nhóm PBL-03" },
+          { id: "swp391-pbl04", name: "Lớp SE104.M22", project: "Nhóm PBL-04" },
+        ]
+      },
+      {
+        id: "swr302",
+        code: "SWR302",
+        name: "Yêu cầu phần mềm",
+        icon: "book",
+        classes: [
+          { id: "swr302-pbl01", name: "Lớp SE105.D11", project: "Nhóm PBL-01" },
+        ]
+      }
+    ],
+    "fall-2025": [
+      {
+        id: "prn211",
+        code: "PRN211",
+        name: "Lập trình C# cơ bản",
+        icon: "cpu",
+        classes: [
+          { id: "prn211-pbl05", name: "Lớp SE106.T12", project: "Nhóm PBL-05" },
+        ]
+      },
+      {
+        id: "mad101",
+        code: "MAD101",
+        name: "Toán rời rạc ứng dụng",
+        icon: "database",
+        classes: [
+          { id: "mad101-pbl04", name: "Lớp SE107.V11", project: "Nhóm PBL-04" },
+        ]
+      }
+    ],
+  };
+
+  const getSemesterName = (semId: string) => {
+    return semestersData.find((s) => s.id === semId)?.name ?? semId;
+  };
+
+  const getClassName = (semId: string, classId: string) => {
+    if (!semId || !classId) return "";
+    const subjects = subjectsData[semId] || [];
+    for (const sub of subjects) {
+      const cls = sub.classes.find((c) => c.id === classId);
+      if (cls) return `${sub.name} - ${cls.name}`;
+    }
+    return classId;
+  };
+
+  const getClassProject = (semId: string, classId: string) => {
+    if (!semId || !classId) return "";
+    const subjects = subjectsData[semId] || [];
+    for (const sub of subjects) {
+      const cls = sub.classes.find((c) => c.id === classId);
+      if (cls) return cls.project;
+    }
+    return "";
+  };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+
+    const loadSelection = () => {
+      const sem = localStorage.getItem("saga-student-semester") || "";
+      const cls = localStorage.getItem("saga-student-class") || "";
+      setSelectedSemester(sem);
+      setSelectedClass(cls);
+    };
+
+    loadSelection();
     const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
+
+    // Listen to custom class changed events
+    window.addEventListener("saga-student-class-changed", loadSelection);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("saga-student-class-changed", loadSelection);
+    };
   }, []);
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-500 bg-background min-h-screen">
       <PageHeader
         title="Tổng quan — Sprint 4"
-        description="Nhóm PBL-07 · CSE391 Công nghệ phần mềm"
+        description={
+          selectedSemester && selectedClass
+            ? `${getSemesterName(selectedSemester)} · ${getClassName(selectedSemester, selectedClass)}`
+            : "CSE391 - Công nghệ phần mềm"
+        }
       />
 
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-32 rounded-2xl" />
-            ))
+            <Skeleton key={i} className="h-32 rounded-2xl" />
+          ))
           : [...Array(4)].map((_, i) => (
-              <Card
-                key={i}
-                className="border-border shadow-sm rounded-2xl bg-card text-card-foreground p-5 hover:shadow-md transition-all"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-2.5 rounded-xl bg-muted">
-                    <GitCommit className="h-5 w-5 text-foreground" />
-                  </div>
-                  <div className="text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 px-2 py-1 rounded-full text-xs font-bold transition-colors">
-                    +12%
-                  </div>
+            <Card
+              key={i}
+              className="border-border shadow-sm rounded-2xl bg-card text-card-foreground p-5 hover:shadow-md transition-all"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="p-2.5 rounded-xl bg-muted">
+                  <GitCommit className="h-5 w-5 text-foreground" />
                 </div>
-                <h3 className="text-3xl font-extrabold text-foreground">
-                  1.284
-                </h3>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                  Tổng số Commits
-                </p>
-              </Card>
-            ))}
+                <div className="text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 px-2 py-1 rounded-full text-xs font-bold transition-colors">
+                  +12%
+                </div>
+              </div>
+              <h3 className="text-3xl font-extrabold text-foreground">
+                1.284
+              </h3>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                Tổng số Commits
+              </p>
+            </Card>
+          ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

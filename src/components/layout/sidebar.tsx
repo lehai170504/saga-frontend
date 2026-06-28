@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -25,6 +26,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -40,6 +42,7 @@ type NavItemType = {
   href: string;
   icon: React.ReactNode;
   label: string;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 type NavGroup = {
@@ -51,6 +54,18 @@ export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  const [hasStudentSelection, setHasStudentSelection] = useState(false);
+
+  useEffect(() => {
+    const checkSelection = () => {
+      setHasStudentSelection(!!localStorage.getItem("saga-student-class"));
+    };
+    checkSelection();
+    window.addEventListener("saga-student-class-changed", checkSelection);
+    return () => {
+      window.removeEventListener("saga-student-class-changed", checkSelection);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -130,7 +145,29 @@ export function Sidebar({ onClose }: SidebarProps) {
           }
         ];
       case "student":
-        return [
+        const studentGroups: NavGroup[] = [];
+        
+        if (hasStudentSelection) {
+          studentGroups.push({
+            title: "Điều hướng",
+            items: [
+              {
+                href: "/student",
+                icon: <ArrowLeft size={18} />,
+                label: "Đổi môn học khác",
+                onClick: (e) => {
+                  e.preventDefault();
+                  localStorage.removeItem("saga-student-semester");
+                  localStorage.removeItem("saga-student-class");
+                  window.dispatchEvent(new Event("saga-student-class-changed"));
+                  router.push("/student");
+                }
+              }
+            ]
+          });
+        }
+        
+        studentGroups.push(
           {
             title: "Cá nhân & Nhóm",
             items: [
@@ -153,7 +190,8 @@ export function Sidebar({ onClose }: SidebarProps) {
               { href: "/student/settings", icon: <Link2 size={18} />, label: "Kết nối tài khoản" },
             ]
           }
-        ];
+        );
+        return studentGroups;
       default:
         return [];
     }
@@ -203,7 +241,12 @@ export function Sidebar({ onClose }: SidebarProps) {
                   icon={item.icon}
                   label={item.label}
                   active={pathname === item.href || (item.href !== '/admin' && item.href !== '/lecturer' && item.href !== '/student' && pathname.startsWith(item.href))}
-                  onClick={onClose}
+                  onClick={(e) => {
+                    if (item.onClick) {
+                      item.onClick(e);
+                    }
+                    if (onClose) onClose();
+                  }}
                 />
               ))}
             </div>
@@ -236,7 +279,7 @@ function NavItem({
   icon: React.ReactNode;
   label: string;
   active?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   return (
     <Link

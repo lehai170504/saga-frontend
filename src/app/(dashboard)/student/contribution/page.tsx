@@ -63,10 +63,106 @@ export default function ContributionPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedUser, setSelectedUser] =
     useState<TeamMemberContribution | null>(null);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+
+  const semestersData = [
+    { id: "summer-2026", name: "Summer 2026" },
+    { id: "spring-2026", name: "Spring 2026" },
+    { id: "fall-2025", name: "Fall 2025" },
+  ];
+
+  interface Subject {
+    id: string;
+    code: string;
+    name: string;
+    icon: string;
+    classes: { id: string; name: string; project: string }[];
+  }
+
+  const subjectsData: Record<string, Subject[]> = {
+    "summer-2026": [
+      {
+        id: "cse391",
+        code: "CSE391",
+        name: "Công nghệ phần mềm",
+        icon: "code",
+        classes: [
+          { id: "cse391-pbl07", name: "Lớp SE102.O12", project: "Nhóm PBL-07" },
+          { id: "cse391-pbl08", name: "Lớp SE102.O13", project: "Nhóm PBL-08" },
+        ]
+      },
+      {
+        id: "prn231",
+        code: "PRN231",
+        name: "Lập trình Web với .NET",
+        icon: "globe",
+        classes: [
+          { id: "prn231-pbl02", name: "Lớp SE103.A11", project: "Nhóm PBL-02" },
+          { id: "prn231-pbl03", name: "Lớp SE103.A12", project: "Nhóm PBL-03" },
+        ]
+      }
+    ],
+    "spring-2026": [
+      {
+        id: "swp391",
+        code: "SWP391",
+        name: "Dự án Phát triển Phần mềm",
+        icon: "terminal",
+        classes: [
+          { id: "swp391-pbl03", name: "Lớp SE104.M21", project: "Nhóm PBL-03" },
+          { id: "swp391-pbl04", name: "Lớp SE104.M22", project: "Nhóm PBL-04" },
+        ]
+      },
+      {
+        id: "swr302",
+        code: "SWR302",
+        name: "Yêu cầu phần mềm",
+        icon: "book",
+        classes: [
+          { id: "swr302-pbl01", name: "Lớp SE105.D11", project: "Nhóm PBL-01" },
+        ]
+      }
+    ],
+    "fall-2025": [
+      {
+        id: "prn211",
+        code: "PRN211",
+        name: "Lập trình C# cơ bản",
+        icon: "cpu",
+        classes: [
+          { id: "prn211-pbl05", name: "Lớp SE106.T12", project: "Nhóm PBL-05" },
+        ]
+      },
+      {
+        id: "mad101",
+        code: "MAD101",
+        name: "Toán rời rạc ứng dụng",
+        icon: "database",
+        classes: [
+          { id: "mad101-pbl04", name: "Lớp SE107.V11", project: "Nhóm PBL-04" },
+        ]
+      }
+    ],
+  };
+
+  const getClassName = (semId: string, classId: string) => {
+    if (!semId || !classId) return "";
+    const subjects = subjectsData[semId] || [];
+    for (const sub of subjects) {
+      const cls = sub.classes.find((c) => c.id === classId);
+      if (cls) return `${sub.name} - ${cls.name}`;
+    }
+    return classId;
+  };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+    const sem = localStorage.getItem("saga-student-semester") || "";
+    const cls = localStorage.getItem("saga-student-class") || "";
+    setSelectedSemester(sem);
+    setSelectedClass(cls);
+
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
@@ -88,7 +184,7 @@ export default function ContributionPage() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
         title="Đóng góp cá nhân"
-        description="Đánh giá chi tiết năng lực, hiệu suất và mức độ đóng góp của từng thành viên trong nhóm PBL-07."
+        description={`Đánh giá chi tiết năng lực, hiệu suất và mức độ đóng góp của từng thành viên trong ${getClassName(selectedSemester, selectedClass)}.`}
       />
 
       {/* Main Grid */}
@@ -191,71 +287,71 @@ export default function ContributionPage() {
                 <TableBody>
                   {isLoading
                     ? Array.from({ length: 5 }).map((_, idx) => (
-                        <TableRow key={idx} className="border-b border-border">
-                          <TableCell className="pl-6">
-                            <Skeleton className="h-4 w-4 bg-muted" />
+                      <TableRow key={idx} className="border-b border-border">
+                        <TableCell className="pl-6">
+                          <Skeleton className="h-4 w-4 bg-muted" />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Skeleton className="w-9 h-9 rounded-full bg-muted" />
+                            <Skeleton className="h-4 w-24 bg-muted" />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-8 ml-auto bg-muted" />
+                        </TableCell>
+                        <TableCell className="pr-6">
+                          <Skeleton className="h-6 w-10 rounded-full ml-auto bg-muted" />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                    : teamContributionRows.map((row, index) => {
+                      const scoreBadgeClass =
+                        row.score >= 8.0
+                          ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                          : row.score >= 5.0
+                            ? "bg-orange-100/80 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400"
+                            : "bg-red-100/80 text-red-600 dark:bg-red-950/40 dark:text-red-400";
+                      return (
+                        <TableRow
+                          key={row.id}
+                          onClick={() => handleSelectUser(row)}
+                          className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer group"
+                        >
+                          <TableCell className="pl-6 font-medium text-muted-foreground text-sm">
+                            {index + 1}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <Skeleton className="w-9 h-9 rounded-full bg-muted" />
-                              <Skeleton className="h-4 w-24 bg-muted" />
+                              <UserAvatar
+                                name={row.name}
+                                bgColorClass={
+                                  avatarColors[index % avatarColors.length]
+                                }
+                              />
+                              <div className="flex flex-col">
+                                <span className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
+                                  {row.name}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {row.role}
+                                </span>
+                              </div>
                             </div>
                           </TableCell>
-                          <TableCell>
-                            <Skeleton className="h-4 w-8 ml-auto bg-muted" />
+                          <TableCell className="text-right font-medium text-foreground text-sm">
+                            {row.commits}
                           </TableCell>
-                          <TableCell className="pr-6">
-                            <Skeleton className="h-6 w-10 rounded-full ml-auto bg-muted" />
+                          <TableCell className="text-right pr-6">
+                            <span
+                              className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${scoreBadgeClass}`}
+                            >
+                              {row.score.toFixed(1)}
+                            </span>
                           </TableCell>
                         </TableRow>
-                      ))
-                    : teamContributionRows.map((row, index) => {
-                        const scoreBadgeClass =
-                          row.score >= 8.0
-                            ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
-                            : row.score >= 5.0
-                              ? "bg-orange-100/80 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400"
-                              : "bg-red-100/80 text-red-600 dark:bg-red-950/40 dark:text-red-400";
-                        return (
-                          <TableRow
-                            key={row.id}
-                            onClick={() => handleSelectUser(row)}
-                            className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer group"
-                          >
-                            <TableCell className="pl-6 font-medium text-muted-foreground text-sm">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <UserAvatar
-                                  name={row.name}
-                                  bgColorClass={
-                                    avatarColors[index % avatarColors.length]
-                                  }
-                                />
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
-                                    {row.name}
-                                  </span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {row.role}
-                                  </span>
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-right font-medium text-foreground text-sm">
-                              {row.commits}
-                            </TableCell>
-                            <TableCell className="text-right pr-6">
-                              <span
-                                className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${scoreBadgeClass}`}
-                              >
-                                {row.score.toFixed(1)}
-                              </span>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                      );
+                    })}
                 </TableBody>
               </Table>
             )}
