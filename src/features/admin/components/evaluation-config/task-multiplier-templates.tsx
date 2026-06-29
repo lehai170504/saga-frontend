@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Plus, Trash2, ShieldAlert, Copy } from "lucide-react";
+import { Plus, Trash2, ShieldAlert, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type Multiplier = {
   id: string;
@@ -19,95 +18,40 @@ type Template = {
   multipliers: Multiplier[];
 };
 
-const initialTemplates: Template[] = [
-  {
-    id: "1",
-    name: "Mẫu Đồ án Công nghệ Thông tin (IT)",
-    description: "Dành cho các lớp PBL chuyên ngành IT, phần mềm, ứng dụng.",
-    multipliers: [
-      { id: "1a", name: "Lập trình & Logic", value: 2.0 },
-      { id: "1b", name: "Thiết kế Kiến trúc/Database", value: 2.5 },
-      { id: "1c", name: "Viết Tài liệu & Test", value: 1.0 },
-    ]
-  },
-  {
-    id: "2",
-    name: "Mẫu Đồ án Kinh tế / Marketing",
-    description: "Dành cho các lớp PBL chuyên ngành Quản trị, Marketing.",
-    multipliers: [
-      { id: "2a", name: "Nghiên cứu Thị trường", value: 2.0 },
-      { id: "2b", name: "Chạy chiến dịch Ads", value: 2.0 },
-      { id: "2c", name: "Viết Content/Design", value: 1.5 },
-      { id: "2d", name: "Thuyết trình & Pitching", value: 1.5 },
-    ]
-  }
-];
+const seTemplate: Template = {
+  id: "se-fixed-template",
+  name: "Bộ Khung Hệ số Kỹ thuật Phần mềm (SE)",
+  description: "Bộ khung cố định dành riêng cho các môn học và đồ án thuộc khối ngành Software Engineering.",
+  multipliers: [
+    { id: "1a", name: "Lập trình & Logic (Code)", value: 2.0 },
+    { id: "1b", name: "Thiết kế Kiến trúc/Database", value: 1.5 },
+    { id: "1c", name: "Viết Tài liệu (Docs)", value: 1.0 },
+    { id: "1d", name: "Kiểm thử (Testing)", value: 1.0 },
+  ]
+};
 
 export function TaskMultiplierTemplates() {
-  const [templates, setTemplates] = useState<Template[]>(initialTemplates);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newTemplateName, setNewTemplateName] = useState("");
-  const [newTemplateDesc, setNewTemplateDesc] = useState("");
+  const [template, setTemplate] = useState<Template>(seTemplate);
 
-  const handleAddTemplate = () => {
-    if (!newTemplateName.trim()) return;
-    setTemplates([...templates, {
-      id: Date.now().toString(),
-      name: newTemplateName,
-      description: newTemplateDesc || "Không có mô tả",
-      multipliers: [{ id: Date.now().toString(), name: "Công việc cốt lõi", value: 1.0 }]
-    }]);
-    setNewTemplateName("");
-    setNewTemplateDesc("");
-    setIsAddModalOpen(false);
-  };
-
-  const removeTemplate = (id: string) => {
-    setTemplates(templates.filter(t => t.id !== id));
-  };
-
-  const duplicateTemplate = (template: Template) => {
-    const newTemplate = {
+  const updateMultiplier = (multId: string, field: "name" | "value", value: string | number) => {
+    setTemplate({
       ...template,
-      id: Date.now().toString(),
-      name: `${template.name} (Copy)`,
-      multipliers: template.multipliers.map(m => ({ ...m, id: m.id + "-copy-" + Date.now() }))
-    };
-    setTemplates([...templates, newTemplate]);
+      multipliers: template.multipliers.map(m => m.id === multId ? { ...m, [field]: value } : m)
+    });
   };
 
-  const updateTemplateField = (tplId: string, field: "name" | "description", value: string) => {
-    setTemplates(templates.map(t => t.id === tplId ? { ...t, [field]: value } : t));
+  const addMultiplier = () => {
+    setTemplate({
+      ...template,
+      multipliers: [...template.multipliers, { id: Date.now().toString(), name: "Công việc mới", value: 1.0 }]
+    });
   };
 
-  const updateMultiplier = (tplId: string, multId: string, field: "name" | "value", value: string | number) => {
-    setTemplates(templates.map(t => {
-      if (t.id !== tplId) return t;
-      return {
-        ...t,
-        multipliers: t.multipliers.map(m => m.id === multId ? { ...m, [field]: value } : m)
-      };
-    }));
-  };
-
-  const addMultiplier = (tplId: string) => {
-    setTemplates(templates.map(t => {
-      if (t.id !== tplId) return t;
-      return {
-        ...t,
-        multipliers: [...t.multipliers, { id: Date.now().toString(), name: "Công việc mới", value: 1.0 }]
-      };
-    }));
-  };
-
-  const removeMultiplier = (tplId: string, multId: string) => {
-    setTemplates(templates.map(t => {
-      if (t.id !== tplId) return t;
-      return {
-        ...t,
-        multipliers: t.multipliers.filter(m => m.id !== multId)
-      };
-    }));
+  const removeMultiplier = (multId: string) => {
+    setTemplate({
+      ...template,
+      multipliers: template.multipliers.filter(m => m.id !== multId)
+    });
   };
 
   return (
@@ -116,120 +60,90 @@ export function TaskMultiplierTemplates() {
         <div className="flex items-start gap-3">
           <ShieldAlert className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
-            <p className="font-bold text-sm">Quản lý Bộ khung Hệ số (Templates)</p>
-            <p className="text-xs mt-1">Vì mỗi môn học có tính chất khác nhau, Admin chỉ tạo ra các "Bộ khung mẫu". Giảng viên sẽ chọn khung phù hợp và có quyền tự chỉnh sửa Hệ số cho từng lớp của mình.</p>
+            <p className="font-bold text-sm">Quản lý Bộ khung Hệ số (Cố định cho SE)</p>
+            <p className="text-xs mt-1">Hệ thống hiện tại áp dụng cho khối ngành SE nên chỉ sử dụng một Bộ khung hệ số cố định duy nhất. Admin có thể tùy chỉnh danh sách loại công việc và hệ số ở bên dưới.</p>
           </div>
         </div>
-
-        <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="shrink-0 bg-background hover:bg-muted border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold ml-4">
-              <Plus className="w-4 h-4 mr-2" /> Tạo Bộ khung mới
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-2xl">
-            <DialogHeader>
-              <DialogTitle>Tạo Bộ khung Hệ số mới</DialogTitle>
-              <DialogDescription>
-                Nhập tên và mô tả cho bộ khung mới. Sau khi tạo, bạn có thể chỉnh sửa chi tiết các loại công việc ở bên dưới.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="name" className="text-sm font-bold">Tên Bộ khung</Label>
-                <Input
-                  id="name"
-                  value={newTemplateName}
-                  onChange={(e) => setNewTemplateName(e.target.value)}
-                  placeholder="VD: Đồ án Kỹ thuật Điện"
-                  className="rounded-xl h-10"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="desc" className="text-sm font-bold">Mô tả ngắn</Label>
-                <Input
-                  id="desc"
-                  value={newTemplateDesc}
-                  onChange={(e) => setNewTemplateDesc(e.target.value)}
-                  placeholder="Dành cho sinh viên khối ngành kỹ thuật..."
-                  className="rounded-xl h-10"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddModalOpen(false)} className="rounded-xl">Hủy</Button>
-              <Button onClick={handleAddTemplate} className="rounded-xl bg-primary text-primary-foreground font-bold">Tạo Bộ khung</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {templates.map((tpl) => (
-          <Card key={tpl.id} className="rounded-2xl border-border bg-card/40 backdrop-blur-xl shadow-sm hover:shadow-md transition-all flex flex-col">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <Card className="rounded-2xl border-border bg-card/40 backdrop-blur-xl shadow-sm flex flex-col h-full">
             <CardHeader className="pb-4">
-              <div className="space-y-3">
-                <Input
-                  value={tpl.name}
-                  onChange={(e) => updateTemplateField(tpl.id, "name", e.target.value)}
-                  className="font-extrabold text-lg h-10 rounded-xl bg-background border-border/50 focus-visible:ring-primary/20"
-                />
-                <Input
-                  value={tpl.description}
-                  onChange={(e) => updateTemplateField(tpl.id, "description", e.target.value)}
-                  className="text-sm h-8 rounded-lg bg-transparent border-transparent focus-visible:ring-primary/20 px-1"
-                />
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-xl text-primary">{template.name}</h3>
+                <p className="text-sm text-muted-foreground">{template.description}</p>
               </div>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col">
-              <div className="space-y-3 flex-1 mb-6">
+            <CardContent>
+              <div className="space-y-3">
                 <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Danh sách Loại công việc & Hệ số</Label>
                 <div className="p-3 bg-muted/30 rounded-xl border border-border/50 space-y-3">
-                  {tpl.multipliers.map(m => (
+                  {template.multipliers.map(m => (
                     <div key={m.id} className="flex items-center gap-3">
                       <Input
                         value={m.name}
-                        onChange={(e) => updateMultiplier(tpl.id, m.id, "name", e.target.value)}
-                        className="h-8 text-sm font-medium bg-background"
+                        onChange={(e) => updateMultiplier(m.id, "name", e.target.value)}
+                        className="h-10 text-sm font-medium bg-background"
                       />
                       <Input
                         type="number"
                         step="0.1"
                         value={m.value}
-                        onChange={(e) => updateMultiplier(tpl.id, m.id, "value", parseFloat(e.target.value) || 0)}
-                        className="h-8 w-20 text-center font-bold text-primary bg-primary/5"
+                        onChange={(e) => updateMultiplier(m.id, "value", parseFloat(e.target.value) || 0)}
+                        className="h-10 w-24 text-center font-bold text-primary bg-primary/5"
                       />
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => removeMultiplier(tpl.id, m.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                        onClick={() => removeMultiplier(m.id)}
+                        className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </Button>
                     </div>
                   ))}
                   <Button
                     variant="ghost"
-                    size="sm"
-                    onClick={() => addMultiplier(tpl.id)}
-                    className="w-full h-8 border border-dashed border-border/50 text-xs font-medium"
+                    onClick={addMultiplier}
+                    className="w-full h-10 border border-dashed border-border/50 text-sm font-bold mt-2 hover:bg-muted"
                   >
-                    <Plus className="w-3 h-3 mr-1" /> Thêm loại công việc
+                    <Plus className="w-4 h-4 mr-2" /> Thêm loại công việc
                   </Button>
                 </div>
               </div>
-              <div className="flex justify-end pt-4 border-t border-border/50 gap-2">
-                <Button onClick={() => duplicateTemplate(tpl)} variant="ghost" className="text-muted-foreground hover:bg-primary/10 hover:text-primary h-8 px-3 rounded-lg text-xs font-bold">
-                  <Copy className="w-3 h-3 mr-1.5" /> Nhân bản
-                </Button>
-                <Button onClick={() => removeTemplate(tpl.id)} variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 px-3 rounded-lg text-xs font-bold">
-                  <Trash2 className="w-3 h-3 mr-1.5" /> Xóa bộ khung
-                </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="xl:col-span-1">
+          <Card className="rounded-2xl border-border bg-primary/5 shadow-sm h-full">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <Info className="w-5 h-5 text-primary" />
+                <h3 className="font-bold text-lg">Căn cứ Phân bổ Hệ số</h3>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm text-muted-foreground pt-4">
+              <div>
+                <strong className="text-foreground">1. Lập trình & Logic (2.0):</strong>
+                <p className="mt-1">Theo chuẩn Agile, thước đo chính là "Phần mềm chạy được". Công việc code đòi hỏi tư duy phức tạp và tốn nhiều effort nhất trong Sprint.</p>
+              </div>
+              <div>
+                <strong className="text-foreground">2. Thiết kế Kiến trúc/DB (1.5):</strong>
+                <p className="mt-1">Dù ít dòng code hơn nhưng mang tính rủi ro cốt lõi. Thiết kế sai kiến trúc sẽ dẫn đến phải đập đi xây lại toàn bộ dự án.</p>
+              </div>
+              <div>
+                <strong className="text-foreground">3. Kiểm thử / QA (1.0):</strong>
+                <p className="mt-1">Ở cấp độ đồ án sinh viên, khối lượng test thường dừng ở mức manual/unit test cơ bản, chất xám bỏ ra ổn định ở mức tiêu chuẩn.</p>
+              </div>
+              <div>
+                <strong className="text-foreground">4. Viết Tài liệu (1.0):</strong>
+                <p className="mt-1">Rất quan trọng để bàn giao, nhưng độ phức tạp kỹ thuật thấp. Hệ số 1.0 giúp sinh viên làm docs không bị chênh lệch điểm quá lớn với Dev.</p>
               </div>
             </CardContent>
           </Card>
-        ))}
+        </div>
       </div>
     </div>
   );

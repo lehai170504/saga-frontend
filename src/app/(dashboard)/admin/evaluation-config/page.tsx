@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings2, Star, Save, AlertTriangle } from "lucide-react";
+import { Settings2, Star, Save, AlertTriangle, ClipboardCheck, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PeerReviewRules } from "@/features/admin/components/evaluation-config/peer-review-rules";
 import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
 import { TaskMultiplierTemplates } from "@/features/admin/components/evaluation-config/task-multiplier-templates";
 import { DataIntegrationRules } from "@/features/admin/components/evaluation-config/data-integration-rules";
-import { Database } from "lucide-react";
+import { OverrideRequests } from "@/features/admin/components/evaluation-config/override-requests";
 
 export default function EvaluationConfigPage() {
   const [activeTab, setActiveTab] = useState("peer-review");
@@ -29,7 +29,7 @@ export default function EvaluationConfigPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <PageHeader
         title="Chính sách Đánh giá Toàn hệ thống"
-        description="Thiết lập luật Peer Review mặc định, các ngưỡng cảnh báo của AI và tạo các Bộ khung công việc mẫu cho Giảng viên."
+        description="Thiết lập luật Peer Review mặc định, các ngưỡng cảnh báo của AI và cấu hình Bộ khung hệ số chuẩn cho khối ngành SE."
         workspace="Workspace Quản trị"
       >
         <div className="flex justify-end w-full md:w-auto">
@@ -56,7 +56,11 @@ export default function EvaluationConfigPage() {
             <Database className="w-4 h-4 mr-2" /> Tích hợp Dữ liệu
           </TabsTrigger>
           <TabsTrigger value="templates" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
-            <Settings2 className="w-4 h-4 mr-2" /> Bộ Khung Hệ số Mẫu
+            <Settings2 className="w-4 h-4 mr-2" /> Bộ Khung Hệ số (SE)
+          </TabsTrigger>
+          <TabsTrigger value="requests" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6 relative">
+            <ClipboardCheck className="w-4 h-4 mr-2" /> Yêu cầu Kiểm duyệt
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
           </TabsTrigger>
         </TabsList>
 
@@ -74,6 +78,10 @@ export default function EvaluationConfigPage() {
 
         <TabsContent value="integrations" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
           <DataIntegrationRules />
+        </TabsContent>
+
+        <TabsContent value="requests" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <OverrideRequests />
         </TabsContent>
       </Tabs>
     </div>
