@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { RefreshCw, CheckCircle2, ShieldAlert, Upload, Plus } from "lucide-react";
+import { Upload, Plus } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { ClassesGrid, ClassRoom } from "@/features/admin/components/classes-card";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useRouter } from "next/navigation";
@@ -22,11 +21,7 @@ const initialClasses: ClassRoom[] = [
 export default function ClassesManagementPage() {
   const [classes, setClasses] = useState<ClassRoom[]>(initialClasses);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSync, setLastSync] = useState("5 phút trước");
 
-  // Override Mode States
-  const [isOverrideMode, setIsOverrideMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ className: "", subject: "", lecturer: "" });
@@ -40,31 +35,10 @@ export default function ClassesManagementPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleForceSync = () => {
-    setIsSyncing(true);
-    toast.loading("Đang kết nối FAP để đồng bộ danh sách lớp học...", { id: "sync-classes" });
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSyncing(false);
-      setLastSync("Vừa xong");
-      toast.success("Đã đồng bộ danh sách phân công lớp học mới nhất!", { id: "sync-classes" });
-    }, 2000);
-  };
-
-  const handleOverrideToggle = (checked: boolean) => {
-    if (checked) {
-      toast.warning("Đã bật chế độ Khắc phục sự cố. Hãy cẩn thận khi nhập liệu thủ công!", { duration: 5000 });
-    } else {
-      toast.info("Đã tắt chế độ Khắc phục sự cố.");
-    }
-    setIsOverrideMode(checked);
-  };
-
   const handleImportCSV = () => {
     toast.loading("Đang import dữ liệu từ file CSV...", { id: "import-csv" });
     setTimeout(() => {
-      toast.success("Import thành công 12 lớp học (Thủ công)!", { id: "import-csv" });
+      toast.success("Import thành công 12 lớp học!", { id: "import-csv" });
     }, 2000);
   };
 
@@ -89,14 +63,13 @@ export default function ClassesManagementPage() {
 
     if (editingId) {
       // Edit
-      setClasses(classes.map(c => c.id === editingId ? { ...c, ...formData, isManual: true } : c));
+      setClasses(classes.map(c => c.id === editingId ? { ...c, ...formData } : c));
       toast.success("Cập nhật lớp học thành công!");
     } else {
       // Create
       const newClass: ClassRoom = {
         id: Date.now().toString(),
-        ...formData,
-        isManual: true
+        ...formData
       };
       setClasses([...classes, newClass]);
       toast.success("Đã thêm lớp học mới thành công!");
@@ -112,52 +85,19 @@ export default function ClassesManagementPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <PageHeader
-        title="Quản lý Lớp học (Đồng bộ tự động)"
-        description="Danh sách các lớp học được tự động sinh ra và phân công Giảng viên/Môn học từ hệ thống lõi."
+        title="Quản lý Lớp học"
+        description="Quản lý danh sách các lớp học và phân công Giảng viên/Môn học."
         workspace="Workspace Quản trị"
       >
         <div className="flex flex-col gap-4 w-full md:w-auto">
           {/* Action Row */}
-          <div className="flex items-center justify-end gap-4 w-full">
-            <div className="text-sm text-muted-foreground flex flex-col items-end">
-              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-xs bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">
-                <CheckCircle2 className="w-3 h-3" /> Đã bật tự động đồng bộ
-              </span>
-              <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
-            </div>
-
-            <Button
-              onClick={handleForceSync}
-              disabled={isSyncing}
-              className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
-              {isSyncing ? "Đang đồng bộ..." : "Ép đồng bộ ngay"}
+          <div className="flex items-center gap-4">
+            <Button variant="outline" onClick={handleImportCSV} className="hidden sm:flex rounded-xl h-12 font-bold shadow-sm bg-background">
+              <Upload className="w-4 h-4 mr-2" /> Import CSV
             </Button>
-          </div>
-
-          {/* Override Mode Toggle Bar */}
-          <div className="flex items-center justify-between p-3 bg-muted/40 rounded-xl border border-border/50 gap-4">
-            <div className="flex items-center gap-3">
-              <ShieldAlert className={`w-5 h-5 ${isOverrideMode ? 'text-amber-500' : 'text-muted-foreground'}`} />
-              <div>
-                <p className="text-sm font-bold text-foreground">Chế độ Khắc phục sự cố</p>
-                <p className="text-xs text-muted-foreground">Chỉ bật khi FAP lỗi. Dữ liệu tay sẽ có tag [MANUAL].</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              {isOverrideMode && (
-                <>
-                  <Button variant="outline" size="sm" onClick={handleImportCSV} className="h-8 text-xs font-bold bg-background">
-                    <Upload className="w-3 h-3 mr-1" /> Import CSV
-                  </Button>
-                  <Button size="sm" onClick={openCreateModal} className="h-8 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white">
-                    <Plus className="w-3 h-3 mr-1" /> Tạo thủ công
-                  </Button>
-                </>
-              )}
-              <Switch checked={isOverrideMode} onCheckedChange={handleOverrideToggle} />
-            </div>
+            <Button onClick={openCreateModal} className="rounded-xl h-12 font-bold shadow-sm min-w-[160px]">
+              <Plus className="w-4 h-4 mr-2" /> Thêm lớp học
+            </Button>
           </div>
         </div>
       </PageHeader>
@@ -193,7 +133,6 @@ export default function ClassesManagementPage() {
         <ClassesGrid
           data={classes}
           onViewDetails={(cls) => router.push(`/admin/classes/${cls.id}`)}
-          isOverrideMode={isOverrideMode}
           onEdit={openEditModal}
           onDelete={handleDelete}
         />

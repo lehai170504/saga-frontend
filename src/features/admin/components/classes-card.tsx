@@ -9,23 +9,21 @@ export type ClassRoom = {
   className: string;
   subject: string;
   lecturer: string;
-  isManual?: boolean;
 };
 
 interface ClassesGridProps {
   data: ClassRoom[];
   onViewDetails?: (cls: ClassRoom) => void;
-  isOverrideMode?: boolean;
   onEdit?: (cls: ClassRoom) => void;
   onDelete?: (id: string) => void;
 }
 
-export function ClassesGrid({ data, onViewDetails, isOverrideMode, onEdit, onDelete }: ClassesGridProps) {
+export function ClassesGrid({ data, onViewDetails, onEdit, onDelete }: ClassesGridProps) {
   if (data.length === 0) {
     return (
       <Card className="rounded-2xl border-border bg-card shadow-sm">
         <CardContent className="py-12">
-          <EmptyState message="Chưa có lớp học nào được đồng bộ từ FAP." />
+          <EmptyState message="Chưa có lớp học nào. Vui lòng thêm mới." />
         </CardContent>
       </Card>
     );
@@ -36,15 +34,10 @@ export function ClassesGrid({ data, onViewDetails, isOverrideMode, onEdit, onDel
       {data.map((cls) => (
         <Card 
           key={cls.id} 
-          className={`rounded-2xl border bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden cursor-pointer ${cls.isManual ? 'border-amber-500/50' : 'border-border'}`}
+          className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden cursor-pointer"
           onClick={() => onViewDetails?.(cls)}
         >
           <CardContent className="p-6 flex flex-col h-full relative">
-            {cls.isManual && (
-              <div className="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
-                THỦ CÔNG
-              </div>
-            )}
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
@@ -58,28 +51,26 @@ export function ClassesGrid({ data, onViewDetails, isOverrideMode, onEdit, onDel
                 </div>
               </div>
               
-              {isOverrideMode && (
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity -mt-1 -mr-1">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full h-8 w-8"
-                    onClick={(e) => { e.stopPropagation(); onEdit?.(cls); }}
-                    title="Sửa lớp học"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
-                    onClick={(e) => { e.stopPropagation(); onDelete?.(cls.id); }}
-                    title="Xóa lớp học"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity -mt-1 -mr-1">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full h-8 w-8"
+                  onClick={(e) => { e.stopPropagation(); onEdit?.(cls); }}
+                  title="Sửa lớp học"
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
+                  onClick={(e) => { e.stopPropagation(); onDelete?.(cls.id); }}
+                  title="Xóa lớp học"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
             
             <div className="bg-muted/40 rounded-xl p-4 space-y-3 border border-border/50 flex-1 flex flex-col justify-center">
@@ -107,3 +98,4 @@ export function ClassesGrid({ data, onViewDetails, isOverrideMode, onEdit, onDel
     </div>
   );
 }
+

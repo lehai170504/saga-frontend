@@ -10,22 +10,20 @@ export type Semester = {
   startDate: string;
   endDate: string;
   status: "active" | "upcoming" | "ended";
-  isManual?: boolean;
 };
 
 interface SemestersGridProps {
   data: Semester[];
-  isOverrideMode?: boolean;
   onEdit?: (semester: Semester) => void;
   onDelete?: (id: string) => void;
 }
 
-export function SemestersGrid({ data, isOverrideMode, onEdit, onDelete }: SemestersGridProps) {
+export function SemestersGrid({ data, onEdit, onDelete }: SemestersGridProps) {
   if (data.length === 0) {
     return (
       <Card className="rounded-2xl border-border bg-card shadow-sm">
         <CardContent className="py-12">
-          <EmptyState message="Chưa có học kỳ nào được đồng bộ từ hệ thống FAP." />
+          <EmptyState message="Chưa có học kỳ nào. Vui lòng thêm mới." />
         </CardContent>
       </Card>
     );
@@ -52,16 +50,11 @@ export function SemestersGrid({ data, isOverrideMode, onEdit, onDelete }: Semest
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {data.map((semester) => (
-        <Card key={semester.id} className={`rounded-2xl border bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden relative ${semester.isManual ? 'border-amber-500/50' : 'border-border'}`}>
+        <Card key={semester.id} className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
           {/* Status Indicator Bar */}
           <div className={`absolute top-0 left-0 w-full h-1.5 ${semester.status === 'active' ? 'bg-emerald-500' : semester.status === 'upcoming' ? 'bg-blue-500' : 'bg-zinc-400'}`} />
 
           <CardContent className="p-6 pt-7">
-            {semester.isManual && (
-              <div className="absolute top-1.5 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
-                THỦ CÔNG
-              </div>
-            )}
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
@@ -74,28 +67,26 @@ export function SemestersGrid({ data, isOverrideMode, onEdit, onDelete }: Semest
                   </div>
                 </div>
               </div>
-              {isOverrideMode && (
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity -mt-1 -mr-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full h-8 w-8"
-                    onClick={() => onEdit?.(semester)}
-                    title="Sửa học kỳ"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
-                    onClick={() => onDelete?.(semester.id)}
-                    title="Xóa học kỳ"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity -mt-1 -mr-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full h-8 w-8"
+                  onClick={() => onEdit?.(semester)}
+                  title="Sửa học kỳ"
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
+                  onClick={() => onDelete?.(semester.id)}
+                  title="Xóa học kỳ"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="bg-muted/40 rounded-xl p-4 space-y-3 border border-border/50">

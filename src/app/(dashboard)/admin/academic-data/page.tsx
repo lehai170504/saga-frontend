@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { RefreshCw, CheckCircle2, ShieldAlert, Upload, Plus, BookOpen, CalendarDays } from "lucide-react";
+import { Upload, Plus, BookOpen, CalendarDays } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SemestersGrid, Semester } from "@/features/admin/components/semesters-card";
 import { SubjectsGrid, Subject } from "@/features/admin/components/subjects-card";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
 import {
@@ -41,9 +40,6 @@ export default function AcademicDataPage() {
 
   // Shared States
   const [isLoading, setIsLoading] = useState(true);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSync, setLastSync] = useState("10 phút trước");
-  const [isOverrideMode, setIsOverrideMode] = useState(false);
 
   // Semesters States
   const [semesters, setSemesters] = useState<Semester[]>(initialSemesters);
@@ -63,28 +59,6 @@ export default function AcademicDataPage() {
     }, 800);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleForceSync = () => {
-    setIsSyncing(true);
-    const target = activeTab === "semesters" ? "học kỳ" : "môn học";
-    toast.loading(`Đang kết nối FAP để đồng bộ ${target}...`, { id: "sync-data" });
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSyncing(false);
-      setLastSync("Vừa xong");
-      toast.success(`Đã đồng bộ dữ liệu ${target} mới nhất từ hệ thống!`, { id: "sync-data" });
-    }, 2000);
-  };
-
-  const handleOverrideToggle = (checked: boolean) => {
-    if (checked) {
-      toast.warning("Đã bật chế độ Khắc phục sự cố. Hãy cẩn thận khi nhập liệu thủ công!", { duration: 5000 });
-    } else {
-      toast.info("Đã tắt chế độ Khắc phục sự cố.");
-    }
-    setIsOverrideMode(checked);
-  };
 
   // ================= SEMESTERS MANUAL OPS =================
   const openCreateSemesterModal = () => {
@@ -110,10 +84,10 @@ export default function AcademicDataPage() {
       return;
     }
     if (editingSemesterId) {
-      setSemesters(semesters.map(s => s.id === editingSemesterId ? { ...s, ...semesterFormData, isManual: true } : s));
+      setSemesters(semesters.map(s => s.id === editingSemesterId ? { ...s, ...semesterFormData } : s));
       toast.success("Cập nhật học kỳ thành công!");
     } else {
-      const newSemester: Semester = { id: Date.now().toString(), ...semesterFormData, isManual: true };
+      const newSemester: Semester = { id: Date.now().toString(), ...semesterFormData };
       setSemesters([...semesters, newSemester]);
       toast.success("Đã thêm học kỳ mới thành công!");
     }
@@ -129,7 +103,7 @@ export default function AcademicDataPage() {
   const handleImportCSV = () => {
     toast.loading("Đang import dữ liệu từ file CSV...", { id: "import-csv" });
     setTimeout(() => {
-      toast.success("Import thành công 40 môn học (Thủ công)!", { id: "import-csv" });
+      toast.success("Import thành công 40 môn học!", { id: "import-csv" });
     }, 2000);
   };
 
@@ -151,10 +125,10 @@ export default function AcademicDataPage() {
       return;
     }
     if (editingSubjectId) {
-      setSubjects(subjects.map(s => s.id === editingSubjectId ? { ...s, ...subjectFormData, isManual: true } : s));
+      setSubjects(subjects.map(s => s.id === editingSubjectId ? { ...s, ...subjectFormData } : s));
       toast.success("Cập nhật môn học thành công!");
     } else {
-      const newSubject: Subject = { id: Date.now().toString(), ...subjectFormData, isManual: true };
+      const newSubject: Subject = { id: Date.now().toString(), ...subjectFormData };
       setSubjects([...subjects, newSubject]);
       toast.success("Đã thêm môn học mới thành công!");
     }
@@ -170,52 +144,20 @@ export default function AcademicDataPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <PageHeader
         title="Quản lý Dữ liệu Học vụ"
-        description="Quản lý đồng bộ Master Data (Học kỳ & Môn học) từ hệ thống FAP."
+        description="Quản lý Master Data (Học kỳ & Môn học)."
         workspace="Workspace Quản trị"
       >
         <div className="flex flex-col gap-4 w-full md:w-auto">
-          <div className="flex items-center justify-end gap-4 w-full">
-            <div className="text-sm text-muted-foreground flex flex-col items-end">
-              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-xs bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">
-                <CheckCircle2 className="w-3 h-3" /> Đã bật tự động đồng bộ
-              </span>
-              <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
-            </div>
-
-            <Button
-              onClick={handleForceSync}
-              disabled={isSyncing}
-              className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
-              {isSyncing ? "Đang đồng bộ..." : "Ép đồng bộ ngay"}
+          <div className="flex items-center gap-4">
+            {activeTab === "subjects" && (
+              <Button variant="outline" onClick={handleImportCSV} className="hidden sm:flex rounded-xl h-12 font-bold shadow-sm bg-background">
+                <Upload className="w-4 h-4 mr-2" /> Import CSV
+              </Button>
+            )}
+            <Button onClick={activeTab === "semesters" ? openCreateSemesterModal : openCreateSubjectModal} className="rounded-xl h-12 font-bold shadow-sm min-w-[160px]">
+              <Plus className="w-4 h-4 mr-2" />
+              {activeTab === "semesters" ? "Thêm học kỳ" : "Thêm môn học"}
             </Button>
-          </div>
-
-          {/* Override Mode Toggle Bar */}
-          <div className="flex items-center justify-between p-3 bg-muted/40 rounded-xl border border-border/50 gap-4">
-            <div className="flex items-center gap-3">
-              <ShieldAlert className={`w-5 h-5 ${isOverrideMode ? 'text-amber-500' : 'text-muted-foreground'}`} />
-              <div>
-                <p className="text-sm font-bold text-foreground">Chế độ Khắc phục sự cố</p>
-                <p className="text-xs text-muted-foreground">Bật để thêm sửa xóa thủ công khi FAP lỗi.</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              {isOverrideMode && (
-                <>
-                  {activeTab === "subjects" && (
-                    <Button variant="outline" size="sm" onClick={handleImportCSV} className="hidden sm:flex h-8 text-xs font-bold bg-background">
-                      <Upload className="w-3 h-3 mr-1" /> Import CSV
-                    </Button>
-                  )}
-                  <Button size="sm" onClick={activeTab === "semesters" ? openCreateSemesterModal : openCreateSubjectModal} className="h-8 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white">
-                    <Plus className="w-3 h-3 mr-1" /> Tạo thủ công
-                  </Button>
-                </>
-              )}
-              <Switch checked={isOverrideMode} onCheckedChange={handleOverrideToggle} />
-            </div>
           </div>
         </div>
       </PageHeader>
@@ -261,7 +203,6 @@ export default function AcademicDataPage() {
           ) : (
             <SemestersGrid
               data={semesters}
-              isOverrideMode={isOverrideMode}
               onEdit={openEditSemesterModal}
               onDelete={handleDeleteSemester}
             />
@@ -291,7 +232,6 @@ export default function AcademicDataPage() {
           ) : (
             <SubjectsGrid
               data={subjects}
-              isOverrideMode={isOverrideMode}
               onEdit={openEditSubjectModal}
               onDelete={handleDeleteSubject}
             />
@@ -304,10 +244,10 @@ export default function AcademicDataPage() {
         <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
-              {editingSemesterId ? "Sửa học kỳ (Thủ công)" : "Thêm học kỳ (Thủ công)"}
+              {editingSemesterId ? "Sửa học kỳ" : "Thêm học kỳ"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Chỉ nên sử dụng khi hệ thống đồng bộ FAP gặp sự cố.
+              Nhập thông tin cho học kỳ.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -353,10 +293,10 @@ export default function AcademicDataPage() {
         <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
-              {editingSubjectId ? "Sửa môn học (Thủ công)" : "Thêm môn học (Thủ công)"}
+              {editingSubjectId ? "Sửa môn học" : "Thêm môn học"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Chỉ nên sử dụng khi hệ thống đồng bộ FAP gặp sự cố.
+              Nhập thông tin cho môn học.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">

@@ -24,7 +24,7 @@ import {
   UserCheck,
   CalendarX,
   LogOut,
-
+  Settings2,
   Database
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -118,6 +118,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
           {
             title: "Hệ thống",
             items: [
+              { href: "/admin/evaluation-config", icon: <Settings2 size={18} />, label: "Đánh giá Slicing Pie" },
               { href: "/admin/system-logs", icon: <Logs size={18} />, label: "Nhật ký hệ thống" },
               { href: "/admin/guide", icon: <BookOpen size={18} />, label: "Hướng dẫn" },
             ]

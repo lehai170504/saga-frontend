@@ -1,0 +1,72 @@
+"use client";
+
+import React, { useState } from "react";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Settings2, Star, Save, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { PeerReviewRules } from "@/features/admin/components/evaluation-config/peer-review-rules";
+import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
+import { TaskMultiplierTemplates } from "@/features/admin/components/evaluation-config/task-multiplier-templates";
+
+export default function EvaluationConfigPage() {
+  const [activeTab, setActiveTab] = useState("peer-review");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveAll = () => {
+    setIsSaving(true);
+    toast.loading("Đang lưu chính sách đánh giá toàn hệ thống...", { id: "save-config" });
+    setTimeout(() => {
+      setIsSaving(false);
+      toast.success("Đã lưu thành công chính sách hệ thống!", { id: "save-config" });
+    }, 1500);
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <PageHeader
+        title="Chính sách Đánh giá Toàn hệ thống"
+        description="Thiết lập luật Peer Review mặc định, các ngưỡng cảnh báo của AI và tạo các Bộ khung công việc mẫu cho Giảng viên."
+        workspace="Workspace Quản trị"
+      >
+        <div className="flex justify-end w-full md:w-auto">
+          <Button
+            onClick={handleSaveAll}
+            disabled={isSaving}
+            className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
+          >
+            <Save className={`w-4 h-4 mr-2 ${isSaving ? "animate-pulse" : ""}`} />
+            {isSaving ? "Đang lưu..." : "Lưu tất cả Chính sách"}
+          </Button>
+        </div>
+      </PageHeader>
+
+      <Tabs defaultValue="peer-review" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="flex flex-col md:flex-row w-full md:w-auto h-auto md:h-12 rounded-xl bg-muted/50 p-1 mb-8 gap-1">
+          <TabsTrigger value="peer-review" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 md:h-full px-4 sm:px-6">
+            <Star className="w-4 h-4 mr-2" /> Luật Peer Review Hệ thống
+          </TabsTrigger>
+          <TabsTrigger value="ai-warnings" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 md:h-full px-4 sm:px-6">
+            <AlertTriangle className="w-4 h-4 mr-2" /> Ngưỡng Cảnh báo AI
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 md:h-full px-4 sm:px-6">
+            <Settings2 className="w-4 h-4 mr-2" /> Bộ Khung Hệ số Mẫu
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="peer-review" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <PeerReviewRules />
+        </TabsContent>
+
+        <TabsContent value="ai-warnings" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <AiWarningRules />
+        </TabsContent>
+
+        <TabsContent value="templates" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <TaskMultiplierTemplates />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
