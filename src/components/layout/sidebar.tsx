@@ -25,7 +25,8 @@ import {
   CalendarX,
   LogOut,
   Settings2,
-  Database
+  Database,
+  FolderKanban
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -185,8 +186,11 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
             title: "Cá nhân & Nhóm",
             items: [
               { href: "/student", icon: <BarChart3 size={18} />, label: "Tổng quan nhóm" },
+              { href: "/student/projects", icon: <Network size={18} />, label: "Danh sách nhóm" },
+              { href: "/student/projects/create", icon: <FolderKanban size={18} />, label: "Cấu hình Project" },
               { href: "/student/burndown", icon: <Calendar size={18} />, label: "Tiến độ Task" },
               { href: "/student/contribution", icon: <Users size={18} />, label: "Đóng góp cá nhân" },
+              { href: "/student/audit-logs", icon: <Logs size={18} />, label: "Nhật ký hoạt động" },
             ]
           },
           {
@@ -195,6 +199,13 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               { href: "/student/assessment", icon: <UserCheck size={18} />, label: "Đánh giá chéo" },
               { href: "/student/feedback", icon: <Inbox size={18} />, label: "Nhận xét" },
               { href: "/student/absence", icon: <CalendarX size={18} />, label: "Báo cáo vắng" },
+            ]
+          },
+          {
+            title: "AI & Phân tích Đồ thị",
+            items: [
+              { href: "/student/interaction-graph", icon: <Share2 size={18} />, label: "Mạng tương tác" },
+              { href: "/student/heatmap", icon: <Activity size={18} />, label: "Biểu đồ nhiệt" },
             ]
           },
           {
