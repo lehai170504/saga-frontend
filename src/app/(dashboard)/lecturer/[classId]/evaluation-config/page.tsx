@@ -40,7 +40,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
       </div>
 
       <PageHeader
-        title="Tùy chỉnh Slicing Pie"
+        title="Tùy chỉnh Đánh giá Đóng góp"
         description="Áp dụng Bộ khung hệ số, lên lịch các Phase đánh giá và tinh chỉnh ngưỡng Cảnh báo AI riêng cho lớp học này."
         workspace="Workspace Giảng viên"
       >

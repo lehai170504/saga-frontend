@@ -81,9 +81,9 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
             <p className="text-muted-foreground font-medium">Theo dõi chi tiết hiệu suất và tương tác của sinh viên</p>
           </div>
           <Link href={`/lecturer/${classId}/evaluation-config`}>
-            <Button className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm px-6">
-              <Settings2 className="w-4 h-4 mr-2" />
-              Cấu hình Slicing Pie
+            <Button className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+              <Settings2 size={16} />
+              Cấu hình Đánh giá
             </Button>
           </Link>
         </div>

@@ -118,7 +118,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
           {
             title: "Hệ thống",
             items: [
-              { href: "/admin/evaluation-config", icon: <Settings2 size={18} />, label: "Đánh giá Slicing Pie" },
+              { href: "/admin/evaluation-config", icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
               { href: "/admin/system-logs", icon: <Logs size={18} />, label: "Nhật ký hệ thống" },
               { href: "/admin/guide", icon: <BookOpen size={18} />, label: "Hướng dẫn" },
             ]
@@ -142,18 +142,10 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               ]
             },
             {
-              title: "Học tập & Đánh giá",
+              title: "Đánh giá & Điểm số",
               items: [
-                { href: `/lecturer/${classId}/assignments`, icon: <FileText size={18} />, label: "Bài tập" },
-                { href: `/lecturer/${classId}/grades`, icon: <GraduationCap size={18} />, label: "Điểm số" },
-              ]
-            },
-            {
-              title: "Tiến độ & Rủi ro",
-              items: [
-                { href: `/lecturer/${classId}/burndown`, icon: <TrendingDown size={18} />, label: "Tiến độ Sprint" },
-                { href: `/lecturer/${classId}/timeline`, icon: <Clock size={18} />, label: "Nhật ký hoạt động" },
-                { href: `/lecturer/${classId}/risks`, icon: <AlertTriangle size={18} />, label: "Cảnh báo rủi ro" },
+                { href: `/lecturer/${classId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
+                { href: `/lecturer/${classId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
               ]
             },
             {
