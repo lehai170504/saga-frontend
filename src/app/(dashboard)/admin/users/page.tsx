@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { RefreshCw, CheckCircle2, Users, GraduationCap, UserCircle2, ShieldAlert } from "lucide-react";
+import { CheckCircle2, Users, GraduationCap, UserCircle2, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { UsersTable, User } from "@/features/admin/components/users-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
 
@@ -21,8 +20,6 @@ const initialUsers: User[] = [
 export default function UsersManagementPage() {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSync, setLastSync] = useState("30 phút trước");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,18 +27,6 @@ export default function UsersManagementPage() {
     }, 800);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleForceSync = () => {
-    setIsSyncing(true);
-    toast.loading("Đang kết nối FAP để đồng bộ tài khoản...", { id: "sync-users" });
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSyncing(false);
-      setLastSync("Vừa xong");
-      toast.success("Đã đồng bộ danh sách tài khoản mới nhất!", { id: "sync-users" });
-    }, 2000);
-  };
 
   const handleToggleStatus = (userId: string, currentStatus: "active" | "inactive") => {
     const newStatus = currentStatus === "active" ? "inactive" : "active";
@@ -57,27 +42,9 @@ export default function UsersManagementPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <PageHeader
         title="Phân quyền Người dùng (RBAC)"
-        description="Tài khoản được đồng bộ từ FAP. Admin có thể quản lý quyền truy cập và vô hiệu hóa các tài khoản tại đây."
+        description="Quản lý danh sách người dùng trên hệ thống SAGA. Admin có thể xem vai trò, cấp hoặc thu hồi quyền truy cập của từng tài khoản."
         workspace="Workspace Quản trị"
-      >
-        <div className="flex items-center gap-4">
-          <div className="text-sm text-muted-foreground flex flex-col items-end">
-            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-xs bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">
-              <CheckCircle2 className="w-3 h-3" /> Đã bật tự động đồng bộ
-            </span>
-            <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
-          </div>
-
-          <Button
-            onClick={handleForceSync}
-            disabled={isSyncing}
-            className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
-            {isSyncing ? "Đang đồng bộ..." : "Ép đồng bộ ngay"}
-          </Button>
-        </div>
-      </PageHeader>
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
