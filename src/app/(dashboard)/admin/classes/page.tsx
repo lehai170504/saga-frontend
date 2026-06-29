@@ -12,11 +12,11 @@ import { useRouter } from "next/navigation";
 import { ClassModal } from "@/features/admin/components/class-modal";
 
 const initialClasses: ClassRoom[] = [
-  { id: "1", className: "SE102.M21", subject: "Công nghệ phần mềm", lecturer: "Dr. Nguyen Van A" },
-  { id: "2", className: "PRN211.F01", subject: "Lập trình C# nâng cao", lecturer: "Mr. Tran Thi B" },
-  { id: "3", className: "CS101.A01", subject: "Nhập môn Lập trình", lecturer: "Dr. Le Van C" },
-  { id: "4", className: "SWT301.M11", subject: "Kiểm thử phần mềm", lecturer: "Ms. Pham Thi D" },
-  { id: "5", className: "DBI202.F02", subject: "Hệ cơ sở dữ liệu", lecturer: "Mr. Hoang Van E" },
+  { id: "1", className: "SE1801", subject: "Dự án phát triển web", lecturer: "Dr. Nguyen Van A" },
+  { id: "2", className: "SE1802", subject: "Lập trình C# nâng cao", lecturer: "Mr. Tran Thi B" },
+  { id: "3", className: "SE1803", subject: "Nhập môn Lập trình", lecturer: "Dr. Le Van C" },
+  { id: "4", className: "SE1804", subject: "Kiểm thử phần mềm", lecturer: "Ms. Pham Thi D" },
+  { id: "5", className: "SE1805", subject: "Hệ cơ sở dữ liệu", lecturer: "Mr. Hoang Van E" },
 ];
 
 export default function ClassesManagementPage() {
@@ -43,7 +43,7 @@ export default function ClassesManagementPage() {
   const handleForceSync = () => {
     setIsSyncing(true);
     toast.loading("Đang kết nối FAP để đồng bộ danh sách lớp học...", { id: "sync-classes" });
-    
+
     // Simulate API call
     setTimeout(() => {
       setIsSyncing(false);
@@ -126,12 +126,12 @@ export default function ClassesManagementPage() {
               <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
             </div>
 
-            <Button 
-              onClick={handleForceSync} 
+            <Button
+              onClick={handleForceSync}
               disabled={isSyncing}
               className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} /> 
+              <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? "animate-spin" : ""}`} />
               {isSyncing ? "Đang đồng bộ..." : "Ép đồng bộ ngay"}
             </Button>
           </div>

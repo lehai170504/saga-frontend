@@ -20,9 +20,34 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Desktop
   const pathname = usePathname();
+  const [isSidebarHidden, setIsSidebarHidden] = React.useState(false);
 
-  // Hide sidebar exactly on /lecturer (class selection page)
-  const isLecturerHome = pathname === "/lecturer";
+  React.useEffect(() => {
+    const checkSidebarVisibility = () => {
+      if (pathname === "/lecturer") {
+        setIsSidebarHidden(true);
+        return;
+      }
+
+      const isStudentRoute = pathname.startsWith("/student");
+      const isStudentSettings = pathname === "/student/settings";
+      const savedClass = localStorage.getItem("saga-student-class");
+
+      if (isStudentRoute && !isStudentSettings && !savedClass) {
+        setIsSidebarHidden(true);
+      } else {
+        setIsSidebarHidden(false);
+      }
+    };
+
+    checkSidebarVisibility();
+
+    // Listen for class selection changes from student layout/pages
+    window.addEventListener("saga-student-class-changed", checkSidebarVisibility);
+    return () => {
+      window.removeEventListener("saga-student-class-changed", checkSidebarVisibility);
+    };
+  }, [pathname]);
 
   return (
     <RouteGuard>
@@ -35,19 +60,19 @@ export default function DashboardLayout({
 
           {/* Full-width Header */}
           <div className="flex-none w-full z-40 relative">
-            <Header onMenuClick={!isLecturerHome ? () => setIsSidebarOpen(true) : undefined} />
+            <Header onMenuClick={!isSidebarHidden ? () => setIsSidebarOpen(true) : undefined} />
           </div>
 
           {/* Bottom Area: Sidebar + Main Content */}
           <div className="flex flex-1 overflow-hidden relative">
-            {!isLecturerHome && (
+            {!isSidebarHidden && (
               <MobileOverlay
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
               />
             )}
 
-            {!isLecturerHome && (
+            {!isSidebarHidden && (
               <div
                 className={`fixed inset-y-0 left-0 z-50 bg-card border-r border-border transform transition-all duration-300 ease-in-out lg:static lg:inset-0 flex flex-col shrink-0 shadow-lg lg:shadow-none ${
                   isSidebarOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0"

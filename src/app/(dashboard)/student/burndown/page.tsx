@@ -36,10 +36,106 @@ export default function StudentBurndownPage() {
   const [isError, setIsError] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [selectedDay, setSelectedDay] = useState<BurndownDay | null>(null);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+
+  const semestersData = [
+    { id: "summer-2026", name: "Summer 2026" },
+    { id: "spring-2026", name: "Spring 2026" },
+    { id: "fall-2025", name: "Fall 2025" },
+  ];
+
+  interface Subject {
+    id: string;
+    code: string;
+    name: string;
+    icon: string;
+    classes: { id: string; name: string; project: string }[];
+  }
+
+  const subjectsData: Record<string, Subject[]> = {
+    "summer-2026": [
+      {
+        id: "cse391",
+        code: "CSE391",
+        name: "Công nghệ phần mềm",
+        icon: "code",
+        classes: [
+          { id: "cse391-pbl07", name: "Lớp SE102.O12", project: "Nhóm PBL-07" },
+          { id: "cse391-pbl08", name: "Lớp SE102.O13", project: "Nhóm PBL-08" },
+        ]
+      },
+      {
+        id: "prn231",
+        code: "PRN231",
+        name: "Lập trình Web với .NET",
+        icon: "globe",
+        classes: [
+          { id: "prn231-pbl02", name: "Lớp SE103.A11", project: "Nhóm PBL-02" },
+          { id: "prn231-pbl03", name: "Lớp SE103.A12", project: "Nhóm PBL-03" },
+        ]
+      }
+    ],
+    "spring-2026": [
+      {
+        id: "swp391",
+        code: "SWP391",
+        name: "Dự án Phát triển Phần mềm",
+        icon: "terminal",
+        classes: [
+          { id: "swp391-pbl03", name: "Lớp SE104.M21", project: "Nhóm PBL-03" },
+          { id: "swp391-pbl04", name: "Lớp SE104.M22", project: "Nhóm PBL-04" },
+        ]
+      },
+      {
+        id: "swr302",
+        code: "SWR302",
+        name: "Yêu cầu phần mềm",
+        icon: "book",
+        classes: [
+          { id: "swr302-pbl01", name: "Lớp SE105.D11", project: "Nhóm PBL-01" },
+        ]
+      }
+    ],
+    "fall-2025": [
+      {
+        id: "prn211",
+        code: "PRN211",
+        name: "Lập trình C# cơ bản",
+        icon: "cpu",
+        classes: [
+          { id: "prn211-pbl05", name: "Lớp SE106.T12", project: "Nhóm PBL-05" },
+        ]
+      },
+      {
+        id: "mad101",
+        code: "MAD101",
+        name: "Toán rời rạc ứng dụng",
+        icon: "database",
+        classes: [
+          { id: "mad101-pbl04", name: "Lớp SE107.V11", project: "Nhóm PBL-04" },
+        ]
+      }
+    ],
+  };
+
+  const getClassName = (semId: string, classId: string) => {
+    if (!semId || !classId) return "";
+    const subjects = subjectsData[semId] || [];
+    for (const sub of subjects) {
+      const cls = sub.classes.find((c) => c.id === classId);
+      if (cls) return `${sub.name} - ${cls.name}`;
+    }
+    return classId;
+  };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+    const sem = localStorage.getItem("saga-student-semester") || "";
+    const cls = localStorage.getItem("saga-student-class") || "";
+    setSelectedSemester(sem);
+    setSelectedClass(cls);
+
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
@@ -48,7 +144,7 @@ export default function StudentBurndownPage() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
         title="Biểu đồ Burndown"
-        description="Số Story Points còn lại — Sprint 4 của PBL-07"
+        description={`Số Story Points còn lại — Sprint 4 của ${getClassName(selectedSemester, selectedClass)}`}
       />
 
       <Card className="border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col pt-6">
