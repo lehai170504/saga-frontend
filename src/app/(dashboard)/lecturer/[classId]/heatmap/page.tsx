@@ -1,6 +1,5 @@
 "use client";
 
-import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Calendar as CalendarIcon, Users, Filter, Sparkles } from "lucide-react";

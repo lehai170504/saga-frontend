@@ -1,6 +1,5 @@
 "use client";
 
-import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Label } from "recharts";

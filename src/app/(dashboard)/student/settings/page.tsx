@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import {
   Key,
@@ -16,8 +15,6 @@ import {
   Settings as SettingsIcon,
   Link2,
   AtSign,
-  Moon,
-  Sun,
   Globe,
   ExternalLink,
   ChevronRight,
@@ -29,8 +26,6 @@ import {
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const { theme, setTheme } = useTheme();
-
   // GitHub connection states
   const [gitUsername, setGitUsername] = useState("");
   const [gitConnected, setGitConnected] = useState(false);

@@ -1,6 +1,5 @@
 "use client";
 
-import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { User, GitCommit, GitPullRequest, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, ArrowUpRight } from "lucide-react";

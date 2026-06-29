@@ -66,11 +66,6 @@ export default function ContributionPage() {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
 
-  const semestersData = [
-    { id: "summer-2026", name: "Summer 2026" },
-    { id: "spring-2026", name: "Spring 2026" },
-    { id: "fall-2025", name: "Fall 2025" },
-  ];
 
   interface Subject {
     id: string;
@@ -157,6 +152,7 @@ export default function ContributionPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";

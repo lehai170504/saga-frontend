@@ -1,6 +1,5 @@
 "use client";
 
-import { useLecturerClass } from "@/context/LecturerClassContext";
 import React from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

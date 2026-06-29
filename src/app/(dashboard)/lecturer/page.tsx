@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { BookOpen, Users, Calendar, ArrowRight, Sparkles, Network } from "lucide-react";
+import { BookOpen, Users, Calendar, ArrowRight, Network } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import {
   Select,

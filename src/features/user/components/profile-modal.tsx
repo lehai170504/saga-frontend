@@ -13,9 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-
-import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { Mail, User, ShieldCheck, Camera, Loader2, Key, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -75,7 +72,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }, 1500);
   };
 
-  const { theme, setTheme } = useTheme();
   const [githubToken, setGithubToken] = useState("");
   const [jiraToken, setJiraToken] = useState("");
   const [isValidatingGithub, setIsValidatingGithub] = useState(false);

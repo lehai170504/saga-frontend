@@ -75,6 +75,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
 
   useEffect(() => {
     if (user?.role === "student") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStudentClassId(localStorage.getItem("saga-student-class"));
 
       const handleClassChange = () => {

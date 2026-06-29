@@ -15,14 +15,6 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  RefreshCw,
-  GraduationCap,
-  Code,
-  Globe,
-  Database,
-  BookOpen,
-  Terminal,
-  Cpu,
   ArrowRight
 } from "lucide-react";
 
@@ -43,6 +35,7 @@ export default function StudentLayout({
   const [globalClassSelect, setGlobalClassSelect] = useState("all");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
 
     const loadSelection = () => {
@@ -75,48 +68,9 @@ export default function StudentLayout({
     window.dispatchEvent(new Event("saga-student-class-changed"));
   };
 
-  const handleSwitchClass = () => {
-    localStorage.removeItem("saga-student-semester");
-    localStorage.removeItem("saga-student-class");
-    setActiveSemester("");
-    setActiveClass("");
-    setGlobalClassSelect("all");
 
-    window.dispatchEvent(new Event("saga-student-class-changed"));
-  };
 
-  const getSemesterName = (semId: string) => {
-    return semestersData.find((s) => s.id === semId)?.name ?? semId;
-  };
 
-  const getClassName = (semId: string, classId: string) => {
-    if (!semId || !classId) return "";
-    const subjects = subjectsData[semId] || [];
-    for (const sub of subjects) {
-      const cls = sub.classes.find((c) => c.id === classId);
-      if (cls) return `${sub.name} - ${cls.name}`;
-    }
-    return classId;
-  };
-
-  const getSubjectIcon = (iconName: string) => {
-    switch (iconName) {
-      case "code":
-        return <Code className="w-8 h-8 text-primary" />;
-      case "globe":
-        return <Globe className="w-8 h-8 text-primary" />;
-      case "database":
-        return <Database className="w-8 h-8 text-primary" />;
-      case "book":
-        return <BookOpen className="w-8 h-8 text-primary" />;
-      case "terminal":
-        return <Terminal className="w-8 h-8 text-primary" />;
-      case "cpu":
-        return <Cpu className="w-8 h-8 text-primary" />;
-      default:
-        return <BookOpen className="w-8 h-8 text-primary" />;
-    }
-  };
 
   // Helper to extract all classes in selected semester
   const getSemesterClasses = (semId: string) => {

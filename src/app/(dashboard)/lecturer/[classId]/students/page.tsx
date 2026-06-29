@@ -1,6 +1,5 @@
 "use client";
 
-import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,7 +115,7 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
   const studentsWithoutGroup = filteredStudents.filter(s => !s.group);
   const hasMultipleGroups = uniqueGroups.length > 1;
 
-  const renderStudentRow = (student: any, index: number) => (
+  const renderStudentRow = (student: { rollNumber: string; fullName: string; email: string; group?: string }, index: number) => (
     <TableRow key={student.rollNumber} className="hover:bg-muted/30 transition-colors">
       <TableCell className="text-center font-medium text-muted-foreground">{index + 1}</TableCell>
       <TableCell className="font-bold text-primary">{student.rollNumber}</TableCell>

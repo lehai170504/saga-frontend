@@ -1,6 +1,5 @@
 "use client";
 
-import { useLecturerClass } from "@/context/LecturerClassContext";
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Share2, Users, Search } from "lucide-react";
