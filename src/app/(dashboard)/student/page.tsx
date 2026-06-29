@@ -2,21 +2,22 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { weeklyActivityData } from "@/mock-data/overview";
 import {
   GitCommit,
   MessageSquare,
   CheckCircle2,
   ArrowRight,
+  AlertTriangle,
 } from "lucide-react";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { semestersData, subjectsData } from "@/mock-data/classes";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -63,86 +64,50 @@ export default function OverviewDashboard() {
   const [selectedSemester, setSelectedSemester] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
 
-  // Semester and Class descriptions mapping (matching layout.tsx)
-  const semestersData = [
-    { id: "summer-2026", name: "Summer 2026" },
-    { id: "spring-2026", name: "Spring 2026" },
-    { id: "fall-2025", name: "Fall 2025" },
+
+
+  const offset = selectedClass ? selectedClass.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 50 : 0;
+
+  const dynamicActivityData = [
+    { name: "Thứ 2", commits: 12 + offset % 5, comments: 8 + offset % 3 },
+    { name: "Thứ 3", commits: 19 + offset % 8, comments: 15 + offset % 5 },
+    { name: "Thứ 4", commits: 15 + offset % 4, comments: 10 + offset % 2 },
+    { name: "Thứ 5", commits: 25 + offset % 10, comments: 20 + offset % 6 },
+    { name: "Thứ 6", commits: 32 + offset % 15, comments: 22 + offset % 8 },
+    { name: "Thứ 7", commits: 14 + offset % 6, comments: 12 + offset % 4 },
+    { name: "CN", commits: 8 + offset % 3, comments: 5 + offset % 2 },
   ];
 
-  interface Subject {
-    id: string;
-    code: string;
-    name: string;
-    icon: string;
-    classes: { id: string; name: string; project: string }[];
-  }
-
-  const subjectsData: Record<string, Subject[]> = {
-    "summer-2026": [
-      {
-        id: "cse391",
-        code: "CSE391",
-        name: "Công nghệ phần mềm",
-        icon: "code",
-        classes: [
-          { id: "cse391-pbl07", name: "Lớp SE102.O12", project: "Nhóm PBL-07" },
-          { id: "cse391-pbl08", name: "Lớp SE102.O13", project: "Nhóm PBL-08" },
-        ]
-      },
-      {
-        id: "prn231",
-        code: "PRN231",
-        name: "Lập trình Web với .NET",
-        icon: "globe",
-        classes: [
-          { id: "prn231-pbl02", name: "Lớp SE103.A11", project: "Nhóm PBL-02" },
-          { id: "prn231-pbl03", name: "Lớp SE103.A12", project: "Nhóm PBL-03" },
-        ]
-      }
-    ],
-    "spring-2026": [
-      {
-        id: "swp391",
-        code: "SWP391",
-        name: "Dự án Phát triển Phần mềm",
-        icon: "terminal",
-        classes: [
-          { id: "swp391-pbl03", name: "Lớp SE104.M21", project: "Nhóm PBL-03" },
-          { id: "swp391-pbl04", name: "Lớp SE104.M22", project: "Nhóm PBL-04" },
-        ]
-      },
-      {
-        id: "swr302",
-        code: "SWR302",
-        name: "Yêu cầu phần mềm",
-        icon: "book",
-        classes: [
-          { id: "swr302-pbl01", name: "Lớp SE105.D11", project: "Nhóm PBL-01" },
-        ]
-      }
-    ],
-    "fall-2025": [
-      {
-        id: "prn211",
-        code: "PRN211",
-        name: "Lập trình C# cơ bản",
-        icon: "cpu",
-        classes: [
-          { id: "prn211-pbl05", name: "Lớp SE106.T12", project: "Nhóm PBL-05" },
-        ]
-      },
-      {
-        id: "mad101",
-        code: "MAD101",
-        name: "Toán rời rạc ứng dụng",
-        icon: "database",
-        classes: [
-          { id: "mad101-pbl04", name: "Lớp SE107.V11", project: "Nhóm PBL-04" },
-        ]
-      }
-    ],
-  };
+  const statsData = [
+    {
+      title: "Tổng số Commits",
+      value: (124 + offset * 5).toString(),
+      trend: "+12%",
+      trendUp: true,
+      icon: <GitCommit className="h-5 w-5 text-foreground" />,
+    },
+    {
+      title: "Bình luận",
+      value: (45 + offset * 2).toString(),
+      trend: "+5%",
+      trendUp: true,
+      icon: <MessageSquare className="h-5 w-5 text-foreground" />,
+    },
+    {
+      title: "Task hoàn thành",
+      value: (32 + offset).toString(),
+      trend: "+18%",
+      trendUp: true,
+      icon: <CheckCircle2 className="h-5 w-5 text-foreground" />,
+    },
+    {
+      title: "Cảnh báo rủi ro",
+      value: (offset % 5).toString(),
+      trend: "-2%",
+      trendUp: false,
+      icon: <AlertTriangle className="h-5 w-5 text-foreground" />,
+    },
+  ];
 
   const getSemesterName = (semId: string) => {
     return semestersData.find((s) => s.id === semId)?.name ?? semId;
@@ -196,8 +161,8 @@ export default function OverviewDashboard() {
         title="Tổng quan — Sprint 4"
         description={
           selectedSemester && selectedClass
-            ? `${getSemesterName(selectedSemester)} · ${getClassName(selectedSemester, selectedClass)}`
-            : "CSE391 - Công nghệ phần mềm"
+            ? `${getSemesterName(selectedSemester)} · ${getClassName(selectedSemester, selectedClass)} · ${getClassProject(selectedSemester, selectedClass)}`
+            : "Đang tải dữ liệu lớp học..."
         }
       />
 
@@ -206,24 +171,24 @@ export default function OverviewDashboard() {
           ? Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-32 rounded-2xl" />
           ))
-          : [...Array(4)].map((_, i) => (
+          : statsData.map((stat, i) => (
             <Card
               key={i}
               className="border-border shadow-sm rounded-2xl bg-card text-card-foreground p-5 hover:shadow-md transition-all"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="p-2.5 rounded-xl bg-muted">
-                  <GitCommit className="h-5 w-5 text-foreground" />
+                  {stat.icon}
                 </div>
-                <div className="text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 px-2 py-1 rounded-full text-xs font-bold transition-colors">
-                  +12%
+                <div className={`px-2 py-1 rounded-full text-xs font-bold transition-colors ${stat.trendUp ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400' : 'text-amber-700 bg-amber-100 dark:bg-amber-950/40 dark:text-amber-400'}`}>
+                  {stat.trend}
                 </div>
               </div>
               <h3 className="text-3xl font-extrabold text-foreground">
-                1.284
+                {stat.value}
               </h3>
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                Tổng số Commits
+                {stat.title}
               </p>
             </Card>
           ))}
@@ -241,51 +206,65 @@ export default function OverviewDashboard() {
                 <Skeleton className="w-full h-full rounded-xl" />
               ) : (
                 <ResponsiveContainer width="100%" height={320} minWidth={0}>
-                  <LineChart data={weeklyActivityData}>
+                  <AreaChart data={dynamicActivityData}>
+                    <defs>
+                      <linearGradient id="colorCommits" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorComments" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--secondary)" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="var(--secondary)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid
                       strokeDasharray="3 3"
                       vertical={false}
                       stroke="var(--border)"
                     />
-                    <XAxis dataKey="name" hide />
+                    <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "var(--card)",
                         borderColor: "var(--border)",
                         color: "var(--card-foreground)",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                        borderRadius: "12px",
+                        boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
                       }}
                       itemStyle={{
                         color: "var(--foreground)",
                         fontWeight: 600,
                       }}
                     />
-                    <Line
+                    <Area
                       type="monotone"
                       dataKey="commits"
+                      name="Commits"
                       stroke="var(--primary)"
-                      strokeWidth={3.5}
-                      dot={{ r: 4, fill: "var(--primary)", strokeWidth: 0 }}
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill="url(#colorCommits)"
                       activeDot={{
-                        r: 7,
+                        r: 6,
                         stroke: "var(--background)",
                         strokeWidth: 2,
                       }}
                     />
-                    <Line
+                    <Area
                       type="monotone"
                       dataKey="comments"
+                      name="Bình luận"
                       stroke="var(--secondary)"
-                      strokeWidth={3.5}
-                      dot={{ r: 4, fill: "var(--secondary)", strokeWidth: 0 }}
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill="url(#colorComments)"
                       activeDot={{
-                        r: 7,
+                        r: 6,
                         stroke: "var(--background)",
                         strokeWidth: 2,
                       }}
                     />
-                  </LineChart>
+                  </AreaChart>
                 </ResponsiveContainer>
               )}
             </div>
