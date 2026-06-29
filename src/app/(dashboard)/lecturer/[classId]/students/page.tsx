@@ -21,19 +21,19 @@ import { toast } from "sonner";
 
 // Cập nhật Mock Data theo template CSV
 const INITIAL_STUDENTS = [
-  { 
-    rollNumber: "SE171184", 
-    email: "minhbpnse171184@fpt.edu.vn", 
-    fullName: "Bùi Phan Nhật Minh", 
-    group: "1", 
-    leader: "x" 
+  {
+    rollNumber: "SE171184",
+    email: "minhbpnse171184@fpt.edu.vn",
+    fullName: "Bùi Phan Nhật Minh",
+    group: "1",
+    leader: "x"
   },
-  { 
-    rollNumber: "SE183904", 
-    email: "hailhse180934@fpt.edu.vn", 
-    fullName: "Lê Hoàng Hải", 
-    group: "1", 
-    leader: "" 
+  {
+    rollNumber: "SE183904",
+    email: "hailhse180934@fpt.edu.vn",
+    fullName: "Lê Hoàng Hải",
+    group: "1",
+    leader: ""
   },
 ];
 
@@ -46,31 +46,31 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
 
   const handleImport = () => {
     setIsImporting(true);
-    setIsDialogOpen(false); 
-    
+    setIsDialogOpen(false);
+
     setTimeout(() => {
       const importedData = [
         ...INITIAL_STUDENTS,
-        { 
-          rollNumber: "SE199999", 
-          email: "newstudent1@fpt.edu.vn", 
-          fullName: "Nguyễn Văn A", 
-          group: "2", 
-          leader: "x" 
+        {
+          rollNumber: "SE199999",
+          email: "newstudent1@fpt.edu.vn",
+          fullName: "Nguyễn Văn A",
+          group: "2",
+          leader: "x"
         },
-        { 
-          rollNumber: "SE188888", 
-          email: "newstudent2@fpt.edu.vn", 
-          fullName: "Trần Thị B", 
-          group: "2", 
-          leader: "" 
+        {
+          rollNumber: "SE188888",
+          email: "newstudent2@fpt.edu.vn",
+          fullName: "Trần Thị B",
+          group: "2",
+          leader: ""
         },
-        { 
-          rollNumber: "SE177777", 
-          email: "newstudent3@fpt.edu.vn", 
-          fullName: "Lê Văn C", 
-          group: "", 
-          leader: "" 
+        {
+          rollNumber: "SE177777",
+          email: "newstudent3@fpt.edu.vn",
+          fullName: "Lê Văn C",
+          group: "",
+          leader: ""
         },
       ];
       setStudents(importedData);
@@ -80,7 +80,7 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
 
   const handleDownloadTemplate = () => {
     toast.info("Tính năng đang được phát triển, vui lòng thử lại sau!");
-    
+
     /*
     const headers = "Class,RollNumber,Email,MemberCode,FullName,Group,Leader\n";
     const sampleRow = `${classId},SE171184,minhbpnse171184@fpt.edu.vn,MinhBPN,Bùi Phan Nhật Minh,1,x\n`;
@@ -115,7 +115,7 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
   const studentsWithoutGroup = filteredStudents.filter(s => !s.group);
   const hasMultipleGroups = uniqueGroups.length > 1;
 
-  const renderStudentRow = (student: { rollNumber: string; fullName: string; email: string; group?: string }, index: number) => (
+  const renderStudentRow = (student: { rollNumber: string; fullName: string; email: string; group?: string; leader?: string }, index: number) => (
     <TableRow key={student.rollNumber} className="hover:bg-muted/30 transition-colors">
       <TableCell className="text-center font-medium text-muted-foreground">{index + 1}</TableCell>
       <TableCell className="font-bold text-primary">{student.rollNumber}</TableCell>
@@ -132,14 +132,14 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
       </TableCell>
       <TableCell>
         {student.leader?.toLowerCase() === 'x' ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shadow-sm">
-              <Crown size={12} className="text-amber-600 dark:text-amber-400" /> 
-              Leader
-            </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shadow-sm">
+            <Crown size={12} className="text-amber-600 dark:text-amber-400" />
+            Leader
+          </span>
         ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 shadow-sm">
-              Member
-            </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+            Member
+          </span>
         )}
       </TableCell>
       <TableCell className="text-right">

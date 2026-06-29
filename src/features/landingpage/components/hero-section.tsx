@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, CheckCircle2, GitBranch, PlayCircle } from "lucide-react";
 import { AuthModal } from "@/features/auth/components/auth-modal";
-import Image from "next/image";
 import { fadeUp } from "./animations";
 
 export function HeroSection() {
