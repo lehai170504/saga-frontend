@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { PeerReviewRules } from "@/features/admin/components/evaluation-config/peer-review-rules";
 import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
 import { TaskMultiplierTemplates } from "@/features/admin/components/evaluation-config/task-multiplier-templates";
+import { DataIntegrationRules } from "@/features/admin/components/evaluation-config/data-integration-rules";
+import { Database } from "lucide-react";
 
 export default function EvaluationConfigPage() {
   const [activeTab, setActiveTab] = useState("peer-review");
@@ -43,14 +45,17 @@ export default function EvaluationConfigPage() {
       </PageHeader>
 
       <Tabs defaultValue="peer-review" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex flex-col md:flex-row w-full md:w-auto h-auto md:h-12 rounded-xl bg-muted/50 p-1 mb-8 gap-1">
-          <TabsTrigger value="peer-review" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 md:h-full px-4 sm:px-6">
+        <TabsList className="flex flex-col lg:flex-row w-full lg:w-auto h-auto lg:h-12 rounded-xl bg-muted/50 p-1 mb-8 gap-1">
+          <TabsTrigger value="peer-review" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
             <Star className="w-4 h-4 mr-2" /> Luật Peer Review Hệ thống
           </TabsTrigger>
-          <TabsTrigger value="ai-warnings" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 md:h-full px-4 sm:px-6">
+          <TabsTrigger value="ai-warnings" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
             <AlertTriangle className="w-4 h-4 mr-2" /> Ngưỡng Cảnh báo AI
           </TabsTrigger>
-          <TabsTrigger value="templates" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 md:h-full px-4 sm:px-6">
+          <TabsTrigger value="integrations" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
+            <Database className="w-4 h-4 mr-2" /> Tích hợp Dữ liệu
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
             <Settings2 className="w-4 h-4 mr-2" /> Bộ Khung Hệ số Mẫu
           </TabsTrigger>
         </TabsList>
@@ -65,6 +70,10 @@ export default function EvaluationConfigPage() {
 
         <TabsContent value="templates" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
           <TaskMultiplierTemplates />
+        </TabsContent>
+
+        <TabsContent value="integrations" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <DataIntegrationRules />
         </TabsContent>
       </Tabs>
     </div>
