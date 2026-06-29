@@ -27,19 +27,31 @@ export function PeerReviewRules() {
                   <Lock className="w-4 h-4" /> Hệ số điều chỉnh đã được khóa cứng theo Quy chế Đào tạo.
                 </div>
                 {[
-                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-amber-500" },
-                  { star: 4, label: "Khá Tốt (4 Sao)", desc: "Hoàn thành tốt nhiệm vụ được giao.", defaultVal: 1.05, color: "text-blue-500" },
-                  { star: 3, label: "Đạt (3 Sao)", desc: "Hoàn thành mức cơ bản, đúng hạn.", defaultVal: 1.0, color: "text-emerald-500" },
-                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-orange-500" },
                   { star: 1, label: "Rất Tệ (1 Sao)", desc: "Không làm gì, thái độ thiếu hợp tác.", defaultVal: 0.5, color: "text-destructive" },
+                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-orange-500" },
+                  { star: 3, label: "Đạt (3 Sao)", desc: "Mốc chuẩn (Baseline): Hoàn thành mức cơ bản, đúng hạn.", defaultVal: 1.0, color: "text-emerald-500", isBaseline: true },
+                  { star: 4, label: "Khá Tốt (4 Sao)", desc: "Hoàn thành tốt nhiệm vụ được giao.", defaultVal: 1.05, color: "text-blue-500" },
+                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-amber-500" },
                 ].map((item) => (
-                  <div key={item.star} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border border-border/50 bg-background/50 transition-colors opacity-90">
-                    <div className="flex items-center gap-2 w-40 shrink-0">
+                  <div
+                    key={item.star}
+                    className={`flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border transition-all ${item.isBaseline
+                        ? 'bg-emerald-500/10 border-emerald-500/40 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
+                        : 'border-border/50 bg-background/50 opacity-90'
+                      }`}
+                  >
+                    <div className="flex items-center gap-2 w-44 shrink-0">
                       <Star className={`w-5 h-5 fill-current ${item.color}`} />
-                      <span className="font-bold">{item.label}</span>
+                      <span className={`font-bold ${item.isBaseline ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>{item.label}</span>
                     </div>
-                    <div className="flex-1 text-sm text-muted-foreground">
-                      {item.desc}
+                    <div className="flex-1 text-sm text-muted-foreground flex flex-col justify-center">
+                      {item.isBaseline ? (
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-300">
+                          {item.desc}
+                        </span>
+                      ) : (
+                        item.desc
+                      )}
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       <Label className="text-xs font-bold text-muted-foreground uppercase">Hệ số nhân</Label>
@@ -47,7 +59,7 @@ export function PeerReviewRules() {
                         type="number"
                         disabled
                         value={item.defaultVal}
-                        className={`w-24 text-center font-bold h-10 rounded-xl bg-muted border-border/50 ${item.defaultVal < 1 ? 'text-destructive' : item.defaultVal > 1 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+                        className={`w-24 text-center font-bold h-10 rounded-xl bg-muted border-border/50 ${item.defaultVal < 1 ? 'text-destructive' : item.defaultVal > 1 ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-500'}`}
                       />
                     </div>
                   </div>
@@ -82,11 +94,13 @@ export function PeerReviewRules() {
                   <div className="space-y-3">
                     <p className="font-bold text-foreground">Tại sao lại là những con số này?</p>
                     <div className="space-y-2">
-                      <p><strong className="text-emerald-600 dark:text-emerald-400">3 Sao (1.0):</strong> Hoàn thành 100% effort kỳ vọng thì nhận 100% điểm.</p>
-                      <p><strong className="text-blue-500">4 Sao (1.05):</strong> Bonus 5% (+0.5 điểm) - Phần thưởng khích lệ an toàn.</p>
-                      <p><strong className="text-amber-500">5 Sao (1.10):</strong> Mức trần Bonus 10% (+1.0 điểm). Chặn đứng rủi ro sinh viên thao túng điểm bằng cách "vote chéo 5 sao".</p>
-                      <p><strong className="text-orange-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá (8.0) xuống Trung bình (6.4).</p>
                       <p><strong className="text-destructive">1 Sao (0.50):</strong> Cứa cổ Freerider. Giảm 50% điểm, chặn đứng khả năng qua môn nhờ bám víu vào nhóm.</p>
+                      <p><strong className="text-orange-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá (8.0) xuống Trung bình (6.4).</p>
+                      <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl my-3">
+                        <p className="text-emerald-700 dark:text-emerald-400 font-semibold"><strong className="text-emerald-600 dark:text-emerald-400">3 Sao (1.0) - MỐC CHUẨN:</strong> Hoàn thành 100% khối lượng kỳ vọng thì nhận 100% điểm. (Baseline).</p>
+                      </div>
+                      <p><strong className="text-blue-500">4 Sao (1.05):</strong> Bonus 5% (+0.5 điểm) - Phần thưởng khích lệ an toàn.</p>
+                      <p><strong className="text-amber-500">5 Sao (1.10):</strong> Mức trần Bonus 10% (+1.0 điểm). Chặn đứng rủi ro sinh viên thao túng điểm bằng cách &quot;vote chéo 5 sao&quot;.</p>
                     </div>
                   </div>
 

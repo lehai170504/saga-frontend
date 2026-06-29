@@ -12,12 +12,12 @@ import {
   ShieldCheck,
   ArrowLeft,
   BookOpen,
-  
+
   GraduationCap,
   Share2,
-  
-  
-  
+
+
+
   Logs,
   Link2,
   Inbox,
@@ -279,9 +279,10 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
                       item.href === '/admin' ||
                         item.href === '/lecturer' ||
                         item.href === '/student' ||
+                        item.href === '/student/projects' ||
                         (classId && item.href === `/lecturer/${classId}`)
                         ? pathname === item.href
-                        : pathname.startsWith(item.href)
+                        : pathname === item.href || pathname.startsWith(`${item.href}/`)
                     );
 
                   return (

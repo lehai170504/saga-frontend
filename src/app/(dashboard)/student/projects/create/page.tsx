@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { FolderKanban, GitBranch, Compass, RefreshCw, CheckCircle2, Link2, ShieldCheck } from "lucide-react";
+import { FolderKanban, GitBranch, Compass, RefreshCw, CheckCircle2, Link2, ShieldCheck, Plus, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 
 export default function StudentProjectCreatePage() {
@@ -22,8 +22,11 @@ export default function StudentProjectCreatePage() {
   const [description, setDescription] = useState("");
 
   // GitHub integration states
-  const [githubRepoUrl, setGithubRepoUrl] = useState("");
-  const [githubBranch, setGithubBranch] = useState("main");
+  type GithubRepo = { id: string; type: string; url: string; branch: string };
+  const [githubRepos, setGithubRepos] = useState<GithubRepo[]>([
+    { id: "1", type: "Frontend", url: "", branch: "main" },
+    { id: "2", type: "Backend", url: "", branch: "main" }
+  ]);
   const [isTestingGithub, setIsTestingGithub] = useState(false);
   const [githubConnected, setGithubConnected] = useState(false);
 
@@ -57,7 +60,7 @@ export default function StudentProjectCreatePage() {
     setTimeout(() => setMounted(true), 0);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    
+
     setTimeout(() => setSelectedClass(cls), 0);
 
     // Load saved project configurations for this class
@@ -73,8 +76,16 @@ export default function StudentProjectCreatePage() {
 
       setTopicName(savedTopic);
       setDescription(savedDesc);
-      setGithubRepoUrl(savedGitUrl);
-      setGithubBranch(savedGitBranch);
+
+      try {
+        const savedGitReposStr = localStorage.getItem(`saga-project-git-repos-${cls}`);
+        if (savedGitReposStr) {
+          setGithubRepos(JSON.parse(savedGitReposStr));
+        }
+      } catch (e) {
+        // Fallback to default
+      }
+
       setGithubConnected(savedGitConn);
       setJiraUrl(savedJiraUrl);
       setJiraProjectKey(savedJiraKey);
@@ -87,8 +98,21 @@ export default function StudentProjectCreatePage() {
     return () => clearTimeout(timer);
   }, [selectedClass]);
 
+  const handleAddRepo = () => {
+    setGithubRepos([...githubRepos, { id: Date.now().toString(), type: "Khác", url: "", branch: "main" }]);
+  };
+
+  const updateRepo = (id: string, field: keyof GithubRepo, value: string) => {
+    setGithubRepos(githubRepos.map(r => r.id === id ? { ...r, [field]: value } : r));
+  };
+
+  const removeRepo = (id: string) => {
+    setGithubRepos(githubRepos.filter(r => r.id !== id));
+  };
+
   const handleTestGithub = () => {
-    if (!githubRepoUrl) {
+    const hasEmptyUrl = githubRepos.some(r => !r.url);
+    if (hasEmptyUrl) {
       toast.error("Vui lòng điền URL GitHub Repository trước");
       return;
     }
@@ -126,17 +150,17 @@ export default function StudentProjectCreatePage() {
       return;
     }
     if (!githubConnected || !jiraConnected) {
-      toast.warning("Khuyên dùng: Hoàn thành kết nối/thử nghiệm cả GitHub và Jira trước khi lưu.");
+      toast.warning("Vui lòng hoàn thành Thử nghiệm Kết nối GitHub và Jira trước khi lưu.");
+      return;
     }
 
     if (selectedClass) {
       localStorage.setItem(`saga-project-topic-${selectedClass}`, topicName);
       localStorage.setItem(`saga-project-desc-${selectedClass}`, description);
-      localStorage.setItem(`saga-project-git-url-${selectedClass}`, githubRepoUrl);
-      localStorage.setItem(`saga-project-git-branch-${selectedClass}`, githubBranch);
+      localStorage.setItem(`saga-project-git-repos-${selectedClass}`, JSON.stringify(githubRepos));
       localStorage.setItem(`saga-project-jira-url-${selectedClass}`, jiraUrl);
       localStorage.setItem(`saga-project-jira-key-${selectedClass}`, jiraProjectKey);
-      
+
       // Dispatch audit event
       /*
       const newAuditLog = {
@@ -164,7 +188,7 @@ export default function StudentProjectCreatePage() {
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
         <PageHeader
           title="Cấu hình & Kết nối Dự án Nhóm"
@@ -178,10 +202,10 @@ export default function StudentProjectCreatePage() {
           </div>
         ) : (
           <form onSubmit={handleSaveProject} className="grid gap-6 lg:grid-cols-3 items-start">
-            
+
             {/* Left/Main Column: Project Details & Repository Integrations (Span 2) */}
             <div className="lg:col-span-2 space-y-6">
-              
+
               {/* Project Topic registration Card */}
               <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 md:p-8 space-y-5">
                 <div className="flex items-center gap-3 border-b border-border/40 pb-4">
@@ -197,7 +221,7 @@ export default function StudentProjectCreatePage() {
                 <div className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="topic-name" className="text-xs font-bold text-muted-foreground">Tên đề tài / Dự án</Label>
-                    <Input 
+                    <Input
                       id="topic-name"
                       placeholder="Ví dụ: Hệ thống quản lý thư viện số SAGA"
                       value={topicName}
@@ -208,7 +232,7 @@ export default function StudentProjectCreatePage() {
 
                   <div className="space-y-1.5">
                     <Label htmlFor="description" className="text-xs font-bold text-muted-foreground">Mô tả tóm tắt dự án</Label>
-                    <Textarea 
+                    <Textarea
                       id="description"
                       placeholder="Nhập mô tả tóm tắt tính năng chính, bài toán nghiệp vụ mà dự án của nhóm bạn giải quyết..."
                       value={description}
@@ -222,7 +246,7 @@ export default function StudentProjectCreatePage() {
 
               {/* Integrations settings Card */}
               <div className="grid gap-6 md:grid-cols-2">
-                
+
                 {/* GitHub integration */}
                 <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 flex flex-col justify-between space-y-6">
                   <div className="space-y-4">
@@ -230,7 +254,7 @@ export default function StudentProjectCreatePage() {
                       <div className="p-3 bg-purple-500/10 text-purple-500 rounded-2xl">
                         <GitBranch size={20} />
                       </div>
-                      
+
                       {githubConnected ? (
                         <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-full text-[10px] font-black uppercase">
                           <CheckCircle2 size={10} className="fill-current" />
@@ -250,31 +274,41 @@ export default function StudentProjectCreatePage() {
                       </p>
                     </div>
 
-                    <div className="space-y-3 pt-2">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="git-url" className="text-[10px] font-bold text-muted-foreground uppercase">GitHub Repository URL</Label>
-                        <Input 
-                          id="git-url"
-                          placeholder="https://github.com/org/repo"
-                          value={githubRepoUrl}
-                          onChange={(e) => setGithubRepoUrl(e.target.value)}
-                          className="h-9 rounded-lg bg-background border-border font-medium text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="git-branch" className="text-[10px] font-bold text-muted-foreground uppercase">Nhánh chính (Branch)</Label>
-                        <Input 
-                          id="git-branch"
-                          placeholder="main"
-                          value={githubBranch}
-                          onChange={(e) => setGithubBranch(e.target.value)}
-                          className="h-9 rounded-lg bg-background border-border font-medium text-xs"
-                        />
-                      </div>
+                    <div className="space-y-4 pt-2">
+                      {githubRepos.map((repo) => (
+                        <div key={repo.id} className="relative p-3 rounded-xl border border-border/50 bg-background/50 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Input
+                              value={repo.type}
+                              onChange={(e) => updateRepo(repo.id, 'type', e.target.value)}
+                              className="h-7 w-24 px-2 text-[10px] font-bold uppercase bg-muted border-none focus-visible:ring-1"
+                              placeholder="Loại Repo"
+                            />
+                            {githubRepos.length > 1 && (
+                              <button type="button" onClick={() => removeRepo(repo.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                                <Trash2 size={14} />
+                              </button>
+                            )}
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-[10px] font-bold text-muted-foreground uppercase">Repository URL</Label>
+                            <Input
+                              placeholder="https://github.com/org/repo"
+                              value={repo.url}
+                              onChange={(e) => updateRepo(repo.id, 'url', e.target.value)}
+                              className="h-9 rounded-lg bg-background border-border font-medium text-xs"
+                            />
+                          </div>
+                        </div>
+                      ))}
+
+                      <Button type="button" onClick={handleAddRepo} variant="ghost" className="w-full h-9 rounded-xl text-xs border border-dashed border-border/50 text-muted-foreground hover:text-foreground">
+                        <Plus size={14} className="mr-1" /> Thêm Repository khác
+                      </Button>
                     </div>
                   </div>
 
-                  <Button 
+                  <Button
                     type="button"
                     onClick={handleTestGithub}
                     disabled={isTestingGithub}
@@ -299,7 +333,7 @@ export default function StudentProjectCreatePage() {
                       <div className="p-3 bg-indigo-500/10 text-indigo-500 rounded-2xl">
                         <Compass size={20} />
                       </div>
-                      
+
                       {jiraConnected ? (
                         <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-full text-[10px] font-black uppercase">
                           <CheckCircle2 size={10} className="fill-current" />
@@ -322,7 +356,7 @@ export default function StudentProjectCreatePage() {
                     <div className="space-y-3 pt-2">
                       <div className="space-y-1.5">
                         <Label htmlFor="jira-url" className="text-[10px] font-bold text-muted-foreground uppercase">Jira Cloud Server URL</Label>
-                        <Input 
+                        <Input
                           id="jira-url"
                           placeholder="https://your-domain.atlassian.net"
                           value={jiraUrl}
@@ -332,7 +366,7 @@ export default function StudentProjectCreatePage() {
                       </div>
                       <div className="space-y-1.5">
                         <Label htmlFor="jira-key" className="text-[10px] font-bold text-muted-foreground uppercase">Jira Project Key</Label>
-                        <Input 
+                        <Input
                           id="jira-key"
                           placeholder="Ví dụ: SAGA"
                           value={jiraProjectKey}
@@ -343,7 +377,7 @@ export default function StudentProjectCreatePage() {
                     </div>
                   </div>
 
-                  <Button 
+                  <Button
                     type="button"
                     onClick={handleTestJira}
                     disabled={isTestingJira}
@@ -367,7 +401,7 @@ export default function StudentProjectCreatePage() {
 
             {/* Right Column: Information & Submit Button (Span 1) */}
             <div className="space-y-6">
-              
+
               <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 space-y-6">
                 <h3 className="font-extrabold text-foreground text-sm flex items-center gap-2 border-b border-border/40 pb-4">
                   <ShieldCheck className="text-primary" size={16} />
@@ -389,7 +423,7 @@ export default function StudentProjectCreatePage() {
                   </div>
                 </div>
 
-                <Button 
+                <Button
                   type="submit"
                   className="w-full h-11 rounded-xl font-black text-xs uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md shadow-primary/10"
                 >
