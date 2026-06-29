@@ -1,7 +1,9 @@
 "use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Users, CheckCircle2, GitCommit, GitPullRequest, MessageSquare, TrendingUp, Sparkles, Activity } from "lucide-react";
+import { Users, CheckCircle2, GitCommit, GitPullRequest, MessageSquare, TrendingUp, Sparkles, Activity, Settings2 } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   AreaChart,
   Area,
@@ -78,17 +80,23 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi chi tiết hiệu suất và tương tác của sinh viên</p>
           </div>
+          <Link href={`/lecturer/${classId}/evaluation-config`}>
+            <Button className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm px-6">
+              <Settings2 className="w-4 h-4 mr-2" />
+              Cấu hình Slicing Pie
+            </Button>
+          </Link>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {statsData.map((stat, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className={`relative overflow-hidden rounded-2xl border ${stat.border} bg-card/30 backdrop-blur-xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
             >
               <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full ${stat.bg} blur-2xl opacity-50`} />
-              
+
               <div className="relative z-10 flex flex-col h-full justify-between gap-4">
                 <div className="flex items-start justify-between">
                   <div className={`p-2.5 rounded-xl ${stat.bg} ${stat.color} border ${stat.border}`}>
@@ -99,7 +107,7 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                     {stat.trend}
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-semibold text-muted-foreground mb-1">{stat.title}</h3>
                   <p className="text-3xl font-black text-foreground tracking-tight">{stat.value}</p>
@@ -134,12 +142,12 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                   <AreaChart data={activityData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorCommits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="colorPrs" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
@@ -184,9 +192,9 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                       ))}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend 
-                      layout="horizontal" 
-                      verticalAlign="bottom" 
+                    <Legend
+                      layout="horizontal"
+                      verticalAlign="bottom"
                       align="center"
                       wrapperStyle={{ fontSize: "12px", fontWeight: 600 }}
                       iconType="circle"
