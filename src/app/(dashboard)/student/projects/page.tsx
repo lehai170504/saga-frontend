@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, FolderKanban, Star, Crown, CheckCircle2, Bookmark } from "lucide-react";
+import { FolderKanban, Crown, Bookmark } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 
 interface GroupMember {
@@ -114,11 +114,11 @@ export default function StudentProjectsPage() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
+    setTimeout(() => setSelectedClass(cls), 0);
 
     const timer = setTimeout(() => {
       setIsLoading(false);

@@ -69,7 +69,7 @@ export function TeamEvaluation() {
                   </Pie>
                   <Tooltip
                     contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
-                    formatter={(value: any) => [`${value}% Slices`, 'Đóng góp']}
+                    formatter={(value: unknown) => [`${value}% Slices`, 'Đóng góp']}
                   />
                 </PieChart>
               </ResponsiveContainer>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Calendar as CalendarIcon, Users, Filter, Sparkles } from "lucide-react";
+import { Calendar as CalendarIcon, Users, Filter, Sparkles } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -78,18 +78,18 @@ export default function StudentHeatmapPage() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
+    setTimeout(() => setSelectedClass(cls), 0);
 
     const groupName = subjectsData.find(c => c.classId === cls)?.project || "Nhóm PBL-01";
     setHeatmapData(generateHeatmapData(groupName));
 
     const timer = setTimeout(() => setIsLoading(false), 600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [subjectsData]);
 
   if (!mounted) {
     return <div className="p-6 min-h-screen bg-background" />;

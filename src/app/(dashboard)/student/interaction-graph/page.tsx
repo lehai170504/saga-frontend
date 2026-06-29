@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Share2, Users, Search, Sparkles } from "lucide-react";
+import { Users, Search, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -58,11 +58,11 @@ export default function StudentInteractionGraphPage() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
+    setTimeout(() => setSelectedClass(cls), 0);
     setSelectedNode(nodes[2]); // Default selection (An Lê)
 
     const timer = setTimeout(() => setIsLoading(false), 600);

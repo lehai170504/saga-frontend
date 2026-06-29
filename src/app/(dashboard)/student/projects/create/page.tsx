@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { FolderKanban, GitBranch, Compass, RefreshCw, CheckCircle2, Link2, ExternalLink, ShieldCheck } from "lucide-react";
+import { FolderKanban, GitBranch, Compass, RefreshCw, CheckCircle2, Link2, ShieldCheck } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 
 export default function StudentProjectCreatePage() {
@@ -54,11 +54,11 @@ export default function StudentProjectCreatePage() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
+    setTimeout(() => setSelectedClass(cls), 0);
 
     // Load saved project configurations for this class
     if (cls) {
@@ -138,12 +138,14 @@ export default function StudentProjectCreatePage() {
       localStorage.setItem(`saga-project-jira-key-${selectedClass}`, jiraProjectKey);
       
       // Dispatch audit event
+      /*
       const newAuditLog = {
         action: "SETUP_PROJECT",
         category: "system",
         status: "success",
         details: `Cấu hình đề tài '${topicName}' và tích hợp kho lưu trữ của nhóm thành công.`
       };
+      */
       // Simulating logging
       toast.success(`Đã lưu cấu hình dự án cho ${getStudentGroup(selectedClass)} thành công!`);
     }

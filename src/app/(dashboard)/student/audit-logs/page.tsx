@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Download, Search, Filter, Activity, Clock, Terminal, GitCommit, FileText, CheckCircle2 } from "lucide-react";
+import { Download, Search, Filter, Activity, Terminal, GitCommit, FileText, CheckCircle2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,11 +59,11 @@ export default function StudentAuditLogsPage() {
   };
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
+    setTimeout(() => setSelectedClass(cls), 0);
 
     const timer = setTimeout(() => {
       setIsLoading(false);

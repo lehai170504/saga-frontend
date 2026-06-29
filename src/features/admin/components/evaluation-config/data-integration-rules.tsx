@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database, GitBranch, Bug, Combine, Info, Lock } from "lucide-react";
 import { Label } from "@/components/ui/label";
@@ -45,7 +45,7 @@ export function DataIntegrationRules() {
                       <Label htmlFor="r1" className="cursor-not-allowed space-y-1">
                         <span className="block font-bold text-base text-primary">Dựa trên Story Points (Mặc định bắt buộc)</span>
                         <span className="block text-sm text-muted-foreground font-normal leading-snug">
-                          Đề cao năng lực hoàn thành công việc. Task 5 point sẽ được 5 Slices (nhân với hệ số công việc), bất kể sinh viên hoàn thành trong 1 giờ hay 10 giờ. Ngăn chặn triệt để việc "ngâm task" để gian lận thời gian.
+                          Đề cao năng lực hoàn thành công việc. Task 5 point sẽ được 5 Slices (nhân với hệ số công việc), bất kể sinh viên hoàn thành trong 1 giờ hay 10 giờ. Ngăn chặn triệt để việc &quot;ngâm task&quot; để gian lận thời gian.
                         </span>
                       </Label>
                     </div>
@@ -72,7 +72,7 @@ export function DataIntegrationRules() {
 
                   <div className="flex items-center justify-between p-3 rounded-lg bg-card border border-border/50 opacity-70">
                     <div className="space-y-1 mr-4">
-                      <Label className="font-bold text-sm">Xác thực "Ghosting" (No-code warning)</Label>
+                      <Label className="font-bold text-sm">Xác thực &quot;Ghosting&quot; (No-code warning)</Label>
                       <p className="text-xs text-muted-foreground">Kích hoạt Cờ Đỏ nếu một Task code trên Jira chuyển sang Done nhưng không có bất kỳ Commit/PR nào khớp trên GitHub.</p>
                     </div>
                     <Switch checked={enableGithubCheck} disabled />
@@ -118,14 +118,14 @@ export function DataIntegrationRules() {
                     <div className="space-y-1">
                       <h4 className="font-bold text-foreground text-base text-blue-600 dark:text-blue-400">1. Value vs. Effort (Jira)</h4>
                       <p className="text-xs leading-relaxed">
-                        Hệ thống bắt buộc tính Slices theo <strong>Story Points (Giá trị)</strong> thay vì <strong>Time Logged (Nỗ lực)</strong>. Điều này dựa trên <em>Định luật Parkinson: "Công việc luôn tự mở rộng ra để lấp đầy thời gian được ấn định cho nó"</em>. Nếu chấm điểm theo giờ làm, sinh viên sẽ có xu hướng code chậm lại hoặc khai khống giờ (inflate hours) để trục lợi. Story Points đánh giá đúng giá trị đầu ra (Outcome-based).
+                        Hệ thống bắt buộc tính Slices theo <strong>Story Points (Giá trị)</strong> thay vì <strong>Time Logged (Nỗ lực)</strong>. Điều này dựa trên <em>Định luật Parkinson: &quot;Công việc luôn tự mở rộng ra để lấp đầy thời gian được ấn định cho nó&quot;</em>. Nếu chấm điểm theo giờ làm, sinh viên sẽ có xu hướng code chậm lại hoặc khai khống giờ (inflate hours) để trục lợi. Story Points đánh giá đúng giá trị đầu ra (Outcome-based).
                       </p>
                     </div>
 
                     <div className="space-y-1">
                       <h4 className="font-bold text-foreground text-base text-zinc-800 dark:text-zinc-200">2. Bằng chứng Mật mã (GitHub)</h4>
                       <p className="text-xs leading-relaxed">
-                        Việc kéo Jira Card sang cột "Done" cực kỳ dễ dàng và dễ bị thao túng. Tích hợp GitHub cung cấp <strong>Cryptographic Proof of Work</strong> (Bằng chứng công việc bằng mật mã). Nếu Jira = Done nhưng GitHub = Không có Commit, đó là hành vi mạo danh công sức của người khác (Freerider).
+                        Việc kéo Jira Card sang cột &quot;Done&quot; cực kỳ dễ dàng và dễ bị thao túng. Tích hợp GitHub cung cấp <strong>Cryptographic Proof of Work</strong> (Bằng chứng công việc bằng mật mã). Nếu Jira = Done nhưng GitHub = Không có Commit, đó là hành vi mạo danh công sức của người khác (Freerider).
                       </p>
                     </div>
 
@@ -141,7 +141,7 @@ export function DataIntegrationRules() {
                   <div className="space-y-2 pt-4 border-t border-border/50">
                     <h4 className="font-bold text-foreground">Kết luận</h4>
                     <p className="text-xs">
-                      Việc khóa các tính năng đối soát dữ liệu nhằm loại bỏ hoàn toàn cảm tính của con người ra khỏi việc chấm điểm. "Trust, but verify" (Tin tưởng, nhưng phải xác minh bằng Data).
+                      Việc khóa các tính năng đối soát dữ liệu nhằm loại bỏ hoàn toàn cảm tính của con người ra khỏi việc chấm điểm. &quot;Trust, but verify&quot; (Tin tưởng, nhưng phải xác minh bằng Data).
                     </p>
                   </div>
                 </CardContent>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { CheckCircle2, Users, GraduationCap, UserCircle2, ShieldAlert } from "lucide-react";
+import { Users, GraduationCap, UserCircle2, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { UsersTable, User } from "@/features/admin/components/users-table";
 import { Card, CardContent } from "@/components/ui/card";

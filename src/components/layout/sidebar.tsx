@@ -12,12 +12,12 @@ import {
   ShieldCheck,
   ArrowLeft,
   BookOpen,
-  FileText,
+  
   GraduationCap,
   Share2,
-  AlertTriangle,
-  TrendingDown,
-  Clock,
+  
+  
+  
   Logs,
   Link2,
   Inbox,

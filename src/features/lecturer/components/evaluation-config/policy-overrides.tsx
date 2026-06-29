@@ -32,7 +32,7 @@ export function PolicyOverrides() {
           <ShieldCheck className="w-5 h-5 text-primary" /> Ghi đè Chính sách (Policy Overrides)
         </CardTitle>
         <CardDescription>
-          Mặc định lớp học sẽ tuân theo các luật cảnh báo và Peer Review do Admin cấu hình. Bật công tắc "Ghi đè" nếu bạn muốn thay đổi các chỉ số này cho phù hợp với tiến độ riêng của lớp. Mọi thay đổi đều cần Admin kiểm duyệt.
+          Mặc định lớp học sẽ tuân theo các luật cảnh báo và Peer Review do Admin cấu hình. Bật công tắc &quot;Ghi đè&quot; nếu bạn muốn thay đổi các chỉ số này cho phù hợp với tiến độ riêng của lớp. Mọi thay đổi đều cần Admin kiểm duyệt.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

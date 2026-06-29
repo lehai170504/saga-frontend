@@ -33,7 +33,7 @@ export function AiWarningRules() {
                   <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-90">
                     <div className="space-y-2">
                       <Label className="text-sm font-bold flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-orange-500" /> Ngưỡng "Gánh Team" (Bottleneck)
+                        <Flame className="w-4 h-4 text-orange-500" /> Ngưỡng &quot;Gánh Team&quot; (Bottleneck)
                       </Label>
                       <p className="text-xs text-muted-foreground mb-3">Cảnh báo khi 1-2 thành viên nắm giữ trên mức % tổng Slices của nhóm.</p>
                       <div className="flex items-center gap-3">
@@ -66,7 +66,7 @@ export function AiWarningRules() {
                   <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-90">
                     <div className="space-y-2">
                       <Label className="text-sm font-bold flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-zinc-500" /> Ngưỡng "Ghosting" (Biến mất)
+                        <Clock className="w-4 h-4 text-zinc-500" /> Ngưỡng &quot;Ghosting&quot; (Biến mất)
                       </Label>
                       <p className="text-xs text-muted-foreground mb-3">Cảnh báo nếu sinh viên không phát sinh bất kỳ Slices nào trong khoảng thời gian.</p>
                       <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ export function AiWarningRules() {
                 <CardContent className="space-y-6 text-sm text-muted-foreground pt-4">
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <p><strong className="text-orange-500 text-base">60% "Gánh Team":</strong></p>
+                      <p><strong className="text-orange-500 text-base">60% &quot;Gánh Team&quot;:</strong></p>
                       <p className="text-xs leading-relaxed">
                         Dựa trên khái niệm <strong>Bus Factor</strong> (Rủi ro nhân sự) trong Software Engineering. Scrum yêu cầu <em>Cross-functional Team</em>. Nếu 1 cá nhân ôm đồm &gt;60% khối lượng, dự án có nguy cơ sụp đổ hoàn toàn nếu người đó rời nhóm. Mức 60% là Red Flag cho việc phân chia công việc thất bại.
                       </p>
