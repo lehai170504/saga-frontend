@@ -21,7 +21,7 @@ export default function AdminGuidePage() {
         workspace="Workspace Quản trị"
       >
         <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 font-medium px-4 py-2 rounded-xl border border-emerald-200 dark:border-emerald-900/50">
-          <CheckCircle2 className="w-4 h-4" /> Phiên bản 1.1
+          <CheckCircle2 className="w-4 h-4" /> Phiên bản 1.2
         </div>
       </PageHeader>
 
@@ -37,7 +37,7 @@ export default function AdminGuidePage() {
             <TabsTrigger value="academic" className="rounded-xl px-4 py-2.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all">
               <div className="flex items-center gap-2">
                 <Calendar size={16} />
-                <span>Dữ liệu Học vụ (FAP)</span>
+                <span>Dữ liệu Học vụ</span>
               </div>
             </TabsTrigger>
             <TabsTrigger value="classes" className="rounded-xl px-4 py-2.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all">
@@ -77,7 +77,7 @@ export default function AdminGuidePage() {
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <p className="text-muted-foreground leading-relaxed">
-                SAGA (Student Academic Graph Analytics) là hệ thống đánh giá tự động và trực quan hóa hoạt động học tập dựa trên đồ thị (Graph) và dữ liệu chéo từ <strong>FAP, GitHub, và Jira</strong>.
+                SAGA (Student Academic Graph Analytics) là hệ thống đánh giá tự động và trực quan hóa hoạt động học tập dựa trên đồ thị (Graph) và dữ liệu chéo từ <strong>GitHub, Jira</strong> cùng dữ liệu học vụ do Admin quản lý.
               </p>
 
               <div className="mt-6 space-y-4">
@@ -85,14 +85,14 @@ export default function AdminGuidePage() {
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
                   <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 text-center flex flex-col items-center justify-center gap-2 h-full">
                     <Server className="w-6 h-6 text-orange-500" />
-                    <span className="text-xs font-bold uppercase">1. Nguồn FAP</span>
-                    <span className="text-[11px] text-muted-foreground">Kỳ học, Lớp, User</span>
+                    <span className="text-xs font-bold uppercase">1. Dữ liệu Đầu vào</span>
+                    <span className="text-[11px] text-muted-foreground">Nhập thủ công</span>
                   </div>
                   <div className="hidden md:flex justify-center text-muted-foreground"><ArrowRight /></div>
                   <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 text-center flex flex-col items-center justify-center gap-2 h-full">
                     <Settings className="w-6 h-6 text-blue-500" />
                     <span className="text-xs font-bold uppercase">2. Xử lý Backend</span>
-                    <span className="text-[11px] text-muted-foreground">Ánh xạ & Chuẩn hóa</span>
+                    <span className="text-[11px] text-muted-foreground">Phân tích & Ánh xạ</span>
                   </div>
                   <div className="hidden md:flex justify-center text-muted-foreground"><ArrowRight /></div>
                   <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 text-center flex flex-col items-center justify-center gap-2 h-full relative overflow-hidden">
@@ -116,41 +116,41 @@ export default function AdminGuidePage() {
                   <Calendar size={24} />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-bold">Cấu hình Đồng bộ FAP</CardTitle>
-                  <CardDescription>Quản lý và xử lý sự cố khi đồng bộ dữ liệu gốc.</CardDescription>
+                  <CardTitle className="text-xl font-bold">Quản lý Cấu trúc Học vụ</CardTitle>
+                  <CardDescription>Hướng dẫn thao tác tạo và quản lý dữ liệu nền tảng.</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="font-bold text-foreground">Dữ liệu được đồng bộ bao gồm:</h3>
+                  <h3 className="font-bold text-foreground">Dữ liệu cần quản lý bao gồm:</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
-                      <span><strong>Kỳ học (Semesters):</strong> Dữ liệu về học kỳ hiện tại và thời gian.</span>
+                      <span><strong>Kỳ học (Semesters):</strong> Thiết lập học kỳ hiện tại và thời gian.</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
-                      <span><strong>Môn học (Courses):</strong> Các môn đang mở trong kỳ.</span>
+                      <span><strong>Môn học (Courses):</strong> Các môn học đang vận hành trong kỳ.</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
-                      <span><strong>Danh sách Lớp (Classes & Rosters):</strong> Phân công sinh viên và Giảng viên.</span>
+                      <span><strong>Danh sách Lớp (Classes & Rosters):</strong> Phân công sinh viên và Giảng viên thủ công.</span>
                     </li>
                   </ul>
                 </div>
                 <div className="p-5 bg-background rounded-2xl border border-border/50 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-foreground">Trigger Đồng bộ thủ công</h3>
-                    <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-200">Cron: 00:00 Daily</Badge>
+                    <h3 className="font-bold text-foreground">Quy trình Cập nhật Dữ liệu</h3>
+                    <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-200">Cập nhật thủ công</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Đôi khi API của FAP bị trễ. Trong trường hợp có sinh viên mới thêm vào lớp, Admin có thể vào trang <strong>Dữ liệu Học vụ</strong>, bấm <span className="font-semibold text-foreground">Đồng bộ FAP</span> để force sync.
+                    Hệ thống hiện tại hoạt động độc lập và yêu cầu Admin tự quản lý dữ liệu. Khi có lớp mới hoặc sinh viên chuyển lớp, Admin cần vào trang <strong>Dữ liệu Học vụ</strong> để thêm mới hoặc cập nhật thông tin tương ứng.
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-200 dark:border-amber-900">
-                    <AlertTriangle className="w-4 h-4 shrink-0" />
-                    <span>Lưu ý: Không lạm dụng đồng bộ thủ công để tránh vi phạm Rate Limit của FAP API.</span>
+                  <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 dark:bg-blue-950/30 p-2 rounded-lg border border-blue-200 dark:border-blue-900">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Mẹo: Hãy đảm bảo email của sinh viên và giảng viên chính xác để hệ thống phân quyền đúng.</span>
                   </div>
                 </div>
               </div>
@@ -182,7 +182,7 @@ export default function AdminGuidePage() {
 
               <h3 className="font-bold text-foreground">Xử lý khi sai Giảng viên phụ trách</h3>
               <p className="text-muted-foreground text-sm">
-                Nếu trên FAP đổi Giảng viên nhưng SAGA chưa cập nhật kịp, Admin có thể vào mục <strong>Quản lý Lớp PBL</strong>, tìm lớp tương ứng, bấm vào <strong>Chỉnh sửa</strong> và gán lại Email của Giảng viên phụ trách <Badge variant="secondary">Ghi đè thủ công</Badge>.
+                Nếu có sự thay đổi về Giảng viên phụ trách, Admin có thể vào mục <strong>Quản lý Lớp PBL</strong>, tìm lớp tương ứng, bấm vào <strong>Chỉnh sửa</strong> và gán lại Email của Giảng viên mới <Badge variant="secondary">Cập nhật thủ công</Badge>.
               </p>
             </CardContent>
           </Card>
@@ -266,8 +266,8 @@ export default function AdminGuidePage() {
                 <AccordionItem value="faq-2" className="border-border px-1">
                   <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Giảng viên không thấy danh sách lớp được phân công?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    <strong>Nguyên nhân:</strong> Dữ liệu từ FAP đổ về thiếu thông tin giảng viên, hoặc giảng viên đăng nhập bằng email không khớp với FAP.<br />
-                    <strong>Cách giải quyết:</strong> Admin vào mục <span className="font-semibold text-foreground">Quản lý Lớp PBL</span>, tìm lớp bị thiếu và thực hiện gán thủ công (Manual Assignment) bằng email chính xác của giảng viên.
+                    <strong>Nguyên nhân:</strong> Quá trình tạo lớp bị thiếu thông tin giảng viên, hoặc giảng viên đăng nhập bằng email không khớp với dữ liệu đã tạo.<br />
+                    <strong>Cách giải quyết:</strong> Admin vào mục <span className="font-semibold text-foreground">Quản lý Lớp PBL</span>, tìm lớp bị thiếu và cập nhật lại thông tin bằng email chính xác của giảng viên.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -279,9 +279,9 @@ export default function AdminGuidePage() {
                 </AccordionItem>
 
                 <AccordionItem value="faq-4" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi đồng bộ FAP bị treo trạng thái &quot;Đang tải...&quot;?</AccordionTrigger>
+                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi trang dữ liệu học vụ tải chậm?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    Nếu quá trình đồng bộ diễn ra lâu hơn 5 phút, có thể do kết nối mạng tới Server FAP không ổn định. Vui lòng làm mới (F5) trang và kiểm tra lại trạng thái trong <strong>Nhật ký Hệ thống</strong>. Nếu trạng thái là <Badge variant="outline" className="text-destructive border-destructive">Lỗi</Badge>, hãy bấm đồng bộ lại lần nữa.
+                    Trường hợp trang tải chậm hoặc treo thường do khối lượng dữ liệu truy xuất lớn. Vui lòng làm mới (F5) trang. Nếu vấn đề vẫn tiếp diễn, bạn có thể kiểm tra tab <strong>Network</strong> hoặc liên hệ với bộ phận kỹ thuật để tối ưu hóa truy vấn cơ sở dữ liệu.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Upload, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { ClassesGrid, ClassRoom } from "@/features/admin/components/classes-card";
 import { Button } from "@/components/ui/button";
@@ -34,13 +34,6 @@ export default function ClassesManagementPage() {
     }, 800);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleImportCSV = () => {
-    toast.loading("Đang import dữ liệu từ file CSV...", { id: "import-csv" });
-    setTimeout(() => {
-      toast.success("Import thành công 12 lớp học!", { id: "import-csv" });
-    }, 2000);
-  };
 
   // Manual Operations
   const openCreateModal = () => {
@@ -92,9 +85,6 @@ export default function ClassesManagementPage() {
         <div className="flex flex-col gap-4 w-full md:w-auto">
           {/* Action Row */}
           <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={handleImportCSV} className="hidden sm:flex rounded-xl h-12 font-bold shadow-sm bg-background">
-              <Upload className="w-4 h-4 mr-2" /> Import CSV
-            </Button>
             <Button onClick={openCreateModal} className="rounded-xl h-12 font-bold shadow-sm min-w-[160px]">
               <Plus className="w-4 h-4 mr-2" /> Thêm lớp học
             </Button>

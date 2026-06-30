@@ -2,29 +2,24 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/shared/Skeleton";
 import {
   Users,
   GraduationCap,
   Network,
   Activity,
-  RefreshCw,
   Server,
   Clock,
   GitCommit,
   CheckCircle2,
   Database
 } from "lucide-react";
-import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { GraphProcessingChart } from "@/features/admin/components/graph-processing-chart";
 import { SystemAnomalyChart } from "@/features/admin/components/system-anomaly-chart";
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSync, setLastSync] = useState("Vừa xong");
 
   useEffect(() => {
     // Simulate data loading
@@ -34,41 +29,13 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSync = () => {
-    setIsSyncing(true);
-    toast.loading("Đang đồng bộ dữ liệu với FAP...", { id: "sync-fap" });
-    setTimeout(() => {
-      setIsSyncing(false);
-      setLastSync("Vừa xong");
-      toast.success("Đồng bộ dữ liệu tổng thể thành công!", { id: "sync-fap", duration: 3000 });
-    }, 2500);
-  };
-
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <PageHeader
-        title="Quản trị Hệ thống (Auto-Sync)"
-        description="Giám sát tiến trình tự động đồng bộ Dữ liệu Học thuật (FAP) và Trạng thái Tích hợp API."
+        title="Quản trị Hệ thống"
+        description="Quản lý Dữ liệu Học thuật và Trạng thái Tích hợp API."
         workspace="Workspace Quản trị"
-      >
-        <div className="flex items-center gap-4">
-          <div className="text-sm text-muted-foreground flex flex-col items-end">
-            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium text-xs bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded">
-              <CheckCircle2 className="w-3 h-3" /> Đã bật tự động đồng bộ
-            </span>
-            <span className="text-xs mt-1">Cập nhật lần cuối: {lastSync}</span>
-          </div>
-
-          <Button
-            onClick={handleSync}
-            disabled={isSyncing}
-            className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? "animate-spin" : ""}`} />
-            {isSyncing ? "Đang đồng bộ..." : "Đồng bộ Dữ liệu FAP"}
-          </Button>
-        </div>
-      </PageHeader>
+      />
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -90,7 +57,7 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Giảng viên (Đã đồng bộ)
+                  Giảng viên
                 </CardTitle>
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
                   <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -99,7 +66,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="text-4xl font-extrabold text-foreground">45</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Đã map với hệ thống
+                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Trong hệ thống
                 </p>
               </CardContent>
             </Card>
@@ -107,7 +74,7 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Sinh viên (Đã đồng bộ)
+                  Sinh viên
                 </CardTitle>
                 <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
                   <GraduationCap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
@@ -116,7 +83,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="text-4xl font-extrabold text-foreground">1,248</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Đã map với hệ thống
+                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Trong hệ thống
                 </p>
               </CardContent>
             </Card>
@@ -124,7 +91,7 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Lớp học Tự động sinh
+                  Lớp học (Kỳ hiện tại)
                 </CardTitle>
                 <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
                   <Network className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -183,7 +150,7 @@ export default function AdminDashboard() {
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Server className="h-5 w-5 text-muted-foreground" />
-              Trạng thái Tích hợp & Đồng bộ
+              Trạng thái Tích hợp Hệ thống
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -191,29 +158,9 @@ export default function AdminDashboard() {
               <div className="space-y-4">
                 <Skeleton className="h-20 w-full rounded-xl" />
                 <Skeleton className="h-20 w-full rounded-xl" />
-                <Skeleton className="h-20 w-full rounded-xl" />
               </div>
             ) : (
               <>
-                <div className="flex justify-between items-center p-4 border border-border/50 rounded-xl bg-muted/20 hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center">
-                      <Database className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground">Hệ thống FAP (Nội bộ)</p>
-                      <p className="text-sm text-muted-foreground mt-0.5">Tự động đồng bộ: Học kỳ, Môn học, Lớp, Người dùng</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-bold tracking-wide">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                      CONNECTED
-                    </div>
-                    <span className="text-[10px] text-muted-foreground font-medium">Last sync: {lastSync}</span>
-                  </div>
-                </div>
-
                 <div className="flex justify-between items-center p-4 border border-border/50 rounded-xl bg-muted/20 hover:bg-muted/50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
@@ -291,7 +238,7 @@ export default function AdminDashboard() {
                     <p className="text-sm text-foreground">
                       <span className="font-bold text-red-600 dark:text-red-500">Tiến trình MSR</span> vừa quét và đánh dấu 15 <span className="font-bold">Task Ảo</span> do thiếu liên kết Code (Task-Code Linkage).
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1 font-medium">{lastSync}</p>
+                    <p className="text-xs text-muted-foreground mt-1 font-medium">Vừa xong</p>
                   </div>
                 </div>
 
@@ -325,7 +272,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-emerald-600 dark:text-emerald-500">Cron Job (FAP)</span> vừa tự động đồng bộ và map xong danh sách <strong>1,248 sinh viên</strong> vào hệ thống đồ thị.
+                      <span className="font-bold text-emerald-600 dark:text-emerald-500">Quản trị viên</span> vừa nhập dữ liệu và cấu trúc <strong>1,248 sinh viên</strong> vào hệ thống đồ thị.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">1 ngày trước</p>
                   </div>
