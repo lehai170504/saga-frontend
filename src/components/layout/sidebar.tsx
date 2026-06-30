@@ -26,7 +26,9 @@ import {
   LogOut,
   Settings2,
   Database,
-  FolderKanban
+  FolderKanban,
+  GitBranch,
+  ClipboardList
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -188,6 +190,8 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               { href: "/student", icon: <BarChart3 size={18} />, label: "Tổng quan nhóm" },
               { href: "/student/projects", icon: <Network size={18} />, label: "Danh sách nhóm" },
               { href: "/student/projects/create", icon: <FolderKanban size={18} />, label: "Cấu hình Project" },
+              { href: "/student/commits", icon: <GitBranch size={18} />, label: "Lịch sử Commits" },
+              { href: "/student/kanban", icon: <ClipboardList size={18} />, label: "Bảng Kanban (Jira)" },
               { href: "/student/burndown", icon: <Calendar size={18} />, label: "Tiến độ Task" },
               { href: "/student/contribution", icon: <Users size={18} />, label: "Đóng góp cá nhân" },
               { href: "/student/audit-logs", icon: <Logs size={18} />, label: "Nhật ký hoạt động" },

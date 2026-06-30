@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
-import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command } from "lucide-react";
+import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command, MessageSquare, GitBranch, Compass, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -40,6 +40,55 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   // State quản lý việc đóng/mở Profile Modal
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  // State quản lý thông báo
+  const [notifications, setNotifications] = useState([
+    {
+      id: "1",
+      title: "GitHub Commits mới",
+      description: "Nguyễn Văn An đã đẩy 3 commits lên nhánh main",
+      time: "2 phút trước",
+      type: "github",
+      read: false,
+    },
+    {
+      id: "2",
+      title: "Cảnh báo trễ hạn",
+      description: "Bạn có 2 tasks Jira sắp trễ hạn trong Sprint 3",
+      time: "15 phút trước",
+      type: "jira",
+      read: false,
+    },
+    {
+      id: "3",
+      title: "Nhận xét mới",
+      description: "Giảng viên Dr. Nguyen Van A đã phản hồi báo cáo tiến độ",
+      time: "1 giờ trước",
+      type: "feedback",
+      read: true,
+    },
+    {
+      id: "4",
+      title: "Đơn báo cáo vắng mặt",
+      description: "Đơn báo cáo vắng mặt Slot 3 ngày 2026-06-28 đã được duyệt",
+      time: "1 ngày trước",
+      type: "absence",
+      read: true,
+    },
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkAsRead = (id: string) => {
+    setNotifications(prev => 
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    );
+  };
+
+  const handleMarkAllRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    toast.success("Đã đánh dấu tất cả thông báo là đã đọc!");
+  };
 
   const handleLogout = () => {
     logout();
@@ -93,16 +142,107 @@ export function Header({ onMenuClick }: HeaderProps) {
         <div className="flex items-center gap-2.5 shrink-0 relative z-10">
 
           {/* Notifications */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-full relative bg-muted/30 hover:bg-muted/80 border border-transparent hover:border-border/50 transition-all duration-300 hover:scale-105"
-            aria-label="Thông báo"
-            onClick={() => toast.info("Tính năng thông báo đang được phát triển")}
-          >
-            <Bell className="h-5 w-5 text-muted-foreground" />
-            <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-background animate-pulse shadow-[0_0_8px_rgba(243,24,66,0.8)]"></span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full relative bg-muted/30 hover:bg-muted/80 border border-transparent hover:border-border/50 transition-all duration-300 hover:scale-105 cursor-pointer"
+                aria-label="Thông báo"
+              >
+                <Bell className="h-5 w-5 text-muted-foreground" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-background animate-pulse shadow-[0_0_8px_rgba(243,24,66,0.8)]"></span>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            
+            <DropdownMenuContent align="end" className="w-[360px] rounded-[2rem] p-3 border-border/60 bg-card/95 backdrop-blur-xl shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-border/40 mb-2">
+                <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                  <Bell size={13} className="text-primary animate-pulse" />
+                  Thông báo
+                  {unreadCount > 0 && (
+                    <span className="text-[10px] font-black text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full">
+                      {unreadCount} mới
+                    </span>
+                  )}
+                </span>
+                
+                {unreadCount > 0 && (
+                  <button 
+                    onClick={handleMarkAllRead}
+                    className="text-[10px] font-black text-primary hover:underline cursor-pointer"
+                  >
+                    Đọc tất cả
+                  </button>
+                )}
+              </div>
+
+              <div className="max-h-[300px] overflow-y-auto space-y-1.5 pr-0.5">
+                {notifications.length === 0 ? (
+                  <div className="text-center py-8 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Không có thông báo nào
+                  </div>
+                ) : (
+                  notifications.map((notif) => {
+                    let iconBg = "bg-purple-500/10 text-purple-500";
+                    let icon = <GitBranch size={13} />;
+                    
+                    if (notif.type === "jira") {
+                      iconBg = "bg-sky-500/10 text-sky-500";
+                      icon = <Compass size={13} />;
+                    } else if (notif.type === "feedback") {
+                      iconBg = "bg-amber-500/10 text-amber-500";
+                      icon = <MessageSquare size={13} />;
+                    } else if (notif.type === "absence") {
+                      iconBg = "bg-emerald-500/10 text-emerald-500";
+                      icon = <Check size={13} />;
+                    }
+
+                    return (
+                      <DropdownMenuItem 
+                        key={notif.id}
+                        onClick={() => handleMarkAsRead(notif.id)}
+                        className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${
+                          notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
+                        }`}
+                      >
+                        <div className={`p-2.5 rounded-xl shrink-0 ${iconBg}`}>
+                          {icon}
+                        </div>
+                        
+                        <div className="flex-1 space-y-0.5 text-left min-w-0">
+                          <div className="flex justify-between items-start gap-2">
+                            <h4 className={`text-xs truncate ${notif.read ? "font-bold text-foreground/80" : "font-black text-foreground"}`}>
+                              {notif.title}
+                            </h4>
+                            <span className="text-[9px] font-bold text-muted-foreground shrink-0">{notif.time}</span>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground leading-normal line-clamp-2">
+                            {notif.description}
+                          </p>
+                        </div>
+                        
+                        {!notif.read && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 self-center" />
+                        )}
+                      </DropdownMenuItem>
+                    );
+                  })
+                )}
+              </div>
+
+              <DropdownMenuSeparator className="bg-border/40 my-2" />
+              
+              <DropdownMenuItem 
+                onClick={() => router.push(user?.role === "student" ? "/student/audit-logs" : "/lecturer")}
+                className="justify-center text-center text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
+              >
+                Xem tất cả nhật ký
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Theme Toggle */}
           <Button

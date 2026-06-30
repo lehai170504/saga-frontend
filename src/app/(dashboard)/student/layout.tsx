@@ -90,6 +90,12 @@ export default function StudentLayout({
     return classesList;
   };
 
+  const getSemesterStatus = (semId: string): "active" | "upcoming" | "completed" => {
+    if (semId === "summer-2026") return "active";
+    if (semId === "spring-2026" || semId === "fall-2025") return "completed";
+    return "upcoming";
+  };
+
   const handleSemesterChange = (semId: string) => {
     setSelectedSemester(semId);
     setGlobalClassSelect("all");
@@ -118,6 +124,15 @@ export default function StudentLayout({
   return (
     <RouteGuard allowedRoles={["student"]}>
       <div className="min-h-screen bg-background flex flex-col w-full relative">
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes border-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          .animate-border-rotate {
+            animation: border-rotate 4s linear infinite;
+          }
+        `}} />
         <main className="w-full flex-1">
           {isSettingsPage ? (
             children
@@ -184,54 +199,88 @@ export default function StudentLayout({
                     if (!defaultClass) return null;
 
                     return (
-                      <Card
+                      <div
                         key={subj.id}
-                        className="relative overflow-hidden group border border-white/10 dark:border-white/5 hover:border-primary/45 bg-white/5 dark:bg-black/10 backdrop-blur-3xl rounded-[2rem] p-8 transition-all duration-500 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_0_40px_rgba(234,88,12,0.15)] hover:-translate-y-2.5 flex flex-col items-start justify-between text-left min-h-[365px] aspect-[3/4] max-w-[340px] mx-0 w-full"
+                        className="relative p-[1.5px] overflow-hidden rounded-[2rem] group/card transition-all duration-500 hover:-translate-y-2.5 hover:shadow-[0_0_40px_rgba(234,88,12,0.25)] flex flex-col items-start justify-between min-h-[365px] aspect-[3/4] max-w-[340px] mx-0 w-full"
                       >
-                        {/* Dreamy radial neon glow spots (behind content) */}
-                        <div className="absolute -top-16 -right-16 w-36 h-36 bg-primary/10 rounded-full blur-[40px] group-hover:bg-primary/25 group-hover:scale-125 transition-all duration-700 pointer-events-none" />
-                        <div className="absolute -bottom-16 -left-16 w-36 h-36 bg-primary/5 rounded-full blur-[35px] group-hover:bg-primary/15 group-hover:scale-125 transition-all duration-700 pointer-events-none" />
+                        {/* Rotating Gradient Running Border on Hover */}
+                        <div className="absolute inset-[-500%] opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none z-0">
+                          <div className="w-full h-full bg-[conic-gradient(from_0deg,transparent_35%,#ea580c_50%,transparent_65%)] animate-border-rotate" />
+                        </div>
 
-                        {/* Top Section: Left-Aligned Subject Info */}
-                        <div className="flex flex-col items-start space-y-5 relative z-10 w-full mt-1">
+                        {/* Card Inner Content */}
+                        <Card
+                          className="relative overflow-hidden w-full h-full bg-white/80 dark:bg-zinc-950/90 border border-white/10 dark:border-white/5 backdrop-blur-3xl rounded-[calc(2rem-1.5px)] p-8 flex flex-col items-start justify-between text-left z-10"
+                        >
+                          {/* Dreamy radial neon glow spots (behind content) */}
+                          <div className="absolute -top-16 -right-16 w-36 h-36 bg-primary/10 rounded-full blur-[40px] group-hover:bg-primary/25 group-hover:scale-125 transition-all duration-700 pointer-events-none" />
+                          <div className="absolute -bottom-16 -left-16 w-36 h-36 bg-primary/5 rounded-full blur-[35px] group-hover:bg-primary/15 group-hover:scale-125 transition-all duration-700 pointer-events-none" />
 
-                          <div className="flex flex-col items-start space-y-2.5 w-full">
-                            <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-lg w-fit shadow-[0_2px_10px_rgba(234,88,12,0.08)]">
-                              {subj.code}
-                            </span>
+                          {/* Top Section: Left-Aligned Subject Info */}
+                          <div className="flex flex-col items-start space-y-5 relative z-10 w-full mt-1">
 
-                            <h3 className="text-xl font-black text-foreground mt-1 group-hover:text-primary transition-colors line-clamp-2 pr-2 text-left tracking-tight">
-                              {subj.name}
-                            </h3>
-
-                            <p className="text-xs font-black text-muted-foreground mt-1 bg-white/5 dark:bg-white/5 px-3 py-1 rounded-xl border border-white/10 dark:border-white/5 w-fit shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                              {defaultClass.name}
-                            </p>
-
-                            {/* Lecturer & Study Slot Details */}
-                            <div className="flex flex-col items-start space-y-1.5 mt-4 text-xs font-bold text-muted-foreground w-full">
-                              <span className="text-foreground/80 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
-                                GV: {defaultClass.lecturer}
+                            <div className="flex justify-between items-center w-full">
+                              <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-lg w-fit shadow-[0_2px_10px_rgba(234,88,12,0.08)]">
+                                {subj.code}
                               </span>
-                              <span className="text-[10px] font-black uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/25 w-fit shadow-[0_2px_8px_rgba(234,88,12,0.1)]">
-                                {defaultClass.slot}
-                              </span>
+                              {getSemesterStatus(selectedSemester) === "active" ? (
+                                <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 backdrop-blur-md">
+                                  <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                                  </span>
+                                  ĐANG DIỄN RA
+                                </div>
+                              ) : getSemesterStatus(selectedSemester) === "upcoming" ? (
+                                <div className="flex items-center gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 backdrop-blur-md">
+                                  <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
+                                  </span>
+                                  SẮP DIỄN RA
+                                </div>
+                              ) : (
+                                <div className="text-[9px] font-black text-muted-foreground bg-muted/40 px-2.5 py-1 rounded-full border border-border backdrop-blur-md uppercase tracking-wider">
+                                  ĐÃ KẾT THÚC
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Details wrapper */}
+                            <div className="flex flex-col items-start space-y-2.5 w-full">
+                              <h3 className="text-xl font-black text-foreground mt-1 group-hover:text-primary transition-colors line-clamp-2 pr-2 text-left tracking-tight">
+                                {subj.name}
+                              </h3>
+
+                              <p className="text-xs font-black text-muted-foreground mt-1 bg-white/5 dark:bg-white/5 px-3 py-1 rounded-xl border border-white/10 dark:border-white/5 w-fit shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                                {defaultClass.name}
+                              </p>
+
+                              {/* Lecturer & Study Slot Details */}
+                              <div className="flex flex-col items-start space-y-1.5 mt-4 text-xs font-bold text-muted-foreground w-full">
+                                <span className="text-foreground/80 flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                                  GV: {defaultClass.lecturer}
+                                </span>
+                                <span className="text-[10px] font-black uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/25 w-fit shadow-[0_2px_8px_rgba(234,88,12,0.1)]">
+                                  {defaultClass.slot}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Bottom Action Button - Arrow Style with Text */}
-                        <div className="w-full relative z-10 mt-6 mb-1 flex justify-end">
-                          <Button
-                            onClick={() => handleConfirmCardSelection(subj.id, defaultClass.id)}
-                            className="h-11 rounded-full px-5 flex items-center gap-2 shadow-[0_4px_14px_rgba(234,88,12,0.3)] hover:shadow-[0_6px_20px_rgba(234,88,12,0.55)] bg-primary text-primary-foreground hover:scale-[1.04] active:scale-[0.97] transition-all duration-300 group/btn"
-                          >
-                            <span className="text-xs font-black uppercase tracking-wider">Dashboard</span>
-                            <ArrowRight className="w-4.5 h-4.5 group-hover/btn:translate-x-1 group-hover:translate-x-0.5 transition-transform duration-300" />
-                          </Button>
-                        </div>
-                      </Card>
+                          {/* Bottom Action Button - Arrow Style with Text */}
+                          <div className="w-full relative z-10 mt-6 mb-1 flex justify-end">
+                            <Button
+                              onClick={() => handleConfirmCardSelection(subj.id, defaultClass.id)}
+                              className="h-11 rounded-full px-5 flex items-center gap-2 shadow-[0_4px_14px_rgba(234,88,12,0.3)] hover:shadow-[0_6px_20px_rgba(234,88,12,0.55)] bg-primary text-primary-foreground hover:scale-[1.04] active:scale-[0.97] transition-all duration-300 group/btn"
+                            >
+                              <span className="text-xs font-black uppercase tracking-wider">Dashboard</span>
+                              <ArrowRight className="w-4.5 h-4.5 group-hover/btn:translate-x-1 group-hover:translate-x-0.5 transition-transform duration-300" />
+                            </Button>
+                          </div>
+                        </Card>
+                      </div>
                     );
                   })
                 )}
