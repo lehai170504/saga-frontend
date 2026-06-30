@@ -14,7 +14,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
   const { classId, projectId } = React.use(params);
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Dữ liệu giả lập cho chi tiết nhóm (Mock data)
+  // Dữ liệu giả lập cho chi tiết nhóm (Mock data):
   const projectDetail = {
     id: projectId,
     name: `Nhóm ${projectId}`,

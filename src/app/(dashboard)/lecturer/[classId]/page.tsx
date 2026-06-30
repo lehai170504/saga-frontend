@@ -205,7 +205,6 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
             </CardContent>
           </Card>
         </div>
-
       </div>
     </div>
   );

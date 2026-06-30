@@ -10,6 +10,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/DataState";
+import { StudentScoreTraceGraph } from "@/features/student/components/student-score-trace-graph";
 
 const recentActivities = [
   {
@@ -284,6 +285,9 @@ export function StudentDashboardView() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Student Score Trace Graph */}
+      <StudentScoreTraceGraph />
     </div>
   );
 }

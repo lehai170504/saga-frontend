@@ -7,6 +7,7 @@ import { AlertTriangle, TrendingUp, Sparkles, AlertCircle, CheckCircle2 } from "
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ClassNetworkGraph } from "@/features/lecturer/components/class-network-graph";
 
 const slicingData = [
   { name: "Nguyễn Văn A", value: 35, color: "#6366f1" }, // indigo-500
@@ -35,6 +36,9 @@ export function TeamEvaluation() {
 
   return (
     <div className="space-y-6">
+      {/* Network Graph for Slicing Pie Audit */}
+      <ClassNetworkGraph />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* Pie Chart: Cổ phần công sức */}

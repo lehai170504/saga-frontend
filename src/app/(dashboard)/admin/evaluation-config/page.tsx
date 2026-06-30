@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings2, Star, Save, AlertTriangle, ClipboardCheck, Database } from "lucide-react";
+import { Settings2, Star, Save, AlertTriangle, ClipboardCheck, Database, Network } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PeerReviewRules } from "@/features/admin/components/evaluation-config/peer-review-rules";
@@ -11,6 +11,7 @@ import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai
 import { TaskMultiplierTemplates } from "@/features/admin/components/evaluation-config/task-multiplier-templates";
 import { DataIntegrationRules } from "@/features/admin/components/evaluation-config/data-integration-rules";
 import { OverrideRequests } from "@/features/admin/components/evaluation-config/override-requests";
+import { KnowledgeGraphRules } from "@/features/admin/components/evaluation-config/knowledge-graph-rules";
 
 export default function EvaluationConfigPage() {
   const [activeTab, setActiveTab] = useState("peer-review");
@@ -62,6 +63,9 @@ export default function EvaluationConfigPage() {
             <ClipboardCheck className="w-4 h-4 mr-2" /> Yêu cầu Kiểm duyệt
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
           </TabsTrigger>
+          <TabsTrigger value="knowledge-graph" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
+            <Network className="w-4 h-4 mr-2" /> Đồ thị Lý thuyết
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="peer-review" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -82,6 +86,10 @@ export default function EvaluationConfigPage() {
 
         <TabsContent value="requests" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
           <OverrideRequests />
+        </TabsContent>
+
+        <TabsContent value="knowledge-graph" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <KnowledgeGraphRules />
         </TabsContent>
       </Tabs>
     </div>
