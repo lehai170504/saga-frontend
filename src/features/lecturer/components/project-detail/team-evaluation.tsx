@@ -2,8 +2,8 @@
 
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from "recharts";
-import { AlertTriangle, TrendingUp, Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { AlertTriangle, TrendingUp, Sparkles, AlertCircle, CheckCircle2, BarChart as BarChartIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -16,16 +16,22 @@ const slicingData = [
 ];
 
 const radarData = [
-  { skill: "Lập trình & Logic", A: 90, B: 40, C: 85, fullMark: 100 },
-  { skill: "Thiết kế UI/UX", A: 30, B: 90, C: 20, fullMark: 100 },
-  { skill: "Tài liệu & Test", A: 60, B: 50, C: 95, fullMark: 100 },
-  { skill: "Quản lý Dự án", A: 85, B: 40, C: 50, fullMark: 100 },
-  { skill: "Thuyết trình", A: 70, B: 85, C: 60, fullMark: 100 },
+  { skill: "Code (x2.0)", A: 90, B: 40, C: 85, fullMark: 100 },
+  { skill: "Design (x1.5)", A: 30, B: 90, C: 20, fullMark: 100 },
+  { skill: "Docs (x1.0)", A: 60, B: 50, C: 95, fullMark: 100 },
+  { skill: "Thảo luận & Review", A: 85, B: 40, C: 50, fullMark: 100 },
+  { skill: "Đánh giá chéo", A: 70, B: 85, C: 60, fullMark: 100 },
+];
+
+const sprintBreakdownData = [
+  { name: "Sprint 1", "Nguyễn Văn A": 15, "Trần Thị B": 10, "Lê Văn C": 20 },
+  { name: "Sprint 2", "Nguyễn Văn A": 20, "Trần Thị B": 15, "Lê Văn C": 20 },
 ];
 
 const aiAlerts = [
-  { id: 1, type: "warning", message: "Trần Thị B không có commit nào trên GitHub khớp với 2 Task Jira đã 'Done'. Có dấu hiệu nhận vơ công việc.", student: "Trần Thị B", actionReq: "Giảm hệ số", date: "2 ngày trước" },
-  { id: 2, type: "danger", message: "Mật độ Bug do Lê Văn C tạo ra ở Sprint 2 lên tới 35% (Vượt ngưỡng 30% cấu hình). Đề xuất trừ 10% Slices Phase này.", student: "Lê Văn C", actionReq: "Trừ Slices", date: "1 ngày trước" }
+  { id: 1, type: "warning", message: "Trần Thị B không có commit nào trên GitHub trong 5 ngày qua (Ghosting). Tự động kích hoạt phạt Zero Contribution.", student: "Trần Thị B", actionReq: "Phạt Slices", date: "2 ngày trước" },
+  { id: 2, type: "danger", message: "Nguyễn Văn A chiếm tới 65% tổng Slices dự án. Nguy cơ Bus Factor cao (Gánh team). Cần điều phối lại Task.", student: "Nguyễn Văn A", actionReq: "Điều phối Task", date: "1 ngày trước" },
+  { id: 3, type: "warning", message: "Mật độ Bug do Lê Văn C tạo ra ở Sprint 2 lên tới 35% (Vượt ngưỡng 30% cấu hình - Nợ kỹ thuật).", student: "Lê Văn C", actionReq: "Trừ Slices Code", date: "12 giờ trước" }
 ];
 
 export function TeamEvaluation() {
@@ -126,6 +132,38 @@ export function TeamEvaluation() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bar Chart: Phân bổ theo Sprint */}
+      <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
+        <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
+          <CardTitle className="text-xl font-bold flex items-center gap-2">
+            <BarChartIcon className="text-blue-500" size={20} />
+            Tiến độ Đóng góp theo Sprints
+          </CardTitle>
+          <CardDescription className="font-medium mt-1">
+            Chi tiết Slices tích lũy qua từng Sprint trong Phase hiện tại
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={sprintBreakdownData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="name" tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
+                  cursor={{ fill: 'var(--muted)' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }} />
+                <Bar dataKey="Nguyễn Văn A" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Trần Thị B" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Lê Văn C" fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* AI Warnings & Recommendations */}
       <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden">

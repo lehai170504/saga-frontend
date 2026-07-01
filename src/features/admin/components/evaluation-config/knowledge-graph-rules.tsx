@@ -44,38 +44,52 @@ const nodeTypes = {
 // initial nodes and edges mapping from theories to score rules
 const initialNodes: Node[] = [
   // Root Concepts
-  { id: 'theory-pie', position: { x: 250, y: 50 }, data: { label: 'Slicing Pie', subtitle: 'Lý thuyết Cốt lõi', icon: PieChart, colorClass: 'border-indigo-200 dark:border-indigo-900 bg-white dark:bg-zinc-900', iconClass: 'bg-indigo-50 text-indigo-600' }, type: 'ruleNode' },
-  { id: 'theory-pow', position: { x: 650, y: 50 }, data: { label: 'Bằng chứng (PoW)', subtitle: 'Xác thực Công việc', icon: ShieldCheck, colorClass: 'border-emerald-200 dark:border-emerald-900 bg-white dark:bg-zinc-900', iconClass: 'bg-emerald-50 text-emerald-600' }, type: 'ruleNode' },
+  { id: 'theory-pie', position: { x: 100, y: 50 }, data: { label: 'Slicing Pie', subtitle: 'Fair Market Value', icon: PieChart, colorClass: 'border-indigo-200 dark:border-indigo-900 bg-white dark:bg-zinc-900', iconClass: 'bg-indigo-50 text-indigo-600' }, type: 'ruleNode' },
+  { id: 'theory-agile', position: { x: 400, y: 50 }, data: { label: 'Agile/Scrum', subtitle: 'Story Points & Risk', icon: Target, colorClass: 'border-blue-200 dark:border-blue-900 bg-white dark:bg-zinc-900', iconClass: 'bg-blue-50 text-blue-600' }, type: 'ruleNode' },
+  { id: 'theory-pow', position: { x: 700, y: 50 }, data: { label: 'Proof of Work', subtitle: 'Xác thực Bằng chứng', icon: ShieldCheck, colorClass: 'border-emerald-200 dark:border-emerald-900 bg-white dark:bg-zinc-900', iconClass: 'bg-emerald-50 text-emerald-600' }, type: 'ruleNode' },
 
-  // Level 1: Mapping
-  { id: 'rule-multi', position: { x: 50, y: 200 }, data: { label: 'Hệ số Vai trò', subtitle: 'Code, Design, Docs', icon: Code2, colorClass: 'border-blue-200 dark:border-blue-900 bg-white dark:bg-zinc-900', iconClass: 'bg-blue-50 text-blue-600' }, type: 'ruleNode' },
-  { id: 'rule-pr', position: { x: 320, y: 200 }, data: { label: 'Đánh giá chéo', subtitle: 'Từng Phase & Final', icon: Users, colorClass: 'border-orange-200 dark:border-orange-900 bg-white dark:bg-zinc-900', iconClass: 'bg-orange-50 text-orange-600' }, type: 'ruleNode' },
+  // Level 1: Multipliers & Inputs
+  { id: 'rule-multi', position: { x: 100, y: 200 }, data: { label: 'Hệ số Công việc', subtitle: 'Code(x2.0), Design(x1.5), Docs(x1.0)', icon: Code2, colorClass: 'border-indigo-200 dark:border-indigo-900 bg-white dark:bg-zinc-900', iconClass: 'bg-indigo-50 text-indigo-600' }, type: 'ruleNode' },
+  { id: 'rule-bonus', position: { x: 400, y: 200 }, data: { label: 'Bonus Tương tác', subtitle: 'Thảo luận / Review PR', icon: Users, colorClass: 'border-blue-200 dark:border-blue-900 bg-white dark:bg-zinc-900', iconClass: 'bg-blue-50 text-blue-600' }, type: 'ruleNode' },
+  { id: 'rule-pow', position: { x: 700, y: 200 }, data: { label: 'Git Commit / Links', subtitle: 'Chống Ghosting', icon: GitCommit, colorClass: 'border-emerald-200 dark:border-emerald-900 bg-white dark:bg-zinc-900', iconClass: 'bg-emerald-50 text-emerald-600' }, type: 'ruleNode' },
 
-  { id: 'rule-commit', position: { x: 650, y: 200 }, data: { label: 'Smart Commit', subtitle: 'Dành cho Code', icon: GitCommit, colorClass: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-zinc-900', iconClass: 'bg-slate-100 text-slate-600' }, type: 'ruleNode' },
-  { id: 'rule-link', position: { x: 920, y: 200 }, data: { label: 'External Link', subtitle: 'Dành cho Design/Docs', icon: Link, colorClass: 'border-fuchsia-200 dark:border-fuchsia-900 bg-white dark:bg-zinc-900', iconClass: 'bg-fuchsia-50 text-fuchsia-600' }, type: 'ruleNode' },
+  // Level 2: Sprints & Early Warning
+  { id: 'app-sprint', position: { x: 250, y: 350 }, data: { label: 'Slices Sprint', subtitle: '(SP x Hệ số) + Bonus', icon: Scale, colorClass: 'border-fuchsia-200 dark:border-fuchsia-900 bg-white dark:bg-zinc-900', iconClass: 'bg-fuchsia-50 text-fuchsia-600' }, type: 'ruleNode' },
+  { id: 'app-warn', position: { x: 700, y: 350 }, data: { label: 'Cảnh báo sớm AI', subtitle: 'Ghost 5 ngày, Bus Factor >60%', icon: AlertTriangle, colorClass: 'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-900/10', iconClass: 'bg-amber-100 text-amber-600' }, type: 'ruleNode' },
 
-  // Level 2: Real-world Application
-  { id: 'app-multi', position: { x: 185, y: 350 }, data: { label: 'Cộng dồn Đa nhiệm', subtitle: 'Sinh viên gánh team', icon: Scale, colorClass: 'border-blue-200 dark:border-blue-900 bg-white dark:bg-zinc-900', iconClass: 'bg-blue-50 text-blue-600' }, type: 'ruleNode' },
-  { id: 'app-verify', position: { x: 785, y: 350 }, data: { label: 'Phạt Ghosting', subtitle: 'AI Cảnh báo Ảo', icon: AlertTriangle, colorClass: 'border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10', iconClass: 'bg-red-100 text-red-600' }, type: 'ruleNode' },
+  // Level 3: Phase & Peer Review
+  { id: 'rule-pr', position: { x: 100, y: 500 }, data: { label: 'Đánh giá chéo Mù', subtitle: 'x1.1 (5 sao) / x0.5 (1 sao PIP)', icon: Users, colorClass: 'border-orange-200 dark:border-orange-900 bg-white dark:bg-zinc-900', iconClass: 'bg-orange-50 text-orange-600' }, type: 'ruleNode' },
+  { id: 'app-phase', position: { x: 400, y: 500 }, data: { label: 'Slices Phase', subtitle: 'Sprint Slices x Peer Review', icon: Target, colorClass: 'border-fuchsia-200 dark:border-fuchsia-900 bg-white dark:bg-zinc-900', iconClass: 'bg-fuchsia-50 text-fuchsia-600' }, type: 'ruleNode' },
+  { id: 'app-penalty', position: { x: 700, y: 500 }, data: { label: 'Phạt Slices', subtitle: 'Ghosting / Nợ kỹ thuật >30%', icon: AlertTriangle, colorClass: 'border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10', iconClass: 'bg-red-100 text-red-600' }, type: 'ruleNode' },
 
-  // Level 3: Output Rules
-  { id: 'out-fair', position: { x: 485, y: 500 }, data: { label: 'Sổ cái Cân bằng', subtitle: 'Đầu ra Hệ thống', icon: PieChart, colorClass: 'border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 shadow-xl', iconClass: 'bg-indigo-100 text-indigo-600' }, type: 'ruleNode' },
+  // Level 4: Final Output
+  { id: 'out-final', position: { x: 400, y: 650 }, data: { label: 'Slices Cuối kỳ', subtitle: 'Tổng Phase x Global Review', icon: PieChart, colorClass: 'border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 shadow-xl', iconClass: 'bg-indigo-100 text-indigo-600' }, type: 'ruleNode' },
 ];
 
 const initialEdges: Edge[] = [
-  // Slicing Pie branch
+  // Top level mapping
   { id: 'e1', source: 'theory-pie', target: 'rule-multi', type: 'smoothstep', animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } },
-  { id: 'e2', source: 'theory-pie', target: 'rule-pr', type: 'smoothstep', animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } },
-  { id: 'e3', source: 'rule-multi', target: 'app-multi', type: 'smoothstep', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-  { id: 'e4', source: 'rule-pr', target: 'app-multi', type: 'smoothstep', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-  { id: 'e5', source: 'app-multi', target: 'out-fair', type: 'smoothstep', animated: true, style: { stroke: '#10b981', strokeWidth: 3 } },
+  { id: 'e2', source: 'theory-agile', target: 'rule-multi', type: 'smoothstep', animated: true, style: { stroke: '#3b82f6', strokeWidth: 2 } },
+  { id: 'e3', source: 'theory-agile', target: 'rule-bonus', type: 'smoothstep', animated: true, style: { stroke: '#3b82f6', strokeWidth: 2 } },
+  { id: 'e4', source: 'theory-pow', target: 'rule-pow', type: 'smoothstep', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } },
 
-  // PoW Branch
-  { id: 'e7', source: 'theory-pow', target: 'rule-commit', type: 'smoothstep', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } },
-  { id: 'e8', source: 'theory-pow', target: 'rule-link', type: 'smoothstep', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } },
-  { id: 'e9', source: 'rule-commit', target: 'app-verify', type: 'smoothstep', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-  { id: 'e10', source: 'rule-link', target: 'app-verify', type: 'smoothstep', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-  { id: 'e11', source: 'app-verify', target: 'out-fair', type: 'smoothstep', animated: true, style: { stroke: '#ef4444', strokeWidth: 2, strokeDasharray: '5 5' }, label: 'Trừ Slices' },
+  // To Sprint
+  { id: 'e5', source: 'rule-multi', target: 'app-sprint', type: 'smoothstep', style: { stroke: '#d946ef', strokeWidth: 2 } },
+  { id: 'e6', source: 'rule-bonus', target: 'app-sprint', type: 'smoothstep', style: { stroke: '#d946ef', strokeWidth: 2 } },
+
+  // To Warn & Penalty
+  { id: 'e7', source: 'rule-pow', target: 'app-warn', type: 'smoothstep', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+  { id: 'e8', source: 'app-warn', target: 'app-penalty', type: 'smoothstep', style: { stroke: '#ef4444', strokeWidth: 2 } },
+
+  // To Phase
+  { id: 'e9', source: 'app-sprint', target: 'app-phase', type: 'smoothstep', style: { stroke: '#d946ef', strokeWidth: 2 } },
+  { id: 'e10', source: 'rule-pr', target: 'app-phase', type: 'smoothstep', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+
+  // Penalty reduces Phase Slices
+  { id: 'e11', source: 'app-penalty', target: 'app-phase', type: 'smoothstep', animated: true, style: { stroke: '#ef4444', strokeWidth: 2, strokeDasharray: '5 5' }, label: 'Trừ Slices' },
+
+  // To Final
+  { id: 'e12', source: 'app-phase', target: 'out-final', type: 'smoothstep', animated: true, style: { stroke: '#10b981', strokeWidth: 3 } },
 ];
 
 export function KnowledgeGraphRules() {

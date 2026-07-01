@@ -101,6 +101,17 @@ const MultiplierNode = ({ data }: any) => {
   );
 };
 
+const SprintNode = ({ data }: any) => {
+  return (
+    <div className="min-w-[120px] px-3 py-2 shadow-md rounded-xl bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 flex flex-col gap-1 items-center justify-center text-center">
+      <Handle type="target" position={Position.Top} className="w-2 h-2 bg-slate-400 border-none" />
+      <div className="text-[10px] font-bold text-cyan-600/80 dark:text-cyan-400/80 uppercase">{data.label}</div>
+      <div className="text-sm font-black text-cyan-700 dark:text-cyan-400">{data.slices} Slices</div>
+      <Handle type="source" position={Position.Bottom} className="w-2 h-2 bg-cyan-500 border-none" />
+    </div>
+  );
+};
+
 const StudentNode = ({ data }: any) => {
   const isGhost = data.role === 'ghost';
   const isCore = data.role === 'core';
@@ -183,9 +194,11 @@ const generateGraphData = (phase: string) => {
   const drilldownDetails: Record<string, any> = {
     'e-design-sa': { title: 'Design Tasks - Nguyễn Văn A', tasks: [{ id: 'SAGA-UI-01', name: 'Thiết kế Landing Page', sp: 3, proofText: 'Figma Prototype', proofType: 'link', proofLink: 'https://figma.com' }, { id: 'SAGA-UI-02', name: 'Component System', sp: 2, proofText: 'Figma Library', proofType: 'link', proofLink: 'https://figma.com' }] },
     'e-design-sb': { title: 'Design Tasks - Trần Thị B', tasks: [{ id: 'SAGA-UI-03', name: 'Thiết kế Dashboard Admin', sp: 5, proofText: 'Admin UI Figma', proofType: 'link', proofLink: 'https://figma.com' }] },
-    'e-code-sa': { title: 'Code Tasks - Nguyễn Văn A', tasks: [{ id: 'SAGA-API-01', name: 'Auth Module', sp: 10, proofText: 'fb2a19', proofType: 'commit', proofLink: 'https://github.com' }] },
-    'e-design-sa-p2': { title: 'Design Tasks - Nguyễn Văn A', tasks: [{ id: 'SAGA-UI-05', name: 'Login Flow UI', sp: 5, proofText: 'Figma Screens', proofType: 'link', proofLink: 'https://figma.com' }] },
-    'e-code-sb': { title: 'Code Tasks - Trần Thị B', tasks: [{ id: 'SAGA-FE-01', name: 'React Flow Integration', sp: 5, proofText: '65dda1', proofType: 'commit', proofLink: 'https://github.com' }, { id: 'SAGA-FE-02', name: 'Responsive Layouts', sp: 4, proofText: '99ccd2', proofType: 'commit', proofLink: 'https://github.com' }] },
+    'e-code-s1a': { title: 'Code Tasks - Sprint 1 - Nguyễn Văn A', tasks: [{ id: 'SAGA-API-01', name: 'Auth Module', sp: 7.5, proofText: 'fb2a19', proofType: 'commit', proofLink: 'https://github.com' }] },
+    'e-code-s2a': { title: 'Code Tasks - Sprint 2 - Nguyễn Văn A', tasks: [{ id: 'SAGA-API-02', name: 'DB Schema', sp: 2.5, proofText: '88ccd2', proofType: 'commit', proofLink: 'https://github.com' }] },
+    'e-design-s2a': { title: 'Design Tasks - Sprint 2 - Nguyễn Văn A', tasks: [{ id: 'SAGA-UI-05', name: 'Login Flow UI', sp: 5, proofText: 'Figma Screens', proofType: 'link', proofLink: 'https://figma.com' }] },
+    'e-code-s1b': { title: 'Code Tasks - Sprint 1 - Trần Thị B', tasks: [{ id: 'SAGA-FE-01', name: 'React Flow Integration', sp: 5, proofText: '65dda1', proofType: 'commit', proofLink: 'https://github.com' }] },
+    'e-code-s2b': { title: 'Code Tasks - Sprint 2 - Trần Thị B', tasks: [{ id: 'SAGA-FE-02', name: 'Responsive Layouts', sp: 4, proofText: '99ccd2', proofType: 'commit', proofLink: 'https://github.com' }] },
     'e-docs-sc': { title: 'Docs Tasks - Lê Văn C', tasks: [{ id: 'SAGA-DOC-01', name: 'API Swagger Docs', sp: 2, proofText: 'N/A (Late)', proofType: 'commit' }] },
     'e-docs-sa': { title: 'Docs Tasks - Nguyễn Văn A', tasks: [{ id: 'SAGA-DOC-02', name: 'System Architecture Diagram', sp: 3, proofText: 'Architecture Diagram', proofType: 'link', proofLink: 'https://docs.google.com' }] },
   };
@@ -220,23 +233,50 @@ const generateGraphData = (phase: string) => {
   } else if (phase === 'phase2') {
     nodes = [
       ...mults,
+      // Sprint Nodes for Student A
+      { id: 'sprint-1-a', position: { x: 100, y: 180 }, data: { label: 'Sprint 1', slices: 15 }, type: 'sprint' },
+      { id: 'sprint-2-a', position: { x: 260, y: 180 }, data: { label: 'Sprint 2', slices: 12.5 }, type: 'sprint' },
+
+      // Sprint Nodes for Student B
+      { id: 'sprint-1-b', position: { x: 380, y: 180 }, data: { label: 'Sprint 1', slices: 10 }, type: 'sprint' },
+      { id: 'sprint-2-b', position: { x: 520, y: 180 }, data: { label: 'Sprint 2', slices: 8 }, type: 'sprint' },
+
+      // Sprint Node for Student C
+      { id: 'sprint-1-c', position: { x: 720, y: 180 }, data: { label: 'Sprint 1', slices: 0 }, type: 'sprint' },
+      { id: 'sprint-2-c', position: { x: 860, y: 180 }, data: { label: 'Sprint 2', slices: 0 }, type: 'sprint' },
+
       { id: 'student-a', position: { x: 180, y: 320 }, data: { name: 'Nguyễn Văn A', role: 'core', roleLabel: 'Core Member', baseSlices: 27.5 }, type: 'student' },
       { id: 'student-b', position: { x: 450, y: 320 }, data: { name: 'Trần Thị B', role: 'normal', roleLabel: 'Thành viên', baseSlices: 18 }, type: 'student' },
-      { id: 'student-c', position: { x: 720, y: 320 }, data: { name: 'Lê Văn C', role: 'ghost', roleLabel: 'Cảnh báo Ghosting', baseSlices: 0 }, type: 'student' },
+      { id: 'student-c', position: { x: 790, y: 320 }, data: { name: 'Lê Văn C', role: 'ghost', roleLabel: 'Cảnh báo Ghosting', baseSlices: 0 }, type: 'student' },
 
       { id: 'pr-a', position: { x: 180, y: 520 }, data: { stars: 5, modifier: 'x1.1', isPenalty: false, label: 'Review Phase 2' }, type: 'peerReview' },
       { id: 'pr-b', position: { x: 450, y: 520 }, data: { stars: 4, modifier: 'x1.0', isPenalty: false, label: 'Review Phase 2' }, type: 'peerReview' },
-      { id: 'pr-c', position: { x: 720, y: 520 }, data: { stars: 1, modifier: 'x0.5', isPenalty: true, label: 'Review Phase 2' }, type: 'peerReview' },
+      { id: 'pr-c', position: { x: 790, y: 520 }, data: { stars: 1, modifier: 'x0.5', isPenalty: true, label: 'Review Phase 2' }, type: 'peerReview' },
 
       { id: 'slices-a', position: { x: 180, y: 720 }, data: { slices: 30.25, label: 'Slices P2' }, type: 'slice' },
       { id: 'slices-b', position: { x: 450, y: 720 }, data: { slices: 18, label: 'Slices P2' }, type: 'slice' },
-      { id: 'slices-c', position: { x: 720, y: 720 }, data: { slices: 0, label: 'Slices P2' }, type: 'slice' },
+      { id: 'slices-c', position: { x: 790, y: 720 }, data: { slices: 0, label: 'Slices P2' }, type: 'slice' },
     ];
     edges = [
-      { id: 'e-code-sa', source: 'mult-code', target: 'student-a', data: { label: '10 SP Code (20 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
-      { id: 'e-design-sa-p2', source: 'mult-design', target: 'student-a', data: { label: '5 SP Design (7.5 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#8b5cf6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#8b5cf6' } },
-      { id: 'e-code-sb', source: 'mult-code', target: 'student-b', data: { label: '9 SP Code (18 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
+      // Multiplier to Sprint
+      { id: 'e-code-s1a', source: 'mult-code', target: 'sprint-1-a', data: { label: '7.5 SP Code (15 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
+      { id: 'e-code-s2a', source: 'mult-code', target: 'sprint-2-a', data: { label: '2.5 SP Code (5 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
+      { id: 'e-design-s2a', source: 'mult-design', target: 'sprint-2-a', data: { label: '5 SP Design (7.5 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#8b5cf6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#8b5cf6' } },
 
+      { id: 'e-code-s1b', source: 'mult-code', target: 'sprint-1-b', data: { label: '5 SP Code (10 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
+      { id: 'e-code-s2b', source: 'mult-code', target: 'sprint-2-b', data: { label: '4 SP Code (8 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
+
+      // Sprint to Student
+      { id: 'e-s1a-sa', source: 'sprint-1-a', target: 'student-a', data: { label: '+15' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s2a-sa', source: 'sprint-2-a', target: 'student-a', data: { label: '+12.5' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+
+      { id: 'e-s1b-sb', source: 'sprint-1-b', target: 'student-b', data: { label: '+10' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s2b-sb', source: 'sprint-2-b', target: 'student-b', data: { label: '+8' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+
+      { id: 'e-s1c-sc', source: 'sprint-1-c', target: 'student-c', data: { label: '+0' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s2c-sc', source: 'sprint-2-c', target: 'student-c', data: { label: '+0' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+
+      // Student to PR and so on
       { id: 'e-sa-pra', source: 'student-a', target: 'pr-a', data: { label: '27.5 Base' }, type: 'drilldown', style: { stroke: '#94a3b8' } },
       { id: 'e-sb-prb', source: 'student-b', target: 'pr-b', data: { label: '18 Base' }, type: 'drilldown', style: { stroke: '#94a3b8' } },
       { id: 'e-sc-prc', source: 'student-c', target: 'pr-c', data: { label: '0 Base' }, type: 'drilldown', style: { stroke: '#94a3b8' } },
@@ -305,6 +345,7 @@ const generateGraphData = (phase: string) => {
 export function ClassNetworkGraph() {
   const nodeTypes = useMemo(() => ({
     multiplier: MultiplierNode,
+    sprint: SprintNode,
     student: StudentNode,
     peerReview: PeerReviewNode,
     slice: SliceNode
@@ -314,7 +355,7 @@ export function ClassNetworkGraph() {
     drilldown: DrilldownEdge
   }), []);
 
-  const [selectedPhase, setSelectedPhase] = useState("final");
+  const [selectedPhase, setSelectedPhase] = useState("phase2");
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 

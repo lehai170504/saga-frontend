@@ -36,8 +36,8 @@ export function PeerReviewRules() {
                   <div
                     key={item.star}
                     className={`flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border transition-all ${item.isBaseline
-                        ? 'bg-emerald-500/10 border-emerald-500/40 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
-                        : 'border-border/50 bg-background/50 opacity-90'
+                      ? 'bg-emerald-500/10 border-emerald-500/40 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
+                      : 'border-border/50 bg-background/50 opacity-90'
                       }`}
                   >
                     <div className="flex items-center gap-2 w-44 shrink-0">
@@ -94,13 +94,13 @@ export function PeerReviewRules() {
                   <div className="space-y-3">
                     <p className="font-bold text-foreground">Tại sao lại là những con số này?</p>
                     <div className="space-y-2">
-                      <p><strong className="text-destructive">1 Sao (0.50):</strong> Cứa cổ Freerider. Giảm 50% điểm, chặn đứng khả năng qua môn nhờ bám víu vào nhóm.</p>
-                      <p><strong className="text-orange-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá (8.0) xuống Trung bình (6.4).</p>
+                      <p><strong className="text-destructive">1 Sao (0.50):</strong> Loss Aversion & PIP. Trừng phạt tâm lý (sợ mất mát), trừ 50% xem như đòn cảnh cáo cấp cao nhất để triệt tiêu ý định free-rider.</p>
+                      <p><strong className="text-orange-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá xuống Trung bình.</p>
                       <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl my-3">
                         <p className="text-emerald-700 dark:text-emerald-400 font-semibold"><strong className="text-emerald-600 dark:text-emerald-400">3 Sao (1.0) - MỐC CHUẨN:</strong> Hoàn thành 100% khối lượng kỳ vọng thì nhận 100% điểm. (Baseline).</p>
                       </div>
-                      <p><strong className="text-blue-500">4 Sao (1.05):</strong> Bonus 5% (+0.5 điểm) - Phần thưởng khích lệ an toàn.</p>
-                      <p><strong className="text-amber-500">5 Sao (1.10):</strong> Mức trần Bonus 10% (+1.0 điểm). Chặn đứng rủi ro sinh viên thao túng điểm bằng cách &quot;vote chéo 5 sao&quot;.</p>
+                      <p><strong className="text-blue-500">4 Sao (1.05):</strong> Bonus 5% - Phần thưởng khích lệ an toàn.</p>
+                      <p><strong className="text-amber-500">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống "chính trị chốn công sở".</p>
                     </div>
                   </div>
 
@@ -111,21 +111,28 @@ export function PeerReviewRules() {
                     </h4>
                     <div className="bg-muted/50 p-3 rounded-lg border border-border/50 font-mono space-y-3">
                       <div className="space-y-1">
-                        <span className="text-xs text-muted-foreground block">Bước 1: Tính Slices Cá nhân</span>
+                        <span className="text-xs text-muted-foreground block">1. Tích lũy Sprint (Thực thi)</span>
                         <p className="text-emerald-600 dark:text-emerald-400 font-bold text-[11px] leading-relaxed">
-                          Slices = (Story Points) × Multiplier × Peer_Review
+                          Slices_Sprint = ∑(SP × Hệ số) + Bonus
                         </p>
                       </div>
                       <div className="space-y-1">
-                        <span className="text-xs text-muted-foreground block">Bước 2: Chốt % Đóng góp</span>
+                        <span className="text-xs text-muted-foreground block">2. Chốt sổ Phase (Đánh giá)</span>
+                        <p className="text-orange-600 dark:text-orange-400 font-bold text-[11px] leading-relaxed">
+                          Slices_Phase = ∑(Slices_Sprint) × Peer_Review
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-xs text-muted-foreground block">3. Đóng góp Cuối kỳ</span>
                         <p className="text-primary font-bold text-[11px] leading-relaxed">
-                          % Final = Slices_Cá_Nhân / Tổng_Slices_Nhóm
+                          % Final = Slices_Final_Cá_Nhân / Tổng_Slices_Nhóm
                         </p>
                       </div>
                     </div>
                     <ul className="text-xs space-y-2 text-muted-foreground list-none pl-1">
-                      <li>• <strong className="text-foreground">Multiplier (Hệ số công việc):</strong> Do Giảng viên cấu hình (VD: Code x2.0, Docs x1.0).</li>
-                      <li>• <strong className="text-foreground">Peer Review (Hệ số Vote):</strong> Mặc định toàn trường (VD: 5 sao x1.1, 1 sao x0.5).</li>
+                      <li>• <strong className="text-foreground">Multiplier (Hệ số công việc):</strong> (VD: Code x2.0, Docs x1.0).</li>
+                      <li>• <strong className="text-foreground">Bonus Tương tác:</strong> Điểm thưởng cho Review/Thảo luận PR.</li>
+                      <li>• <strong className="text-foreground">Peer Review (Hệ số Vote):</strong> Khóa mặc định (VD: 5 sao x1.1, 1 sao x0.5).</li>
                     </ul>
                   </div>
 

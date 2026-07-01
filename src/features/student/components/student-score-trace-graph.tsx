@@ -151,13 +151,15 @@ const generateStudentGraphData = (phase: string) => {
       { id: 'p1', position: { x: 175, y: 50 }, data: { nodeType: 'proof', title: 'Figma Prototype', subtitle: 'External Link', sourceHandle: true, link: 'https://figma.com' }, type: 'trace' },
       { id: 't1', position: { x: 175, y: 200 }, data: { nodeType: 'task', title: 'SAGA-UI-01', subtitle: '3 Story Points', targetHandle: true, sourceHandle: true, link: 'https://jira.com' }, type: 'trace' },
       { id: 'm1', position: { x: 175, y: 350 }, data: { nodeType: 'multiplier', title: 'Hệ số Design (x1.5)', subtitle: '3 SP * 1.5 = 4.5 Base', iconType: 'design', targetHandle: true, sourceHandle: true }, type: 'trace' },
-      { id: 'pr', position: { x: 175, y: 500 }, data: { nodeType: 'peerReview', title: 'Peer Review (x1.0)', subtitle: '4 Stars Rating', targetHandle: true, sourceHandle: true }, type: 'trace' },
-      { id: 'score', position: { x: 175, y: 650 }, data: { nodeType: 'score', title: '+4.5 Slices', subtitle: 'Tổng kết Phase 1', targetHandle: true }, type: 'trace' },
+      { id: 'sprint1', position: { x: 175, y: 500 }, data: { nodeType: 'score', title: '+4.5 Slices', subtitle: 'Tổng kết Sprint 1', targetHandle: true, sourceHandle: true }, type: 'trace' },
+      { id: 'pr', position: { x: 175, y: 650 }, data: { nodeType: 'peerReview', title: 'Peer Review (x1.0)', subtitle: '4 Stars Rating', targetHandle: true, sourceHandle: true }, type: 'trace' },
+      { id: 'score', position: { x: 175, y: 800 }, data: { nodeType: 'score', title: '+4.5 Slices', subtitle: 'Tổng kết Phase 1', targetHandle: true }, type: 'trace' },
     ];
     edges = [
       { id: 'e-p1-t1', source: 'p1', target: 't1', data: { label: 'Link Đính kèm' }, type: 'info', style: { stroke: '#10b981', strokeWidth: 2 } },
       { id: 'e-t1-m1', source: 't1', target: 'm1', data: { label: 'Quy đổi SP' }, type: 'info', style: { stroke: '#6366f1', strokeWidth: 2 } },
-      { id: 'e-m1-pr', source: 'm1', target: 'pr', data: { label: '4.5 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+      { id: 'e-m1-sprint1', source: 'm1', target: 'sprint1', data: { label: '+4.5 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+      { id: 'e-sprint1-pr', source: 'sprint1', target: 'pr', data: { label: '+4.5 Slices' }, type: 'info', style: { stroke: '#3b82f6', strokeWidth: 2 } },
       { id: 'e-pr-score', source: 'pr', target: 'score', data: { label: '4.5 * 1.0' }, type: 'info', animated: true, style: { stroke: '#3b82f6', strokeWidth: 2 } },
     ];
   } else if (phase === 'phase2') {
@@ -175,8 +177,11 @@ const generateStudentGraphData = (phase: string) => {
       { id: 'm2', position: { x: 450, y: 350 }, data: { nodeType: 'multiplier', title: 'Hệ số Design (x1.5)', subtitle: '2 SP * 1.5 = 3.0 Base', iconType: 'design', targetHandle: true, sourceHandle: true }, type: 'trace' },
       { id: 'penalty', position: { x: 700, y: 350 }, data: { nodeType: 'penalty', title: 'Trừ Slices', subtitle: 'Phạt -2.0 Base', targetHandle: true, sourceHandle: true }, type: 'trace' },
 
-      { id: 'pr', position: { x: 425, y: 500 }, data: { nodeType: 'peerReview', title: 'Peer Review (x1.1)', subtitle: '5 Stars Rating', targetHandle: true, sourceHandle: true }, type: 'trace' },
-      { id: 'score', position: { x: 425, y: 650 }, data: { nodeType: 'score', title: '+12.1 Slices', subtitle: 'Tổng kết Phase 2', targetHandle: true }, type: 'trace' },
+      { id: 'sprint1', position: { x: 300, y: 500 }, data: { nodeType: 'score', title: '+13.0 Slices', subtitle: 'Tổng kết Sprint 1', targetHandle: true, sourceHandle: true }, type: 'trace' },
+      { id: 'sprint2', position: { x: 700, y: 500 }, data: { nodeType: 'score', title: '-2.0 Slices', subtitle: 'Tổng kết Sprint 2 (Phạt)', targetHandle: true, sourceHandle: true }, type: 'trace' },
+
+      { id: 'pr', position: { x: 500, y: 650 }, data: { nodeType: 'peerReview', title: 'Peer Review (x1.1)', subtitle: '5 Stars Rating', targetHandle: true, sourceHandle: true }, type: 'trace' },
+      { id: 'score', position: { x: 500, y: 800 }, data: { nodeType: 'score', title: '+12.1 Slices', subtitle: 'Tổng kết Phase 2', targetHandle: true }, type: 'trace' },
     ];
     edges = [
       { id: 'e-c1-t1', source: 'c1', target: 't1', data: { label: 'Smart Commit' }, type: 'info', style: { stroke: '#10b981', strokeWidth: 2 } },
@@ -188,9 +193,12 @@ const generateStudentGraphData = (phase: string) => {
       { id: 'e-t2-m2', source: 't2', target: 'm2', data: { label: 'Quy đổi SP' }, type: 'info', style: { stroke: '#6366f1', strokeWidth: 2 } },
       { id: 'e-miss-pen', source: 't-miss', target: 'penalty', data: { label: 'Xác thực vi phạm' }, type: 'info', style: { stroke: '#ef4444', strokeWidth: 2 } },
 
-      { id: 'e-m1-pr', source: 'm1', target: 'pr', data: { label: '+10 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
-      { id: 'e-m2-pr', source: 'm2', target: 'pr', data: { label: '+3.0 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
-      { id: 'e-pen-pr', source: 'penalty', target: 'pr', data: { label: '-2.0 Base' }, type: 'info', style: { stroke: '#ef4444', strokeWidth: 2 } },
+      { id: 'e-m1-sprint1', source: 'm1', target: 'sprint1', data: { label: '+10 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+      { id: 'e-m2-sprint1', source: 'm2', target: 'sprint1', data: { label: '+3.0 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+      { id: 'e-pen-sprint2', source: 'penalty', target: 'sprint2', data: { label: '-2.0 Base' }, type: 'info', style: { stroke: '#ef4444', strokeWidth: 2 } },
+
+      { id: 'e-sprint1-pr', source: 'sprint1', target: 'pr', data: { label: '+13.0 Slices' }, type: 'info', style: { stroke: '#3b82f6', strokeWidth: 2 } },
+      { id: 'e-sprint2-pr', source: 'sprint2', target: 'pr', data: { label: '-2.0 Slices' }, type: 'info', style: { stroke: '#ef4444', strokeWidth: 2 } },
 
       { id: 'e-pr-score', source: 'pr', target: 'score', data: { label: '11.0 * 1.1' }, type: 'info', animated: true, style: { stroke: '#3b82f6', strokeWidth: 3 } },
     ];
@@ -199,13 +207,15 @@ const generateStudentGraphData = (phase: string) => {
       { id: 'p1', position: { x: 175, y: 50 }, data: { nodeType: 'proof', title: 'API Docs', subtitle: 'Google Docs', sourceHandle: true, link: 'https://docs.google.com' }, type: 'trace' },
       { id: 't1', position: { x: 175, y: 200 }, data: { nodeType: 'task', title: 'SAGA-DOC-01', subtitle: '2 Story Points', targetHandle: true, sourceHandle: true, link: 'https://jira.com' }, type: 'trace' },
       { id: 'm1', position: { x: 175, y: 350 }, data: { nodeType: 'multiplier', title: 'Hệ số Docs (x1.0)', subtitle: '2 SP * 1.0 = 2 Base', iconType: 'docs', targetHandle: true, sourceHandle: true }, type: 'trace' },
-      { id: 'pr', position: { x: 175, y: 500 }, data: { nodeType: 'peerReview', title: 'Peer Review (x1.0)', subtitle: '3 Stars Rating', targetHandle: true, sourceHandle: true }, type: 'trace' },
-      { id: 'score', position: { x: 175, y: 650 }, data: { nodeType: 'score', title: '+2.0 Slices', subtitle: 'Tổng kết Phase 3', targetHandle: true }, type: 'trace' },
+      { id: 'sprint1', position: { x: 175, y: 500 }, data: { nodeType: 'score', title: '+2.0 Slices', subtitle: 'Tổng kết Sprint 1', targetHandle: true, sourceHandle: true }, type: 'trace' },
+      { id: 'pr', position: { x: 175, y: 650 }, data: { nodeType: 'peerReview', title: 'Peer Review (x1.0)', subtitle: '3 Stars Rating', targetHandle: true, sourceHandle: true }, type: 'trace' },
+      { id: 'score', position: { x: 175, y: 800 }, data: { nodeType: 'score', title: '+2.0 Slices', subtitle: 'Tổng kết Phase 3', targetHandle: true }, type: 'trace' },
     ];
     edges = [
       { id: 'e-p1-t1', source: 'p1', target: 't1', data: { label: 'Link Đính kèm' }, type: 'info', style: { stroke: '#d946ef', strokeWidth: 2 } },
       { id: 'e-t1-m1', source: 't1', target: 'm1', data: { label: 'Quy đổi SP' }, type: 'info', style: { stroke: '#6366f1', strokeWidth: 2 } },
-      { id: 'e-m1-pr', source: 'm1', target: 'pr', data: { label: '2.0 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+      { id: 'e-m1-sprint1', source: 'm1', target: 'sprint1', data: { label: '+2.0 Base' }, type: 'info', style: { stroke: '#f59e0b', strokeWidth: 2 } },
+      { id: 'e-sprint1-pr', source: 'sprint1', target: 'pr', data: { label: '+2.0 Slices' }, type: 'info', style: { stroke: '#3b82f6', strokeWidth: 2 } },
       { id: 'e-pr-score', source: 'pr', target: 'score', data: { label: '2.0 * 1.0' }, type: 'info', animated: true, style: { stroke: '#3b82f6', strokeWidth: 2 } },
     ];
   } else {
@@ -274,7 +284,7 @@ export function StudentScoreTraceGraph() {
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="h-[400px] w-full rounded-2xl border border-border bg-background/50 overflow-hidden relative">
+        <div className="h-[750px] w-full rounded-2xl border border-border bg-background/50 overflow-hidden relative">
           <ReactFlow
             nodes={nodes}
             edges={edges}
