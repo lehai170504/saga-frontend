@@ -258,7 +258,7 @@ export default function SettingsPage() {
                             href="https://github.com"
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[10px] text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 font-bold flex items-center gap-0.5"
+                            className="text-[10px] text-muted-foreground hover:text-indigo-500 dark:hover:text-indigo-400 font-bold flex items-center gap-0.5"
                           >
                             Tạo tài khoản <ExternalLink size={8} />
                           </a>
@@ -268,7 +268,7 @@ export default function SettingsPage() {
                           <Input
                             id="git-user"
                             placeholder="Ví dụ: lehai1705"
-                            className="pl-8 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-8 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm font-medium transition-all"
                             value={gitUsername}
                             onChange={(e) => setGitUsername(e.target.value)}
                           />
@@ -362,7 +362,7 @@ export default function SettingsPage() {
                             id="jira-mail"
                             type="email"
                             placeholder="Ví dụ: student@email.com"
-                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm font-medium transition-all"
                             value={jiraEmail}
                             onChange={(e) => setJiraEmail(e.target.value)}
                           />
@@ -375,7 +375,7 @@ export default function SettingsPage() {
                             href="https://id.atlassian.com/manage-profile/security/api-tokens"
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[10px] text-orange-500 hover:underline font-bold flex items-center gap-0.5"
+                            className="text-[10px] text-indigo-500 hover:underline font-bold flex items-center gap-0.5"
                           >
                             Lấy Token <ExternalLink size={8} />
                           </a>
@@ -386,7 +386,7 @@ export default function SettingsPage() {
                             id="jira-token"
                             type="password"
                             placeholder="Nhập API Token bảo mật"
-                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm font-medium transition-all"
                             value={jiraToken}
                             onChange={(e) => setJiraToken(e.target.value)}
                           />
@@ -414,8 +414,8 @@ export default function SettingsPage() {
             </div>
 
             {/* INTEGRATION TIPS CARD */}
-            <Card className="border border-orange-100 dark:border-orange-950/40 bg-orange-50/30 dark:bg-orange-950/10 rounded-3xl p-6 flex flex-col md:flex-row gap-4 items-start shadow-sm">
-              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-2xl">
+            <Card className="border border-indigo-100 dark:border-indigo-950/40 bg-indigo-50/30 dark:bg-indigo-950/10 rounded-3xl p-6 flex flex-col md:flex-row gap-4 items-start shadow-sm">
+              <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl">
                 <Link2 size={20} />
               </div>
               <div className="space-y-1">
@@ -432,7 +432,7 @@ export default function SettingsPage() {
           <div className="space-y-6">
             <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
               <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
-                <SettingsIcon className="text-orange-500" size={18} />
+                <SettingsIcon className="text-indigo-500" size={18} />
                 Cấu hình cá nhân
               </h3>
               <div className="space-y-6">
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                   <div className="relative">
                     <select
                       id="timezone-select"
-                      className="w-full h-10 bg-background border border-border rounded-xl px-3 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-sm appearance-none cursor-pointer text-foreground"
+                      className="w-full h-10 bg-background border border-border rounded-xl px-3 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm appearance-none cursor-pointer text-foreground"
                       value={timezone}
                       onChange={(e) => setTimezone(e.target.value)}
                     >
@@ -465,7 +465,7 @@ export default function SettingsPage() {
                 {/* Submit Action */}
                 <Button
                   onClick={handleSaveGeneral}
-                  className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full h-10 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   Lưu cấu hình cá nhân
                 </Button>
@@ -475,7 +475,7 @@ export default function SettingsPage() {
             {/* Change Password Card */}
             <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
               <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
-                <Shield className="text-orange-500" size={18} />
+                <Shield className="text-indigo-500" size={18} />
                 Đổi mật khẩu
               </h3>
               <form onSubmit={handleChangePassword} className="space-y-4">
@@ -488,7 +488,7 @@ export default function SettingsPage() {
                       placeholder="••••••••"
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm transition-all"
                     />
                     <button
                       type="button"
@@ -509,7 +509,7 @@ export default function SettingsPage() {
                       placeholder="••••••••"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm transition-all"
                     />
                     <button
                       type="button"
@@ -530,7 +530,7 @@ export default function SettingsPage() {
                       placeholder="••••••••"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500 rounded-xl text-sm transition-all"
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm transition-all"
                     />
                   </div>
                 </div>
@@ -555,7 +555,7 @@ export default function SettingsPage() {
             {/* Quick Status / Profile Summary Card */}
             <Card className="border border-border shadow-sm rounded-3xl bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-orange-600 text-white font-extrabold flex items-center justify-center shadow-md shadow-orange-500/20">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-extrabold flex items-center justify-center shadow-md shadow-indigo-500/20">
                   LH
                 </div>
                 <div>
@@ -570,7 +570,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground font-medium">Vai trò dự án:</span>
-                  <span className="text-orange-600 dark:text-orange-400 font-bold">Student Developer</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">Student Developer</span>
                 </div>
               </div>
             </Card>

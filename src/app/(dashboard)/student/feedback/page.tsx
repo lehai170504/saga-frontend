@@ -255,7 +255,7 @@ export default function InstructorFeedbackInbox() {
             size={13}
             className={`${
               s <= score
-                ? "text-orange-500 fill-orange-500"
+                ? "text-indigo-500 fill-indigo-500"
                 : "text-slate-200 dark:text-slate-800"
             }`}
           />
@@ -291,7 +291,7 @@ export default function InstructorFeedbackInbox() {
                     <h4 className="font-extrabold text-foreground text-sm flex items-center gap-1.5">
                       Danh sách phản hồi
                       {unreadCount > 0 && (
-                        <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+                        <span className="bg-indigo-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
                           {unreadCount} mới
                         </span>
                       )}
@@ -330,7 +330,7 @@ export default function InstructorFeedbackInbox() {
                         : "bg-slate-50 dark:bg-slate-950 text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <span className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
+                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
                     Chưa đọc
                   </button>
                   <button
@@ -371,12 +371,12 @@ export default function InstructorFeedbackInbox() {
                         onClick={() => handleSelectFeedback(item.id)}
                         className={`w-full p-3.5 text-left rounded-2xl flex flex-col gap-2 transition-all cursor-pointer ${
                           isSelected
-                            ? "bg-orange-50/50 dark:bg-orange-950/20 font-bold shadow-inner"
+                            ? "bg-indigo-50/50 dark:bg-indigo-950/20 font-bold shadow-inner"
                             : "hover:bg-slate-50 dark:hover:bg-slate-900/40"
                         }`}
                       >
                         <div className="flex justify-between items-start gap-2">
-                          <span className="bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-full text-[9px] font-extrabold">
+                          <span className="bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[9px] font-extrabold">
                             {item.sprint}
                           </span>
                           <span className="text-[10px] text-muted-foreground font-semibold">
@@ -389,7 +389,7 @@ export default function InstructorFeedbackInbox() {
                             {item.title}
                           </h5>
                           <div className="flex items-center gap-1.5 mt-1">
-                            <span className={`w-1.5 h-1.5 rounded-full ${!item.read ? "bg-orange-500" : "bg-transparent"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${!item.read ? "bg-indigo-500" : "bg-transparent"}`} />
                             <p className="text-[10px] text-muted-foreground truncate font-bold">
                               {item.instructorName}
                             </p>
@@ -411,7 +411,7 @@ export default function InstructorFeedbackInbox() {
           >
             {selectedFeedback ? (
               <Card className="border border-border shadow-sm rounded-3xl bg-card overflow-hidden !pt-0">
-                <div className="h-2 w-full bg-orange-500" />
+                <div className="h-2 w-full bg-indigo-500" />
                 
                 <div className="p-6 space-y-6">
                   {/* MOBILE BACK BUTTON */}
@@ -425,7 +425,7 @@ export default function InstructorFeedbackInbox() {
                   {/* HEADER */}
                   <div className="space-y-3 pb-5 border-b border-border">
                     <div className="flex justify-between items-center">
-                      <span className="bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400 px-3 py-1 rounded-full text-xs font-black">
+                      <span className="bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-black">
                         {selectedFeedback.sprint}
                       </span>
                       <span className="text-xs text-muted-foreground font-bold flex items-center gap-1">
@@ -514,9 +514,9 @@ export default function InstructorFeedbackInbox() {
                     </div>
 
                     {/* Areas for Improvement */}
-                    <div className="space-y-2 bg-orange-50/20 dark:bg-orange-950/10 p-4 border border-orange-100/30 rounded-2xl">
-                      <h5 className="font-extrabold text-orange-800 dark:text-orange-400 text-xs flex items-center gap-1.5">
-                        <AlertCircle size={14} className="bg-orange-100 dark:bg-orange-900/30 p-0.5 rounded-full" />
+                    <div className="space-y-2 bg-indigo-50/20 dark:bg-indigo-950/10 p-4 border border-indigo-100/30 rounded-2xl">
+                      <h5 className="font-extrabold text-indigo-800 dark:text-indigo-400 text-xs flex items-center gap-1.5">
+                        <AlertCircle size={14} className="bg-indigo-100 dark:bg-indigo-900/30 p-0.5 rounded-full" />
                         Điểm cần khắc phục (Improvements)
                       </h5>
                       <ul className="list-disc list-inside text-muted-foreground text-xs font-medium space-y-1.5 pl-1 leading-relaxed">
@@ -588,13 +588,13 @@ export default function InstructorFeedbackInbox() {
                           placeholder="Ví dụ: Dạ em xin phép hỏi thầy rõ hơn về tiêu chuẩn commit message..."
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
+                          className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
                         />
                       </div>
                       <div className="flex justify-end">
                         <Button
                           type="submit"
-                          className="h-9 px-4 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/10"
+                          className="h-9 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-500/10"
                         >
                           <Send size={12} />
                           Gửi câu hỏi làm rõ

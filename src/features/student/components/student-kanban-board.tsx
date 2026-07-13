@@ -324,12 +324,12 @@ export function StudentKanbanBoard() {
     },
     inprogress: {
       title: "Đang làm (In Progress)",
-      bgClass: "bg-amber-50/40 dark:bg-amber-950/25",
-      borderClass: "border-amber-500/30 dark:border-amber-500/20 focus-within:border-amber-500/40",
-      accentClass: "text-amber-500 dark:text-amber-400",
-      glowBg: "bg-gradient-to-b from-amber-500/10 via-transparent to-transparent",
-      dotBg: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
-      headerGradient: "from-amber-500/10 to-transparent",
+      bgClass: "bg-violet-50/40 dark:bg-violet-950/25",
+      borderClass: "border-violet-500/30 dark:border-violet-500/20 focus-within:border-violet-500/40",
+      accentClass: "text-violet-500 dark:text-violet-400",
+      glowBg: "bg-gradient-to-b from-violet-500/10 via-transparent to-transparent",
+      dotBg: "bg-violet-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+      headerGradient: "from-violet-500/10 to-transparent",
     },
     inreview: {
       title: "Đang duyệt (In Review)",
@@ -359,13 +359,13 @@ export function StudentKanbanBoard() {
 
   const getLeftBorderColor = (priority: string) => {
     if (priority === "high") return "border-l-rose-500";
-    if (priority === "medium") return "border-l-amber-500";
+    if (priority === "medium") return "border-l-violet-500";
     return "border-l-sky-500";
   };
 
   const getPriorityColor = (priority: string) => {
     if (priority === "high") return "bg-rose-500/10 text-rose-500 border-rose-500/20";
-    if (priority === "medium") return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+    if (priority === "medium") return "bg-violet-500/10 text-violet-500 border-violet-500/20";
     return "bg-sky-50/10 text-sky-500 border-sky-500/20";
   };
 
@@ -568,7 +568,7 @@ export function StudentKanbanBoard() {
               {/* Task Add Button */}
               <Button 
                 onClick={() => handleOpenTaskModal(null)}
-                className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-orange-500 via-primary to-amber-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
+                className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
               >
                 <Plus size={14} className="mr-1.5" />
                 Tạo Task mới
@@ -732,7 +732,7 @@ export function StudentKanbanBoard() {
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectItem value="high" className="text-xs font-semibold text-rose-500">Cao (High)</SelectItem>
-                        <SelectItem value="medium" className="text-xs font-semibold text-amber-500">Vừa (Medium)</SelectItem>
+                        <SelectItem value="medium" className="text-xs font-semibold text-violet-500">Vừa (Medium)</SelectItem>
                         <SelectItem value="low" className="text-xs font-semibold text-sky-500">Thấp (Low)</SelectItem>
                       </SelectContent>
                     </Select>

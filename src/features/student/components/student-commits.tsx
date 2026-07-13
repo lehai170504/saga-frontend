@@ -265,7 +265,7 @@ export function StudentCommits() {
             {/* Create Branch Button */}
             <Button 
               onClick={() => setIsModalOpen(true)}
-              className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-orange-500 via-primary to-amber-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
+              className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
             >
               <Plus size={14} className="mr-1.5" />
               Tạo Nhánh Mới
@@ -278,7 +278,7 @@ export function StudentCommits() {
           <Card className="rounded-[2rem] border border-border bg-card/25 dark:bg-card/20 backdrop-blur-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
               <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Tổng số Commits</span>
-              <div className="p-2 rounded-xl bg-orange-500/10 text-orange-500">
+              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
                 <GitCommit size={14} />
               </div>
             </div>

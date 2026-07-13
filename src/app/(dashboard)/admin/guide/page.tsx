@@ -84,7 +84,7 @@ export default function AdminGuidePage() {
                 <h3 className="font-bold text-foreground">Quy trình luân chuyển dữ liệu (Data Pipeline)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
                   <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 text-center flex flex-col items-center justify-center gap-2 h-full">
-                    <Server className="w-6 h-6 text-orange-500" />
+                    <Server className="w-6 h-6 text-indigo-500" />
                     <span className="text-xs font-bold uppercase">1. Dữ liệu Đầu vào</span>
                     <span className="text-[11px] text-muted-foreground">Nhập thủ công</span>
                   </div>
@@ -112,7 +112,7 @@ export default function AdminGuidePage() {
           <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm">
             <CardHeader className="border-b border-border/50 bg-muted/20">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-amber-500/10 text-amber-500 rounded-2xl">
+                <div className="p-3 bg-violet-500/10 text-violet-500 rounded-2xl">
                   <Calendar size={24} />
                 </div>
                 <div>
@@ -228,7 +228,7 @@ export default function AdminGuidePage() {
                 </div>
                 <div className="grid grid-cols-4 p-4 items-center hover:bg-muted/30 transition-colors">
                   <div className="font-semibold text-foreground flex items-center gap-2">
-                    <Users size={16} className="text-amber-500" /> Sinh viên
+                    <Users size={16} className="text-violet-500" /> Sinh viên
                   </div>
                   <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto text-emerald-500/50" /> <span className="text-[10px] text-muted-foreground block">(Nhóm của mình)</span></div>
                   <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto text-emerald-500/50" /> <span className="text-[10px] text-muted-foreground block">(Chấm chéo)</span></div>

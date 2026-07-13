@@ -258,9 +258,9 @@ export default function PeerAssessmentPage() {
       />
 
       {/* CONFIDENTIAL ALERT BANNER */}
-      <Card className="border border-orange-100 dark:border-orange-950/30 bg-gradient-to-r from-orange-50/40 to-orange-100/10 dark:from-orange-950/20 dark:to-orange-900/10 rounded-3xl p-5 shadow-sm">
+      <Card className="border border-indigo-100 dark:border-indigo-950/30 bg-gradient-to-r from-indigo-50/40 to-indigo-100/10 dark:from-indigo-950/20 dark:to-indigo-900/10 rounded-3xl p-5 shadow-sm">
         <div className="flex gap-4 items-start">
-          <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-2xl shadow-sm shrink-0">
+          <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl shadow-sm shrink-0">
             <ShieldCheck size={22} />
           </div>
           <div className="space-y-1">
@@ -300,10 +300,10 @@ export default function PeerAssessmentPage() {
               {teamMembers.map((m) => (
                 <div key={m.id} className="flex justify-between items-center text-sm font-bold text-foreground">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500" />
+                    <span className="w-2 h-2 rounded-full bg-indigo-500" />
                     {m.name} {m.isSelf && "(Tôi)"}
                   </span>
-                  <span className="bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 px-3 py-0.5 rounded-full text-xs font-bold">
+                  <span className="bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 px-3 py-0.5 rounded-full text-xs font-bold">
                     {assessments[m.id]?.contributionShare}% đóng góp
                   </span>
                 </div>
@@ -348,16 +348,16 @@ export default function PeerAssessmentPage() {
                       key={m.id}
                       onClick={() => setSelectedMember(m)}
                       className={`w-full p-3.5 rounded-2xl border text-left flex justify-between items-center transition-all cursor-pointer ${isSelected
-                          ? "bg-orange-50/50 dark:bg-orange-950/20 border-orange-500 shadow-sm text-orange-950 dark:text-orange-300 font-bold"
+                          ? "bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-500 shadow-sm text-indigo-950 dark:text-indigo-300 font-bold"
                           : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-900 text-foreground hover:border-slate-300 dark:hover:border-slate-700 font-semibold"
                         }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           className={`w-8 h-8 rounded-xl font-bold flex items-center justify-center text-xs shrink-0 ${m.isSelf
-                              ? "bg-orange-600 text-white shadow-md shadow-orange-500/20"
+                              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
                               : isSelected
-                                ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400"
+                                ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400"
                                 : "bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400"
                             }`}
                         >
@@ -389,13 +389,13 @@ export default function PeerAssessmentPage() {
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-bold">
                     <span className="text-muted-foreground">Tổng % đóng góp cả nhóm:</span>
-                    <span className={currentTotalShare === 100 ? "text-emerald-600 dark:text-emerald-400 font-black" : "text-orange-500"}>
+                    <span className={currentTotalShare === 100 ? "text-emerald-600 dark:text-emerald-400 font-black" : "text-indigo-500"}>
                       {currentTotalShare}/100%
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-slate-900 h-2 rounded-full overflow-hidden">
                     <div
-                      className={`h-full transition-all duration-500 ${currentTotalShare === 100 ? "bg-emerald-500 dark:bg-emerald-450" : "bg-orange-500"
+                      className={`h-full transition-all duration-500 ${currentTotalShare === 100 ? "bg-emerald-500 dark:bg-emerald-450" : "bg-indigo-500"
                         }`}
                       style={{ width: `${Math.min(currentTotalShare, 100)}%` }}
                     />
@@ -411,7 +411,7 @@ export default function PeerAssessmentPage() {
                 <Button
                   onClick={handleFinalSubmit}
                   disabled={isSubmitting || totalCompleted !== teamMembers.length || currentTotalShare !== 100}
-                  className="w-full h-11 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-md shadow-orange-500/10 disabled:opacity-50 disabled:shadow-none"
+                  className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-md shadow-indigo-500/10 disabled:opacity-50 disabled:shadow-none"
                 >
                   {isSubmitting ? (
                     <>
@@ -433,7 +433,7 @@ export default function PeerAssessmentPage() {
           <div className="lg:col-span-2 space-y-6">
             <Card className="border border-border shadow-sm rounded-3xl bg-card overflow-hidden !pt-0">
               {/* Dynamic Brand bar header */}
-              <div className={`h-2 w-full ${selectedMember.isSelf ? "bg-orange-500" : "bg-slate-800 dark:bg-slate-900"}`} />
+              <div className={`h-2 w-full ${selectedMember.isSelf ? "bg-indigo-500" : "bg-slate-800 dark:bg-slate-900"}`} />
 
               <div className="p-6 space-y-6">
 
@@ -447,7 +447,7 @@ export default function PeerAssessmentPage() {
                       <h4 className="font-extrabold text-foreground text-base flex items-center gap-1.5">
                         {selectedMember.name}
                         {selectedMember.isSelf && (
-                          <span className="bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-full text-[9px] font-extrabold">
+                          <span className="bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[9px] font-extrabold">
                             Tự đánh giá
                           </span>
                         )}
@@ -496,7 +496,7 @@ export default function PeerAssessmentPage() {
                             type="button"
                             onClick={() => handleRatingChange("codeQuality", star)}
                             className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
-                                ? "bg-orange-50 dark:bg-orange-950/40 border-orange-400 dark:border-orange-900/50 text-orange-500 dark:text-orange-400 scale-[1.05]"
+                                ? "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-400 dark:border-indigo-900/50 text-indigo-500 dark:text-indigo-400 scale-[1.05]"
                                 : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-slate-300 dark:hover:border-slate-600"
                               }`}
                           >
@@ -528,7 +528,7 @@ export default function PeerAssessmentPage() {
                             type="button"
                             onClick={() => handleRatingChange("deadlines", star)}
                             className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
-                                ? "bg-orange-50 dark:bg-orange-950/40 border-orange-400 dark:border-orange-900/50 text-orange-500 dark:text-orange-400 scale-[1.05]"
+                                ? "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-400 dark:border-indigo-900/50 text-indigo-500 dark:text-indigo-400 scale-[1.05]"
                                 : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-slate-300 dark:hover:border-slate-600"
                               }`}
                           >
@@ -560,7 +560,7 @@ export default function PeerAssessmentPage() {
                             type="button"
                             onClick={() => handleRatingChange("teamwork", star)}
                             className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
-                                ? "bg-orange-50 dark:bg-orange-950/40 border-orange-400 dark:border-orange-900/50 text-orange-500 dark:text-orange-400 scale-[1.05]"
+                                ? "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-400 dark:border-indigo-900/50 text-indigo-500 dark:text-indigo-400 scale-[1.05]"
                                 : "bg-background dark:bg-slate-950 border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-slate-300 dark:hover:border-slate-600"
                               }`}
                           >
@@ -577,7 +577,7 @@ export default function PeerAssessmentPage() {
                       <Label className="text-foreground text-xs font-bold">
                         4. Tỷ lệ đóng góp thực tế (%)
                       </Label>
-                      <span className="text-xs text-orange-600 dark:text-orange-400 font-black bg-orange-50 dark:bg-orange-950/50 px-2 py-0.5 rounded-full">
+                      <span className="text-xs text-indigo-600 dark:text-indigo-400 font-black bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-full">
                         {assessments[selectedMember.id]?.contributionShare || 20}%
                       </span>
                     </div>
@@ -595,7 +595,7 @@ export default function PeerAssessmentPage() {
                         disabled={isSubmitted}
                         value={assessments[selectedMember.id]?.contributionShare || 20}
                         onChange={(e) => handleShareChange(parseInt(e.target.value))}
-                        className="w-full accent-orange-500 h-1.5 bg-slate-100 dark:bg-slate-900 rounded-xl appearance-none cursor-pointer"
+                        className="w-full accent-indigo-500 h-1.5 bg-slate-100 dark:bg-slate-900 rounded-xl appearance-none cursor-pointer"
                       />
                       <span className="text-xs font-bold text-muted-foreground w-12 text-right">Max: 60%</span>
                     </div>
@@ -616,7 +616,7 @@ export default function PeerAssessmentPage() {
                           ? "Ghi lại những khó khăn bạn gặp phải, bài học rút ra hoặc tự nhận xét quá trình làm việc của bản thân..."
                           : `Nhận xét điểm mạnh, điểm yếu hoặc những điều cần cải thiện của ${selectedMember.name}... (Ý kiến này được bảo mật)`
                       }
-                      className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
+                      className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
                       value={assessments[selectedMember.id]?.comment || ""}
                       onChange={(e) => handleCommentChange(e.target.value)}
                     />
@@ -652,7 +652,7 @@ export default function PeerAssessmentPage() {
             {/* INFO TIPS ALERT */}
             <Card className="border border-border bg-slate-50/50 dark:bg-slate-900/30 rounded-3xl p-5 space-y-2">
               <h5 className="font-extrabold text-foreground text-xs flex items-center gap-1.5">
-                <Info size={14} className="text-orange-500" />
+                <Info size={14} className="text-indigo-500" />
                 Hướng dẫn phân phối contribution % hiệu quả:
               </h5>
               <ul className="list-disc list-inside text-muted-foreground text-[10px] font-medium space-y-1.5 pl-1 leading-normal">

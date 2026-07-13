@@ -122,7 +122,7 @@ export function StudentAuditLogs() {
           <MetricCard
             title="Đánh giá chéo"
             value={isLoading ? "-" : "Đã hoàn thành"}
-            icon={<CheckCircle2 className="w-4 h-4 text-amber-500" />}
+            icon={<CheckCircle2 className="w-4 h-4 text-violet-500" />}
           />
         </div>
 

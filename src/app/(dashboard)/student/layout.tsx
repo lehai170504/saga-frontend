@@ -232,10 +232,10 @@ export default function StudentLayout({
                                   ĐANG DIỄN RA
                                 </div>
                               ) : getSemesterStatus(selectedSemester) === "upcoming" ? (
-                                <div className="flex items-center gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 backdrop-blur-md">
+                                <div className="flex items-center gap-1.5 text-[9px] font-black text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full border border-violet-500/20 backdrop-blur-md">
                                   <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-violet-500"></span>
                                   </span>
                                   SẮP DIỄN RA
                                 </div>

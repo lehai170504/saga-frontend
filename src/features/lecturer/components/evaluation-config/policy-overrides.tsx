@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, ShieldCheck, Activity, Star, Info } from "lucide-react";
+import { AlertTriangle, ShieldCheck, Activity, Users, Info } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -15,24 +15,25 @@ export function PolicyOverrides() {
   const [overrideBugRate, setOverrideBugRate] = useState(false);
   const [bugRate, setBugRate] = useState(30);
 
-  const [overridePeerReview, setOverridePeerReview] = useState(false);
-  const [peerReviewReq, setPeerReviewReq] = useState(true);
+  const [overrideBusFactor, setOverrideBusFactor] = useState(false);
+  const [busFactor, setBusFactor] = useState(60);
 
   const [overrideReason, setOverrideReason] = useState("");
 
-  const hasAnyOverride = overrideGhosting || overrideBugRate || overridePeerReview;
+  const hasAnyOverride = overrideGhosting || overrideBugRate || overrideBusFactor;
 
   const isGhostingValid = ghostingDays >= 2 && ghostingDays <= 14;
   const isBugRateValid = bugRate >= 10 && bugRate <= 50;
+  const isBusFactorValid = busFactor >= 40 && busFactor <= 80;
 
   return (
     <Card className="rounded-2xl border-border bg-card/40 backdrop-blur-xl shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-primary" /> Ghi đè Chính sách (Policy Overrides)
+          <ShieldCheck className="w-5 h-5 text-primary" /> Ghi đè Cảnh báo AI (Early Warning)
         </CardTitle>
         <CardDescription>
-          Mặc định lớp học sẽ tuân theo các luật cảnh báo và Peer Review do Admin cấu hình. Bật công tắc &quot;Ghi đè&quot; nếu bạn muốn thay đổi các chỉ số này cho phù hợp với tiến độ riêng của lớp. Mọi thay đổi đều cần Admin kiểm duyệt.
+          Mặc định lớp học sẽ tuân theo các luật cảnh báo rủi ro do Admin cấu hình. Bật công tắc &quot;Ghi đè&quot; nếu bạn muốn thay đổi các chỉ số này cho phù hợp với đặc thù riêng của lớp.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -42,9 +43,9 @@ export function PolicyOverrides() {
           <div className="flex items-start justify-between">
             <div className="space-y-1 mr-4">
               <Label className="font-bold text-sm flex items-center gap-2">
-                <Activity className="w-4 h-4 text-orange-500" /> Cảnh báo Lười biếng (Ghosting Warning)
+                <Activity className="w-4 h-4 text-indigo-500" /> Cảnh báo Lười biếng (Ghosting Warning)
               </Label>
-              <p className="text-xs text-muted-foreground">Admin đang cấu hình: Cảnh báo đỏ nếu sinh viên không có hoạt động trong 5 ngày. Bật ghi đè nếu muốn thời gian khắt khe hoặc nới lỏng hơn.</p>
+              <p className="text-xs text-muted-foreground">Phát hiện "Zero Contribution". Cảnh báo đỏ nếu sinh viên không phát sinh Slices mới trong 5 ngày (vi phạm Daily Scrum).</p>
             </div>
             <Switch checked={overrideGhosting} onCheckedChange={setOverrideGhosting} />
           </div>
@@ -60,7 +61,7 @@ export function PolicyOverrides() {
                     onChange={(e) => setGhostingDays(parseInt(e.target.value) || 0)}
                     className={`w-16 h-8 text-center font-bold ${!isGhostingValid ? 'border-destructive text-destructive focus-visible:ring-destructive' : 'border-primary/30'}`}
                   />
-                  <span className="text-sm font-medium">Ngày không có log/commit</span>
+                  <span className="text-sm font-medium">Ngày không có Slices</span>
                 </div>
               </div>
               {!isGhostingValid && (
@@ -77,7 +78,7 @@ export function PolicyOverrides() {
               <Label className="font-bold text-sm flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-destructive" /> Nợ Kỹ thuật (Technical Debt)
               </Label>
-              <p className="text-xs text-muted-foreground">Admin đang cấu hình: Phạt hệ số nếu tỷ lệ Bug vượt 30% tổng số task. Ghi đè để đổi tỷ lệ này.</p>
+              <p className="text-xs text-muted-foreground">Admin đang cấu hình: Phạt hệ số nếu Tỷ lệ Bug/Commit vượt mức 30%. Ghi đè để đổi tỷ lệ này.</p>
             </div>
             <Switch checked={overrideBugRate} onCheckedChange={setOverrideBugRate} />
           </div>
@@ -94,7 +95,7 @@ export function PolicyOverrides() {
                     onChange={(e) => setBugRate(parseInt(e.target.value) || 0)}
                     className={`w-16 h-8 text-center font-bold ${!isBugRateValid ? 'border-destructive text-destructive focus-visible:ring-destructive' : 'border-primary/30'}`}
                   />
-                  <span className="text-sm font-medium">% Tổng số Task</span>
+                  <span className="text-sm font-medium">% Tỷ lệ Bug/Commit</span>
                 </div>
               </div>
               {!isBugRateValid && (
@@ -104,50 +105,64 @@ export function PolicyOverrides() {
           )}
         </div>
 
-        {/* Peer Review Comment Req Override */}
-        <div className={`p-5 rounded-xl border transition-colors ${overridePeerReview ? 'border-primary/50 bg-primary/5' : 'border-border/50 bg-background/50'} space-y-4`}>
+        {/* Bus Factor Override */}
+        <div className={`p-5 rounded-xl border transition-colors ${overrideBusFactor ? 'border-primary/50 bg-primary/5' : 'border-border/50 bg-background/50'} space-y-4`}>
           <div className="flex items-start justify-between">
             <div className="space-y-1 mr-4">
               <Label className="font-bold text-sm flex items-center gap-2">
-                <Star className="w-4 h-4 text-amber-500" /> Bắt buộc Comment Đánh giá (Peer Review)
+                <Users className="w-4 h-4 text-violet-500" /> Mất cân bằng Slices (Bus Factor Risk)
               </Label>
-              <p className="text-xs text-muted-foreground">Admin đang cấu hình: Bắt buộc viết nhận xét nếu vote {"<="} 2 sao hoặc 5 sao. Ghi đè để bắt buộc viết nhận xét cho mọi mức điểm (khắt khe hơn).</p>
+              <p className="text-xs text-muted-foreground">Phát hiện "Gánh team". Cảnh báo khi 1-2 cá nhân chiếm trên 60% tổng Slices của toàn bộ Sprint. Trợ lý AI sẽ yêu cầu Scrum Master can thiệp.</p>
             </div>
-            <Switch checked={overridePeerReview} onCheckedChange={setOverridePeerReview} />
+            <Switch checked={overrideBusFactor} onCheckedChange={setOverrideBusFactor} />
           </div>
 
-          {overridePeerReview && (
-            <div className="flex items-center justify-between pt-3 border-t border-primary/20">
-              <Label className="text-xs font-bold text-primary uppercase">Bắt buộc Comment cho MỌI vote</Label>
-              <Switch checked={peerReviewReq} onCheckedChange={setPeerReviewReq} />
+          {overrideBusFactor && (
+            <div className="pt-3 border-t border-primary/20 space-y-2">
+              <div className="flex items-center gap-3">
+                <Label className="text-xs font-bold text-primary uppercase w-32">Ngưỡng Bus Factor:</Label>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">{">"}</span>
+                  <Input
+                    type="number"
+                    value={busFactor}
+                    onChange={(e) => setBusFactor(parseInt(e.target.value) || 0)}
+                    className={`w-16 h-8 text-center font-bold ${!isBusFactorValid ? 'border-destructive text-destructive focus-visible:ring-destructive' : 'border-primary/30'}`}
+                  />
+                  <span className="text-sm font-medium">% Slices / Sprint</span>
+                </div>
+              </div>
+              {!isBusFactorValid && (
+                <p className="text-xs text-destructive font-semibold ml-35">Giới hạn hợp lệ của hệ thống: Từ 40% đến 80%.</p>
+              )}
             </div>
           )}
         </div>
 
         {/* Reason for Override & Submit Request */}
         {hasAnyOverride && (
-          <div className="p-5 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-4 animate-in fade-in slide-in-from-top-4">
-            <div className="flex items-start gap-2 text-amber-600 dark:text-amber-500">
+          <div className="p-5 rounded-xl border border-violet-500/30 bg-violet-500/5 space-y-4 animate-in fade-in slide-in-from-top-4">
+            <div className="flex items-start gap-2 text-violet-600 dark:text-violet-500">
               <Info className="w-5 h-5 shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
-                <p className="text-xs">Bạn đang thực hiện ghi đè chính sách hệ thống. Vui lòng cung cấp lý do chi tiết để Admin xem xét và phê duyệt.</p>
+                <p className="text-xs">Bạn đang thực hiện ghi đè chính sách cảnh báo rủi ro AI. Vui lòng cung cấp lý do chi tiết để Admin xem xét và phê duyệt.</p>
               </div>
             </div>
 
             <Textarea
-              placeholder="Ví dụ: Lớp học này có nhiều sinh viên part-time, cần nới lỏng cảnh báo Ghosting lên 7 ngày..."
-              className="min-h-[100px] border-amber-500/30 focus-visible:ring-amber-500/20"
+              placeholder="Ví dụ: Lớp học này có sinh viên part-time, cần nới lỏng Ghosting Warning lên 7 ngày..."
+              className="min-h-[100px] border-violet-500/30 focus-visible:ring-violet-500/20"
               value={overrideReason}
               onChange={(e) => setOverrideReason(e.target.value)}
             />
 
             <div className="flex justify-end">
               <Button
-                disabled={!overrideReason.trim() || !isGhostingValid || !isBugRateValid}
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl"
+                disabled={!overrideReason.trim() || !isGhostingValid || !isBugRateValid || !isBusFactorValid}
+                className="bg-violet-500 hover:bg-violet-600 text-white font-bold rounded-xl"
               >
-                Gửi yêu cầu Ghi đè
+                Gửi yêu cầu Ghi đè AI Rules
               </Button>
             </div>
           </div>

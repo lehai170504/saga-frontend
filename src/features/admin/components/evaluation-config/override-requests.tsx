@@ -55,7 +55,7 @@ export function OverrideRequests() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-500 p-4 rounded-xl">
+      <div className="flex items-center justify-between bg-violet-500/10 border border-violet-500/20 text-violet-700 dark:text-violet-500 p-4 rounded-xl">
         <div className="flex items-start gap-3">
           <ShieldAlert className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
@@ -102,9 +102,9 @@ export function OverrideRequests() {
 
                     <div>
                       <p className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3 text-amber-500" /> Lý do ghi đè:
+                        <AlertTriangle className="w-3 h-3 text-violet-500" /> Lý do ghi đè:
                       </p>
-                      <p className="text-sm text-foreground italic bg-amber-500/5 p-2 rounded-lg mt-1 border border-amber-500/20 text-amber-900 dark:text-amber-200">{req.reason}</p>
+                      <p className="text-sm text-foreground italic bg-violet-500/5 p-2 rounded-lg mt-1 border border-violet-500/20 text-violet-900 dark:text-violet-200">{req.reason}</p>
                     </div>
                   </div>
 

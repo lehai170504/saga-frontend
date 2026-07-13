@@ -23,8 +23,8 @@ export function DrillDownDrawer({ open, onClose, date }: DrillDownDrawerProps) {
       user: "Minh Anh",
       action: "feat: update heatmap UI integration",
       time: "10:30 AM",
-      icon: <GitCommit className="w-4 h-4 text-orange-500" />,
-      bg: "bg-orange-50",
+      icon: <GitCommit className="w-4 h-4 text-indigo-500" />,
+      bg: "bg-indigo-50",
     },
     {
       id: 2,

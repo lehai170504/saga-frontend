@@ -87,8 +87,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/admin/academic-data"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
-                      <FileText className="w-4 h-4 text-orange-500" />
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                      <FileText className="w-4 h-4 text-indigo-500" />
                     </div>
                     Dữ liệu Học vụ (Academic Data)
                   </Command.Item>
@@ -183,8 +183,8 @@ export function GlobalCommandPalette() {
                       onSelect={() => runCommand(() => router.push(`/lecturer/${classId}/projects`))}
                       className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
-                        <Network className="w-4 h-4 text-orange-500" />
+                      <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                        <Network className="w-4 h-4 text-indigo-500" />
                       </div>
                       Quản lý nhóm (Projects)
                     </Command.Item>
@@ -230,8 +230,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/student/assessment"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
-                      <UserCheck className="w-4 h-4 text-orange-500" />
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                      <UserCheck className="w-4 h-4 text-indigo-500" />
                     </div>
                     Đánh giá chéo (Peer Review)
                   </Command.Item>

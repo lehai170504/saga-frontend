@@ -28,7 +28,7 @@ export function DataIntegrationRules() {
 
             {/* LEFT COLUMN: RULES CONFIGURATION */}
             <div className="xl:col-span-2 space-y-8">
-              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20 text-sm font-medium">
+              <div className="flex items-center gap-2 text-violet-600 dark:text-violet-500 bg-violet-500/10 p-3 rounded-lg border border-violet-500/20 text-sm font-medium">
                 <Lock className="w-4 h-4" /> Các tham số đối soát dữ liệu đa nền tảng đã được thiết lập mặc định theo chuẩn ngành SE.
               </div>
 

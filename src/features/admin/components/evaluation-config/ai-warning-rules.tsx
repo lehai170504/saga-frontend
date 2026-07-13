@@ -19,7 +19,7 @@ export function AiWarningRules() {
 
             {/* LEFT COLUMN: RULES CONFIGURATION */}
             <div className="xl:col-span-2 space-y-8">
-              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20 text-sm font-medium">
+              <div className="flex items-center gap-2 text-violet-600 dark:text-violet-500 bg-violet-500/10 p-3 rounded-lg border border-violet-500/20 text-sm font-medium">
                 <Lock className="w-4 h-4" /> Ngưỡng AI đã được khóa cứng. Giảng viên cần tạo Yêu cầu Ghi đè nếu muốn nới lỏng.
               </div>
 
@@ -33,7 +33,7 @@ export function AiWarningRules() {
                   <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-90">
                     <div className="space-y-2">
                       <Label className="text-sm font-bold flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-orange-500" /> Ngưỡng &quot;Gánh Team&quot; (Bottleneck)
+                        <Flame className="w-4 h-4 text-indigo-500" /> Ngưỡng &quot;Gánh Team&quot; (Bottleneck)
                       </Label>
                       <p className="text-xs text-muted-foreground mb-3">Cảnh báo khi 1-2 thành viên nắm giữ trên mức % tổng Slices của nhóm.</p>
                       <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export function AiWarningRules() {
                 {/* Member Level Warning */}
                 <div className="space-y-4">
                   <h3 className="font-bold text-base flex items-center gap-2 text-foreground">
-                    <AlertTriangle className="w-5 h-5 text-amber-500" /> Cảnh báo Cá nhân
+                    <AlertTriangle className="w-5 h-5 text-violet-500" /> Cảnh báo Cá nhân
                   </h3>
 
                   <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-90">
@@ -104,7 +104,7 @@ export function AiWarningRules() {
                 <CardContent className="space-y-6 text-sm text-muted-foreground pt-4">
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <p><strong className="text-orange-500 text-base">60% &quot;Gánh Team&quot;:</strong></p>
+                      <p><strong className="text-indigo-500 text-base">60% &quot;Gánh Team&quot;:</strong></p>
                       <p className="text-xs leading-relaxed">
                         Dựa trên khái niệm <strong>Bus Factor</strong> (Rủi ro nhân sự) trong Software Engineering. Scrum yêu cầu <em>Cross-functional Team</em>. Nếu 1 cá nhân ôm đồm &gt;60% khối lượng, dự án có nguy cơ sụp đổ hoàn toàn nếu người đó rời nhóm. Mức 60% là Red Flag cho việc phân chia công việc thất bại.
                       </p>

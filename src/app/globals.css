@@ -61,7 +61,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0 0);
 
-  --primary: oklch(0.65 0.18 45);
+  --primary: oklch(0.51 0.2 273);
+  /* Indigo 600 */
   --primary-foreground: oklch(0.98 0 0);
 
   --secondary: oklch(0.55 0.15 255);
@@ -74,9 +75,9 @@
   --destructive: oklch(0.6 0.2 25);
   --border: oklch(0.9 0 0);
   --input: oklch(0.9 0 0);
-  --ring: oklch(0.65 0.18 45);
+  --ring: oklch(0.51 0.2 273);
 
-  --chart-1: oklch(0.65 0.18 45);
+  --chart-1: oklch(0.51 0.2 273);
   --chart-2: oklch(0.55 0.15 255);
   --chart-3: oklch(0.7 0.15 160);
   --chart-4: oklch(0.8 0.16 85);
@@ -86,12 +87,12 @@
 
   --sidebar: oklch(0.98 0 0);
   --sidebar-foreground: oklch(0.15 0 0);
-  --sidebar-primary: oklch(0.65 0.18 45);
+  --sidebar-primary: oklch(0.51 0.2 273);
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.94 0 0);
   --sidebar-accent-foreground: oklch(0.15 0 0);
   --sidebar-border: oklch(0.9 0 0);
-  --sidebar-ring: oklch(0.65 0.18 45);
+  --sidebar-ring: oklch(0.51 0.2 273);
 }
 
 .dark {
@@ -102,7 +103,8 @@
   --popover: oklch(0.16 0 0);
   --popover-foreground: oklch(0.95 0 0);
 
-  --primary: oklch(0.65 0.18 45);
+  --primary: oklch(0.65 0.18 273);
+  /* Indigo 500/400 for dark mode */
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.55 0.15 255);
   --secondary-foreground: oklch(0.98 0 0);
@@ -114,9 +116,9 @@
   --destructive: oklch(0.6 0.2 25);
   --border: oklch(0.22 0 0);
   --input: oklch(0.22 0 0);
-  --ring: oklch(0.65 0.18 45);
+  --ring: oklch(0.65 0.18 273);
 
-  --chart-1: oklch(0.7 0.18 45);
+  --chart-1: oklch(0.65 0.18 273);
   --chart-2: oklch(0.6 0.15 255);
   --chart-3: oklch(0.75 0.15 160);
   --chart-4: oklch(0.85 0.16 85);
@@ -124,12 +126,12 @@
 
   --sidebar: oklch(0.14 0 0);
   --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.65 0.18 45);
+  --sidebar-primary: oklch(0.65 0.18 273);
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.2 0 0);
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(0.22 0 0);
-  --sidebar-ring: oklch(0.65 0.18 45);
+  --sidebar-ring: oklch(0.65 0.18 273);
 }
 
 @layer base {
@@ -151,16 +153,20 @@
   width: 5px;
   height: 5px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 10px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--border) 80%, black);
 }
+
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--border) 80%, white);
 }

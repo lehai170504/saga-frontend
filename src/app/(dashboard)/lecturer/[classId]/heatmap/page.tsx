@@ -15,7 +15,7 @@ import {
 const generateHeatmapData = () => {
   const students = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Văn Cường", "Phạm Thị Dung", "Hoàng Văn Em", "Ngô Thị Phương", "Vũ Văn Giang", "Bùi Thị Hằng", "Đỗ Văn Inh", "Lý Thị Kim"];
   const days = Array.from({ length: 30 }, (_, i) => i + 1); // 30 days
-  
+
   return students.map(student => ({
     name: student,
     group: `Nhóm ${Math.floor(Math.random() * 3) + 1}`,
@@ -58,18 +58,18 @@ export default function HeatmapActivityPage({ params }: { params: Promise<{ clas
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/50 border border-border/50 text-muted-foreground text-xs font-semibold backdrop-blur-md">
               <Activity size={14} className="text-teal-500" />
-              Density Analysis
+              Agile Velocity & Code Quality
             </div>
             <h1 className="text-3xl font-black tracking-tight text-foreground">
-              Biểu đồ nhiệt Hoạt động
+              Biểu đồ Nhiệt Vận tốc & Mật độ Bug
             </h1>
-            <p className="text-muted-foreground font-medium">Bản đồ nhiệt độ theo dõi tần suất đóng góp của sinh viên lớp {classId}</p>
+            <p className="text-muted-foreground font-medium">Bản đồ nhiệt độ theo dõi tiến độ cày Story Points và Nợ Kỹ thuật (Bug Rate) của sinh viên lớp {classId}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
@@ -91,14 +91,14 @@ export default function HeatmapActivityPage({ params }: { params: Promise<{ clas
               <SelectTrigger className="w-full sm:w-[160px] h-10 bg-card/50 backdrop-blur-md border-border/50 focus:ring-primary/20">
                 <div className="flex items-center gap-2">
                   <Filter size={16} className="text-muted-foreground" />
-                  <SelectValue placeholder="Loại hoạt động" />
+                  <SelectValue placeholder="Loại dữ liệu" />
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-card/90 backdrop-blur-xl border-border/50">
-                <SelectItem value="all">Tất cả hoạt động</SelectItem>
-                <SelectItem value="commit">Chỉ Commits</SelectItem>
-                <SelectItem value="pr">Chỉ PRs</SelectItem>
-                <SelectItem value="issue">Chỉ Issues</SelectItem>
+                <SelectItem value="all">Tất cả (Tích lũy)</SelectItem>
+                <SelectItem value="sp">Hoàn thành Story Points</SelectItem>
+                <SelectItem value="bug">Bug / Nợ kỹ thuật</SelectItem>
+                <SelectItem value="penalty">Bị phạt Slices</SelectItem>
               </SelectContent>
             </Select>
             <Select defaultValue="month">
@@ -157,19 +157,19 @@ export default function HeatmapActivityPage({ params }: { params: Promise<{ clas
                       <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors cursor-pointer truncate w-full text-right">{student.name}</span>
                       <span className="text-[10px] font-semibold text-muted-foreground uppercase">{student.group}</span>
                     </div>
-                    
+
                     <div className="flex-1 flex gap-1.5">
                       {student.data.map((dayData, dayIdx) => (
-                        <div 
-                          key={dayIdx} 
+                        <div
+                          key={dayIdx}
                           className="relative flex-1 group/cell"
                         >
-                          <div 
+                          <div
                             className={`w-full aspect-square rounded-[4px] border transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer ${getColorClass(dayData.count)}`}
                           />
                           {/* Custom Tooltip on Hover */}
                           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-3 py-1.5 bg-foreground text-background text-xs font-bold rounded-xl opacity-0 invisible group-hover/cell:opacity-100 group-hover/cell:visible transition-all z-20 shadow-xl pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground">
-                            {dayData.count === 0 ? 'Không có hoạt động' : `${dayData.count} hoạt động`} vào Ngày {dayData.day}
+                            {dayData.count === 0 ? 'Không có hoạt động' : `${dayData.count} Story Points / Thao tác`} vào Ngày {dayData.day}
                           </div>
                         </div>
                       ))}

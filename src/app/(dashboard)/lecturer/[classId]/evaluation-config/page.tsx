@@ -7,7 +7,7 @@ import { Save, Settings2, Calendar, AlertTriangle, ArrowLeft } from "lucide-reac
 import { toast } from "sonner";
 import Link from "next/link";
 import { TemplateSelector } from "@/features/lecturer/components/evaluation-config/template-selector";
-import { PhaseManager } from "@/features/lecturer/components/evaluation-config/phase-manager";
+import { SlicingPieConfig } from "@/features/lecturer/components/evaluation-config/slicing-pie-config";
 import { PolicyOverrides } from "@/features/lecturer/components/evaluation-config/policy-overrides";
 
 export default function ClassEvaluationConfigPage({ params }: { params: Promise<{ classId: string }> }) {
@@ -59,10 +59,10 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
       <Tabs defaultValue="template" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="flex flex-col lg:flex-row w-full lg:w-auto h-auto lg:h-12 rounded-xl bg-muted/50 p-1 mb-8 gap-1">
           <TabsTrigger value="template" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
-            <Settings2 className="w-4 h-4 mr-2" /> Khung Hệ số & Multipliers
+            <Settings2 className="w-4 h-4 mr-2" /> Khung Hệ số Công việc
           </TabsTrigger>
           <TabsTrigger value="phases" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
-            <Calendar className="w-4 h-4 mr-2" /> Giai đoạn Đánh giá (Phases)
+            <Calendar className="w-4 h-4 mr-2" /> Cấu hình Scrum & Sprint
           </TabsTrigger>
           <TabsTrigger value="overrides" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
             <AlertTriangle className="w-4 h-4 mr-2" /> Ghi đè Cảnh báo AI
@@ -74,7 +74,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
         </TabsContent>
 
         <TabsContent value="phases" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <PhaseManager />
+          <SlicingPieConfig />
         </TabsContent>
 
         <TabsContent value="overrides" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">

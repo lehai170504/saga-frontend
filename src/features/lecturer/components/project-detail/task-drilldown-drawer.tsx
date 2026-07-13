@@ -61,7 +61,7 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
           <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Danh sách Task từ Jira</div>
 
           {data.tasks.map((task, idx) => (
-            <div key={idx} className={`p-4 border ${editingTaskId === task.id ? 'border-amber-400 bg-amber-50/10 dark:bg-amber-900/10 shadow-md' : 'border-border bg-card'} rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden relative group`}>
+            <div key={idx} className={`p-4 border ${editingTaskId === task.id ? 'border-violet-400 bg-violet-50/10 dark:bg-violet-900/10 shadow-md' : 'border-border bg-card'} rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden relative group`}>
 
               <div className="flex flex-wrap justify-between items-start mb-3 gap-2">
                 <Badge variant="outline" className="font-bold border-primary text-primary bg-primary/10 whitespace-nowrap">
@@ -70,15 +70,15 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
 
                 {/* SP Display or Override Input */}
                 {editingTaskId === task.id ? (
-                  <div className="flex items-center gap-1.5 bg-amber-100 dark:bg-amber-900/30 px-2 py-1 rounded-md border border-amber-300">
+                  <div className="flex items-center gap-1.5 bg-violet-100 dark:bg-violet-900/30 px-2 py-1 rounded-md border border-violet-300">
                     <Input
                       value={overrideSp}
                       onChange={(e) => setOverrideSp(e.target.value)}
-                      className="h-6 w-14 text-center font-black text-amber-700 dark:text-amber-400 px-1 py-0 text-xs border-amber-400 bg-white dark:bg-black"
+                      className="h-6 w-14 text-center font-black text-violet-700 dark:text-violet-400 px-1 py-0 text-xs border-violet-400 bg-white dark:bg-black"
                       type="number"
                       step="0.5"
                     />
-                    <span className="text-xs font-bold text-amber-700 dark:text-amber-400 mr-1">SP</span>
+                    <span className="text-xs font-bold text-violet-700 dark:text-violet-400 mr-1">SP</span>
                     <Button size="icon" variant="ghost" className="h-5 w-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full" onClick={() => handleSaveOverride(task.id)}>
                       <Check className="h-3 w-3" />
                     </Button>
@@ -94,7 +94,7 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-amber-100 hover:bg-amber-200 text-amber-600 rounded-full"
+                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-violet-100 hover:bg-violet-200 text-violet-600 rounded-full"
                       onClick={() => handleEditClick(task)}
                       title="Ghi đè SP (Manual Override)"
                     >
@@ -133,11 +133,12 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
             </div>
           ))}
 
-          <div className="mt-8 p-4 bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/50 rounded-2xl">
-            <h4 className="font-bold text-amber-600 dark:text-amber-400 mb-2 flex items-center gap-2">
+          <div className="mt-8 p-4 bg-violet-50/50 dark:bg-violet-900/10 border border-violet-200/50 dark:border-violet-900/50 rounded-2xl">
+            <h4 className="font-bold text-violet-600 dark:text-violet-400 mb-2 flex items-center gap-2">
               <AlertCircle className="w-5 h-5 shrink-0" /> Governance by Exception
             </h4>
             <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+              <strong>Slices = (SP × Hệ số Công việc) × Hệ số Retrospective.</strong><br />
               Bạn có quyền <strong>Ghi đè (Override)</strong> điểm Story Points của sinh viên nếu phát hiện AI đánh giá sai lệch khối lượng thực tế, hoặc mã nguồn GitHub không phản ánh đúng chất lượng.
             </p>
           </div>

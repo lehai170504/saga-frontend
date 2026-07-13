@@ -191,7 +191,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
                       <div className="flex items-center gap-2 mb-1">
                         {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-indigo-500/10 text-indigo-500 border-indigo-500/20"><GitCommit size={10} className="mr-1"/> Commit</Badge>}
                         {item.type === 'review' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-teal-500/10 text-teal-500 border-teal-500/20"><GitPullRequest size={10} className="mr-1"/> Review</Badge>}
-                        {item.type === 'issue' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-amber-500/10 text-amber-500 border-amber-500/20"><CheckCircle2 size={10} className="mr-1"/> Task</Badge>}
+                        {item.type === 'issue' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-violet-500/10 text-violet-500 border-violet-500/20"><CheckCircle2 size={10} className="mr-1"/> Task</Badge>}
                         {item.type === 'comment' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-pink-500/10 text-pink-500 border-pink-500/20"><MessageSquare size={10} className="mr-1"/> Comment</Badge>}
                         
                         <span className="text-xs text-muted-foreground font-medium">{item.time}</span>

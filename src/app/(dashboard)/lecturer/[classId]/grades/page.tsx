@@ -143,12 +143,12 @@ export default function MasterGradebookPage() {
                             step="0.5"
                             min="0"
                             max="10"
-                            className={`w-20 mx-auto text-center font-black text-lg border-2 ${isOverridden ? 'border-amber-500 text-amber-600 focus-visible:ring-amber-500' : 'border-transparent text-primary bg-transparent focus-visible:ring-primary'}`}
+                            className={`w-20 mx-auto text-center font-black text-lg border-2 ${isOverridden ? 'border-violet-500 text-violet-600 focus-visible:ring-violet-500' : 'border-transparent text-primary bg-transparent focus-visible:ring-primary'}`}
                             defaultValue={student.manualScore}
                             onBlur={(e) => handleManualScoreChange(student.id, e.target.value)}
                           />
                           {isOverridden && (
-                            <div className="absolute top-1 right-2 w-2 h-2 rounded-full bg-amber-500" title="Điểm đã bị ghi đè" />
+                            <div className="absolute top-1 right-2 w-2 h-2 rounded-full bg-violet-500" title="Điểm đã bị ghi đè" />
                           )}
                         </TableCell>
 

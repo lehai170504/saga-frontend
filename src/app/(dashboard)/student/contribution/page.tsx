@@ -50,12 +50,12 @@ interface TeamMemberContribution {
 
 const avatarColors = [
   "bg-slate-500",
-  "bg-orange-500",
+  "bg-indigo-500",
   "bg-rose-500",
   "bg-indigo-500",
   "bg-blue-500",
   "bg-teal-500",
-  "bg-amber-500",
+  "bg-violet-500",
 ];
 
 export default function ContributionPage() {
@@ -306,7 +306,7 @@ export default function ContributionPage() {
                         row.score >= 8.0
                           ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
                           : row.score >= 5.0
-                            ? "bg-orange-100/80 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400"
+                            ? "bg-indigo-100/80 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
                             : "bg-red-100/80 text-red-600 dark:bg-red-950/40 dark:text-red-400";
                       return (
                         <TableRow

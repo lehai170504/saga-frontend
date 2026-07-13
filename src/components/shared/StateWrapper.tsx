@@ -44,7 +44,7 @@ export function StateWrapper({
         <p className="mt-4 font-medium text-slate-500">
           Chưa có dữ liệu để hiển thị
         </p>
-        <Button variant="link" className="mt-2 text-orange-600">
+        <Button variant="link" className="mt-2 text-indigo-600">
           Hướng dẫn tích hợp
         </Button>
       </div>

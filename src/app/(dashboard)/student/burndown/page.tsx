@@ -173,7 +173,7 @@ export default function StudentBurndownPage() {
                   Cam kết{" "}
                   <span className="text-foreground font-bold text-sm">80</span>
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100/80 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400 rounded-full text-xs font-semibold transition-colors">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100/80 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400 rounded-full text-xs font-semibold transition-colors">
                   Còn lại <span className="font-bold text-sm">24</span>
                 </div>
               </>

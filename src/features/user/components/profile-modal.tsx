@@ -160,7 +160,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div className="relative">
                   <Avatar className="h-24 w-24 border-2 border-border shadow-sm">
                     <AvatarImage src="" alt={user.name} />
-                    <AvatarFallback className="bg-orange-100 text-orange-700 text-3xl font-bold dark:bg-orange-900/40 dark:text-orange-400">
+                    <AvatarFallback className="bg-indigo-100 text-indigo-700 text-3xl font-bold dark:bg-indigo-900/40 dark:text-indigo-400">
                       {user.avatarInitials ?? "?"}
                     </AvatarFallback>
                   </Avatar>
@@ -351,7 +351,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           placeholder="ghp_xxxxxxxxxxxx"
                           value={githubToken}
                           onChange={(e) => setGithubToken(e.target.value)}
-                          className="bg-background border-border focus-visible:ring-orange-500"
+                          className="bg-background border-border focus-visible:ring-indigo-500"
                         />
                         <Button
                           variant="secondary"
@@ -372,7 +372,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           placeholder="Nhập Jira token..."
                           value={jiraToken}
                           onChange={(e) => setJiraToken(e.target.value)}
-                          className="bg-background border-border focus-visible:ring-orange-500"
+                          className="bg-background border-border focus-visible:ring-indigo-500"
                         />
                         <Button
                           variant="secondary"

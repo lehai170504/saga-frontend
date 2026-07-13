@@ -149,19 +149,14 @@ const StudentNode = ({ data }: any) => {
   );
 };
 
-const PeerReviewNode = ({ data }: any) => {
+const RetroNode = ({ data }: any) => {
   const isPenalty = data.isPenalty;
   return (
-    <div className={`min-w-[160px] px-4 py-3 shadow-lg rounded-2xl bg-white dark:bg-zinc-900 border ${isPenalty ? 'border-red-200 dark:border-red-900' : 'border-amber-200 dark:border-amber-900'} flex flex-col gap-1 items-center justify-center text-center`}>
+    <div className={`min-w-[160px] px-4 py-3 shadow-lg rounded-2xl bg-white dark:bg-zinc-900 border ${isPenalty ? 'border-red-200 dark:border-red-900' : 'border-violet-200 dark:border-violet-900'} flex flex-col gap-1 items-center justify-center text-center`}>
       <Handle type="target" position={Position.Top} className="w-3 h-3 bg-slate-400 border-2 border-background" />
-      <div className="flex gap-1 text-amber-400 mb-1">
-        {Array.from({ length: data.stars }).map((_, i) => (
-          <Star key={i} size={14} fill="currentColor" />
-        ))}
-      </div>
-      <div className="text-xs font-bold text-muted-foreground">{data.label || 'Peer Review Modifier'}</div>
-      <div className={`text-lg font-black ${isPenalty ? 'text-red-500' : 'text-amber-500'}`}>{data.modifier}</div>
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-amber-500 border-2 border-background" />
+      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{data.label || 'Hệ số Retro'}</div>
+      <div className={`text-xl font-black ${isPenalty ? 'text-red-500' : 'text-violet-500'}`}>{data.modifier}</div>
+      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-violet-500 border-2 border-background" />
     </div>
   );
 };
@@ -216,8 +211,8 @@ const generateGraphData = (phase: string) => {
       { id: 'student-a', position: { x: 180, y: 320 }, data: { name: 'Nguyễn Văn A', role: 'core', roleLabel: 'Core Member', baseSlices: 7.5 }, type: 'student' },
       { id: 'student-b', position: { x: 450, y: 320 }, data: { name: 'Trần Thị B', role: 'normal', roleLabel: 'Thành viên', baseSlices: 7.5 }, type: 'student' },
 
-      { id: 'pr-a', position: { x: 180, y: 520 }, data: { stars: 4, modifier: 'x1.0', isPenalty: false, label: 'Review Phase 1' }, type: 'peerReview' },
-      { id: 'pr-b', position: { x: 450, y: 520 }, data: { stars: 5, modifier: 'x1.1', isPenalty: false, label: 'Review Phase 1' }, type: 'peerReview' },
+      { id: 'pr-a', position: { x: 180, y: 520 }, data: { modifier: 'x1.0', isPenalty: false, label: 'Retro Sprint 1' }, type: 'retro' },
+      { id: 'pr-b', position: { x: 450, y: 520 }, data: { modifier: 'x1.1', isPenalty: false, label: 'Retro Sprint 1' }, type: 'retro' },
 
       { id: 'slices-a', position: { x: 180, y: 720 }, data: { slices: 7.5, label: 'Slices P1' }, type: 'slice' },
       { id: 'slices-b', position: { x: 450, y: 720 }, data: { slices: 8.25, label: 'Slices P1' }, type: 'slice' },
@@ -249,9 +244,9 @@ const generateGraphData = (phase: string) => {
       { id: 'student-b', position: { x: 450, y: 320 }, data: { name: 'Trần Thị B', role: 'normal', roleLabel: 'Thành viên', baseSlices: 18 }, type: 'student' },
       { id: 'student-c', position: { x: 790, y: 320 }, data: { name: 'Lê Văn C', role: 'ghost', roleLabel: 'Cảnh báo Ghosting', baseSlices: 0 }, type: 'student' },
 
-      { id: 'pr-a', position: { x: 180, y: 520 }, data: { stars: 5, modifier: 'x1.1', isPenalty: false, label: 'Review Phase 2' }, type: 'peerReview' },
-      { id: 'pr-b', position: { x: 450, y: 520 }, data: { stars: 4, modifier: 'x1.0', isPenalty: false, label: 'Review Phase 2' }, type: 'peerReview' },
-      { id: 'pr-c', position: { x: 790, y: 520 }, data: { stars: 1, modifier: 'x0.5', isPenalty: true, label: 'Review Phase 2' }, type: 'peerReview' },
+      { id: 'pr-a', position: { x: 180, y: 520 }, data: { modifier: 'x1.1', isPenalty: false, label: 'Retro Sprint 2' }, type: 'retro' },
+      { id: 'pr-b', position: { x: 450, y: 520 }, data: { modifier: 'x1.0', isPenalty: false, label: 'Retro Sprint 2' }, type: 'retro' },
+      { id: 'pr-c', position: { x: 790, y: 520 }, data: { modifier: 'x0.5', isPenalty: true, label: 'Retro Sprint 2 (PIP)' }, type: 'retro' },
 
       { id: 'slices-a', position: { x: 180, y: 720 }, data: { slices: 30.25, label: 'Slices P2' }, type: 'slice' },
       { id: 'slices-b', position: { x: 450, y: 720 }, data: { slices: 18, label: 'Slices P2' }, type: 'slice' },
@@ -292,9 +287,9 @@ const generateGraphData = (phase: string) => {
       { id: 'student-b', position: { x: 450, y: 320 }, data: { name: 'Trần Thị B', role: 'normal', roleLabel: 'Thành viên', baseSlices: 0 }, type: 'student' },
       { id: 'student-c', position: { x: 720, y: 320 }, data: { name: 'Lê Văn C', role: 'ghost', roleLabel: 'Cảnh báo Ghosting', baseSlices: 2 }, type: 'student' },
 
-      { id: 'pr-a', position: { x: 180, y: 520 }, data: { stars: 4, modifier: 'x1.0', isPenalty: false, label: 'Review Phase 3' }, type: 'peerReview' },
-      { id: 'pr-b', position: { x: 450, y: 520 }, data: { stars: 4, modifier: 'x1.0', isPenalty: false, label: 'Review Phase 3' }, type: 'peerReview' },
-      { id: 'pr-c', position: { x: 720, y: 520 }, data: { stars: 1, modifier: 'x0.5', isPenalty: true, label: 'Review Phase 3' }, type: 'peerReview' },
+      { id: 'pr-a', position: { x: 180, y: 520 }, data: { modifier: 'x1.0', isPenalty: false, label: 'Retro Sprint 3' }, type: 'retro' },
+      { id: 'pr-b', position: { x: 450, y: 520 }, data: { modifier: 'x1.0', isPenalty: false, label: 'Retro Sprint 3' }, type: 'retro' },
+      { id: 'pr-c', position: { x: 720, y: 520 }, data: { modifier: 'x0.5', isPenalty: true, label: 'Retro Sprint 3 (PIP)' }, type: 'retro' },
 
       { id: 'slices-a', position: { x: 180, y: 720 }, data: { slices: 3, label: 'Slices P3' }, type: 'slice' },
       { id: 'slices-b', position: { x: 450, y: 720 }, data: { slices: 0, label: 'Slices P3' }, type: 'slice' },
@@ -311,31 +306,47 @@ const generateGraphData = (phase: string) => {
       { id: 'e-prc-slc', source: 'pr-c', target: 'slices-c', data: { label: '2 * 0.5' }, type: 'drilldown', animated: true, style: { stroke: '#ef4444', strokeWidth: 1 } },
     ];
   } else {
-    // Final Phase (Aggregated)
+    // Final Phase (Aggregated Sprints)
     nodes = [
-      ...mults,
-      { id: 'student-a', position: { x: 180, y: 320 }, data: { name: 'Nguyễn Văn A', role: 'core', roleLabel: 'Core Member (Đa nhiệm)', baseSlices: 37.5 }, type: 'student' },
-      { id: 'student-b', position: { x: 450, y: 320 }, data: { name: 'Trần Thị B', role: 'normal', roleLabel: 'Thành viên', baseSlices: 18 }, type: 'student' },
-      { id: 'student-c', position: { x: 720, y: 320 }, data: { name: 'Lê Văn C', role: 'ghost', roleLabel: 'Cảnh báo Ghosting', baseSlices: 2 }, type: 'student' },
+      // Sprints for A (already applied Retro per sprint)
+      { id: 's1-a', position: { x: 100, y: 150 }, data: { label: 'Sprint 1 (x1.0)', slices: 15 }, type: 'sprint' },
+      { id: 's2-a', position: { x: 180, y: 150 }, data: { label: 'Sprint 2 (x1.1)', slices: 24.75 }, type: 'sprint' },
+      { id: 's3-a', position: { x: 260, y: 150 }, data: { label: 'Sprint 3 (x1.0)', slices: 3 }, type: 'sprint' },
 
-      { id: 'pr-a', position: { x: 180, y: 520 }, data: { stars: 5, modifier: 'x1.1', isPenalty: false, label: 'Final Review Average' }, type: 'peerReview' },
-      { id: 'pr-b', position: { x: 450, y: 520 }, data: { stars: 4, modifier: 'x1.0', isPenalty: false, label: 'Final Review Average' }, type: 'peerReview' },
-      { id: 'pr-c', position: { x: 720, y: 520 }, data: { stars: 1, modifier: 'x0.5', isPenalty: true, label: 'Final Review Average' }, type: 'peerReview' },
-      { id: 'slices-a', position: { x: 180, y: 720 }, data: { slices: 41.25, percentage: 68.4, label: 'Tổng Slices Cuối Kì' }, type: 'slice' },
-      { id: 'slices-b', position: { x: 450, y: 720 }, data: { slices: 18.0, percentage: 29.9, label: 'Tổng Slices Cuối Kì' }, type: 'slice' },
-      { id: 'slices-c', position: { x: 720, y: 720 }, data: { slices: 1.0, percentage: 1.7, label: 'Tổng Slices Cuối Kì' }, type: 'slice' },
+      // Sprints for B
+      { id: 's1-b', position: { x: 380, y: 150 }, data: { label: 'Sprint 1 (x1.1)', slices: 11 }, type: 'sprint' },
+      { id: 's2-b', position: { x: 450, y: 150 }, data: { label: 'Sprint 2 (x1.0)', slices: 8 }, type: 'sprint' },
+      { id: 's3-b', position: { x: 520, y: 150 }, data: { label: 'Sprint 3 (x1.0)', slices: 0 }, type: 'sprint' },
+
+      // Sprints for C
+      { id: 's1-c', position: { x: 650, y: 150 }, data: { label: 'Sprint 1 (x1.0)', slices: 0 }, type: 'sprint' },
+      { id: 's2-c', position: { x: 720, y: 150 }, data: { label: 'Sprint 2 (x0.5)', slices: 0 }, type: 'sprint' },
+      { id: 's3-c', position: { x: 790, y: 150 }, data: { label: 'Sprint 3 (x0.5)', slices: 1 }, type: 'sprint' },
+
+      { id: 'student-a', position: { x: 180, y: 350 }, data: { name: 'Nguyễn Văn A', role: 'core', roleLabel: 'Core Member (Đa nhiệm)', baseSlices: 42.75 }, type: 'student' },
+      { id: 'student-b', position: { x: 450, y: 350 }, data: { name: 'Trần Thị B', role: 'normal', roleLabel: 'Thành viên', baseSlices: 19 }, type: 'student' },
+      { id: 'student-c', position: { x: 720, y: 350 }, data: { name: 'Lê Văn C', role: 'ghost', roleLabel: 'Cảnh báo Ghosting (PIP)', baseSlices: 1 }, type: 'student' },
+
+      { id: 'slices-a', position: { x: 180, y: 550 }, data: { slices: 42.75, percentage: 68.1, label: 'Tổng Slices Cuối Kì' }, type: 'slice' },
+      { id: 'slices-b', position: { x: 450, y: 550 }, data: { slices: 19.0, percentage: 30.3, label: 'Tổng Slices Cuối Kì' }, type: 'slice' },
+      { id: 'slices-c', position: { x: 720, y: 550 }, data: { slices: 1.0, percentage: 1.6, label: 'Tổng Slices Cuối Kì' }, type: 'slice' },
     ];
     edges = [
-      { id: 'e-code-sa', source: 'mult-code', target: 'student-a', data: { label: '15 SP Code (30 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
-      { id: 'e-design-sa', source: 'mult-design', target: 'student-a', data: { label: '5 SP Design (7.5 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#8b5cf6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#8b5cf6' } },
-      { id: 'e-code-sb', source: 'mult-code', target: 'student-b', data: { label: '9 SP Code (18 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#3b82f6', strokeWidth: 2, cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' } },
-      { id: 'e-docs-sc', source: 'mult-docs', target: 'student-c', data: { label: '2 SP Docs (2 Slices)', clickable: true }, type: 'drilldown', style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '4 4', cursor: 'pointer' }, markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' } },
-      { id: 'e-sa-pra', source: 'student-a', target: 'pr-a', data: { label: '37.5 Base' }, type: 'drilldown', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-      { id: 'e-sb-prb', source: 'student-b', target: 'pr-b', data: { label: '18 Base' }, type: 'drilldown', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-      { id: 'e-sc-prc', source: 'student-c', target: 'pr-c', data: { label: '2 Base' }, type: 'drilldown', style: { stroke: '#94a3b8', strokeWidth: 2 } },
-      { id: 'e-pra-sla', source: 'pr-a', target: 'slices-a', data: { label: '37.5 * 1.1' }, type: 'drilldown', animated: true, style: { stroke: '#f59e0b', strokeWidth: 4 } },
-      { id: 'e-prb-slb', source: 'pr-b', target: 'slices-b', data: { label: '18.0 * 1.0' }, type: 'drilldown', animated: true, style: { stroke: '#f59e0b', strokeWidth: 2 } },
-      { id: 'e-prc-slc', source: 'pr-c', target: 'slices-c', data: { label: '2.0 * 0.5 (Penalty)' }, type: 'drilldown', animated: true, style: { stroke: '#ef4444', strokeWidth: 2 } },
+      { id: 'e-s1a', source: 's1-a', target: 'student-a', data: { label: '+15' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s2a', source: 's2-a', target: 'student-a', data: { label: '+24.75' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s3a', source: 's3-a', target: 'student-a', data: { label: '+3' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+
+      { id: 'e-s1b', source: 's1-b', target: 'student-b', data: { label: '+11' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s2b', source: 's2-b', target: 'student-b', data: { label: '+8' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s3b', source: 's3-b', target: 'student-b', data: { label: '+0' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+
+      { id: 'e-s1c', source: 's1-c', target: 'student-c', data: { label: '+0' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s2c', source: 's2-c', target: 'student-c', data: { label: '+0' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+      { id: 'e-s3c', source: 's3-c', target: 'student-c', data: { label: '+1' }, type: 'drilldown', style: { stroke: '#06b6d4', strokeDasharray: '4 4' } },
+
+      { id: 'e-sa-sla', source: 'student-a', target: 'slices-a', data: { label: '∑ = 42.75' }, type: 'drilldown', animated: true, style: { stroke: '#6366f1', strokeWidth: 4 } },
+      { id: 'e-sb-slb', source: 'student-b', target: 'slices-b', data: { label: '∑ = 19.0' }, type: 'drilldown', animated: true, style: { stroke: '#6366f1', strokeWidth: 3 } },
+      { id: 'e-sc-slc', source: 'student-c', target: 'slices-c', data: { label: '∑ = 1.0 (PIP)' }, type: 'drilldown', animated: true, style: { stroke: '#ef4444', strokeWidth: 2 } },
     ];
   }
 
@@ -347,7 +358,7 @@ export function ClassNetworkGraph() {
     multiplier: MultiplierNode,
     sprint: SprintNode,
     student: StudentNode,
-    peerReview: PeerReviewNode,
+    retro: RetroNode,
     slice: SliceNode
   }), []);
 
@@ -406,7 +417,7 @@ export function ClassNetworkGraph() {
               Kiểm toán Đóng góp Nhóm (Slicing Pie Audit)
             </CardTitle>
             <CardDescription className="font-medium mt-2 max-w-3xl text-sm leading-relaxed">
-              Mô hình hóa chuỗi giá trị: <strong className="text-indigo-500 dark:text-indigo-400">∑(Story Points × Multiplier) × Peer Review</strong>.<br />
+              Mô hình hóa chuỗi giá trị: <strong className="text-indigo-500 dark:text-indigo-400">∑(Story Points × Hệ số Công việc) × Hệ số Retrospective</strong>.<br />
               Sử dụng công cụ này để thanh tra % cổ phần Slices của Nhóm. <strong className="text-primary">Mẹo:</strong> Click vào các đường nối phía trên để truy xuất (Drilldown) chi tiết danh sách Task.
             </CardDescription>
           </div>
@@ -417,9 +428,9 @@ export function ClassNetworkGraph() {
                 <SelectValue placeholder="Chọn Phase" />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
-                <SelectItem value="phase1" className="font-medium">Phase 1 (Design)</SelectItem>
-                <SelectItem value="phase2" className="font-medium">Phase 2 (Coding)</SelectItem>
-                <SelectItem value="phase3" className="font-medium">Phase 3 (Testing & Docs)</SelectItem>
+                <SelectItem value="phase1" className="font-medium">Sprint 1</SelectItem>
+                <SelectItem value="phase2" className="font-medium">Sprint 2</SelectItem>
+                <SelectItem value="phase3" className="font-medium">Sprint 3</SelectItem>
                 <SelectItem value="final" className="font-bold text-indigo-600">Final Report (Chốt sổ)</SelectItem>
               </SelectContent>
             </Select>
@@ -431,7 +442,7 @@ export function ClassNetworkGraph() {
                 }`}
             >
               <Save className="w-4 h-4" />
-              {selectedPhase === 'final' ? 'Chốt Sổ (Publish)' : `Chốt Điểm ${selectedPhase === 'phase1' ? 'Phase 1' : selectedPhase === 'phase2' ? 'Phase 2' : 'Phase 3'
+              {selectedPhase === 'final' ? 'Chốt Sổ (Publish)' : `Chốt Điểm ${selectedPhase === 'phase1' ? 'Sprint 1' : selectedPhase === 'phase2' ? 'Sprint 2' : 'Sprint 3'
                 }`}
             </Button>
           </div>
@@ -459,14 +470,14 @@ export function ClassNetworkGraph() {
                 className="bg-background border border-border shadow-md rounded-xl overflow-hidden"
                 nodeStrokeColor={(n) => {
                   if (n.type === 'slice') return '#6366f1'; // indigo
-                  if (n.type === 'peerReview') return '#f59e0b'; // amber
+                  if (n.type === 'retro') return '#f59e0b'; // violet (Wait, #f59e0b is actually Amber/Violet mapped? It should be violet-500 = #8b5cf6)
                   if (n.id.includes('ghost')) return '#ef4444'; // red
                   if (n.id.includes('core')) return '#10b981'; // emerald
                   return '#94a3b8'; // slate
                 }}
                 nodeColor={(n) => {
                   if (n.type === 'slice') return '#e0e7ff';
-                  if (n.type === 'peerReview') return '#fef3c7';
+                  if (n.type === 'retro') return '#ede9fe'; // violet-100
                   if (n.id.includes('ghost')) return '#fee2e2';
                   if (n.id.includes('core')) return '#d1fae5';
                   return '#f1f5f9';

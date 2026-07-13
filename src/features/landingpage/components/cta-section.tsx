@@ -15,7 +15,7 @@ export function CtaSection() {
         className="bg-foreground rounded-[3rem] p-12 md:p-24 relative overflow-hidden shadow-2xl group"
       >
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 group-hover:scale-105 transition-transform duration-1000" />
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-orange-500/40 blur-[100px] rounded-full pointer-events-none group-hover:bg-orange-500/60 transition-colors duration-700" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/40 blur-[100px] rounded-full pointer-events-none group-hover:bg-indigo-500/60 transition-colors duration-700" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/30 blur-[100px] rounded-full pointer-events-none group-hover:bg-blue-500/50 transition-colors duration-700" />
         
         <h2 className="text-4xl md:text-6xl font-black text-background mb-8 relative z-10 tracking-tight leading-tight">

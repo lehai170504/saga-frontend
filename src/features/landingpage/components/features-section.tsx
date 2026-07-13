@@ -2,103 +2,119 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { LineChart, GitPullRequest, Users, Layout } from "lucide-react";
-import { fadeUp, staggerContainer } from "./animations";
+import { AlertTriangle, Users, Clock, ShieldAlert, Network } from "lucide-react";
+import { fadeUp, staggerContainer, scaleUp } from "./animations";
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-32 px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-24">
-        <motion.h2 
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-          className="text-4xl md:text-5xl font-black text-foreground mb-6"
+    <section id="features" className="py-32 px-6 max-w-7xl mx-auto space-y-32">
+      {/* The Problem Section */}
+      <div>
+        <div className="text-center mb-16 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+          <motion.h2
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-4xl md:text-5xl font-black text-foreground mb-6"
+          >
+            Nhận diện <span className="bg-gradient-to-r from-red-500 to-indigo-500 bg-clip-text text-transparent">Nỗi đau</span>
+          </motion.h2>
+          <motion.p
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg"
+          >
+            Những vấn đề cố hữu trong làm việc nhóm Agile đang bào mòn tinh thần và làm sai lệch kết quả đánh giá năng lực thực sự.
+          </motion.p>
+        </div>
+
+        <motion.div
+          variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          Trải nghiệm <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Đột phá</span>
-        </motion.h2>
-        <motion.p 
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-          className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg"
-        >
-          Giao diện được thiết kế tối giản, hiển thị dữ liệu cốt lõi, giúp giảng viên theo dõi sát sao tiến độ học tập qua từng môn học, phát hiện sớm rủi ro.
-        </motion.p>
+          {/* Problem 1 */}
+          <motion.div variants={scaleUp} className="bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 shadow-xl hover:shadow-red-500/10 rounded-3xl p-8 hover:border-red-500/50 hover:bg-card/60 transition-all duration-500 group relative overflow-hidden">
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-red-500/10 blur-3xl rounded-full group-hover:bg-red-500/20 transition-all duration-500" />
+            <div className="relative z-10 w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center mb-6 border border-red-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+              <AlertTriangle className="w-7 h-7 text-red-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-3 relative z-10">Đánh giá cảm tính</h3>
+            <p className="text-muted-foreground font-medium relative z-10">Bỏ phiếu kín và cào bằng điểm số vào cuối kỳ, thiếu minh bạch và không phản ánh đúng giá trị đóng góp thật sự.</p>
+          </motion.div>
+
+          {/* Problem 2 */}
+          <motion.div variants={scaleUp} className="bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 shadow-xl hover:shadow-indigo-500/10 rounded-3xl p-8 hover:border-indigo-500/50 hover:bg-card/60 transition-all duration-500 group relative overflow-hidden">
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/10 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-all duration-500" />
+            <div className="relative z-10 w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 border border-indigo-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+              <Users className="w-7 h-7 text-indigo-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-3 relative z-10">Gánh team (Bus Factor)</h3>
+            <p className="text-muted-foreground font-medium relative z-10">Tình trạng 1-2 cá nhân phải đảm đương toàn bộ khối lượng công việc, gây quá tải (burnout) trong khi các thành viên khác lại "free-ride".</p>
+          </motion.div>
+
+          {/* Problem 3 */}
+          <motion.div variants={scaleUp} className="bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 shadow-xl hover:shadow-blue-500/10 rounded-3xl p-8 hover:border-blue-500/50 hover:bg-card/60 transition-all duration-500 group relative overflow-hidden">
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 blur-3xl rounded-full group-hover:bg-blue-500/20 transition-all duration-500" />
+            <div className="relative z-10 w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+              <Clock className="w-7 h-7 text-blue-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-3 relative z-10">Trễ tiến độ ngầm</h3>
+            <p className="text-muted-foreground font-medium relative z-10">Blockers không được báo cáo kịp thời, tạo ra "nợ kỹ thuật" tích tụ và làm chệch hướng hoàn toàn mục tiêu của Sprint.</p>
+          </motion.div>
+        </motion.div>
       </div>
 
-      <motion.div 
-        variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[320px]"
-      >
-        {/* Large Card 1 */}
-        <motion.div 
-          variants={fadeUp}
-          className="md:col-span-2 bg-gradient-to-br from-card to-background border border-border rounded-3xl p-10 relative overflow-hidden group hover:border-orange-500/50 transition-colors"
+      {/* Key Features Section */}
+      <div>
+        <div className="text-center mb-16 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+          <motion.h2
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-4xl md:text-5xl font-black text-foreground mb-6"
+          >
+            Tính năng <span className="bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">Cốt lõi</span>
+          </motion.h2>
+          <motion.p
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg"
+          >
+            SAGA cung cấp hệ sinh thái công cụ giám sát và đánh giá mạnh mẽ, trao quyền cho nhóm kiểm soát hoàn toàn tiến độ dự án.
+          </motion.p>
+        </div>
+
+        <motion.div
+          variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[350px]"
         >
-          <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 blur-[100px] rounded-full group-hover:bg-orange-500/20 transition-colors duration-500" />
-          <div className="relative z-10 w-16 h-16 bg-orange-100 dark:bg-orange-950/50 rounded-2xl flex items-center justify-center mb-8 border border-orange-200 dark:border-orange-900 shadow-sm">
-            <LineChart className="w-8 h-8 text-orange-600 dark:text-orange-400" />
-          </div>
-          <h3 className="text-3xl font-bold text-foreground mb-4 relative z-10">Phân tích Tiến độ Real-time</h3>
-          <p className="text-muted-foreground font-medium max-w-md relative z-10 leading-relaxed text-lg">
-            Tạm biệt các báo cáo bằng tay. Biểu đồ Burndown và Heatmap đóng góp được vẽ tự động dựa trên Commit thực tế mỗi giờ.
-          </p>
-          <div className="absolute right-0 bottom-0 translate-x-10 translate-y-10 group-hover:translate-x-5 group-hover:translate-y-5 transition-transform duration-500">
-            <div className="w-64 h-48 bg-card rounded-tl-2xl border-l border-t border-border shadow-2xl p-4 flex items-end gap-2">
-               {[30, 70, 45, 90, 65, 100].map((h, i) => (
-                 <div key={i} className="flex-1 bg-gradient-to-t from-orange-600 to-orange-400 rounded-t-md" style={{ height: `${h}%` }} />
-               ))}
+          {/* Feature 1: Early Warning */}
+          <motion.div
+            variants={scaleUp}
+            className="bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 shadow-2xl rounded-3xl p-10 relative overflow-hidden group hover:border-emerald-500/50 hover:bg-card/60 transition-all duration-500"
+          >
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 blur-[120px] rounded-full group-hover:bg-emerald-500/20 transition-colors duration-700 pointer-events-none" />
+            <div className="relative z-10 w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-8 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-110 transition-transform duration-500">
+              <ShieldAlert className="w-8 h-8 text-emerald-500" />
             </div>
-          </div>
-        </motion.div>
+            <h3 className="text-3xl font-black text-foreground mb-4 relative z-10 group-hover:text-emerald-500 transition-colors">Early Warning System</h3>
+            <p className="text-muted-foreground font-medium max-w-md relative z-10 leading-relaxed text-lg group-hover:text-foreground/80 transition-colors">
+              Trợ lý AI tự động phát hiện tình trạng mất cân bằng (Bus Factor) và cảnh báo cờ đỏ khi xuất hiện "Zero contribution" (đóng băng đóng góp) trong Daily Scrum.
+            </p>
+          </motion.div>
 
-        {/* Small Card 1 */}
-        <motion.div 
-          variants={fadeUp}
-          className="bg-card border border-border rounded-3xl p-8 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] transition-all flex flex-col justify-between group"
-        >
-          <div className="w-14 h-14 bg-blue-100 dark:bg-blue-950/50 rounded-2xl flex items-center justify-center mb-6 border border-blue-200 dark:border-blue-900 group-hover:scale-110 transition-transform">
-            <GitPullRequest className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-foreground mb-3">Code Metrics</h3>
-            <p className="text-muted-foreground font-medium">Theo dõi chất lượng Code, Pull Requests và dòng code thay đổi.</p>
-          </div>
+          {/* Feature 2: Traceability Graph */}
+          <motion.div
+            variants={scaleUp}
+            className="bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 shadow-2xl rounded-3xl p-10 relative overflow-hidden group hover:border-indigo-500/50 hover:bg-card/60 transition-all duration-500"
+          >
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 blur-[120px] rounded-full group-hover:bg-indigo-500/20 transition-colors duration-700 pointer-events-none" />
+            <div className="relative z-10 w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-8 border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.2)] group-hover:scale-110 transition-transform duration-500">
+              <Network className="w-8 h-8 text-indigo-500" />
+            </div>
+            <h3 className="text-3xl font-black text-foreground mb-4 relative z-10 group-hover:text-indigo-500 transition-colors">Traceability Graph (XAI)</h3>
+            <p className="text-muted-foreground font-medium max-w-md relative z-10 leading-relaxed text-lg group-hover:text-foreground/80 transition-colors">
+              Đồ thị truy vết minh bạch hóa luồng phân bổ điểm số. Mọi Story Points từ GitHub/Jira đều được truy xuất rõ ràng, loại bỏ hoàn toàn tính "hộp đen" của hệ thống.
+            </p>
+          </motion.div>
         </motion.div>
-
-        {/* Small Card 2 */}
-        <motion.div 
-          variants={fadeUp}
-          className="bg-card border border-border rounded-3xl p-8 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] transition-all flex flex-col justify-between group"
-        >
-          <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-950/50 rounded-2xl flex items-center justify-center mb-6 border border-emerald-200 dark:border-emerald-900 group-hover:scale-110 transition-transform">
-            <Users className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-foreground mb-3">Mạng Tương tác</h3>
-            <p className="text-muted-foreground font-medium">Phân tích Graph Node-Edge để tìm ra người &quot;gánh team&quot;.</p>
-          </div>
-        </motion.div>
-
-        {/* Large Card 2 */}
-        <motion.div 
-          variants={fadeUp}
-          className="md:col-span-2 bg-gradient-to-br from-indigo-500/5 to-transparent border border-border rounded-3xl p-10 relative overflow-hidden group hover:border-indigo-500/50 transition-colors"
-        >
-           <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 blur-[100px] rounded-full group-hover:bg-indigo-500/20 transition-colors duration-500" />
-           <div className="relative z-10 w-16 h-16 bg-indigo-100 dark:bg-indigo-950/50 rounded-2xl flex items-center justify-center mb-8 border border-indigo-200 dark:border-indigo-900 shadow-sm">
-            <Layout className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <h3 className="text-3xl font-bold text-foreground mb-4 relative z-10">Đồng bộ Jira Board</h3>
-          <p className="text-muted-foreground font-medium max-w-md relative z-10 leading-relaxed text-lg">
-            Khớp nối từng Task trên Jira với Commit trên GitHub để đánh giá chính xác mức độ hoàn thành công việc của từng thành viên.
-          </p>
-          <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 group-hover:translate-x-5 group-hover:translate-y-0 transition-transform duration-500 opacity-60">
-             <div className="flex gap-4 p-6 bg-card border border-border rounded-3xl shadow-2xl rotate-12">
-               <div className="w-32 space-y-3 bg-muted/50 p-3 rounded-xl border border-border"><div className="h-4 bg-foreground/20 rounded w-1/2"/><div className="h-16 bg-card rounded-md border border-border shadow-sm"/><div className="h-16 bg-card rounded-md border border-border shadow-sm"/></div>
-               <div className="w-32 space-y-3 bg-muted/50 p-3 rounded-xl border border-border"><div className="h-4 bg-foreground/20 rounded w-1/2"/><div className="h-16 bg-card rounded-md border border-border shadow-sm"/></div>
-               <div className="w-32 space-y-3 bg-muted/50 p-3 rounded-xl border border-border"><div className="h-4 bg-foreground/20 rounded w-1/2"/><div className="h-16 bg-card rounded-md border border-border shadow-sm"/></div>
-             </div>
-          </div>
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

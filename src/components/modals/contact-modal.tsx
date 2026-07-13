@@ -36,7 +36,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
             <div className="space-y-6 text-muted-foreground font-medium">
               <div className="flex items-center gap-4 group">
-                <div className="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
@@ -77,7 +77,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     <input 
                       type="text" 
                       required
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                       placeholder="Nguyễn Văn A"
                     />
                   </div>
@@ -86,7 +86,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     <input 
                       type="email" 
                       required
-                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                       placeholder="anvse@fpt.edu.vn"
                     />
                   </div>
@@ -95,7 +95,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   <label className="text-xs font-bold text-foreground uppercase tracking-wide">Nội dung</label>
                   <textarea 
                     required
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all min-h-[120px]"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all min-h-[120px]"
                     placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải..."
                   />
                 </div>

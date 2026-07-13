@@ -18,8 +18,8 @@ const recentActivities = [
     action: "đã merge PR #142",
     time: "2 phút trước",
     status: "Success",
-    bg: "bg-orange-100 dark:bg-orange-950/40",
-    icon: <GitCommit className="h-4 w-4 text-orange-600 dark:text-orange-400" />,
+    bg: "bg-indigo-100 dark:bg-indigo-950/40",
+    icon: <GitCommit className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />,
   },
   {
     user: "Hoang Long",
@@ -158,7 +158,7 @@ export function StudentDashboardView() {
                 <div className="p-2.5 rounded-xl bg-muted">
                   {stat.icon}
                 </div>
-                <div className={`px-2 py-1 rounded-full text-xs font-bold transition-colors ${stat.trendUp ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400' : 'text-amber-700 bg-amber-100 dark:bg-amber-950/40 dark:text-amber-400'}`}>
+                <div className={`px-2 py-1 rounded-full text-xs font-bold transition-colors ${stat.trendUp ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400' : 'text-violet-700 bg-violet-100 dark:bg-violet-950/40 dark:text-violet-400'}`}>
                   {stat.trend}
                 </div>
               </div>

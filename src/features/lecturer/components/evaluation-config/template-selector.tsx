@@ -105,8 +105,8 @@ export function TemplateSelector() {
 
               {/* Reason for Override */}
               {isModified && (
-                <div className="p-5 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-4 animate-in fade-in slide-in-from-top-4">
-                  <div className="flex items-start gap-2 text-amber-600 dark:text-amber-500">
+                <div className="p-5 rounded-xl border border-violet-500/30 bg-violet-500/5 space-y-4 animate-in fade-in slide-in-from-top-4">
+                  <div className="flex items-start gap-2 text-violet-600 dark:text-violet-500">
                     <Info className="w-5 h-5 shrink-0 mt-0.5" />
                     <div className="space-y-1">
                       <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
@@ -116,7 +116,7 @@ export function TemplateSelector() {
 
                   <Textarea
                     placeholder="Ví dụ: Đồ án lớp này tập trung mạnh vào AI, nên cần thêm task Train Model với hệ số 2.5..."
-                    className="min-h-[100px] border-amber-500/30 focus-visible:ring-amber-500/20"
+                    className="min-h-[100px] border-violet-500/30 focus-visible:ring-violet-500/20"
                     value={overrideReason}
                     onChange={(e) => setOverrideReason(e.target.value)}
                   />
@@ -124,7 +124,7 @@ export function TemplateSelector() {
                   <div className="flex justify-end">
                     <Button
                       disabled={!overrideReason.trim()}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl"
+                      className="bg-violet-500 hover:bg-violet-600 text-white font-bold rounded-xl"
                     >
                       Gửi yêu cầu Ghi đè Khung Hệ số
                     </Button>

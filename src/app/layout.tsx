@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "SAGA Dashboard - Continuous Assessment",
   description: "Student Activity Graph-Based Continuous Assessment System",
   icons: {
-    icon: "/logo-web.png",
+    icon: "/favicon.svg",
   },
 };
 
@@ -21,14 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning className="scroll-smooth">
       <body
         className={`${geist.className} bg-background text-foreground antialiased`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <AuthProvider>

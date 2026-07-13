@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { SagaLogo } from "@/components/ui/saga-logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
 import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command, MessageSquare, GitBranch, Compass, Check } from "lucide-react";
@@ -80,7 +80,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleMarkAsRead = (id: string) => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.map(n => n.id === id ? { ...n, read: true } : n)
     );
   };
@@ -108,15 +108,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           )}
           <Link href="/" className="hidden lg:flex items-center group relative">
             <div className="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <Image
-              src="/logo-nav.png"
-              alt="SAGA Logo"
-              width={240}
-              height={72}
-              priority
-              className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105 relative z-10"
-              style={{ width: "auto" }}
-            />
+            <SagaLogo className="transition-transform duration-300 group-hover:scale-105 relative z-10" />
           </Link>
           <div className="h-8 w-px bg-border/40 hidden lg:block mx-2" />
         </div>
@@ -156,7 +148,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                 )}
               </Button>
             </DropdownMenuTrigger>
-            
+
             <DropdownMenuContent align="end" className="w-[360px] rounded-[2rem] p-3 border-border/60 bg-card/95 backdrop-blur-xl shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
               <div className="flex items-center justify-between px-3 py-2 border-b border-border/40 mb-2">
                 <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-1.5">
@@ -168,9 +160,9 @@ export function Header({ onMenuClick }: HeaderProps) {
                     </span>
                   )}
                 </span>
-                
+
                 {unreadCount > 0 && (
-                  <button 
+                  <button
                     onClick={handleMarkAllRead}
                     className="text-[10px] font-black text-primary hover:underline cursor-pointer"
                   >
@@ -188,12 +180,12 @@ export function Header({ onMenuClick }: HeaderProps) {
                   notifications.map((notif) => {
                     let iconBg = "bg-purple-500/10 text-purple-500";
                     let icon = <GitBranch size={13} />;
-                    
+
                     if (notif.type === "jira") {
                       iconBg = "bg-sky-500/10 text-sky-500";
                       icon = <Compass size={13} />;
                     } else if (notif.type === "feedback") {
-                      iconBg = "bg-amber-500/10 text-amber-500";
+                      iconBg = "bg-violet-500/10 text-violet-500";
                       icon = <MessageSquare size={13} />;
                     } else if (notif.type === "absence") {
                       iconBg = "bg-emerald-500/10 text-emerald-500";
@@ -201,17 +193,16 @@ export function Header({ onMenuClick }: HeaderProps) {
                     }
 
                     return (
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         key={notif.id}
                         onClick={() => handleMarkAsRead(notif.id)}
-                        className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${
-                          notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
-                        }`}
+                        className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
+                          }`}
                       >
                         <div className={`p-2.5 rounded-xl shrink-0 ${iconBg}`}>
                           {icon}
                         </div>
-                        
+
                         <div className="flex-1 space-y-0.5 text-left min-w-0">
                           <div className="flex justify-between items-start gap-2">
                             <h4 className={`text-xs truncate ${notif.read ? "font-bold text-foreground/80" : "font-black text-foreground"}`}>
@@ -223,7 +214,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                             {notif.description}
                           </p>
                         </div>
-                        
+
                         {!notif.read && (
                           <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 self-center" />
                         )}
@@ -234,8 +225,8 @@ export function Header({ onMenuClick }: HeaderProps) {
               </div>
 
               <DropdownMenuSeparator className="bg-border/40 my-2" />
-              
-              <DropdownMenuItem 
+
+              <DropdownMenuItem
                 onClick={() => router.push(user?.role === "student" ? "/student/audit-logs" : "/lecturer")}
                 className="justify-center text-center text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
               >
@@ -253,7 +244,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
             <div className="relative h-5 w-5 flex items-center justify-center">
-              <Sun className="absolute h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
+              <Sun className="absolute h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-violet-500" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
             </div>
           </Button>

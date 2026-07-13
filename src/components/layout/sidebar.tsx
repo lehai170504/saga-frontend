@@ -355,7 +355,7 @@ function NavItem({
     >
       {/* Active Indicator Pill */}
       {active && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-[60%] bg-primary rounded-r-full shadow-[0_0_8px_rgba(249,115,22,0.6)] dark:shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-[60%] bg-primary rounded-r-full shadow-[0_0_8px_rgba(99,102,241,0.6)] dark:shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
       )}
 
       {/* Background Hover Sweep Effect */}

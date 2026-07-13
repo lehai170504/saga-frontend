@@ -81,7 +81,7 @@ export default function SystemLogsPage() {
         <MetricCard
           title="Đồng bộ FAP gần nhất"
           value={isLoading ? "-" : "4h trước"}
-          icon={<Clock className="w-4 h-4 text-amber-500" />}
+          icon={<Clock className="w-4 h-4 text-violet-500" />}
         />
       </div>
 

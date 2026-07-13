@@ -1,43 +1,19 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { AlertTriangle, TrendingUp, Sparkles, AlertCircle, CheckCircle2, BarChart as BarChartIcon } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ClassNetworkGraph } from "@/features/lecturer/components/class-network-graph";
-
-const slicingData = [
-  { name: "Nguyễn Văn A", value: 35, color: "#6366f1" }, // indigo-500
-  { name: "Trần Thị B", value: 25, color: "#f59e0b" }, // amber-500
-  { name: "Lê Văn C", value: 40, color: "#10b981" }, // emerald-500
-];
-
-const radarData = [
-  { skill: "Code (x2.0)", A: 90, B: 40, C: 85, fullMark: 100 },
-  { skill: "Design (x1.5)", A: 30, B: 90, C: 20, fullMark: 100 },
-  { skill: "Docs (x1.0)", A: 60, B: 50, C: 95, fullMark: 100 },
-  { skill: "Thảo luận & Review", A: 85, B: 40, C: 50, fullMark: 100 },
-  { skill: "Đánh giá chéo", A: 70, B: 85, C: 60, fullMark: 100 },
-];
-
-const sprintBreakdownData = [
-  { name: "Sprint 1", "Nguyễn Văn A": 15, "Trần Thị B": 10, "Lê Văn C": 20 },
-  { name: "Sprint 2", "Nguyễn Văn A": 20, "Trần Thị B": 15, "Lê Văn C": 20 },
-];
-
-const aiAlerts = [
-  { id: 1, type: "warning", message: "Trần Thị B không có commit nào trên GitHub trong 5 ngày qua (Ghosting). Tự động kích hoạt phạt Zero Contribution.", student: "Trần Thị B", actionReq: "Phạt Slices", date: "2 ngày trước" },
-  { id: 2, type: "danger", message: "Nguyễn Văn A chiếm tới 65% tổng Slices dự án. Nguy cơ Bus Factor cao (Gánh team). Cần điều phối lại Task.", student: "Nguyễn Văn A", actionReq: "Điều phối Task", date: "1 ngày trước" },
-  { id: 3, type: "warning", message: "Mật độ Bug do Lê Văn C tạo ra ở Sprint 2 lên tới 35% (Vượt ngưỡng 30% cấu hình - Nợ kỹ thuật).", student: "Lê Văn C", actionReq: "Trừ Slices Code", date: "12 giờ trước" }
-];
+import { SlicingPieChart } from "./charts/slicing-pie-chart";
+import { RetroSkillRadar } from "./charts/retro-skill-radar";
+import { SprintVelocityBar } from "./charts/sprint-velocity-bar";
+import { EarlyWarningAlerts } from "./charts/early-warning-alerts";
 
 export function TeamEvaluation() {
 
   const handleApprove = () => {
-    toast.success("Đã phê duyệt kết quả Đóng góp cho nhóm này!");
+    toast.success("Đã phê duyệt kết quả Đóng góp (Slices) cho Sprint này!");
   };
 
   return (
@@ -45,183 +21,25 @@ export function TeamEvaluation() {
       {/* Network Graph for Slicing Pie Audit */}
       <ClassNetworkGraph />
 
+      {/* Layer 2 & 3: Retro Evaluation & Final Slices */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        {/* Pie Chart: Cổ phần công sức */}
-        <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
-          <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="text-indigo-500" size={20} />
-              Cổ phần Đóng góp
-            </CardTitle>
-            <CardDescription className="font-medium mt-1">
-              Phần trăm đóng góp đã nhân hệ số Multipliers & Peer Review
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-[300px] w-full relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={slicingData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={80}
-                    outerRadius={110}
-                    paddingAngle={5}
-                    dataKey="value"
-                    stroke="none"
-                    cornerRadius={8}
-                  >
-                    {slicingData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} className="drop-shadow-sm hover:opacity-80 transition-opacity outline-none" />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
-                    formatter={(value: unknown) => [`${value}% Slices`, 'Đóng góp']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col">
-                <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Tổng Slices</span>
-                <span className="text-4xl font-black text-foreground">100%</span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-4 mt-2">
-              {slicingData.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 bg-background border border-border/50 px-3 py-1.5 rounded-xl">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-sm font-bold">{item.name}</span>
-                  <span className="text-sm font-black" style={{ color: item.color }}>{item.value}%</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Radar Chart: Phân bổ kỹ năng */}
-        <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
-          <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <TrendingUp className="text-emerald-500" size={20} />
-              Ma trận Kỹ năng (Radar Chart)
-            </CardTitle>
-            <CardDescription className="font-medium mt-1">
-              Điểm mạnh và khối lượng công việc theo từng mảng
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                  <PolarGrid stroke="var(--border)" />
-                  <PolarAngleAxis dataKey="skill" tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                  <Radar name="Nguyễn Văn A" dataKey="A" stroke="#6366f1" fill="#6366f1" fillOpacity={0.3} />
-                  <Radar name="Trần Thị B" dataKey="B" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
-                  <Radar name="Lê Văn C" dataKey="C" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
-                  <Tooltip
-                    contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
-                  />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }} />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <SlicingPieChart />
+        <RetroSkillRadar />
       </div>
 
-      {/* Bar Chart: Phân bổ theo Sprint */}
-      <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
-        <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <BarChartIcon className="text-blue-500" size={20} />
-            Tiến độ Đóng góp theo Sprints
-          </CardTitle>
-          <CardDescription className="font-medium mt-1">
-            Chi tiết Slices tích lũy qua từng Sprint trong Phase hiện tại
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={sprintBreakdownData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="name" tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
-                  cursor={{ fill: 'var(--muted)' }}
-                />
-                <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }} />
-                <Bar dataKey="Nguyễn Văn A" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Trần Thị B" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Lê Văn C" fill="#10b981" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Layer 1 & 2: Sprint Velocity Progress */}
+      <SprintVelocityBar />
 
-      {/* AI Warnings & Recommendations */}
-      <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden">
-        <CardHeader className="border-b border-border/50 bg-destructive/5 pb-4">
-          <CardTitle className="text-xl font-bold flex items-center gap-2 text-destructive">
-            <AlertTriangle size={20} />
-            Radar Cảnh báo từ AI
-          </CardTitle>
-          <CardDescription className="font-medium mt-1 text-destructive/80">
-            Dữ liệu được đối chiếu tự động giữa Jira và GitHub để phát hiện điểm bất thường
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6 space-y-4">
-          {aiAlerts.map((alert) => (
-            <div key={alert.id} className="flex gap-4 p-4 rounded-2xl border border-destructive/20 bg-destructive/5 items-start">
-              <div className="p-2 bg-destructive/10 rounded-full text-destructive shrink-0 mt-1">
-                <AlertCircle size={20} />
-              </div>
-              <div className="flex-1 space-y-2">
-                <div className="flex justify-between items-start">
-                  <h4 className="font-bold text-foreground text-sm">{alert.message}</h4>
-                  <span className="text-xs font-bold text-muted-foreground whitespace-nowrap ml-4">{alert.date}</span>
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/50 text-xs font-bold">
-                    <Avatar className="w-4 h-4">
-                      <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{alert.student.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    {alert.student}
-                  </div>
-                  <Button variant="outline" size="sm" className="h-7 text-xs font-bold border-destructive/30 text-destructive hover:bg-destructive hover:text-white">
-                    Thực thi: {alert.actionReq}
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-7 text-xs font-bold text-muted-foreground hover:text-foreground">
-                    Bỏ qua (Ghi đè)
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {aiAlerts.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-8 text-emerald-600">
-              <CheckCircle2 size={40} className="mb-2 opacity-50" />
-              <p className="font-bold">Nhóm hoạt động hoàn hảo, không phát hiện bất thường!</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* AI Risk Management System */}
+      <EarlyWarningAlerts />
 
       {/* Final Action */}
       <div className="flex justify-end pt-4">
         <Button onClick={handleApprove} className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
           <CheckCircle2 className="w-5 h-5 mr-2" />
-          Phê duyệt Kết quả Đánh giá Phase này
+          Phê duyệt Kết quả Đánh giá Sprint này
         </Button>
       </div>
-
     </div>
   );
 }

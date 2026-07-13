@@ -422,8 +422,8 @@ export function StudentProjectCreate() {
               </Card>
 
               {/* Informative tips */}
-              <Card className="border border-orange-100 dark:border-orange-950/40 bg-orange-50/20 dark:bg-orange-950/5 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
-                <Link2 className="text-orange-500 shrink-0" size={16} />
+              <Card className="border border-indigo-100 dark:border-indigo-950/40 bg-indigo-50/20 dark:bg-indigo-950/5 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
+                <Link2 className="text-indigo-500 shrink-0" size={16} />
                 <div className="space-y-1">
                   <h4 className="font-extrabold text-foreground text-[11px] uppercase tracking-wide">Lưu ý kết nối</h4>
                   <p className="text-muted-foreground text-[10px] font-medium leading-relaxed">

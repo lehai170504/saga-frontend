@@ -132,8 +132,8 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
       </TableCell>
       <TableCell>
         {student.leader?.toLowerCase() === 'x' ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shadow-sm">
-            <Crown size={12} className="text-amber-600 dark:text-amber-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 border border-violet-200 dark:border-violet-800 shadow-sm">
+            <Crown size={12} className="text-violet-600 dark:text-violet-400" />
             Leader
           </span>
         ) : (

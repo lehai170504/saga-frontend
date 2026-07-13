@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { SagaLogo } from "@/components/ui/saga-logo";
 import { useState } from "react";
 import { LegalModal } from "../modals/legal-modal";
 import { ContactModal } from "../modals/contact-modal";
@@ -34,14 +34,7 @@ export function SiteFooter() {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <Link href="/">
-              <Image
-                src="/logo-nav.png"
-                alt="SAGA Logo"
-                width={160}
-                height={48}
-                className="w-auto h-12 object-contain"
-                style={{ width: "auto" }}
-              />
+              <SagaLogo className="grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
             </Link>
           </div>
 
@@ -64,17 +57,17 @@ export function SiteFooter() {
       </footer>
 
       {legalModalOpen && (
-        <LegalModal 
-          isOpen={legalModalOpen} 
-          onClose={() => setLegalModalOpen(false)} 
-          defaultTab={legalTab} 
+        <LegalModal
+          isOpen={legalModalOpen}
+          onClose={() => setLegalModalOpen(false)}
+          defaultTab={legalTab}
         />
       )}
-      
+
       {contactModalOpen && (
-        <ContactModal 
-          isOpen={contactModalOpen} 
-          onClose={() => setContactModalOpen(false)} 
+        <ContactModal
+          isOpen={contactModalOpen}
+          onClose={() => setContactModalOpen(false)}
         />
       )}
     </>

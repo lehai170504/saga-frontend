@@ -14,18 +14,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
   const { classId, projectId } = React.use(params);
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Dữ liệu giả lập cho chi tiết nhóm (Mock data):
+  // Dữ liệu giả lập cho chi tiết nhóm (Mock data theo SAGA Agile):
   const projectDetail = {
     id: projectId,
     name: `Nhóm ${projectId}`,
     project: "Hệ thống quản lý thư viện",
-    description: "Xây dựng hệ thống quản lý thư viện sử dụng Next.js, Node.js và PostgreSQL. Tích hợp thanh toán online và mượn trả sách tự động.",
+    description: "Xây dựng hệ thống quản lý thư viện sử dụng Next.js, Node.js và PostgreSQL. Đánh giá dựa trên mô hình Slicing Pie Scrum & Early Warning AI.",
     members: [
-      { name: "Nguyễn Văn A", role: "Leader", tasks: 12, completed: 10, contribution: "35%" },
-      { name: "Trần Thị B", role: "Member", tasks: 8, completed: 8, contribution: "25%" },
-      { name: "Lê Văn C", role: "Member", tasks: 15, completed: 10, contribution: "40%" },
+      { name: "Nguyễn Văn A", role: "Core Member", totalSp: 45, completedSp: 38, slices: "42.75", warning: "Bus Factor" },
+      { name: "Trần Thị B", role: "Thành viên", totalSp: 25, completedSp: 25, slices: "19.0", warning: null },
+      { name: "Lê Văn C", role: "Thành viên", totalSp: 15, completedSp: 5, slices: "1.0", warning: "Ghosting (PIP)" },
     ],
-    status: "healthy",
+    status: "warning",
     progress: 75,
   };
 
@@ -39,12 +39,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <PageHeader
             title={`${projectDetail.name}: ${projectDetail.project}`}
-            description="Chi tiết dự án, tiến độ công việc và đánh giá đóng góp của từng thành viên."
+            description="Chi tiết dự án, tiến độ Agile và đánh giá cổ phần Slices của từng thành viên."
           />
           <div className="flex gap-3">
             <Button variant="outline" className="gap-2 rounded-xl border-border/50 hover:bg-slate-50 dark:hover:bg-accent/50 shadow-sm">
               <FileText size={16} />
-              Xem tài liệu
+              Báo cáo Sprint
             </Button>
             <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90">
               <GitMerge size={16} />
@@ -78,16 +78,16 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                   </p>
                   <div className="pt-4 border-t border-border/50">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Tiến độ chung</span>
+                      <span className="text-sm font-medium">Tiến độ chung (Burn-down)</span>
                       <span className="text-sm font-black text-primary">{projectDetail.progress}%</span>
                     </div>
                     <div className="h-2.5 w-full bg-secondary/50 rounded-full overflow-hidden">
                       <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{ width: `${projectDetail.progress}%` }} />
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 rounded-2xl mt-4 border border-emerald-100 dark:border-emerald-900/50">
-                    <CheckCircle2 size={20} className="shrink-0" />
-                    <span className="text-sm font-bold">Dự án đang tiến triển tốt</span>
+                  <div className="flex items-center gap-3 p-3 bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 rounded-2xl mt-4 border border-amber-200 dark:border-amber-900/50">
+                    <Activity size={20} className="shrink-0" />
+                    <span className="text-sm font-bold">Phát hiện rủi ro (Xem tab AI)</span>
                   </div>
                 </CardContent>
               </Card>
@@ -97,7 +97,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
             <div className="lg:col-span-2">
               <Card className="rounded-[2rem] shadow-sm border-border h-full bg-card/50 backdrop-blur-sm">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-bold">Thành viên nhóm</CardTitle>
+                  <CardTitle className="text-lg font-bold">Thành viên & Vận tốc Scrum</CardTitle>
                   <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                     <Users size={18} />
                   </div>
@@ -111,10 +111,17 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                             <AvatarFallback className="font-bold bg-primary/10 text-primary">{member.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-bold text-foreground text-base">{member.name}</div>
+                            <div className="flex items-center gap-2">
+                              <div className="font-bold text-foreground text-base">{member.name}</div>
+                              {member.warning && (
+                                <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${member.warning.includes('Ghosting') ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'}`}>
+                                  {member.warning}
+                                </span>
+                              )}
+                            </div>
                             <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
-                              {member.role === 'Leader' ? (
-                                <span className="text-amber-600 dark:text-amber-400">Trưởng nhóm</span>
+                              {member.role === 'Core Member' ? (
+                                <span className="text-violet-600 dark:text-violet-400">Core Member</span>
                               ) : (
                                 <span>Thành viên</span>
                               )}
@@ -123,13 +130,13 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                         </div>
                         <div className="flex items-center gap-6 sm:gap-8 sm:text-right bg-accent/30 p-3 rounded-xl sm:bg-transparent sm:p-0">
                           <div>
-                            <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Tasks</div>
-                            <div className="text-sm font-bold text-foreground">{member.completed}/{member.tasks}</div>
+                            <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Story Points</div>
+                            <div className="text-sm font-bold text-foreground">{member.completedSp}/{member.totalSp} SP</div>
                           </div>
                           <div className="w-[1px] h-8 bg-border/50 sm:hidden"></div>
                           <div>
-                            <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Slices Tạm tính</div>
-                            <div className="text-sm font-black text-primary">{member.contribution}</div>
+                            <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Cổ phần Slices</div>
+                            <div className="text-sm font-black text-primary">{member.slices}</div>
                           </div>
                         </div>
                       </div>

@@ -6,7 +6,7 @@ import { AlertTriangle } from "lucide-react";
 
 const data = [
   { name: "Task Ảo (MSR)", value: 342, color: "#ef4444" }, // red-500
-  { name: "Cày Deadline (Process)", value: 520, color: "#f59e0b" }, // amber-500
+  { name: "Cày Deadline (Process)", value: 520, color: "#f59e0b" }, // violet-500
   { name: "Cô Lập (SNA)", value: 145, color: "#8b5cf6" }, // purple-500
 ];
 
@@ -15,7 +15,7 @@ export function SystemAnomalyChart() {
     <Card className="rounded-[2rem] shadow-sm border-border bg-card/40 backdrop-blur-xl">
       <CardHeader>
         <CardTitle className="text-lg font-bold flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-amber-500" />
+          <AlertTriangle className="h-5 w-5 text-violet-500" />
           Tín hiệu Cảnh báo (Toàn hệ thống)
         </CardTitle>
       </CardHeader>

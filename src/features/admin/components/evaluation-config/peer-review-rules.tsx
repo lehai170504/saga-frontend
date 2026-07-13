@@ -23,15 +23,15 @@ export function PeerReviewRules() {
             <div className="xl:col-span-2 space-y-8">
               {/* VOTE RULES */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20 text-sm font-medium mb-4">
+                <div className="flex items-center gap-2 text-violet-600 dark:text-violet-500 bg-violet-500/10 p-3 rounded-lg border border-violet-500/20 text-sm font-medium mb-4">
                   <Lock className="w-4 h-4" /> Hệ số điều chỉnh đã được khóa cứng theo Quy chế Đào tạo.
                 </div>
                 {[
                   { star: 1, label: "Rất Tệ (1 Sao)", desc: "Không làm gì, thái độ thiếu hợp tác.", defaultVal: 0.5, color: "text-destructive" },
-                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-orange-500" },
+                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-indigo-500" },
                   { star: 3, label: "Đạt (3 Sao)", desc: "Mốc chuẩn (Baseline): Hoàn thành mức cơ bản, đúng hạn.", defaultVal: 1.0, color: "text-emerald-500", isBaseline: true },
                   { star: 4, label: "Khá Tốt (4 Sao)", desc: "Hoàn thành tốt nhiệm vụ được giao.", defaultVal: 1.05, color: "text-blue-500" },
-                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-amber-500" },
+                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-violet-500" },
                 ].map((item) => (
                   <div
                     key={item.star}
@@ -95,12 +95,12 @@ export function PeerReviewRules() {
                     <p className="font-bold text-foreground">Tại sao lại là những con số này?</p>
                     <div className="space-y-2">
                       <p><strong className="text-destructive">1 Sao (0.50):</strong> Loss Aversion & PIP. Trừng phạt tâm lý (sợ mất mát), trừ 50% xem như đòn cảnh cáo cấp cao nhất để triệt tiêu ý định free-rider.</p>
-                      <p><strong className="text-orange-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá xuống Trung bình.</p>
+                      <p><strong className="text-indigo-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá xuống Trung bình.</p>
                       <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl my-3">
                         <p className="text-emerald-700 dark:text-emerald-400 font-semibold"><strong className="text-emerald-600 dark:text-emerald-400">3 Sao (1.0) - MỐC CHUẨN:</strong> Hoàn thành 100% khối lượng kỳ vọng thì nhận 100% điểm. (Baseline).</p>
                       </div>
                       <p><strong className="text-blue-500">4 Sao (1.05):</strong> Bonus 5% - Phần thưởng khích lệ an toàn.</p>
-                      <p><strong className="text-amber-500">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống "chính trị chốn công sở".</p>
+                      <p><strong className="text-violet-500">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống "chính trị chốn công sở".</p>
                     </div>
                   </div>
 
@@ -118,7 +118,7 @@ export function PeerReviewRules() {
                       </div>
                       <div className="space-y-1">
                         <span className="text-xs text-muted-foreground block">2. Chốt sổ Phase (Đánh giá)</span>
-                        <p className="text-orange-600 dark:text-orange-400 font-bold text-[11px] leading-relaxed">
+                        <p className="text-indigo-600 dark:text-indigo-400 font-bold text-[11px] leading-relaxed">
                           Slices_Phase = ∑(Slices_Sprint) × Peer_Review
                         </p>
                       </div>

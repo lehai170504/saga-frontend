@@ -12,10 +12,10 @@ import { Skeleton } from "@/components/shared/Skeleton";
 const nodes = [
   { id: "1", name: "Minh Nguyễn", size: 60, x: 50, y: 35, color: "bg-indigo-500", interactions: 45, initials: "M" },
   { id: "2", name: "Linh Trần", size: 45, x: 25, y: 60, color: "bg-teal-500", interactions: 28, initials: "L" },
-  { id: "3", name: "An Lê", size: 75, x: 45, y: 70, color: "bg-orange-500", interactions: 62, initials: "A" },
+  { id: "3", name: "An Lê", size: 75, x: 45, y: 70, color: "bg-indigo-500", interactions: 62, initials: "A" },
   { id: "4", name: "Huy Hoàng", size: 50, x: 75, y: 55, color: "bg-pink-500", interactions: 35, initials: "H" },
   { id: "5", name: "Thúc Nguyễn", size: 40, x: 65, y: 85, color: "bg-indigo-500", interactions: 15, initials: "T" },
-  { id: "6", name: "Tuấn Lê", size: 55, x: 20, y: 30, color: "bg-amber-500", interactions: 40, initials: "T" },
+  { id: "6", name: "Tuấn Lê", size: 55, x: 20, y: 30, color: "bg-violet-500", interactions: 40, initials: "T" },
   { id: "7", name: "Phương Ngô", size: 35, x: 85, y: 25, color: "bg-teal-500", interactions: 12, initials: "P" },
 ];
 
@@ -129,7 +129,7 @@ export function StudentInteractionGraph() {
                     <span>PR Reviews</span>
                   </div>
                   <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/30 cursor-pointer transition-colors">
-                    <div className="w-4.5 h-1 border-b-2 border-dotted border-amber-500" />
+                    <div className="w-4.5 h-1 border-b-2 border-dotted border-violet-500" />
                     <span>Comments</span>
                   </div>
                   <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/30 cursor-pointer transition-colors">
@@ -162,7 +162,7 @@ export function StudentInteractionGraph() {
                     let strokeDasharray = "";
                     let stroke = "#6366f1"; // indigo
                     if (edge.type === "review") { stroke = "#14b8a6"; strokeDasharray = "4 4"; } // teal
-                    if (edge.type === "comment") { stroke = "#f59e0b"; strokeDasharray = "2 4"; } // amber
+                    if (edge.type === "comment") { stroke = "#f59e0b"; strokeDasharray = "2 4"; } // violet
                     if (edge.type === "issue") { stroke = "#f43f5e"; } // rose
 
                     return (

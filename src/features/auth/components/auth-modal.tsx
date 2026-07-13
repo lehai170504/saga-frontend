@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { SagaLogo } from "@/components/ui/saga-logo";
 import {
   Dialog,
   DialogContent,
@@ -34,16 +34,10 @@ export function AuthModal() {
       <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden rounded-2xl">
         <div className="p-6 pb-2">
           <DialogHeader className="flex flex-col items-center">
-            <Image
-              src="/logo-icon.png"
-              alt="SAGA Logo"
-              width={300}
-              height={48}
-              className="w-auto h-10 sm:h-12 object-contain drop-shadow-sm mb-2"
-              style={{ width: "auto" }}
-              priority
-            />
-            <DialogTitle className="text-2xl font-extrabold text-center bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+            <div className="mb-4">
+              <SagaLogo showText={false} className="scale-125" />
+            </div>
+            <DialogTitle className="text-2xl font-extrabold text-center bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
               SAGA Dashboard
             </DialogTitle>
             <DialogDescription className="text-center text-muted-foreground font-medium">

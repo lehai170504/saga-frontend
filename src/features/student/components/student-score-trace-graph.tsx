@@ -88,8 +88,8 @@ const TraceNode = ({ data }: any) => {
     iconClass = "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
   } else if (data.nodeType === 'missing') {
     Icon = ShieldAlert;
-    colorClass = "border-amber-200 dark:border-amber-900 bg-white dark:bg-zinc-900";
-    iconClass = "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400";
+    colorClass = "border-violet-200 dark:border-violet-900 bg-white dark:bg-zinc-900";
+    iconClass = "bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400";
   } else if (data.nodeType === 'penalty') {
     Icon = AlertTriangle;
     colorClass = "border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-900/10";
@@ -108,8 +108,8 @@ const TraceNode = ({ data }: any) => {
     iconClass = "bg-fuchsia-50 dark:bg-fuchsia-900/30 text-fuchsia-600 dark:text-fuchsia-400";
   } else if (data.nodeType === 'peerReview') {
     Icon = UserCheck;
-    colorClass = "border-orange-200 dark:border-orange-900 bg-orange-50/50 dark:bg-orange-900/10";
-    iconClass = "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400";
+    colorClass = "border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10";
+    iconClass = "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400";
   }
 
   return (

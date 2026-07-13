@@ -55,10 +55,10 @@ const initialNodes: Node[] = [
 
   // Level 2: Sprints & Early Warning
   { id: 'app-sprint', position: { x: 250, y: 350 }, data: { label: 'Slices Sprint', subtitle: '(SP x Hệ số) + Bonus', icon: Scale, colorClass: 'border-fuchsia-200 dark:border-fuchsia-900 bg-white dark:bg-zinc-900', iconClass: 'bg-fuchsia-50 text-fuchsia-600' }, type: 'ruleNode' },
-  { id: 'app-warn', position: { x: 700, y: 350 }, data: { label: 'Cảnh báo sớm AI', subtitle: 'Ghost 5 ngày, Bus Factor >60%', icon: AlertTriangle, colorClass: 'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-900/10', iconClass: 'bg-amber-100 text-amber-600' }, type: 'ruleNode' },
+  { id: 'app-warn', position: { x: 700, y: 350 }, data: { label: 'Cảnh báo sớm AI', subtitle: 'Ghost 5 ngày, Bus Factor >60%', icon: AlertTriangle, colorClass: 'border-violet-200 dark:border-violet-900 bg-violet-50 dark:bg-violet-900/10', iconClass: 'bg-violet-100 text-violet-600' }, type: 'ruleNode' },
 
   // Level 3: Phase & Peer Review
-  { id: 'rule-pr', position: { x: 100, y: 500 }, data: { label: 'Đánh giá chéo Mù', subtitle: 'x1.1 (5 sao) / x0.5 (1 sao PIP)', icon: Users, colorClass: 'border-orange-200 dark:border-orange-900 bg-white dark:bg-zinc-900', iconClass: 'bg-orange-50 text-orange-600' }, type: 'ruleNode' },
+  { id: 'rule-pr', position: { x: 100, y: 500 }, data: { label: 'Đánh giá chéo Mù', subtitle: 'x1.1 (5 sao) / x0.5 (1 sao PIP)', icon: Users, colorClass: 'border-indigo-200 dark:border-indigo-900 bg-white dark:bg-zinc-900', iconClass: 'bg-indigo-50 text-indigo-600' }, type: 'ruleNode' },
   { id: 'app-phase', position: { x: 400, y: 500 }, data: { label: 'Slices Phase', subtitle: 'Sprint Slices x Peer Review', icon: Target, colorClass: 'border-fuchsia-200 dark:border-fuchsia-900 bg-white dark:bg-zinc-900', iconClass: 'bg-fuchsia-50 text-fuchsia-600' }, type: 'ruleNode' },
   { id: 'app-penalty', position: { x: 700, y: 500 }, data: { label: 'Phạt Slices', subtitle: 'Ghosting / Nợ kỹ thuật >30%', icon: AlertTriangle, colorClass: 'border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10', iconClass: 'bg-red-100 text-red-600' }, type: 'ruleNode' },
 

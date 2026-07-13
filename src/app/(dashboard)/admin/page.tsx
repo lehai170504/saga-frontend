@@ -76,8 +76,8 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-bold text-muted-foreground">
                   Sinh viên
                 </CardTitle>
-                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
-                  <GraduationCap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
+                  <GraduationCap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -243,12 +243,12 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-violet-100 text-violet-600 dark:bg-violet-900/40 dark:text-violet-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Activity className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-amber-600 dark:text-amber-500">Process Mining</span> ghi nhận hiện tượng <span className="font-bold">Cày Deadline (Burst)</span> tăng 25% ở nhóm các lớp sáng thứ 2.
+                      <span className="font-bold text-violet-600 dark:text-violet-500">Process Mining</span> ghi nhận hiện tượng <span className="font-bold">Cày Deadline (Burst)</span> tăng 25% ở nhóm các lớp sáng thứ 2.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">15 phút trước</p>
                   </div>
