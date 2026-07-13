@@ -99,7 +99,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
     if (!user) return [];
 
     const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
-    const classId = classIdMatch && classIdMatch[1] !== 'interaction-graph' && classIdMatch[1] !== 'heatmap' ? classIdMatch[1] : null;
+    const classId = classIdMatch ? classIdMatch[1] : null;
 
     switch (user.role) {
       case "admin":
@@ -149,13 +149,6 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               items: [
                 { href: `/lecturer/${classId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
                 { href: `/lecturer/${classId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
-              ]
-            },
-            {
-              title: "AI & Phân tích Đồ thị",
-              items: [
-                { href: `/lecturer/${classId}/interaction-graph`, icon: <Share2 size={18} />, label: "Mạng tương tác" },
-                { href: `/lecturer/${classId}/heatmap`, icon: <Activity size={18} />, label: "Biểu đồ nhiệt" },
               ]
             }
           ];
@@ -227,7 +220,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
   const navGroups = getNavGroups();
 
   const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
-  const classId = classIdMatch && classIdMatch[1] !== 'interaction-graph' && classIdMatch[1] !== 'heatmap' ? classIdMatch[1] : null;
+  const classId = classIdMatch ? classIdMatch[1] : null;
 
   return (
     <TooltipProvider delayDuration={0}>

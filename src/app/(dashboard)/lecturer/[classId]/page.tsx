@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Users, AlertTriangle, ShieldCheck, Activity, Settings2, ShieldAlert, Zap, Layers } from "lucide-react";
+import { Users, AlertTriangle, ShieldCheck, Activity, Settings2, ShieldAlert, Zap, Layers, Trophy, HeartPulse, Siren, ArrowUpRight, ArrowDownRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,6 +43,25 @@ const statsData = [
   { title: "Slices Phát sinh", value: "1,240", icon: Zap, color: "text-indigo-500", bg: "bg-indigo-500/10", border: "border-indigo-500/20", trend: "+18%", trendUp: true },
   { title: "Cảnh báo Đỏ (Red Flags)", value: "12", icon: ShieldAlert, color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20", trend: "-2", trendUp: true },
   { title: "Cảnh báo Vàng (Cần theo dõi)", value: "27", icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20", trend: "+5", trendUp: false },
+];
+
+const urgentAlerts = [
+  { groupId: "P03", name: "Nhóm 3", issue: "Nguy cơ trễ Sprint 4 (Tiến độ 30%)", severity: "high" },
+  { groupId: "P05", name: "Nhóm 5", issue: "Ghosting: Lê Văn C (0 commits)", severity: "high" },
+  { groupId: "P08", name: "Nhóm 8", issue: "Nợ kỹ thuật cao (Bug rate > 40%)", severity: "medium" },
+];
+
+const leaderboardData = [
+  { groupId: "P01", name: "Nhóm 1", velocity: 156, trend: "+12%", trendUp: true },
+  { groupId: "P07", name: "Nhóm 7", velocity: 142, trend: "+5%", trendUp: true },
+  { groupId: "P02", name: "Nhóm 2", velocity: 138, trend: "-2%", trendUp: false },
+  { groupId: "P04", name: "Nhóm 4", velocity: 120, trend: "+1%", trendUp: true },
+];
+
+const classHealthData = [
+  { name: "On-track (Khỏe mạnh)", value: 8, color: "#10b981" }, // emerald
+  { name: "At-risk (Có rủi ro)", value: 3, color: "#f59e0b" }, // amber
+  { name: "Critical (Báo động)", value: 1, color: "#ef4444" }, // red
 ];
 
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { color: string; name: string; value: number }[]; label?: string }) => {
@@ -211,6 +230,136 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                     </li>
                   ))}
                 </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Management Insights Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Urgent Alerts */}
+          <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden flex flex-col">
+            <CardHeader className="border-b border-border/50 bg-red-500/5 pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-red-500">
+                <Siren size={18} />
+                Cảnh báo Khẩn cấp
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 flex-1">
+              <div className="space-y-3">
+                {urgentAlerts.map((alert, idx) => (
+                  <div key={idx} className={`p-3 rounded-xl border ${alert.severity === 'high' ? 'bg-red-500/10 border-red-500/20' : 'bg-amber-500/10 border-amber-500/20'} flex items-start gap-3 transition-all hover:scale-[1.02]`}>
+                    <div className={`p-2 rounded-lg mt-0.5 ${alert.severity === 'high' ? 'bg-red-500/20 text-red-500' : 'bg-amber-500/20 text-amber-500'}`}>
+                      <AlertTriangle size={14} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className={`font-black text-xs ${alert.severity === 'high' ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`}>{alert.name}</span>
+                        <Link href={`/lecturer/${classId}/projects/${alert.groupId}`}>
+                          <Button variant="ghost" size="icon" className="h-5 w-5 hover:bg-background/50">
+                            <ArrowRight size={12} />
+                          </Button>
+                        </Link>
+                      </div>
+                      <p className="text-xs font-semibold text-muted-foreground">{alert.issue}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Leaderboard */}
+          <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden flex flex-col">
+            <CardHeader className="border-b border-border/50 bg-amber-500/5 pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-amber-500">
+                <Trophy size={18} />
+                Bảng xếp hạng Velocity
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 flex-1">
+              <div className="space-y-3">
+                {leaderboardData.map((team, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/50 hover:border-primary/30 transition-all hover:scale-[1.02]">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shadow-sm ${idx === 0 ? 'bg-amber-400 text-amber-950' : idx === 1 ? 'bg-slate-300 text-slate-800' : idx === 2 ? 'bg-orange-300 text-orange-950' : 'bg-muted text-muted-foreground'}`}>
+                        {idx + 1}
+                      </div>
+                      <span className="font-bold text-sm text-foreground">{team.name}</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="text-sm font-black text-primary">{team.velocity} SP</div>
+                        <div className={`text-[10px] font-bold flex items-center justify-end ${team.trendUp ? 'text-emerald-500' : 'text-red-500'}`}>
+                          {team.trendUp ? <ArrowUpRight size={10} className="mr-0.5" /> : <ArrowDownRight size={10} className="mr-0.5" />}
+                          {team.trend}
+                        </div>
+                      </div>
+                      <Link href={`/lecturer/${classId}/projects/${team.groupId}`}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 hover:bg-primary/10 hover:text-primary">
+                          <ArrowRight size={14} />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Class Health */}
+          <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden flex flex-col">
+            <CardHeader className="border-b border-border/50 bg-emerald-500/5 pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-emerald-500">
+                <HeartPulse size={18} />
+                Sức khỏe Lớp học
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 flex-1 flex flex-col justify-center">
+              <div className="h-[160px] w-full relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={classHealthData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={45}
+                      outerRadius={75}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                      cornerRadius={8}
+                    >
+                      {classHealthData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} className="drop-shadow-sm hover:opacity-80 transition-opacity outline-none" />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+                {/* Center Label */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-2xl font-black text-foreground">12</span>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase">Nhóm</span>
+                </div>
+              </div>
+
+              {/* Progress/Legend */}
+              <div className="mt-4 space-y-2">
+                {classHealthData.map((entry, idx) => {
+                  const percentage = Math.round((entry.value / 12) * 100);
+                  return (
+                    <div key={idx} className="space-y-1">
+                      <div className="flex justify-between text-[11px] font-bold">
+                        <span className="text-muted-foreground">{entry.name}</span>
+                        <span style={{ color: entry.color }}>{entry.value} ({percentage}%)</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                        <div className="h-full rounded-full transition-all" style={{ width: `${percentage}%`, backgroundColor: entry.color }} />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

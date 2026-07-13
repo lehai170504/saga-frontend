@@ -7,8 +7,6 @@ import { toast } from "sonner";
 import { ClassNetworkGraph } from "@/features/lecturer/components/class-network-graph";
 import { SlicingPieChart } from "./charts/slicing-pie-chart";
 import { RetroSkillRadar } from "./charts/retro-skill-radar";
-import { SprintVelocityBar } from "./charts/sprint-velocity-bar";
-import { EarlyWarningAlerts } from "./charts/early-warning-alerts";
 
 export function TeamEvaluation() {
 
@@ -26,12 +24,6 @@ export function TeamEvaluation() {
         <SlicingPieChart />
         <RetroSkillRadar />
       </div>
-
-      {/* Layer 1 & 2: Sprint Velocity Progress */}
-      <SprintVelocityBar />
-
-      {/* AI Risk Management System */}
-      <EarlyWarningAlerts />
 
       {/* Final Action */}
       <div className="flex justify-end pt-4">

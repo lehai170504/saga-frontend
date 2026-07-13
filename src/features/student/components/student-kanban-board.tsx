@@ -6,65 +6,27 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  ClipboardList, 
-  Plus, 
-  Trash2, 
-  Edit2, 
-  Calendar, 
-  User, 
-  ChevronRight, 
+import {
+  ClipboardList,
+  Plus,
+  Trash2,
+  Edit2,
+  Calendar,
+  User,
+  ChevronRight,
   ChevronLeft,
-  Settings
+  Settings,
+  GitBranch,
+  GitCommit,
+  GitPullRequest
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { JiraSprint, JiraTask, DEFAULT_SPRINTS, DEFAULT_TASKS, TEAM_MEMBERS } from "./kanban-types";
+import { KanbanTaskCard } from "./kanban-task-card";
 
-interface JiraSprint {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-}
-
-interface JiraTask {
-  id: string;
-  key: string;
-  title: string;
-  assignee: string;
-  storyPoints: number;
-  priority: "high" | "medium" | "low";
-  status: "todo" | "inprogress" | "inreview" | "done";
-  sprintId: string;
-}
-
-const DEFAULT_SPRINTS: JiraSprint[] = [
-  { id: "sprint-1", name: "Sprint 1 — Core Setup", startDate: "2026-06-01", endDate: "2026-06-14", isActive: false },
-  { id: "sprint-2", name: "Sprint 2 — Database Design", startDate: "2026-06-15", endDate: "2026-06-28", isActive: false },
-  { id: "sprint-3", name: "Sprint 3 — Auth Integration", startDate: "2026-06-29", endDate: "2026-07-12", isActive: true },
-];
-
-const DEFAULT_TASKS: JiraTask[] = [
-  { id: "task-1", key: "SAGA-10", title: "Cấu hình Next.js Router & Tailwind v4", assignee: "Trần Thị Bình", storyPoints: 3, priority: "high", status: "done", sprintId: "sprint-1" },
-  { id: "task-2", key: "SAGA-11", title: "Tạo Mock Database Schema cho Lớp Học", assignee: "Nguyễn Văn An", storyPoints: 5, priority: "high", status: "done", sprintId: "sprint-2" },
-  { id: "task-3", key: "SAGA-12", title: "Tích hợp Context Auth Provider & Login State", assignee: "Lê Văn Cường", storyPoints: 5, priority: "high", status: "inprogress", sprintId: "sprint-3" },
-  { id: "task-4", key: "SAGA-13", title: "Thiết kế giao diện Bảng Kanban của sinh viên", assignee: "Trần Thị Bình", storyPoints: 3, priority: "medium", status: "inprogress", sprintId: "sprint-3" },
-  { id: "task-5", key: "SAGA-14", title: "Viết Unit Tests cho bộ lọc xếp nhóm", assignee: "Phạm Thị Dung", storyPoints: 2, priority: "low", status: "todo", sprintId: "sprint-3" },
-  { id: "task-6", key: "SAGA-15", title: "Đồng bộ hóa API Webhooks từ GitHub", assignee: "Hoàng Văn Em", storyPoints: 8, priority: "high", status: "todo", sprintId: "sprint-3" },
-];
-
-const TEAM_MEMBERS = [
-  "Nguyễn Văn An",
-  "Trần Thị Bình",
-  "Lê Văn Cường",
-  "Phạm Thị Dung",
-  "Hoàng Văn Em",
-  "Nguyễn Tuấn Anh"
-];
-
-export function StudentKanbanBoard() {
+export function StudentKanbanBoard({ isLecturerView = false, classId = "", projectId = "" }: { isLecturerView?: boolean, classId?: string, projectId?: string }) {
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState("");
@@ -112,8 +74,12 @@ export function StudentKanbanBoard() {
 
   useEffect(() => {
     setMounted(true);
-    const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+    let sem = "";
+    let cls = classId;
+    if (!isLecturerView) {
+      sem = localStorage.getItem("saga-student-semester") || "";
+      cls = localStorage.getItem("saga-student-class") || "";
+    }
     setSelectedSemester(sem);
     setSelectedClass(cls);
 
@@ -275,11 +241,13 @@ export function StudentKanbanBoard() {
   };
 
   const handleDragStart = (e: React.DragEvent, taskId: string) => {
+    if (isLecturerView) return;
     e.dataTransfer.setData("text/plain", taskId);
   };
 
   const handleDrop = (e: React.DragEvent, targetStatus: JiraTask["status"]) => {
     e.preventDefault();
+    if (isLecturerView) return;
     const taskId = e.dataTransfer.getData("text/plain");
     if (!taskId) return;
 
@@ -351,30 +319,12 @@ export function StudentKanbanBoard() {
     },
   };
 
-  const getConicGradientColor = (priority: string) => {
-    if (priority === "high") return "bg-[conic-gradient(from_0deg,transparent_35%,#f43f5e_50%,transparent_65%)]";
-    if (priority === "medium") return "bg-[conic-gradient(from_0deg,transparent_35%,#f59e0b_50%,transparent_65%)]";
-    return "bg-[conic-gradient(from_0deg,transparent_35%,#0ea5e9_50%,transparent_65%)]";
-  };
-
-  const getLeftBorderColor = (priority: string) => {
-    if (priority === "high") return "border-l-rose-500";
-    if (priority === "medium") return "border-l-violet-500";
-    return "border-l-sky-500";
-  };
-
-  const getPriorityColor = (priority: string) => {
-    if (priority === "high") return "bg-rose-500/10 text-rose-500 border-rose-500/20";
-    if (priority === "medium") return "bg-violet-500/10 text-violet-500 border-violet-500/20";
-    return "bg-sky-50/10 text-sky-500 border-sky-500/20";
-  };
-
   const renderColumn = (status: JiraTask["status"]) => {
     const config = statusConfig[status];
     const columnTasks = sprintTasks.filter(t => t.status === status);
-    
+
     return (
-      <div 
+      <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, status)}
         className={`flex-1 flex flex-col min-w-[280px] ${config.bgClass} border ${config.borderClass} backdrop-blur-3xl rounded-3xl p-4 space-y-4 shadow-sm min-h-[550px] relative overflow-hidden transition-all duration-300 hover:shadow-md`}
@@ -394,90 +344,15 @@ export function StudentKanbanBoard() {
 
         <div className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1 relative z-10">
           {columnTasks.map(task => (
-            <div 
+            <KanbanTaskCard
               key={task.id}
-              draggable
-              onDragStart={(e) => handleDragStart(e, task.id)}
-              className="relative p-[1.5px] overflow-hidden rounded-2xl group/card transition-all duration-300 hover:shadow-md hover:scale-[1.01] cursor-grab active:cursor-grabbing"
-            >
-              {/* Rotating Gradient Running Border on Hover */}
-              <div className="absolute inset-[-500%] opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none z-0">
-                <div className={`w-full h-full ${getConicGradientColor(task.priority)} animate-border-rotate`} />
-              </div>
-
-              {/* Card Inner Content */}
-              <div className={`relative bg-card/90 dark:bg-zinc-950 border-y border-r border-border/60 border-l-[5px] ${getLeftBorderColor(task.priority)} rounded-[15px] p-4 space-y-3.5 w-full h-full z-10`}>
-                {/* Card top details */}
-                <div className="flex justify-between items-start gap-2">
-                  <span className="text-[10px] font-black text-muted-foreground uppercase bg-muted/50 px-2 py-0.5 rounded border border-border/40">
-                    {task.key}
-                  </span>
-                  
-                  {/* Micro Actions Menu */}
-                  <div className="flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
-                    <button 
-                      onClick={() => handleOpenTaskModal(task)}
-                      className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground cursor-pointer"
-                      title="Sửa Task"
-                    >
-                      <Edit2 size={12} />
-                    </button>
-                    <button 
-                      onClick={() => handleDeleteTask(task.id)}
-                      className="p-1 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive cursor-pointer"
-                      title="Xóa Task"
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Task Title */}
-                <p className="text-xs font-bold text-foreground leading-relaxed line-clamp-2">
-                  {task.title}
-                </p>
-
-                {/* Card Footer details */}
-                <div className="flex justify-between items-center pt-3 border-t border-border/40 gap-2">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <User size={12} className="text-muted-foreground shrink-0" />
-                    <span className="text-[10px] font-bold text-muted-foreground truncate">{task.assignee}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {/* Priority indicator */}
-                    <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${getPriorityColor(task.priority)}`}>
-                      {task.priority}
-                    </span>
-                    
-                    {/* Story Points */}
-                    <span className="text-[10px] font-black text-primary-foreground bg-primary rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-                      {task.storyPoints}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Mobile Quick Column Shifters */}
-                <div className="absolute right-2 top-2 flex gap-1 lg:hidden">
-                  {task.status !== "todo" && (
-                    <button 
-                      onClick={() => moveTaskColumn(task.id, "left")}
-                      className="p-1 bg-background border border-border/60 hover:border-primary rounded-full text-muted-foreground hover:text-primary cursor-pointer"
-                    >
-                      <ChevronLeft size={10} />
-                    </button>
-                  )}
-                  {task.status !== "done" && (
-                    <button 
-                      onClick={() => moveTaskColumn(task.id, "right")}
-                      className="p-1 bg-background border border-border/60 hover:border-primary rounded-full text-muted-foreground hover:text-primary cursor-pointer"
-                    >
-                      <ChevronRight size={10} />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+              task={task}
+              isLecturerView={isLecturerView}
+              onDragStart={handleDragStart}
+              onOpenTaskModal={handleOpenTaskModal}
+              onDeleteTask={handleDeleteTask}
+              onMoveTaskColumn={moveTaskColumn}
+            />
           ))}
 
           {columnTasks.length === 0 && (
@@ -493,7 +368,8 @@ export function StudentKanbanBoard() {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes border-rotate {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -507,9 +383,9 @@ export function StudentKanbanBoard() {
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
+        <div className={`flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10 ${isLecturerView ? 'hidden' : ''}`}>
           <PageHeader
             title="Bảng Kanban Tasks (Jira)"
             description={`Theo dõi và quản lý các Tasks công việc của ${activeGroup} (Lớp ${getClassName(selectedClass)})`}
@@ -521,8 +397,8 @@ export function StudentKanbanBoard() {
               <Skeleton className="w-[120px] h-10 rounded-xl bg-muted" />
             </div>
           ) : (
-            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-              
+            <div className={`flex flex-wrap items-center gap-3 w-full lg:w-auto ${isLecturerView ? 'hidden' : ''}`}>
+
               {/* Sprint Select Filter */}
               <div className="flex items-center gap-2">
                 <Select value={currentSprintId} onValueChange={setCurrentSprintId}>
@@ -543,7 +419,7 @@ export function StudentKanbanBoard() {
 
                 {/* Edit active sprint details */}
                 {currentSprintId && (
-                  <button 
+                  <button
                     onClick={() => {
                       const sprint = sprints.find(s => s.id === currentSprintId);
                       if (sprint) handleOpenSprintModal(sprint);
@@ -557,7 +433,7 @@ export function StudentKanbanBoard() {
               </div>
 
               {/* Sprint Add Button */}
-              <Button 
+              <Button
                 onClick={() => handleOpenSprintModal(null)}
                 className="h-10 rounded-xl font-bold text-xs bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 dark:border-indigo-500/20 hover:border-indigo-500/50 hover:scale-105 transition-all duration-300 hover:shadow-[0_0_15px_rgba(99,102,241,0.25)] cursor-pointer"
               >
@@ -566,7 +442,7 @@ export function StudentKanbanBoard() {
               </Button>
 
               {/* Task Add Button */}
-              <Button 
+              <Button
                 onClick={() => handleOpenTaskModal(null)}
                 className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
               >
@@ -579,15 +455,38 @@ export function StudentKanbanBoard() {
         </div>
 
         {/* Sprint deletion button */}
-        {!isLoading && currentSprintId && (
+        {!isLoading && currentSprintId && !isLecturerView && (
           <div className="flex justify-end pr-1 text-xs">
-            <button 
+            <button
               onClick={() => handleDeleteSprint(currentSprintId)}
               className="flex items-center gap-1.5 text-muted-foreground hover:text-destructive font-bold transition-colors cursor-pointer"
             >
               <Trash2 size={13} />
               <span>Xóa Sprint hiện tại</span>
             </button>
+          </div>
+        )}
+
+        {/* Sprint Select for Lecturer */}
+        {isLecturerView && (
+          <div className="flex justify-end pr-1 text-xs mb-4">
+            <div className="flex items-center gap-2">
+              <Select value={currentSprintId} onValueChange={setCurrentSprintId}>
+                <SelectTrigger className="w-[220px] h-10 bg-card/45 backdrop-blur-md border-border/50 rounded-xl font-bold text-xs focus:ring-primary/20">
+                  <div className="flex items-center gap-2 truncate">
+                    <Calendar size={14} className="text-muted-foreground shrink-0" />
+                    <SelectValue placeholder="Chọn Sprint" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-card/90 backdrop-blur-xl border-border/50 rounded-xl">
+                  {sprints.map(s => (
+                    <SelectItem key={s.id} value={s.id} className="text-xs font-semibold">
+                      {s.name} {s.isActive ? "— Active" : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         )}
 
@@ -618,7 +517,7 @@ export function StudentKanbanBoard() {
               <form onSubmit={handleSaveSprint} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="sprint-name" className="text-[10px] font-bold text-muted-foreground uppercase">Tên Sprint</Label>
-                  <Input 
+                  <Input
                     id="sprint-name"
                     value={sprintName}
                     onChange={(e) => setSprintName(e.target.value)}
@@ -630,7 +529,7 @@ export function StudentKanbanBoard() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label htmlFor="sprint-start" className="text-[10px] font-bold text-muted-foreground uppercase">Ngày bắt đầu</Label>
-                    <Input 
+                    <Input
                       id="sprint-start"
                       type="date"
                       value={sprintStart}
@@ -640,7 +539,7 @@ export function StudentKanbanBoard() {
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="sprint-end" className="text-[10px] font-bold text-muted-foreground uppercase">Ngày kết thúc</Label>
-                    <Input 
+                    <Input
                       id="sprint-end"
                       type="date"
                       value={sprintEnd}
@@ -651,7 +550,7 @@ export function StudentKanbanBoard() {
                 </div>
 
                 <div className="flex gap-3.5 pt-2">
-                  <Button 
+                  <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsSprintModalOpen(false)}
@@ -659,7 +558,7 @@ export function StudentKanbanBoard() {
                   >
                     Hủy bỏ
                   </Button>
-                  <Button 
+                  <Button
                     type="submit"
                     className="flex-1 h-10 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
                   >
@@ -682,7 +581,7 @@ export function StudentKanbanBoard() {
               <form onSubmit={handleSaveTask} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="task-title" className="text-[10px] font-bold text-muted-foreground uppercase">Tiêu đề công việc</Label>
-                  <Input 
+                  <Input
                     id="task-title"
                     value={taskTitle}
                     onChange={(e) => setTaskTitle(e.target.value)}
@@ -755,7 +654,7 @@ export function StudentKanbanBoard() {
                 </div>
 
                 <div className="flex gap-3.5 pt-2">
-                  <Button 
+                  <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsTaskModalOpen(false)}
@@ -763,7 +662,7 @@ export function StudentKanbanBoard() {
                   >
                     Hủy bỏ
                   </Button>
-                  <Button 
+                  <Button
                     type="submit"
                     className="flex-1 h-10 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
                   >
