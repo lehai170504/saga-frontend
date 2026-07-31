@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '@/stores/authStore';
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
 
 export class ApiError extends Error {
   constructor(

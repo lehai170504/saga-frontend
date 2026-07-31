@@ -2,37 +2,38 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth, User } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ApplicationRole } from "@/stores/authStore";
 import { Skeleton } from "@/components/shared/Skeleton";
 
 interface RouteGuardProps {
   children: React.ReactNode;
-  allowedRoles?: User["role"][];
+  allowedRoles?: ApplicationRole[];
 }
 
 export function RouteGuard({ children, allowedRoles }: RouteGuardProps) {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoading) {
-      if (!isAuthenticated) {
-        router.replace("/");
+      if (!user) {
+        router.replace("/login");
         return;
       }
-      if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+      if (allowedRoles && user && !allowedRoles.includes(user.applicationRole)) {
         let redirectPath = "/student";
-        if (user.role === "admin") redirectPath = "/admin";
-        if (user.role === "lecturer") redirectPath = "/lecturer";
+        if (user.applicationRole === "ADMIN") redirectPath = "/admin";
+        if (user.applicationRole === "LECTURER") redirectPath = "/lecturer";
 
         router.replace(redirectPath);
       }
     }
-  }, [isAuthenticated, isLoading, user, allowedRoles, router]);
+  }, [isLoading, user, allowedRoles, router]);
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4 p-8 w-full">
+      <div className="flex flex-col gap-4 p-8 w-full bg-background min-h-screen">
         <Skeleton className="h-12 w-64 rounded-2xl" />
         <Skeleton className="h-64 w-full rounded-2xl opacity-60" />
         <Skeleton className="h-40 w-full rounded-2xl opacity-40" />
@@ -40,11 +41,11 @@ export function RouteGuard({ children, allowedRoles }: RouteGuardProps) {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null;
   }
 
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+  if (allowedRoles && user && !allowedRoles.includes(user.applicationRole)) {
     return null;
   }
 

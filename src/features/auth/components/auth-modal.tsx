@@ -14,7 +14,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
-import { SocialLogin } from "./social-login";
 
 export function AuthModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,14 +64,12 @@ export function AuthModal() {
 
           <div className="p-6 pt-4 bg-muted/30 mt-2">
             <TabsContent value="login" className="mt-0 outline-none">
-              <LoginForm onSuccess={handleSuccess} />
+              <LoginForm />
             </TabsContent>
 
             <TabsContent value="register" className="mt-0 outline-none">
               <RegisterForm onSuccess={handleSuccess} />
             </TabsContent>
-
-            <SocialLogin />
           </div>
         </Tabs>
       </DialogContent>

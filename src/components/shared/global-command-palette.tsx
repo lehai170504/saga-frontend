@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export function GlobalCommandPalette() {
   const [open, setOpen] = useState(false);
@@ -60,7 +60,7 @@ export function GlobalCommandPalette() {
               <Search className="w-8 h-8 text-muted-foreground/30" />
               Không tìm thấy kết quả nào.
             </Command.Empty>
-            {user?.role === "admin" && (
+            {user?.applicationRole === "ADMIN" && (
               <>
                 <Command.Group heading="Điều hướng (Navigation)">
                   <Command.Item
@@ -145,7 +145,7 @@ export function GlobalCommandPalette() {
               </>
             )}
 
-            {user?.role === "lecturer" && (
+            {user?.applicationRole === "LECTURER" && (
               <>
                 <Command.Group heading="Lớp học (Classes)">
                   <Command.Item
@@ -193,7 +193,7 @@ export function GlobalCommandPalette() {
               </>
             )}
 
-            {user?.role === "student" && (
+            {user?.applicationRole === "STUDENT" && (
               <>
                 <Command.Group heading="Cá nhân & Nhóm (Personal & Team)">
                   <Command.Item

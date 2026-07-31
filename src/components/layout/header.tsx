@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { toast } from "sonner";
 import { ProfileModal } from "@/features/user/components/profile-modal";
 import { MobileMenuButton } from "@/components/layout/mobile-buttons";
@@ -92,8 +92,8 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   const handleLogout = () => {
     logout();
-    toast.success("Đã đăng xuất thành công!");
-    router.push("/");
+    toast.success("Đang xử lý đăng xuất...");
+    // Redirect happens automatically if we use form submit, or if we use mutation we'll handle it there
   };
 
   return (
@@ -227,7 +227,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuSeparator className="bg-border/40 my-2" />
 
               <DropdownMenuItem
-                onClick={() => router.push(user?.role === "student" ? "/student/audit-logs" : "/lecturer")}
+                onClick={() => router.push(user?.applicationRole === "STUDENT" ? "/student/audit-logs" : "/lecturer")}
                 className="justify-center text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
               >
                 Xem tất cả nhật ký
@@ -260,19 +260,19 @@ export function Header({ onMenuClick }: HeaderProps) {
               >
                 <div className="text-right hidden sm:block transition-transform duration-300 group-hover:-translate-x-1">
                   <p className="text-sm font-bold text-foreground leading-tight flex justify-end items-center gap-1.5">
-                    {user?.role === "admin" && (
+                    {user?.applicationRole === "ADMIN" && (
                       <ShieldCheck size={14} className="text-success drop-shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
                     )}
-                    {user?.name ?? "Khách"}
+                    {user?.fullName ?? "Khách"}
                   </p>
                   <p className="text-xs font-medium text-muted-foreground mt-0.5">
-                    {user?.role ? roleDisplay[user.role] : "Chưa xác định"}
+                    {user?.applicationRole ? roleDisplay[user.applicationRole.toLowerCase()] : "Chưa xác định"}
                   </p>
                 </div>
                 <Avatar className="h-10 w-10 border-2 border-background shadow-md ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300 group-hover:scale-105">
-                  <AvatarImage src="" alt={user?.name ?? "User"} />
+                  <AvatarImage src="" alt={user?.fullName ?? "User"} />
                   <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold text-sm">
-                    {user?.avatarInitials ?? "?"}
+                    {user?.fullName?.charAt(0) ?? "?"}
                   </AvatarFallback>
                 </Avatar>
               </Button>

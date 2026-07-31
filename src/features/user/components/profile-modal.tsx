@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Mail, User, ShieldCheck, Camera, Loader2, Key, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
@@ -23,9 +23,9 @@ interface ProfileModalProps {
 }
 
 const roleDisplay: Record<string, string> = {
-  admin: "Quản trị viên",
-  lecturer: "Giảng viên",
-  student: "Thành viên",
+  ADMIN: "Quản trị viên",
+  LECTURER: "Giảng viên",
+  STUDENT: "Thành viên",
 };
 
 export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
@@ -33,7 +33,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   // State lưu trữ dữ liệu chỉnh sửa
-  const [name, setName] = useState(user?.name || "");
+  const [name, setName] = useState(user?.fullName || "");
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -111,7 +111,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   // Reset form nếu đóng modal hoặc hủy
   const handleCancel = () => {
-    setName(user?.name || "");
+    setName(user?.fullName || "");
     setIsEditing(false);
   };
 
@@ -144,7 +144,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               <TabsTrigger value="security" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
                 <ShieldCheck className="w-4 h-4 mr-2" /> Bảo mật
               </TabsTrigger>
-              {user.role === "student" && (
+              {user.applicationRole === "STUDENT" && (
                 <TabsTrigger value="settings" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
                   <Mail className="w-4 h-4 mr-2" /> Cài đặt
                 </TabsTrigger>
@@ -159,9 +159,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 {/* Avatar Area */}
                 <div className="relative">
                   <Avatar className="h-24 w-24 border-2 border-border shadow-sm">
-                    <AvatarImage src="" alt={user.name} />
+                    <AvatarImage src="" alt={user.fullName} />
                     <AvatarFallback className="bg-primary/10 text-primary text-3xl font-bold bg-primary/20">
-                      {user.avatarInitials ?? "?"}
+                      {user.fullName?.charAt(0) ?? "?"}
                     </AvatarFallback>
                   </Avatar>
                   <Button
@@ -220,10 +220,10 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     </Label>
                     <div className="relative flex items-center p-3 rounded-xl border bg-muted/30">
                       <ShieldCheck
-                        className={`h-5 w-5 mr-3 ${user.role === "admin" ? "text-success" : "text-primary"}`}
+                        className={`h-5 w-5 mr-3 ${user.applicationRole === "ADMIN" ? "text-success" : "text-primary"}`}
                       />
                       <span className="font-medium text-sm">
-                        {user.role ? roleDisplay[user.role] : "Chưa xác định"}
+                        {user.applicationRole ? roleDisplay[user.applicationRole] : "Chưa xác định"}
                       </span>
                     </div>
                   </div>
@@ -334,7 +334,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               </form>
             </TabsContent>
 
-            {user.role === "student" && (
+            {user.applicationRole === "STUDENT" && (
               <TabsContent value="settings" className="mt-0 space-y-4">
                 <div className="space-y-4">
                   <div className="space-y-4">

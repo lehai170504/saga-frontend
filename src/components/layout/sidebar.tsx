@@ -30,7 +30,7 @@ import {
   GitBranch,
   ClipboardList
 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import {
@@ -51,9 +51,9 @@ interface SidebarProps {
 }
 
 const roleDisplay: Record<string, string> = {
-  admin: "Quản trị viên",
-  lecturer: "Giảng viên",
-  student: "Thành viên",
+  ADMIN: "Quản trị viên",
+  LECTURER: "Giảng viên",
+  STUDENT: "Thành viên",
 };
 
 type NavItemType = {
@@ -77,7 +77,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
   const [studentClassId, setStudentClassId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user?.role === "student") {
+    if (user?.applicationRole === "STUDENT") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setStudentClassId(localStorage.getItem("saga-student-class"));
 
@@ -88,11 +88,11 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
       window.addEventListener("saga-student-class-changed", handleClassChange);
       return () => window.removeEventListener("saga-student-class-changed", handleClassChange);
     }
-  }, [user?.role]);
+  }, [user?.applicationRole]);
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    // Redirect logic is handled by the hook/mutation or form submit
   };
 
   const getNavGroups = (): NavGroup[] => {
@@ -101,8 +101,8 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
     const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
     const classId = classIdMatch ? classIdMatch[1] : null;
 
-    switch (user.role) {
-      case "admin":
+    switch (user.applicationRole) {
+      case "ADMIN":
         return [
           {
             title: "Tổng quan",
@@ -127,7 +127,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
             ]
           }
         ];
-      case "lecturer":
+      case "LECTURER":
         if (classId) {
           return [
             {
@@ -161,7 +161,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
             ]
           }
         ];
-      case "student":
+      case "STUDENT":
         const handleStudentSwitchClass = (e?: React.MouseEvent) => {
           e?.preventDefault();
           localStorage.removeItem("saga-student-semester");
@@ -243,18 +243,18 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 shrink-0 ring-2 ring-primary/20">
               <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold">
-                {user?.avatarInitials ?? "?"}
+                {user?.fullName?.charAt(0) ?? "?"}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
               <p className="font-bold text-sm text-foreground truncate">
-                {user?.name ?? "Khách"}
+                {user?.fullName ?? "Khách"}
               </p>
               <p className="text-xs text-muted-foreground truncate flex items-center gap-1 mt-0.5">
-                {user?.role === "admin" && (
+                {user?.applicationRole === "ADMIN" && (
                   <ShieldCheck size={12} className="text-success" />
                 )}
-                {user?.role ? roleDisplay[user.role] : "Chưa xác định"}
+                {user?.applicationRole ? roleDisplay[user.applicationRole] : "Chưa xác định"}
               </p>
             </div>
           </div>
