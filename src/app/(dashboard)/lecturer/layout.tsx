@@ -9,7 +9,7 @@ export default function LecturerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RouteGuard allowedRoles={["lecturer"]}>
+    <RouteGuard allowedRoles={["LECTURER"]}>
       <div className="min-h-screen bg-background">
         <main className="w-full">{children}</main>
       </div>

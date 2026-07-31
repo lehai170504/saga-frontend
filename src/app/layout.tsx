@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import QueryProvider from "@/components/providers/query-provider";
-const inter = Inter({
-  subsets: ["latin", "vietnamese"],
+const beVietnamPro = Be_Vietnam_Pro({
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ["vietnamese", "latin"],
   variable: "--font-sans",
 });
 
@@ -13,9 +14,9 @@ export const metadata: Metadata = {
   title: "SAGA Dashboard - Đánh giá Liên tục",
   description: "Hệ thống Đánh giá Liên tục dựa trên Mạng tương tác dành cho Sinh viên IT",
   icons: [
-    { rel: "icon", url: "/saga-logo.png", type: "image/png" },
-    { rel: "shortcut icon", url: "/saga-logo.png" },
-    { rel: "apple-touch-icon", url: "/saga-logo.png" },
+    { rel: "icon", url: "/saga-logo-v2.png", type: "image/png" },
+    { rel: "shortcut icon", url: "/saga-logo-v2.png" },
+    { rel: "apple-touch-icon", url: "/saga-logo-v2.png" },
   ],
 };
 
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning className="scroll-smooth">
       <body
-        className={`${inter.variable} font-sans bg-background text-foreground antialiased min-h-screen`}
+        className={`${beVietnamPro.variable} font-sans bg-background text-foreground antialiased min-h-screen`}
       >
         <ThemeProvider
           attribute="class"

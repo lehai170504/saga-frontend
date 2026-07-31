@@ -105,7 +105,7 @@ export default function StudentLayout({
 
   if (!isMounted) {
     return (
-      <RouteGuard allowedRoles={["student"]}>
+      <RouteGuard allowedRoles={["STUDENT"]}>
         <div className="min-h-screen bg-background" />
       </RouteGuard>
     );
@@ -122,9 +122,10 @@ export default function StudentLayout({
   const semesterClasses = getSemesterClasses(selectedSemester);
 
   return (
-    <RouteGuard allowedRoles={["student"]}>
+    <RouteGuard allowedRoles={["STUDENT"]}>
       <div className="min-h-screen bg-background flex flex-col w-full relative">
-        <style dangerouslySetInnerHTML={{__html: `
+        <style dangerouslySetInnerHTML={{
+          __html: `
           @keyframes border-rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }

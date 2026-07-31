@@ -10,7 +10,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RouteGuard allowedRoles={["admin"]}>
+    <RouteGuard allowedRoles={["ADMIN"]}>
       <div className="min-h-screen bg-background">
         <main className="w-full">{children}</main>
         <GlobalCommandPalette />
