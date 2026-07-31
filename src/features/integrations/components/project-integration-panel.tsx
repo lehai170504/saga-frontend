@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useProjectIntegrations, useDeleteProjectJiraIntegration, useDeleteGithubRepository, useLinkJiraProject, useLinkGithubRepositories } from "../hooks/useProjectIntegrations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
 import { API_BASE_URL } from "@/lib/axios";
@@ -12,6 +14,13 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
   const { data: projectIntegration, isLoading, error } = useProjectIntegrations(projectId);
   const { mutate: deleteJira, isPending: isDeletingJira } = useDeleteProjectJiraIntegration(projectId);
   const { mutate: deleteGithubRepo, isPending: isDeletingGithubRepo } = useDeleteGithubRepository(projectId);
+  const { mutate: linkJira, isPending: isLinkingJira } = useLinkJiraProject(projectId);
+  const { mutate: linkGithub, isPending: isLinkingGithub } = useLinkGithubRepositories(projectId);
+
+  const [jiraCloudId, setJiraCloudId] = useState("");
+  const [jiraProjId, setJiraProjId] = useState("");
+  const [githubInstallId, setGithubInstallId] = useState("");
+  const [githubRepoIds, setGithubRepoIds] = useState("");
 
   if (isLoading) {
     return (
@@ -38,6 +47,23 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
 
   const handleInstallGithub = () => {
     window.location.assign(`${API_BASE_URL}/api/projects/${projectId}/github/install`);
+  };
+
+  const submitJiraLink = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (jiraCloudId && jiraProjId) {
+      linkJira({ cloudId: jiraCloudId, jiraProjectId: jiraProjId });
+    }
+  };
+
+  const submitGithubLink = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (githubInstallId && githubRepoIds) {
+      linkGithub({
+        installationId: Number(githubInstallId),
+        repositoryIds: githubRepoIds.split(",").map(id => Number(id.trim()))
+      });
+    }
   };
 
   return (
@@ -88,14 +114,29 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
               </Button>
             </div>
           ) : (
-            <div className="text-center py-4 my-auto">
-              <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-              <Button onClick={handleConnectJira} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white">
-                <Plus className="mr-2 h-4 w-4" /> Liên kết với Jira
-              </Button>
-              <p className="text-xs text-muted-foreground mt-4">
-                Sau khi kết nối, hệ thống sẽ yêu cầu bạn chọn Site và Project.
-              </p>
+            <div className="flex flex-col gap-4 my-auto">
+              <div className="text-center py-2">
+                <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
+                <Button onClick={handleConnectJira} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white">
+                  <Plus className="mr-2 h-4 w-4" /> 1. Xác thực với Jira
+                </Button>
+                <p className="text-xs text-muted-foreground mt-4">
+                  Sau khi xác thực xong, hệ thống sẽ trả về danh sách Site. Nhập ID vào bên dưới để liên kết.
+                </p>
+              </div>
+              <form onSubmit={submitJiraLink} className="space-y-3 pt-4 border-t border-border">
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold text-muted-foreground">Cloud ID</Label>
+                  <Input placeholder="Nhập Cloud ID" value={jiraCloudId} onChange={e => setJiraCloudId(e.target.value)} className="h-9 text-sm rounded-xl" required />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold text-muted-foreground">Jira Project ID</Label>
+                  <Input placeholder="Nhập Jira Project ID" value={jiraProjId} onChange={e => setJiraProjId(e.target.value)} className="h-9 text-sm rounded-xl" required />
+                </div>
+                <Button type="submit" disabled={isLinkingJira} className="w-full h-9 rounded-xl font-bold bg-[#0052CC] hover:bg-[#0052CC]/90 text-white">
+                  {isLinkingJira ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "2. Liên kết Project"}
+                </Button>
+              </form>
             </div>
           )}
         </CardContent>
@@ -144,14 +185,29 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
               </Button>
             </div>
           ) : (
-            <div className="text-center py-4 my-auto">
-              <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-              <Button onClick={handleInstallGithub} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white">
-                <Plus className="mr-2 h-4 w-4" /> Cài đặt GitHub App
-              </Button>
-              <p className="text-xs text-muted-foreground mt-4">
-                Sau khi cài đặt, hệ thống sẽ quét các repository mà bạn cấp quyền.
-              </p>
+            <div className="flex flex-col gap-4 my-auto">
+              <div className="text-center py-2">
+                <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
+                <Button onClick={handleInstallGithub} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white">
+                  <Plus className="mr-2 h-4 w-4" /> 1. Cài đặt GitHub App
+                </Button>
+                <p className="text-xs text-muted-foreground mt-4">
+                  Cài đặt GitHub App vào tài khoản/tổ chức. Sau đó nhập Installation ID và Repository ID bên dưới.
+                </p>
+              </div>
+              <form onSubmit={submitGithubLink} className="space-y-3 pt-4 border-t border-border">
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold text-muted-foreground">Installation ID</Label>
+                  <Input placeholder="VD: 12345678" type="number" value={githubInstallId} onChange={e => setGithubInstallId(e.target.value)} className="h-9 text-sm rounded-xl" required />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold text-muted-foreground">Repository IDs (cách nhau bởi dấu phẩy)</Label>
+                  <Input placeholder="VD: 12345, 67890" value={githubRepoIds} onChange={e => setGithubRepoIds(e.target.value)} className="h-9 text-sm rounded-xl" required />
+                </div>
+                <Button type="submit" disabled={isLinkingGithub} className="w-full h-9 rounded-xl font-bold bg-[#24292F] hover:bg-[#24292F]/90 text-white">
+                  {isLinkingGithub ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "2. Liên kết Repositories"}
+                </Button>
+              </form>
             </div>
           )}
         </CardContent>
