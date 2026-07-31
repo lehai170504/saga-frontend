@@ -1,6 +1,6 @@
-# Tóm tắt công việc Frontend - Phase 1 & 2
+# Tóm tắt công việc Frontend - Phase 1, 2 & 3
 
-Tài liệu này tóm tắt các thiết lập và tính năng đã được hoàn thiện trong giai đoạn 1 và giai đoạn 2 của Frontend, tập trung vào việc chuẩn hoá kiến trúc và tích hợp xác thực (Authentication) theo luồng của AWS Cognito.
+Tài liệu này tóm tắt các thiết lập và tính năng đã được hoàn thiện trong các giai đoạn phát triển Frontend, từ việc chuẩn hoá kiến trúc ban đầu, tích hợp Authentication cho đến việc nâng cấp Kiến trúc Route & Tối ưu UI/UX (Phase 3).
 
 ## 🌟 Phase 1: Cấu hình Core Architecture
 Trong Phase 1, toàn bộ các cấu hình lõi để giao tiếp với Backend và quản lý State đã được thiết lập chuẩn chỉnh.
@@ -31,5 +31,19 @@ Trong Phase 2, luồng đăng nhập, đăng xuất và bảo vệ tuyến đư�
 - **Bảo vệ Routes (RouteGuard & ClientGuard):** 
   - Tạo Component bọc ngoài để bảo vệ trang, ngăn chặn truy cập trái phép. Tự động kiểm tra quyền (`applicationRole`) và chuyển hướng (Redirect) nếu người dùng chưa đăng nhập hoặc không đủ quyền.
 
+## 🎨 Phase 3: Nâng cấp Kiến trúc & Đại tu UI/UX
+Trong Phase 3, hệ thống tập trung xử lý các phần liên quan đến tương tác API thực tế, kiến trúc dữ liệu và tối ưu giao diện người dùng để đạt tiêu chuẩn SaaS quốc tế.
+
+- **Đại phẫu thuật Kiến trúc State (Architecturally Perfect):**
+  - **URL-based State:** Chuyển đổi toàn bộ Student Dashboard từ việc dùng Global State (Zustand/LocalStorage) sang kiến trúc **Dynamic URL Routes (`/student/[classId]/...`)**.
+  - **Sự đồng nhất:** Kiến trúc của Student giờ đã đối xứng 100% với Lecturer, giúp URL trở thành "Nguồn sự thật" (Source of Truth).
+  - **Trải nghiệm mới:** Loại bỏ hoàn toàn lỗi bất đồng bộ dữ liệu khi mở nhiều tab, và kích hoạt khả năng **Shareable URL** (copy link gửi cho bạn bè).
+- **Thiết kế lại toàn bộ Design System (UI/UX Redesign):**
+  - Xoá bỏ tàn dư của các CSS template cũ/AI-generated nhàm chán.
+  - Xây dựng lại hệ thống CSS Variables (`globals.css`) với tone màu **Electric Blue** và **Deep Slate (Dark mode)** hiện đại, dịu mắt.
+  - Áp dụng triệt để phong cách **Glassmorphism**, đổ bóng đa lớp (multi-layered shadows) và hiệu ứng tương tác (micro-interactions) mang hơi hướng Vercel & Linear.
+- **Brand Identity:** Thiết kế và tích hợp Logo SAGA mới (Stylized S-node network) đồng bộ hoàn toàn với hệ thống màu sắc.
+- **Quản lý trạng thái Integration:** Đã chuẩn bị sẵn các Zustand store và Mock data để xử lý luồng tích hợp GitHub và Jira (Identity Mappings, Sync Status).
+
 ---
-**Kết luận:** Hệ thống Frontend hiện tại đã "làm sạch" hoàn toàn các nợ kỹ thuật (Technical Debt) về Context cũ, kiến trúc API/State Management đã được định hình cứng cáp để sẵn sàng đón các chức năng nghiệp vụ tiếp theo ở Phase 3.
+**Kết luận:** Hệ thống Frontend hiện tại đã "làm sạch" hoàn toàn các nợ kỹ thuật (Technical Debt) về Context cũ, sở hữu kiến trúc Route chuẩn mực của Next.js (URL-driven), và có một bộ mặt UI/UX xuất sắc sẵn sàng cho việc ra mắt!

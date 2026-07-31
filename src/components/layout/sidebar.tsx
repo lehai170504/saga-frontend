@@ -1,38 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
-  BarChart3,
-  Network,
-  Activity,
-  Calendar,
-  Users,
   ShieldCheck,
-  ArrowLeft,
-  BookOpen,
-  GraduationCap,
-  Share2,
-  Logs,
-  Link2,
-  Inbox,
-  UserCheck,
-  CalendarX,
+  ChevronLeft,
+  ChevronRight,
   LogOut,
-  Settings2,
-  Database,
-  FolderKanban,
-  GitBranch,
-  ClipboardList
 } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getNavigationConfig } from "@/config/navigation";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+
 import {
   Tooltip,
   TooltipContent,
@@ -52,180 +33,32 @@ const roleDisplay: Record<string, string> = {
   STUDENT: "Thành viên",
 };
 
-type NavItemType = {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-  action?: (e: React.MouseEvent) => void;
-  hideChevron?: boolean;
-};
 
-type NavGroup = {
-  title: string;
-  items: NavItemType[];
-};
 
 export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, logout } = useAuth();
-
-  const [studentClassId, setStudentClassId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user?.applicationRole === "STUDENT") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setStudentClassId(localStorage.getItem("saga-student-class"));
-
-      const handleClassChange = () => {
-        setStudentClassId(localStorage.getItem("saga-student-class"));
-      };
-
-      window.addEventListener("saga-student-class-changed", handleClassChange);
-      return () => window.removeEventListener("saga-student-class-changed", handleClassChange);
-    }
-  }, [user?.applicationRole]);
 
   const handleLogout = () => {
     logout();
-    // Redirect logic is handled by the hook/mutation or form submit
   };
 
-  const getNavGroups = (): NavGroup[] => {
+  const getNavGroups = () => {
     if (!user) return [];
 
-    const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
-    const classId = classIdMatch ? classIdMatch[1] : null;
+    // ClassId from lecturer URL
+    const lecturerClassIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
+    const lecturerClassId = lecturerClassIdMatch ? lecturerClassIdMatch[1] : null;
 
-    switch (user.applicationRole) {
-      case "ADMIN":
-        return [
-          {
-            title: "Tổng quan",
-            items: [
-              { href: "/admin", icon: <BarChart3 size={18} />, label: "Dashboard" },
-            ]
-          },
-          {
-            title: "Quản lý Cốt lõi",
-            items: [
-              { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
-              { href: "/admin/academic-data", icon: <Database size={18} />, label: "Dữ liệu Học vụ" },
-              { href: "/admin/classes", icon: <Network size={18} />, label: "Lớp PBL" },
-            ]
-          },
-          {
-            title: "Dữ liệu Danh mục",
-            items: [
-              { href: "/master-data/subjects", icon: <BookOpen size={18} />, label: "Môn học" },
-              { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học" },
-              { href: "/master-data/semesters", icon: <Calendar size={18} />, label: "Học kỳ" },
-              { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học" },
-            ]
-          },
-          {
-            title: "Hệ thống",
-            items: [
-              { href: "/admin/evaluation-config", icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
-              { href: "/admin/system-logs", icon: <Logs size={18} />, label: "Nhật ký hệ thống" },
-              { href: "/admin/guide", icon: <BookOpen size={18} />, label: "Hướng dẫn" },
-            ]
-          }
-        ];
-      case "LECTURER":
-        if (classId) {
-          return [
-            {
-              title: `Đang xem: LỚP ${classId.toUpperCase()}`,
-              items: [
-                { href: "/lecturer", icon: <ArrowLeft size={18} />, label: "Chọn lớp khác", hideChevron: true },
-              ]
-            },
-            {
-              title: "Quản lý Lớp học",
-              items: [
-                { href: `/lecturer/${classId}`, icon: <BarChart3 size={18} />, label: "Tổng quan lớp" },
-                { href: `/lecturer/${classId}/students`, icon: <Users size={18} />, label: "Sinh viên" },
-                { href: `/lecturer/${classId}/projects`, icon: <Network size={18} />, label: "Quản lý nhóm" },
-              ]
-            },
-            {
-              title: "Đánh giá & Điểm số",
-              items: [
-                { href: `/lecturer/${classId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
-                { href: `/lecturer/${classId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
-              ]
-            }
-          ];
-        }
-        return [
-          {
-            title: "Tổng quan",
-            items: [
-              { href: "/lecturer", icon: <BookOpen size={18} />, label: "Danh sách lớp học" },
-            ]
-          }
-        ];
-      case "STUDENT":
-        const handleStudentSwitchClass = (e?: React.MouseEvent) => {
-          e?.preventDefault();
-          localStorage.removeItem("saga-student-semester");
-          localStorage.removeItem("saga-student-class");
-          window.dispatchEvent(new Event("saga-student-class-changed"));
-          router.push("/student");
-        };
+    // ClassId from student URL
+    const studentClassIdMatch = pathname.match(/^\/student\/([^/]+)/);
+    const studentClassId = studentClassIdMatch && studentClassIdMatch[1] !== "settings" ? studentClassIdMatch[1] : null;
 
-        return [
-          {
-            title: studentClassId ? `Đang xem: LỚP ${studentClassId.toUpperCase()}` : "Điều hướng",
-            items: [
-              { href: "#", icon: <ArrowLeft size={18} />, label: "Chọn lớp khác", action: handleStudentSwitchClass, hideChevron: true },
-            ]
-          },
-          {
-            title: "Cá nhân & Nhóm",
-            items: [
-              { href: "/student", icon: <BarChart3 size={18} />, label: "Tổng quan nhóm" },
-              { href: "/student/projects", icon: <Network size={18} />, label: "Danh sách nhóm" },
-              { href: "/student/projects/create", icon: <FolderKanban size={18} />, label: "Cấu hình Project" },
-              { href: "/student/commits", icon: <GitBranch size={18} />, label: "Lịch sử Commits" },
-              { href: "/student/kanban", icon: <ClipboardList size={18} />, label: "Bảng Kanban (Jira)" },
-              { href: "/student/burndown", icon: <Calendar size={18} />, label: "Tiến độ Task" },
-              { href: "/student/contribution", icon: <Users size={18} />, label: "Đóng góp cá nhân" },
-              { href: "/student/audit-logs", icon: <Logs size={18} />, label: "Nhật ký hoạt động" },
-            ]
-          },
-          {
-            title: "Tương tác",
-            items: [
-              { href: "/student/assessment", icon: <UserCheck size={18} />, label: "Đánh giá chéo" },
-              { href: "/student/feedback", icon: <Inbox size={18} />, label: "Nhận xét" },
-              { href: "/student/absence", icon: <CalendarX size={18} />, label: "Báo cáo vắng" },
-            ]
-          },
-          {
-            title: "AI & Phân tích Đồ thị",
-            items: [
-              { href: "/student/interaction-graph", icon: <Share2 size={18} />, label: "Mạng tương tác" },
-              { href: "/student/heatmap", icon: <Activity size={18} />, label: "Biểu đồ nhiệt" },
-            ]
-          },
-          {
-            title: "Cài đặt",
-            items: [
-              { href: "/student/settings", icon: <Link2 size={18} />, label: "Kết nối tài khoản" },
-            ]
-          }
-        ];
-      default:
-        return [];
-    }
+    const classId = lecturerClassId || studentClassId;
+    return getNavigationConfig(user.applicationRole, classId);
   };
 
   const navGroups = getNavGroups();
-
-  const classIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
-  const classId = classIdMatch ? classIdMatch[1] : null;
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -276,16 +109,11 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               )}
               <div className="space-y-1">
                 {group.items.map((item) => {
-                  const isActive =
-                    item.href !== "#" && (
-                      item.href === '/admin' ||
-                        item.href === '/lecturer' ||
-                        item.href === '/student' ||
-                        item.href === '/student/projects' ||
-                        (classId && item.href === `/lecturer/${classId}`)
-                        ? pathname === item.href
-                        : pathname === item.href || pathname.startsWith(`${item.href}/`)
-                    );
+                  const isActive = item.href !== "#" && (
+                    item.exact
+                      ? pathname === item.href
+                      : (pathname === item.href || pathname.startsWith(`${item.href}/`))
+                  );
 
                   return (
                     <NavItem
