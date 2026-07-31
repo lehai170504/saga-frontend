@@ -68,13 +68,13 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-indigo-500 text-white flex items-center justify-center text-3xl font-black shadow-lg">
+            <div className="w-20 h-20 rounded-2xl bg-primary text-white flex items-center justify-center text-3xl font-bold shadow-lg">
               {STUDENT.avatar}
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-black tracking-tight text-foreground">{STUDENT.name}</h1>
-                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-bold">
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">{STUDENT.name}</h1>
+                <Badge variant="outline" className="bg-success/10 text-success border-success/20 font-bold">
                   {STUDENT.status}
                 </Badge>
               </div>
@@ -126,23 +126,23 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
             <div className="grid grid-cols-2 gap-4">
               <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
                 <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <GitCommit size={20} />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-muted-foreground">COMMITS</p>
-                    <p className="text-2xl font-black text-foreground">142</p>
+                    <p className="text-2xl font-bold text-foreground">142</p>
                   </div>
                 </CardContent>
               </Card>
               <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
                 <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                  <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success">
                     <CheckCircle2 size={20} />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-muted-foreground">TASKS DONE</p>
-                    <p className="text-2xl font-black text-foreground">38</p>
+                    <p className="text-2xl font-bold text-foreground">38</p>
                   </div>
                 </CardContent>
               </Card>
@@ -150,25 +150,25 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
             
             {/* Risk Indicator */}
             {STUDENT.riskLevel === 'low' ? (
-              <Card className="rounded-2xl border-border/50 bg-emerald-500/5 shadow-sm border-dashed">
+              <Card className="rounded-2xl border-border/50 bg-success/5 shadow-sm border-dashed">
                 <CardContent className="p-4 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-600">
+                  <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center text-success">
                     <CheckCircle2 size={20} />
                   </div>
                   <div>
-                    <p className="font-bold text-emerald-600">Tình trạng Tốt</p>
+                    <p className="font-bold text-success">Tình trạng Tốt</p>
                     <p className="text-xs text-muted-foreground font-medium">Không phát hiện rủi ro nào đáng kể.</p>
                   </div>
                 </CardContent>
               </Card>
             ) : (
-               <Card className="rounded-2xl border-border/50 bg-red-500/5 shadow-sm border-dashed">
+               <Card className="rounded-2xl border-border/50 bg-destructive/5 shadow-sm border-dashed">
                 <CardContent className="p-4 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600">
+                  <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center text-destructive">
                     <AlertTriangle size={20} />
                   </div>
                   <div>
-                    <p className="font-bold text-red-600">Phát hiện Rủi ro</p>
+                    <p className="font-bold text-destructive">Phát hiện Rủi ro</p>
                     <p className="text-xs text-muted-foreground font-medium">Có 1 cảnh báo High-risk đang chờ xử lý.</p>
                   </div>
                 </CardContent>
@@ -189,10 +189,10 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
                     
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 mb-1">
-                        {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-indigo-500/10 text-indigo-500 border-indigo-500/20"><GitCommit size={10} className="mr-1"/> Commit</Badge>}
-                        {item.type === 'review' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-teal-500/10 text-teal-500 border-teal-500/20"><GitPullRequest size={10} className="mr-1"/> Review</Badge>}
-                        {item.type === 'issue' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-violet-500/10 text-violet-500 border-violet-500/20"><CheckCircle2 size={10} className="mr-1"/> Task</Badge>}
-                        {item.type === 'comment' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-pink-500/10 text-pink-500 border-pink-500/20"><MessageSquare size={10} className="mr-1"/> Comment</Badge>}
+                        {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20"><GitCommit size={10} className="mr-1"/> Commit</Badge>}
+                        {item.type === 'review' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-success/10 text-success border-success/20"><GitPullRequest size={10} className="mr-1"/> Review</Badge>}
+                        {item.type === 'issue' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20"><CheckCircle2 size={10} className="mr-1"/> Task</Badge>}
+                        {item.type === 'comment' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-destructive/10 text-destructive border-destructive/20"><MessageSquare size={10} className="mr-1"/> Comment</Badge>}
                         
                         <span className="text-xs text-muted-foreground font-medium">{item.time}</span>
                       </div>

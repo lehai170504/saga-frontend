@@ -88,26 +88,26 @@ const DrilldownEdge = ({
 const MultiplierNode = ({ data }: any) => {
   const Icon = data.iconType === 'code' ? Code2 : data.iconType === 'design' ? PenTool : FileText;
   return (
-    <div className={`min-w-[180px] px-4 py-3 shadow-lg rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center gap-3 transition-opacity ${data.inactive ? 'opacity-40 grayscale' : 'opacity-100'}`}>
-      <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
+    <div className={`min-w-[180px] px-4 py-3 shadow-lg rounded-2xl bg-background bg-card border border-border border-border flex items-center gap-3 transition-opacity ${data.inactive ? 'opacity-40 grayscale' : 'opacity-100'}`}>
+      <div className="p-2 bg-primary/10 rounded-xl text-primary">
         <Icon size={18} strokeWidth={2.5} />
       </div>
       <div>
         <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{data.label}</div>
-        <div className="text-sm font-black text-foreground">{data.value}</div>
+        <div className="text-sm font-bold text-foreground">{data.value}</div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-indigo-500 border-2 border-background" />
+      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-primary border-2 border-background" />
     </div>
   );
 };
 
 const SprintNode = ({ data }: any) => {
   return (
-    <div className="min-w-[120px] px-3 py-2 shadow-md rounded-xl bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 flex flex-col gap-1 items-center justify-center text-center">
+    <div className="min-w-[120px] px-3 py-2 shadow-md rounded-xl bg-primary/10 border border-primary/20 flex flex-col gap-1 items-center justify-center text-center">
       <Handle type="target" position={Position.Top} className="w-2 h-2 bg-slate-400 border-none" />
-      <div className="text-[10px] font-bold text-cyan-600/80 dark:text-cyan-400/80 uppercase">{data.label}</div>
-      <div className="text-sm font-black text-cyan-700 dark:text-cyan-400">{data.slices} Slices</div>
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2 bg-cyan-500 border-none" />
+      <div className="text-[10px] font-bold text-primary/80 uppercase">{data.label}</div>
+      <div className="text-sm font-bold text-primary">{data.slices} Slices</div>
+      <Handle type="source" position={Position.Bottom} className="w-2 h-2 bg-primary border-none" />
     </div>
   );
 };
@@ -118,13 +118,13 @@ const StudentNode = ({ data }: any) => {
   const Icon = isGhost ? AlertTriangle : isCore ? UserCheck : User;
 
   const colorClass = isGhost
-    ? "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20"
+    ? "text-destructive text-destructive bg-destructive/10 bg-destructive/20"
     : isCore
-      ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20"
-      : "text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800";
+      ? "text-success text-success bg-success/10 bg-success/20"
+      : "text-muted-foreground text-muted-foreground bg-muted bg-card";
 
   return (
-    <div className={`min-w-[200px] px-4 py-3 shadow-lg rounded-2xl bg-white dark:bg-zinc-900 border ${isGhost ? 'border-red-200 dark:border-red-900' : isCore ? 'border-emerald-200 dark:border-emerald-900' : 'border-zinc-200 dark:border-zinc-800'} flex flex-col gap-2 relative`}>
+    <div className={`min-w-[200px] px-4 py-3 shadow-lg rounded-2xl bg-background bg-card border ${isGhost ? 'border-destructive/20 border-destructive/20' : isCore ? 'border-success/20 border-success/20' : 'border-border border-border'} flex flex-col gap-2 relative`}>
       <Handle type="target" position={Position.Top} className="w-3 h-3 bg-slate-400 border-2 border-background" />
 
       <div className="flex items-center gap-3">
@@ -132,16 +132,16 @@ const StudentNode = ({ data }: any) => {
           <Icon size={18} strokeWidth={2.5} />
         </div>
         <div>
-          <div className="text-sm font-black text-foreground">{data.name}</div>
-          <div className={`text-[10px] font-bold uppercase tracking-wider ${isGhost ? 'text-red-500' : isCore ? 'text-emerald-500' : 'text-muted-foreground'}`}>
+          <div className="text-sm font-bold text-foreground">{data.name}</div>
+          <div className={`text-[10px] font-bold uppercase tracking-wider ${isGhost ? 'text-destructive' : isCore ? 'text-success' : 'text-muted-foreground'}`}>
             {data.roleLabel}
           </div>
         </div>
       </div>
 
-      <div className="mt-1 pt-2 border-t border-dashed border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+      <div className="mt-1 pt-2 border-t border-dashed border-border flex justify-between items-center">
         <span className="text-[10px] font-bold text-muted-foreground uppercase">Base Slices</span>
-        <span className="text-xs font-black text-foreground">{data.baseSlices}</span>
+        <span className="text-xs font-bold text-foreground">{data.baseSlices}</span>
       </div>
 
       <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-slate-400 border-2 border-background" />
@@ -152,11 +152,11 @@ const StudentNode = ({ data }: any) => {
 const RetroNode = ({ data }: any) => {
   const isPenalty = data.isPenalty;
   return (
-    <div className={`min-w-[160px] px-4 py-3 shadow-lg rounded-2xl bg-white dark:bg-zinc-900 border ${isPenalty ? 'border-red-200 dark:border-red-900' : 'border-violet-200 dark:border-violet-900'} flex flex-col gap-1 items-center justify-center text-center`}>
+    <div className={`min-w-[160px] px-4 py-3 shadow-lg rounded-2xl bg-background bg-card border ${isPenalty ? 'border-destructive/20 border-destructive/20' : 'border-primary/20 border-primary/20'} flex flex-col gap-1 items-center justify-center text-center`}>
       <Handle type="target" position={Position.Top} className="w-3 h-3 bg-slate-400 border-2 border-background" />
       <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{data.label || 'Hệ số Retro'}</div>
-      <div className={`text-xl font-black ${isPenalty ? 'text-red-500' : 'text-violet-500'}`}>{data.modifier}</div>
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-violet-500 border-2 border-background" />
+      <div className={`text-xl font-bold ${isPenalty ? 'text-destructive' : 'text-primary'}`}>{data.modifier}</div>
+      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-primary border-2 border-background" />
     </div>
   );
 };
@@ -164,16 +164,16 @@ const RetroNode = ({ data }: any) => {
 const SliceNode = ({ data }: any) => {
   return (
     <div className="min-w-[180px] px-4 py-4 shadow-xl rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center gap-3 relative overflow-hidden">
-      <Handle type="target" position={Position.Top} className="w-3 h-3 bg-white border-2 border-indigo-500" />
+      <Handle type="target" position={Position.Top} className="w-3 h-3 bg-background border-2 border-primary/20" />
       <div className="absolute -right-4 -bottom-4 opacity-20">
         <PieChart size={64} />
       </div>
-      <div className="relative z-10 p-2 bg-white/20 rounded-xl backdrop-blur-md">
+      <div className="relative z-10 p-2 bg-background/20 rounded-xl backdrop-blur-md">
         <PieChart size={20} className="text-white" />
       </div>
       <div className="relative z-10">
         <div className="text-[10px] font-bold text-indigo-100 uppercase tracking-wider">{data.label || 'Tổng Slices Đóng góp'}</div>
-        <div className="text-xl font-black">{data.slices} {data.percentage && <span className="text-sm font-semibold text-indigo-200">({data.percentage}%)</span>}</div>
+        <div className="text-xl font-bold">{data.slices} {data.percentage && <span className="text-sm font-semibold text-indigo-200">({data.percentage}%)</span>}</div>
       </div>
     </div>
   );
@@ -413,11 +413,11 @@ export function ClassNetworkGraph() {
         <CardHeader className="pb-4 flex flex-col lg:flex-row lg:items-start justify-between gap-6 border-b border-border/50 bg-muted/20">
           <div>
             <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Network className="h-5 w-5 text-indigo-500" />
+              <Network className="h-5 w-5 text-primary" />
               Kiểm toán Đóng góp Nhóm (Slicing Pie Audit)
             </CardTitle>
             <CardDescription className="font-medium mt-2 max-w-3xl text-sm leading-relaxed">
-              Mô hình hóa chuỗi giá trị: <strong className="text-indigo-500 dark:text-indigo-400">∑(Story Points × Hệ số Công việc) × Hệ số Retrospective</strong>.<br />
+              Mô hình hóa chuỗi giá trị: <strong className="text-primary">∑(Story Points × Hệ số Công việc) × Hệ số Retrospective</strong>.<br />
               Sử dụng công cụ này để thanh tra % cổ phần Slices của Nhóm. <strong className="text-primary">Mẹo:</strong> Click vào các đường nối phía trên để truy xuất (Drilldown) chi tiết danh sách Task.
             </CardDescription>
           </div>
@@ -431,13 +431,13 @@ export function ClassNetworkGraph() {
                 <SelectItem value="phase1" className="font-medium">Sprint 1</SelectItem>
                 <SelectItem value="phase2" className="font-medium">Sprint 2</SelectItem>
                 <SelectItem value="phase3" className="font-medium">Sprint 3</SelectItem>
-                <SelectItem value="final" className="font-bold text-indigo-600">Final Report (Chốt sổ)</SelectItem>
+                <SelectItem value="final" className="font-bold text-primary">Final Report (Chốt sổ)</SelectItem>
               </SelectContent>
             </Select>
 
             <Button
               className={`h-10 rounded-xl font-bold px-6 shadow-md transition-all gap-2 ${selectedPhase === 'final'
-                ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                ? 'bg-primary hover:bg-indigo-700 text-white'
                 : 'bg-primary hover:bg-primary/90 text-primary-foreground'
                 }`}
             >
@@ -447,7 +447,7 @@ export function ClassNetworkGraph() {
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="p-0 relative bg-zinc-50/50 dark:bg-zinc-950/50">
+        <CardContent className="p-0 relative bg-card">
           {/* Graph Container */}
           <div className="h-[700px] w-full relative">
             <ReactFlow

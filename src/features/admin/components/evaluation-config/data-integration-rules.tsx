@@ -28,13 +28,13 @@ export function DataIntegrationRules() {
 
             {/* LEFT COLUMN: RULES CONFIGURATION */}
             <div className="xl:col-span-2 space-y-8">
-              <div className="flex items-center gap-2 text-violet-600 dark:text-violet-500 bg-violet-500/10 p-3 rounded-lg border border-violet-500/20 text-sm font-medium">
+              <div className="flex items-center gap-2 text-primary bg-primary/10 p-3 rounded-lg border border-primary/20 text-sm font-medium">
                 <Lock className="w-4 h-4" /> Các tham số đối soát dữ liệu đa nền tảng đã được thiết lập mặc định theo chuẩn ngành SE.
               </div>
 
               {/* JIRA INTEGRATION */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold mb-2">
+                <div className="flex items-center gap-2 text-primary font-bold mb-2">
                   <Combine className="w-5 h-5" />
                   <h3>Nguồn Tích hợp Jira (Cơ sở tính Slices)</h3>
                 </div>
@@ -64,7 +64,7 @@ export function DataIntegrationRules() {
 
               {/* GITHUB INTEGRATION */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-zinc-800 dark:text-zinc-200 font-bold mb-2">
+                <div className="flex items-center gap-2 text-foreground dark:text-zinc-200 font-bold mb-2">
                   <GitBranch className="w-5 h-5" />
                   <h3>Nguồn Tích hợp GitHub (Bằng chứng AI)</h3>
                 </div>
@@ -116,14 +116,14 @@ export function DataIntegrationRules() {
                   <div className="space-y-4">
 
                     <div className="space-y-1">
-                      <h4 className="font-bold text-foreground text-base text-blue-600 dark:text-blue-400">1. Value vs. Effort (Jira)</h4>
+                      <h4 className="font-bold text-foreground text-base text-primary">1. Value vs. Effort (Jira)</h4>
                       <p className="text-xs leading-relaxed">
                         Hệ thống bắt buộc tính Slices theo <strong>Story Points (Giá trị)</strong> thay vì <strong>Time Logged (Nỗ lực)</strong>. Điều này dựa trên <em>Định luật Parkinson: &quot;Công việc luôn tự mở rộng ra để lấp đầy thời gian được ấn định cho nó&quot;</em>. Nếu chấm điểm theo giờ làm, sinh viên sẽ có xu hướng code chậm lại hoặc khai khống giờ (inflate hours) để trục lợi. Story Points đánh giá đúng giá trị đầu ra (Outcome-based).
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <h4 className="font-bold text-foreground text-base text-zinc-800 dark:text-zinc-200">2. Bằng chứng Mật mã (GitHub)</h4>
+                      <h4 className="font-bold text-foreground text-base dark:text-zinc-200">2. Bằng chứng Mật mã (GitHub)</h4>
                       <p className="text-xs leading-relaxed">
                         Việc kéo Jira Card sang cột &quot;Done&quot; cực kỳ dễ dàng và dễ bị thao túng. Tích hợp GitHub cung cấp <strong>Cryptographic Proof of Work</strong> (Bằng chứng công việc bằng mật mã). Nếu Jira = Done nhưng GitHub = Không có Commit, đó là hành vi mạo danh công sức của người khác (Freerider).
                       </p>

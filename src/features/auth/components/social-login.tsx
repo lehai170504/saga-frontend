@@ -34,7 +34,7 @@ export function SocialLogin() {
         </Button>
         <Button
           variant="outline"
-          className="rounded-xl font-semibold h-11 hover:text-blue-600 hover:border-blue-300"
+          className="rounded-xl font-semibold h-11 text-primary border-primary/20"
           onClick={() => toast.info("Tính năng Jira OAuth sẽ sớm ra mắt!")}
         >
           <svg

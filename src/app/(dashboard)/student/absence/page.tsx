@@ -235,21 +235,21 @@ export default function AbsenceDelayReporting() {
     switch (status) {
       case "approved":
         return (
-          <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
+          <span className="bg-success/10 dark:bg-emerald-950/40 text-success border border-success/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
             <CheckCircle size={10} />
             Đã đồng ý
           </span>
         );
       case "rejected":
         return (
-          <span className="bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
+          <span className="bg-destructive/10 dark:bg-rose-950/40 text-destructive border border-destructive/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
             <XCircle size={10} />
             Từ chối
           </span>
         );
       default:
         return (
-          <span className="bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-100 dark:border-violet-900/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 animate-pulse">
+          <span className="bg-primary/10 dark:bg-violet-950/40 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 animate-pulse">
             <Clock size={10} />
             Chờ duyệt
           </span>
@@ -270,17 +270,17 @@ export default function AbsenceDelayReporting() {
         <div className="lg:col-span-2 space-y-6">
           <Card className="border border-border shadow-sm rounded-3xl bg-card overflow-hidden !pt-0">
             {/* Header Brand Bar */}
-            <div className="h-2 w-full bg-indigo-500" />
+            <div className="h-2 w-full bg-primary" />
             
             <div className="p-6 space-y-6">
               
               {/* Form Navigation Tabs */}
-              <div className="flex gap-2 p-1.5 bg-slate-100/60 dark:bg-slate-950 rounded-2xl border border-border">
+              <div className="flex gap-2 p-1.5 bg-card rounded-2xl border border-border">
                 <button
                   onClick={() => setActiveTab("absence")}
                   className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     activeTab === "absence"
-                      ? "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm"
+                      ? "bg-background bg-card text-primary text-primary shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -291,7 +291,7 @@ export default function AbsenceDelayReporting() {
                   onClick={() => setActiveTab("delay")}
                   className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     activeTab === "delay"
-                      ? "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm"
+                      ? "bg-background bg-card text-primary text-primary shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -331,7 +331,7 @@ export default function AbsenceDelayReporting() {
                         id="abs-session"
                         value={absenceSession}
                         onChange={(e) => setAbsenceSession(e.target.value)}
-                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm cursor-pointer text-foreground"
+                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 ring-primary12440 border-primary/20 shadow-sm cursor-pointer text-foreground"
                       >
                         <option value="Sáng (07:30 - 11:30)">Sáng (07:30 - 11:30)</option>
                         <option value="Chiều (13:30 - 17:30)">Chiều (13:30 - 17:30)</option>
@@ -349,7 +349,7 @@ export default function AbsenceDelayReporting() {
                         id="abs-category"
                         value={absenceCategory}
                         onChange={(e) => setAbsenceCategory(e.target.value)}
-                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm cursor-pointer text-foreground"
+                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 ring-primary13607 border-primary/20 shadow-sm cursor-pointer text-foreground"
                       >
                         <option value="Lý do sức khỏe">Lý do sức khỏe (ốm đau, đi khám bệnh)</option>
                         <option value="Trùng lịch thi học vụ">Trùng lịch thi học kỳ/lịch thi đột xuất của trường</option>
@@ -372,7 +372,7 @@ export default function AbsenceDelayReporting() {
                           onChange={(e) => setAbsenceEvidence(e.target.value)}
                           className="h-11 pl-10 bg-background border border-border rounded-xl text-xs font-medium text-foreground"
                         />
-                        <Upload className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                        <Upload className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
                       </div>
                       <p className="text-[10px] text-muted-foreground font-semibold mt-1">
                         * Khuyến khích đính kèm minh chứng để Giảng viên dễ dàng phê duyệt báo cáo vắng.
@@ -392,7 +392,7 @@ export default function AbsenceDelayReporting() {
                         placeholder="Nêu cụ thể lý do vắng mặt, kế hoạch tự học bù hoặc liên hệ nhóm trưởng để bàn giao lại phần việc phụ trách..."
                         value={absenceDetail}
                         onChange={(e) => setAbsenceDetail(e.target.value)}
-                        className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
+                        className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 ring-primary16572 border-primary/20 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
 
@@ -401,7 +401,7 @@ export default function AbsenceDelayReporting() {
                   <div className="flex justify-end pt-2">
                     <Button
                       type="submit"
-                      className="h-11 px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 cursor-pointer"
+                      className="h-11 px-6 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 cursor-pointer"
                     >
                       <Send size={13} />
                       Gửi báo cáo vắng mặt
@@ -422,7 +422,7 @@ export default function AbsenceDelayReporting() {
                         id="del-task"
                         value={delayTask}
                         onChange={(e) => setDelayTask(e.target.value)}
-                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm cursor-pointer text-foreground"
+                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 ring-primary18224 border-primary/20 shadow-sm cursor-pointer text-foreground"
                       >
                         {mockJiraTasks.map((task) => (
                           <option key={task.id} value={task.title}>
@@ -456,7 +456,7 @@ export default function AbsenceDelayReporting() {
                         id="del-category"
                         value={delayCategory}
                         onChange={(e) => setDelayCategory(e.target.value)}
-                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm cursor-pointer text-foreground"
+                        className="w-full h-11 bg-background border border-border rounded-xl px-3 text-xs font-medium focus:outline-none focus:ring-2 ring-primary20058 border-primary/20 shadow-sm cursor-pointer text-foreground"
                       >
                         <option value="Khó khăn kỹ thuật phát sinh">Khó khăn kỹ thuật phát sinh ngoài dự kiến (Lỗi thư viện, môi trường)</option>
                         <option value="Chưa nhận được phản hồi/dữ liệu">Đang đợi tài liệu/API từ thành viên khác hoặc đối tác</option>
@@ -479,7 +479,7 @@ export default function AbsenceDelayReporting() {
                         placeholder="Nêu rõ phương án bù tiến độ, ví dụ: Nhờ bạn khác hỗ trợ code, OT cuối tuần để kịp tiến độ Sprint..."
                         value={delayPlan}
                         onChange={(e) => setDelayPlan(e.target.value)}
-                        className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
+                        className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 ring-primary21808 border-primary/20 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
 
@@ -496,7 +496,7 @@ export default function AbsenceDelayReporting() {
                         placeholder="Giải thích chi tiết các khó khăn gặp phải và tiến độ hiện tại của task này..."
                         value={delayDetail}
                         onChange={(e) => setDelayDetail(e.target.value)}
-                        className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
+                        className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 ring-primary22945 border-primary/20 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
 
@@ -505,7 +505,7 @@ export default function AbsenceDelayReporting() {
                   <div className="flex justify-end pt-2">
                     <Button
                       type="submit"
-                      className="h-11 px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 cursor-pointer"
+                      className="h-11 px-6 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 cursor-pointer"
                     >
                       <Send size={13} />
                       Gửi giải trình trễ hạn
@@ -526,7 +526,7 @@ export default function AbsenceDelayReporting() {
             <div className="flex justify-between items-center border-b border-border pb-3">
               <div>
                 <h4 className="font-extrabold text-foreground text-sm flex items-center gap-1.5">
-                  <History size={16} className="text-indigo-500" />
+                  <History size={16} className="text-primary" />
                   Lịch sử gửi báo cáo
                 </h4>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase mt-0.5">
@@ -542,20 +542,20 @@ export default function AbsenceDelayReporting() {
             <div className="space-y-3 max-h-[550px] overflow-y-auto pr-1">
               {history.length === 0 ? (
                 <div className="py-12 text-center text-muted-foreground">
-                  <CalendarX size={36} className="mx-auto text-slate-300 dark:text-slate-800 mb-2" />
+                  <CalendarX size={36} className="mx-auto text-slate-300 text-foreground mb-2" />
                   <p className="text-xs font-bold">Chưa gửi báo cáo nào</p>
                 </div>
               ) : (
                 history.map((item) => (
                   <div
                     key={item.id}
-                    className="p-4 rounded-2xl border border-slate-100 dark:border-slate-900 bg-background dark:bg-slate-950 flex flex-col gap-3 transition-all hover:border-slate-200 dark:hover:border-slate-800"
+                    className="p-4 rounded-2xl border border-border bg-card flex flex-col gap-3 transition-all dark:border-border"
                   >
                     <div className="flex justify-between items-start gap-2">
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold ${
                         item.type === "absence"
-                          ? "bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400"
-                          : "bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400"
+                          ? "bg-primary/10 dark:bg-blue-950/50 text-primary text-primary"
+                          : "bg-primary/10 dark:bg-indigo-950/50 text-primary text-primary"
                       }`}>
                         {item.type === "absence" ? "Vắng mặt" : "Trễ tiến độ"}
                       </span>
@@ -572,7 +572,7 @@ export default function AbsenceDelayReporting() {
                     </div>
 
                     {/* Metadata details list */}
-                    <div className="bg-slate-50 dark:bg-slate-900/30 p-2.5 rounded-xl text-[10px] font-semibold text-muted-foreground space-y-1">
+                    <div className="bg-card p-2.5 rounded-xl text-[10px] font-semibold text-muted-foreground space-y-1">
                       {item.details.session && (
                         <div>Ca học: <span className="text-foreground">{item.details.session}</span></div>
                       )}
@@ -586,14 +586,14 @@ export default function AbsenceDelayReporting() {
                         <div>Lý do: <span className="text-foreground">{item.details.reasonCategory}</span></div>
                       )}
                       {item.details.evidenceFile && item.details.evidenceFile !== "Không có minh chứng đính kèm" && (
-                        <div className="text-blue-600 dark:text-blue-400 flex items-center gap-1 mt-0.5">
+                        <div className="text-primary flex items-center gap-1 mt-0.5">
                           <FileText size={10} />
                           {item.details.evidenceFile}
                         </div>
                       )}
                     </div>
 
-                    <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-900/60">
+                    <div className="flex justify-between items-center pt-2 border-t border-border">
                       <span className="text-[9px] text-muted-foreground font-semibold flex items-center gap-1">
                         <Calendar size={10} />
                         {item.dateCreated}
@@ -601,7 +601,7 @@ export default function AbsenceDelayReporting() {
                       {item.status === "pending" && (
                         <button
                           onClick={() => handleDeleteReport(item.id)}
-                          className="text-[9px] text-red-600 dark:text-red-400 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
+                          className="text-[9px] text-destructive font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
                         >
                           <Trash2 size={10} />
                           Rút báo cáo
@@ -614,9 +614,9 @@ export default function AbsenceDelayReporting() {
             </div>
 
             {/* Notification alert banner */}
-            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 border border-border rounded-2xl space-y-1.5">
+            <div className="bg-card p-4 border border-border rounded-2xl space-y-1.5">
               <h5 className="font-extrabold text-foreground text-xs flex items-center gap-1">
-                <AlertCircle size={14} className="text-indigo-500" />
+                <AlertCircle size={14} className="text-primary" />
                 Lưu ý quan trọng:
               </h5>
               <p className="text-muted-foreground text-[10px] font-medium leading-relaxed">

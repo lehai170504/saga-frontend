@@ -17,7 +17,7 @@ const getInitials = (name: string) => {
 export function UserAvatar({
   name,
   className = "w-9 h-9",
-  bgColorClass = "bg-indigo-500",
+  bgColorClass = "bg-primary",
 }: UserAvatarProps) {
   return (
     <div

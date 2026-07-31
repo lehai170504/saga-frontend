@@ -18,24 +18,24 @@ const recentActivities = [
     action: "đã merge PR #142",
     time: "2 phút trước",
     status: "Success",
-    bg: "bg-indigo-100 dark:bg-indigo-950/40",
-    icon: <GitCommit className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />,
+    bg: "bg-primary/10 dark:bg-indigo-950/40",
+    icon: <GitCommit className="h-4 w-4 text-primary" />,
   },
   {
     user: "Hoang Long",
     action: "đã bình luận trên Jira PBL-118",
     time: "11 phút trước",
     status: "Active",
-    bg: "bg-blue-100 dark:bg-blue-950/40",
-    icon: <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />,
+    bg: "bg-primary/10 dark:bg-blue-950/40",
+    icon: <MessageSquare className="h-4 w-4 text-primary" />,
   },
   {
     user: "Thu Hien",
     action: "đã đóng task 'DB scripts'",
     time: "34 phút trước",
     status: "Done",
-    bg: "bg-emerald-100 dark:bg-emerald-950/40",
-    icon: <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />,
+    bg: "bg-success/10 dark:bg-emerald-950/40",
+    icon: <CheckCircle2 className="h-4 w-4 text-success" />,
   },
 ];
 
@@ -158,7 +158,7 @@ export function StudentDashboardView() {
                 <div className="p-2.5 rounded-xl bg-muted">
                   {stat.icon}
                 </div>
-                <div className={`px-2 py-1 rounded-full text-xs font-bold transition-colors ${stat.trendUp ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400' : 'text-violet-700 bg-violet-100 dark:bg-violet-950/40 dark:text-violet-400'}`}>
+                <div className={`px-2 py-1 rounded-full text-xs font-bold transition-colors ${stat.trendUp ? 'text-success bg-success/10 dark:bg-emerald-950/40 text-success' : 'text-primary bg-primary/10 dark:bg-violet-950/40 text-primary'}`}>
                   {stat.trend}
                 </div>
               </div>

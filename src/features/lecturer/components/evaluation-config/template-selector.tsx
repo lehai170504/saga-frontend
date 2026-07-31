@@ -48,7 +48,7 @@ export function TemplateSelector() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="xl:col-span-2 space-y-6">
               {/* Template Info */}
-              <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-xl space-y-2">
+              <div className="p-4 bg-success/10 border border-success/20 text-success rounded-xl space-y-2">
                 <div className="flex items-center gap-2 font-bold">
                   <Info className="w-4 h-4" />
                   <span>Đang sử dụng: Bộ Khung Chuẩn SE</span>
@@ -60,7 +60,7 @@ export function TemplateSelector() {
 
               {/* Customizing Multipliers */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-zinc-800 dark:text-zinc-200 font-bold mb-2">
+                <div className="flex items-center gap-2 text-foreground dark:text-zinc-200 font-bold mb-2">
                   <Settings2 className="w-5 h-5 text-primary" />
                   <h3>Tinh chỉnh Hệ số Công việc của Lớp</h3>
                 </div>
@@ -79,7 +79,7 @@ export function TemplateSelector() {
                           step="0.1"
                           value={m.value}
                           onChange={(e) => updateMultiplier(m.id, "value", parseFloat(e.target.value) || 0)}
-                          className="h-10 w-24 text-center font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                          className="h-10 w-24 text-center font-bold text-success bg-success/10 border-success/20"
                         />
                         <Button
                           variant="ghost"
@@ -105,8 +105,8 @@ export function TemplateSelector() {
 
               {/* Reason for Override */}
               {isModified && (
-                <div className="p-5 rounded-xl border border-violet-500/30 bg-violet-500/5 space-y-4 animate-in fade-in slide-in-from-top-4">
-                  <div className="flex items-start gap-2 text-violet-600 dark:text-violet-500">
+                <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 space-y-4 animate-in fade-in slide-in-from-top-4">
+                  <div className="flex items-start gap-2 text-primary">
                     <Info className="w-5 h-5 shrink-0 mt-0.5" />
                     <div className="space-y-1">
                       <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
@@ -116,7 +116,7 @@ export function TemplateSelector() {
 
                   <Textarea
                     placeholder="Ví dụ: Đồ án lớp này tập trung mạnh vào AI, nên cần thêm task Train Model với hệ số 2.5..."
-                    className="min-h-[100px] border-violet-500/30 focus-visible:ring-violet-500/20"
+                    className="min-h-[100px] border-primary/20 focus-visible:ring-primary6285"
                     value={overrideReason}
                     onChange={(e) => setOverrideReason(e.target.value)}
                   />
@@ -124,7 +124,7 @@ export function TemplateSelector() {
                   <div className="flex justify-end">
                     <Button
                       disabled={!overrideReason.trim()}
-                      className="bg-violet-500 hover:bg-violet-600 text-white font-bold rounded-xl"
+                      className="bg-primary text-white font-bold rounded-xl"
                     >
                       Gửi yêu cầu Ghi đè Khung Hệ số
                     </Button>

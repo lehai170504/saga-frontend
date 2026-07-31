@@ -66,22 +66,22 @@ export default function SystemLogsPage() {
         <MetricCard
           title="Tổng sự kiện (24h)"
           value={isLoading ? "-" : "1,248"}
-          icon={<Activity className="w-4 h-4 text-blue-500" />}
+          icon={<Activity className="w-4 h-4 text-primary" />}
         />
         <MetricCard
           title="Cảnh báo / Lỗi"
           value={isLoading ? "-" : "12"}
-          icon={<AlertTriangle className="w-4 h-4 text-rose-500" />}
+          icon={<AlertTriangle className="w-4 h-4 text-destructive" />}
         />
         <MetricCard
           title="Tình trạng Server"
           value={isLoading ? "-" : "Bình thường"}
-          icon={<ShieldCheck className="w-4 h-4 text-emerald-500" />}
+          icon={<ShieldCheck className="w-4 h-4 text-success" />}
         />
         <MetricCard
           title="Đồng bộ FAP gần nhất"
           value={isLoading ? "-" : "4h trước"}
-          icon={<Clock className="w-4 h-4 text-violet-500" />}
+          icon={<Clock className="w-4 h-4 text-primary" />}
         />
       </div>
 
@@ -126,11 +126,11 @@ export default function SystemLogsPage() {
                 {/* Terminal Header */}
                 <div className="bg-[#18181b] px-4 py-2 flex items-center gap-2 border-b border-border/20">
                   <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-destructive/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-warning/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-success/80"></div>
                   </div>
-                  <span className="text-xs text-zinc-500 font-mono ml-2 flex-1 text-center">root@saga-server:~# tail -f /var/log/saga.log</span>
+                  <span className="text-xs text-muted-foreground font-mono ml-2 flex-1 text-center">root@saga-server:~# tail -f /var/log/saga.log</span>
                 </div>
                 
                 {/* Terminal Body */}
@@ -141,30 +141,30 @@ export default function SystemLogsPage() {
                       const isWarning = log.status === "warning";
                       
                       return (
-                        <div key={log.id} className="flex gap-3 hover:bg-white/5 px-2 py-1 -mx-2 rounded transition-colors group">
-                          <span className="text-zinc-500 shrink-0">[{log.timestamp}]</span>
+                        <div key={log.id} className="flex gap-3 bg-background/5 px-2 py-1 -mx-2 rounded transition-colors group">
+                          <span className="text-muted-foreground shrink-0">[{log.timestamp}]</span>
                           <span className={`shrink-0 font-bold ${
-                            isError ? "text-red-400" : isWarning ? "text-yellow-400" : "text-green-400"
+                            isError ? "text-destructive" : isWarning ? "text-warning" : "text-success"
                           }`}>
                             [{log.status.toUpperCase()}]
                           </span>
-                          <span className="text-sky-400 shrink-0">[{log.user}]</span>
-                          <span className="text-purple-400 shrink-0">{log.action}:</span>
+                          <span className="text-primary shrink-0">[{log.user}]</span>
+                          <span className="text-primary shrink-0">{log.action}:</span>
                           <span className={isError ? "text-red-200" : "text-zinc-300"}>
                             {log.details}
-                            <span className="text-zinc-600 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">(IP: {log.ip})</span>
+                            <span className="text-muted-foreground ml-2 opacity-0 group-hover:opacity-100 transition-opacity">(IP: {log.ip})</span>
                           </span>
                         </div>
                       )
                     })
                   ) : (
-                    <div className="text-zinc-500 italic flex items-center justify-center h-full">
+                    <div className="text-muted-foreground italic flex items-center justify-center h-full">
                       No logs found matching your criteria.
                     </div>
                   )}
                   <div className="flex gap-3 px-2 py-1 mt-2">
-                    <span className="text-zinc-500 shrink-0">[{new Date().toISOString().replace('T', ' ').substring(0, 19)}]</span>
-                    <span className="text-blue-400 shrink-0 font-bold">[SYSTEM]</span>
+                    <span className="text-muted-foreground shrink-0">[{new Date().toISOString().replace('T', ' ').substring(0, 19)}]</span>
+                    <span className="text-primary shrink-0 font-bold">[SYSTEM]</span>
                     <span className="text-zinc-300">Listening for new events... <span className="inline-block w-2 h-4 bg-zinc-400 animate-pulse align-middle ml-1"></span></span>
                   </div>
                 </div>

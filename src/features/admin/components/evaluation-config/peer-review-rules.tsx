@@ -23,30 +23,30 @@ export function PeerReviewRules() {
             <div className="xl:col-span-2 space-y-8">
               {/* VOTE RULES */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-violet-600 dark:text-violet-500 bg-violet-500/10 p-3 rounded-lg border border-violet-500/20 text-sm font-medium mb-4">
+                <div className="flex items-center gap-2 text-primary bg-primary/10 p-3 rounded-lg border border-primary/20 text-sm font-medium mb-4">
                   <Lock className="w-4 h-4" /> Hệ số điều chỉnh đã được khóa cứng theo Quy chế Đào tạo.
                 </div>
                 {[
                   { star: 1, label: "Rất Tệ (1 Sao)", desc: "Không làm gì, thái độ thiếu hợp tác.", defaultVal: 0.5, color: "text-destructive" },
-                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-indigo-500" },
-                  { star: 3, label: "Đạt (3 Sao)", desc: "Mốc chuẩn (Baseline): Hoàn thành mức cơ bản, đúng hạn.", defaultVal: 1.0, color: "text-emerald-500", isBaseline: true },
-                  { star: 4, label: "Khá Tốt (4 Sao)", desc: "Hoàn thành tốt nhiệm vụ được giao.", defaultVal: 1.05, color: "text-blue-500" },
-                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-violet-500" },
+                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-primary" },
+                  { star: 3, label: "Đạt (3 Sao)", desc: "Mốc chuẩn (Baseline): Hoàn thành mức cơ bản, đúng hạn.", defaultVal: 1.0, color: "text-success", isBaseline: true },
+                  { star: 4, label: "Khá Tốt (4 Sao)", desc: "Hoàn thành tốt nhiệm vụ được giao.", defaultVal: 1.05, color: "text-primary" },
+                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-primary" },
                 ].map((item) => (
                   <div
                     key={item.star}
                     className={`flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border transition-all ${item.isBaseline
-                      ? 'bg-emerald-500/10 border-emerald-500/40 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
+                      ? 'bg-success/10 border-success/20 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
                       : 'border-border/50 bg-background/50 opacity-90'
                       }`}
                   >
                     <div className="flex items-center gap-2 w-44 shrink-0">
                       <Star className={`w-5 h-5 fill-current ${item.color}`} />
-                      <span className={`font-bold ${item.isBaseline ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>{item.label}</span>
+                      <span className={`font-bold ${item.isBaseline ? 'text-success text-success' : ''}`}>{item.label}</span>
                     </div>
                     <div className="flex-1 text-sm text-muted-foreground flex flex-col justify-center">
                       {item.isBaseline ? (
-                        <span className="font-semibold text-emerald-700 dark:text-emerald-300">
+                        <span className="font-semibold text-success dark:text-emerald-300">
                           {item.desc}
                         </span>
                       ) : (
@@ -59,7 +59,7 @@ export function PeerReviewRules() {
                         type="number"
                         disabled
                         value={item.defaultVal}
-                        className={`w-24 text-center font-bold h-10 rounded-xl bg-muted border-border/50 ${item.defaultVal < 1 ? 'text-destructive' : item.defaultVal > 1 ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-500'}`}
+                        className={`w-24 text-center font-bold h-10 rounded-xl bg-muted border-border/50 ${item.defaultVal < 1 ? 'text-destructive' : item.defaultVal > 1 ? 'text-primary text-primary' : 'text-success text-success'}`}
                       />
                     </div>
                   </div>
@@ -95,12 +95,12 @@ export function PeerReviewRules() {
                     <p className="font-bold text-foreground">Tại sao lại là những con số này?</p>
                     <div className="space-y-2">
                       <p><strong className="text-destructive">1 Sao (0.50):</strong> Loss Aversion & PIP. Trừng phạt tâm lý (sợ mất mát), trừ 50% xem như đòn cảnh cáo cấp cao nhất để triệt tiêu ý định free-rider.</p>
-                      <p><strong className="text-indigo-500">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá xuống Trung bình.</p>
-                      <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl my-3">
-                        <p className="text-emerald-700 dark:text-emerald-400 font-semibold"><strong className="text-emerald-600 dark:text-emerald-400">3 Sao (1.0) - MỐC CHUẨN:</strong> Hoàn thành 100% khối lượng kỳ vọng thì nhận 100% điểm. (Baseline).</p>
+                      <p><strong className="text-primary">2 Sao (0.80):</strong> Phạt 20% vì đồng đội phải gánh 20% khối lượng công việc. Chuyển sinh viên từ Khá xuống Trung bình.</p>
+                      <div className="p-3 bg-success/10 border border-success/20 rounded-xl my-3">
+                        <p className="text-success font-semibold"><strong className="text-success">3 Sao (1.0) - MỐC CHUẨN:</strong> Hoàn thành 100% khối lượng kỳ vọng thì nhận 100% điểm. (Baseline).</p>
                       </div>
-                      <p><strong className="text-blue-500">4 Sao (1.05):</strong> Bonus 5% - Phần thưởng khích lệ an toàn.</p>
-                      <p><strong className="text-violet-500">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống "chính trị chốn công sở".</p>
+                      <p><strong className="text-primary">4 Sao (1.05):</strong> Bonus 5% - Phần thưởng khích lệ an toàn.</p>
+                      <p><strong className="text-primary">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống "chính trị chốn công sở".</p>
                     </div>
                   </div>
 
@@ -112,13 +112,13 @@ export function PeerReviewRules() {
                     <div className="bg-muted/50 p-3 rounded-lg border border-border/50 font-mono space-y-3">
                       <div className="space-y-1">
                         <span className="text-xs text-muted-foreground block">1. Tích lũy Sprint (Thực thi)</span>
-                        <p className="text-emerald-600 dark:text-emerald-400 font-bold text-[11px] leading-relaxed">
+                        <p className="text-success font-bold text-[11px] leading-relaxed">
                           Slices_Sprint = ∑(SP × Hệ số) + Bonus
                         </p>
                       </div>
                       <div className="space-y-1">
                         <span className="text-xs text-muted-foreground block">2. Chốt sổ Phase (Đánh giá)</span>
-                        <p className="text-indigo-600 dark:text-indigo-400 font-bold text-[11px] leading-relaxed">
+                        <p className="text-primary font-bold text-[11px] leading-relaxed">
                           Slices_Phase = ∑(Slices_Sprint) × Peer_Review
                         </p>
                       </div>

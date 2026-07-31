@@ -178,11 +178,11 @@ export default function SettingsPage() {
 
               {/* CARD 1: GITHUB CONNECTION */}
               <Card className="relative border border-border shadow-sm rounded-3xl bg-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
-                <div className="h-2 w-full bg-slate-900 dark:bg-slate-950" />
+                <div className="h-2 w-full bg-card" />
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
                   <div>
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl text-slate-800 dark:text-slate-200 shadow-sm">
+                      <div className="p-3 bg-card rounded-2xl text-foreground dark:text-slate-200 shadow-sm">
                         {/* Custom GitHub SVG */}
                         <svg
                           className="h-6 w-6 fill-current"
@@ -193,12 +193,12 @@ export default function SettingsPage() {
                         </svg>
                       </div>
                       {gitConnected ? (
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-success/10 dark:bg-emerald-950/30 text-success border border-success/20 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
+                          <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
                           Đã kết nối
                         </span>
                       ) : (
-                        <span className="px-3 py-1 bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500 border border-slate-200/60 dark:border-slate-800 rounded-full text-xs font-bold">
+                        <span className="px-3 py-1 bg-card text-muted-foreground border border-border rounded-full text-xs font-bold">
                           Chưa kết nối
                         </span>
                       )}
@@ -215,8 +215,8 @@ export default function SettingsPage() {
                   {gitConnected ? (
                     /* Connected UI state */
                     <div className="space-y-4 pt-4 border-t border-border animate-in fade-in duration-300">
-                      <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-border">
-                        <div className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-700 text-white font-bold flex items-center justify-center text-sm shadow-inner">
+                      <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border">
+                        <div className="w-10 h-10 rounded-full bg-card dark:bg-slate-700 text-white font-bold flex items-center justify-center text-sm shadow-inner">
                           {gitAccount.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -242,7 +242,7 @@ export default function SettingsPage() {
                         </button>
                       </div>
                       <div className="text-[10px] text-muted-foreground font-bold flex items-center justify-between px-1">
-                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                        <span className="flex items-center gap-1 text-success">
                           <CheckCircle2 size={10} /> Tự động đồng bộ
                         </span>
                         <span>Đồng bộ: 5 phút trước</span>
@@ -258,17 +258,17 @@ export default function SettingsPage() {
                             href="https://github.com"
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[10px] text-muted-foreground hover:text-indigo-500 dark:hover:text-indigo-400 font-bold flex items-center gap-0.5"
+                            className="text-[10px] text-muted-foreground text-primary dark:text-primary font-bold flex items-center gap-0.5"
                           >
                             Tạo tài khoản <ExternalLink size={8} />
                           </a>
                         </div>
                         <div className="relative">
-                          <span className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500 font-bold text-sm">@</span>
+                          <span className="absolute left-3.5 top-3 text-muted-foreground font-bold text-sm">@</span>
                           <Input
                             id="git-user"
                             placeholder="Ví dụ: lehai1705"
-                            className="pl-8 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-8 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary12836 focus-visible:border-primary/20 rounded-xl text-sm font-medium transition-all"
                             value={gitUsername}
                             onChange={(e) => setGitUsername(e.target.value)}
                           />
@@ -277,7 +277,7 @@ export default function SettingsPage() {
                       <button
                         type="submit"
                         disabled={isConnectingGit}
-                        className="w-full h-11 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                        className="w-full h-11 bg-card dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
                       >
                         {isConnectingGit ? (
                           <>
@@ -295,23 +295,23 @@ export default function SettingsPage() {
 
               {/* CARD 2: JIRA CONNECTION */}
               <Card className="relative border border-border shadow-sm rounded-3xl bg-card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300">
-                <div className="h-2 w-full bg-blue-600 dark:bg-blue-800" />
+                <div className="h-2 w-full bg-primary bg-primary/20" />
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
                   <div>
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm">
+                      <div className="p-3 bg-primary/10 dark:bg-blue-950/50 text-primary rounded-2xl shadow-sm">
                         {/* Custom Jira SVG */}
                         <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path d="M12.004 0c-2.35 2.395-2.365 6.185.133 8.585l3.412 3.413-3.197 3.198a6.501 6.501 0 0 1 1.412 7.04l9.566-9.566a.95.95 0 0 0 0-1.344L12.004 0zm-1.748 1.74L.67 11.327a.95.95 0 0 0 0 1.344C4.45 16.44 8.22 20.244 12 24c2.295-2.298 2.395-6.096-.08-8.533l-3.47-3.469 3.2-3.2c-1.918-1.955-2.363-4.725-1.394-7.057z" />
                         </svg>
                       </div>
                       {jiraConnected ? (
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
-                          <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 dark:bg-blue-950/30 text-primary border border-primary/20 rounded-full text-xs font-bold animate-in zoom-in-95 duration-300">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                           Đã kết nối
                         </span>
                       ) : (
-                        <span className="px-3 py-1 bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500 border border-slate-200/60 dark:border-slate-800 rounded-full text-xs font-bold">
+                        <span className="px-3 py-1 bg-card text-muted-foreground border border-border rounded-full text-xs font-bold">
                           Chưa kết nối
                         </span>
                       )}
@@ -328,8 +328,8 @@ export default function SettingsPage() {
                   {jiraConnected ? (
                     /* Connected UI state */
                     <div className="space-y-4 pt-4 border-t border-border animate-in fade-in duration-300">
-                      <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-border">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm shadow-inner">
+                      <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-blue-950 text-primary font-bold flex items-center justify-center text-sm shadow-inner">
                           {jiraAccount.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -345,7 +345,7 @@ export default function SettingsPage() {
                         </button>
                       </div>
                       <div className="text-[10px] text-muted-foreground font-bold flex items-center justify-between px-1">
-                        <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                        <span className="flex items-center gap-1 text-primary">
                           <CheckCircle2 size={10} /> Tự động đồng bộ
                         </span>
                         <span>Đồng bộ: 10 phút trước</span>
@@ -357,12 +357,12 @@ export default function SettingsPage() {
                       <div className="space-y-1">
                         <Label htmlFor="jira-mail" className="text-muted-foreground text-xs font-bold">Email tài khoản Jira</Label>
                         <div className="relative">
-                          <AtSign className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
+                          <AtSign className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="jira-mail"
                             type="email"
                             placeholder="Ví dụ: student@email.com"
-                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary19195 focus-visible:border-primary/20 rounded-xl text-sm font-medium transition-all"
                             value={jiraEmail}
                             onChange={(e) => setJiraEmail(e.target.value)}
                           />
@@ -375,18 +375,18 @@ export default function SettingsPage() {
                             href="https://id.atlassian.com/manage-profile/security/api-tokens"
                             target="_blank"
                             rel="noreferrer"
-                            className="text-[10px] text-indigo-500 hover:underline font-bold flex items-center gap-0.5"
+                            className="text-[10px] text-primary hover:underline font-bold flex items-center gap-0.5"
                           >
                             Lấy Token <ExternalLink size={8} />
                           </a>
                         </div>
                         <div className="relative">
-                          <Key className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
+                          <Key className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="jira-token"
                             type="password"
                             placeholder="Nhập API Token bảo mật"
-                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm font-medium transition-all"
+                            className="pl-10 h-11 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary20734 focus-visible:border-primary/20 rounded-xl text-sm font-medium transition-all"
                             value={jiraToken}
                             onChange={(e) => setJiraToken(e.target.value)}
                           />
@@ -395,7 +395,7 @@ export default function SettingsPage() {
                       <button
                         type="submit"
                         disabled={isConnectingJira}
-                        className="w-full h-11 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                        className="w-full h-11 bg-primary hover:bg-blue-700 dark:bg-blue-700 dark:bg-primary/20 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
                       >
                         {isConnectingJira ? (
                           <>
@@ -414,8 +414,8 @@ export default function SettingsPage() {
             </div>
 
             {/* INTEGRATION TIPS CARD */}
-            <Card className="border border-indigo-100 dark:border-indigo-950/40 bg-indigo-50/30 dark:bg-indigo-950/10 rounded-3xl p-6 flex flex-col md:flex-row gap-4 items-start shadow-sm">
-              <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl">
+            <Card className="border border-primary/20 bg-primary/10 dark:bg-indigo-950/10 rounded-3xl p-6 flex flex-col md:flex-row gap-4 items-start shadow-sm">
+              <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                 <Link2 size={20} />
               </div>
               <div className="space-y-1">
@@ -432,7 +432,7 @@ export default function SettingsPage() {
           <div className="space-y-6">
             <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
               <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
-                <SettingsIcon className="text-indigo-500" size={18} />
+                <SettingsIcon className="text-primary" size={18} />
                 Cấu hình cá nhân
               </h3>
               <div className="space-y-6">
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                   <div className="relative">
                     <select
                       id="timezone-select"
-                      className="w-full h-10 bg-background border border-border rounded-xl px-3 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm appearance-none cursor-pointer text-foreground"
+                      className="w-full h-10 bg-background border border-border rounded-xl px-3 text-xs font-bold focus:outline-none focus:ring-2 ring-primary24071 border-primary/20 shadow-sm appearance-none cursor-pointer text-foreground"
                       value={timezone}
                       onChange={(e) => setTimezone(e.target.value)}
                     >
@@ -456,7 +456,7 @@ export default function SettingsPage() {
                       <option value="GMT+8">Singapore (GMT+8)</option>
                       <option value="GMT+0">London (GMT+0)</option>
                     </select>
-                    <div className="absolute right-3 top-3.5 pointer-events-none text-slate-400">
+                    <div className="absolute right-3 top-3.5 pointer-events-none text-muted-foreground">
                       <ChevronRight size={14} className="rotate-90" />
                     </div>
                   </div>
@@ -465,7 +465,7 @@ export default function SettingsPage() {
                 {/* Submit Action */}
                 <Button
                   onClick={handleSaveGeneral}
-                  className="w-full h-10 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full h-10 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   Lưu cấu hình cá nhân
                 </Button>
@@ -475,20 +475,20 @@ export default function SettingsPage() {
             {/* Change Password Card */}
             <Card className="border border-border shadow-sm rounded-3xl bg-card p-6 hover:shadow-md transition-all duration-300">
               <h3 className="font-extrabold text-foreground text-base mb-6 flex items-center gap-2">
-                <Shield className="text-indigo-500" size={18} />
+                <Shield className="text-primary" size={18} />
                 Đổi mật khẩu
               </h3>
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label className="text-muted-foreground text-xs font-bold">Mật khẩu hiện tại</Label>
                   <div className="relative flex items-center">
-                    <Key className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Key className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       type={showOldPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm transition-all"
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary26384 focus-visible:border-primary/20 rounded-xl text-sm transition-all"
                     />
                     <button
                       type="button"
@@ -503,13 +503,13 @@ export default function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label className="text-muted-foreground text-xs font-bold">Mật khẩu mới</Label>
                   <div className="relative flex items-center">
-                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       type={showNewPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm transition-all"
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary27650 focus-visible:border-primary/20 rounded-xl text-sm transition-all"
                     />
                     <button
                       type="button"
@@ -524,13 +524,13 @@ export default function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label className="text-muted-foreground text-xs font-bold">Xác nhận mật khẩu mới</Label>
                   <div className="relative flex items-center">
-                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       type={showNewPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 rounded-xl text-sm transition-all"
+                      className="pl-9 pr-10 h-10 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary28933 focus-visible:border-primary/20 rounded-xl text-sm transition-all"
                     />
                   </div>
                 </div>
@@ -538,7 +538,7 @@ export default function SettingsPage() {
                 <Button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="w-full h-10 mt-2 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                  className="w-full h-10 mt-2 bg-card dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
                 >
                   {isChangingPassword ? (
                     <>
@@ -553,9 +553,9 @@ export default function SettingsPage() {
             </Card>
 
             {/* Quick Status / Profile Summary Card */}
-            <Card className="border border-border shadow-sm rounded-3xl bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-4">
+            <Card className="border border-border shadow-sm rounded-3xl bg-card p-5 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-extrabold flex items-center justify-center shadow-md shadow-indigo-500/20">
+                <div className="w-10 h-10 rounded-2xl bg-primary text-white font-extrabold flex items-center justify-center shadow-md shadow-indigo-500/20">
                   LH
                 </div>
                 <div>
@@ -570,7 +570,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground font-medium">Vai trò dự án:</span>
-                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">Student Developer</span>
+                  <span className="text-primary font-bold">Student Developer</span>
                 </div>
               </div>
             </Card>

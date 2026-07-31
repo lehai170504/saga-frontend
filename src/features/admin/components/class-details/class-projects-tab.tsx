@@ -49,8 +49,8 @@ export function ClassProjectsTab({ projects }: ClassProjectsTabProps) {
               <span
                 className={`px-2.5 py-1 rounded-md font-bold text-xs whitespace-nowrap shrink-0 ${
                   project.status === "Hoàn thành"
-                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
-                    : "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400"
+                    ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
+                    : "bg-primary/10 text-primary dark:bg-blue-950/40 text-primary"
                 }`}
               >
                 {project.status}
@@ -100,7 +100,7 @@ export function ClassProjectsTab({ projects }: ClassProjectsTabProps) {
               <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-1000 ease-in-out ${
-                    project.progress === 100 ? "bg-emerald-500" : "bg-primary"
+                    project.progress === 100 ? "bg-success" : "bg-primary"
                   }`}
                   style={{ width: `${project.progress}%` }}
                 />

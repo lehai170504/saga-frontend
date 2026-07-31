@@ -67,8 +67,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/admin/users"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <Users className="w-4 h-4 text-blue-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Users className="w-4 h-4 text-primary" />
                     </div>
                     Quản lý Người dùng (Users)
                   </Command.Item>
@@ -77,8 +77,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/admin/classes"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                      <Activity className="w-4 h-4 text-emerald-500" />
+                    <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                      <Activity className="w-4 h-4 text-success" />
                     </div>
                     Quản lý Lớp PBL (Classes)
                   </Command.Item>
@@ -87,8 +87,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/admin/academic-data"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                      <FileText className="w-4 h-4 text-indigo-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <FileText className="w-4 h-4 text-primary" />
                     </div>
                     Dữ liệu Học vụ (Academic Data)
                   </Command.Item>
@@ -97,8 +97,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/admin/system-logs"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                      <Logs className="w-4 h-4 text-purple-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Logs className="w-4 h-4 text-primary" />
                     </div>
                     Nhật ký Hệ thống (System Logs)
                   </Command.Item>
@@ -114,8 +114,8 @@ export function GlobalCommandPalette() {
                     })}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0">
-                      <RefreshCw className="w-4 h-4 text-rose-500" />
+                    <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                      <RefreshCw className="w-4 h-4 text-destructive" />
                     </div>
                     Ép đồng bộ Dữ liệu FAP ngay
                   </Command.Item>
@@ -124,8 +124,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => toast("Chế độ Maintenance chưa khả dụng."))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-zinc-500/10 flex items-center justify-center shrink-0">
-                      <Settings className="w-4 h-4 text-zinc-500" />
+                    <div className="w-8 h-8 rounded-lg bg-muted0/10 flex items-center justify-center shrink-0">
+                      <Settings className="w-4 h-4 text-muted-foreground" />
                     </div>
                     Bật chế độ Bảo trì (Maintenance Mode)
                   </Command.Item>
@@ -136,8 +136,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/admin/guide"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0">
-                      <HelpCircle className="w-4 h-4 text-sky-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <HelpCircle className="w-4 h-4 text-primary" />
                     </div>
                     Xem Hướng dẫn Sử dụng (Documentation)
                   </Command.Item>
@@ -152,8 +152,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/lecturer"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <BookOpen className="w-4 h-4 text-blue-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <BookOpen className="w-4 h-4 text-primary" />
                     </div>
                     Danh sách lớp học (Classes List)
                   </Command.Item>
@@ -165,8 +165,8 @@ export function GlobalCommandPalette() {
                       onSelect={() => runCommand(() => router.push(`/lecturer/${classId}`))}
                       className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                        <BarChart3 className="w-4 h-4 text-emerald-500" />
+                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                        <BarChart3 className="w-4 h-4 text-success" />
                       </div>
                       Tổng quan lớp (Overview)
                     </Command.Item>
@@ -174,8 +174,8 @@ export function GlobalCommandPalette() {
                       onSelect={() => runCommand(() => router.push(`/lecturer/${classId}/students`))}
                       className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                        <Users className="w-4 h-4 text-purple-500" />
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <Users className="w-4 h-4 text-primary" />
                       </div>
                       Sinh viên (Students)
                     </Command.Item>
@@ -183,8 +183,8 @@ export function GlobalCommandPalette() {
                       onSelect={() => runCommand(() => router.push(`/lecturer/${classId}/projects`))}
                       className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                        <Network className="w-4 h-4 text-indigo-500" />
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <Network className="w-4 h-4 text-primary" />
                       </div>
                       Quản lý nhóm (Projects)
                     </Command.Item>
@@ -200,8 +200,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/student"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <BarChart3 className="w-4 h-4 text-blue-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <BarChart3 className="w-4 h-4 text-primary" />
                     </div>
                     Tổng quan nhóm (Team Overview)
                   </Command.Item>
@@ -209,8 +209,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/student/burndown"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                      <Calendar className="w-4 h-4 text-emerald-500" />
+                    <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                      <Calendar className="w-4 h-4 text-success" />
                     </div>
                     Tiến độ Task (Task Progress)
                   </Command.Item>
@@ -218,8 +218,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/student/contribution"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                      <Users className="w-4 h-4 text-purple-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Users className="w-4 h-4 text-primary" />
                     </div>
                     Đóng góp cá nhân (Contributions)
                   </Command.Item>
@@ -230,8 +230,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/student/assessment"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                      <UserCheck className="w-4 h-4 text-indigo-500" />
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <UserCheck className="w-4 h-4 text-primary" />
                     </div>
                     Đánh giá chéo (Peer Review)
                   </Command.Item>
@@ -239,8 +239,8 @@ export function GlobalCommandPalette() {
                     onSelect={() => runCommand(() => router.push("/student/settings"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-zinc-500/10 flex items-center justify-center shrink-0">
-                      <Link2 className="w-4 h-4 text-zinc-500" />
+                    <div className="w-8 h-8 rounded-lg bg-muted0/10 flex items-center justify-center shrink-0">
+                      <Link2 className="w-4 h-4 text-muted-foreground" />
                     </div>
                     Cài đặt (Settings)
                   </Command.Item>
@@ -256,8 +256,8 @@ export function GlobalCommandPalette() {
                     })}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0">
-                      <ArrowLeft className="w-4 h-4 text-rose-500" />
+                    <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                      <ArrowLeft className="w-4 h-4 text-destructive" />
                     </div>
                     Chọn lớp khác (Switch Class)
                   </Command.Item>

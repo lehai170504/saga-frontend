@@ -38,11 +38,11 @@ const aiWarningData = [
 ];
 
 const statsData = [
-  { title: "Tổng Số Nhóm", value: "12", icon: Users, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20", trend: "Hoạt động", trendUp: true },
-  { title: "Tổng Story Points", value: "842", icon: Layers, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", trend: "+125 SP", trendUp: true },
-  { title: "Slices Phát sinh", value: "1,240", icon: Zap, color: "text-indigo-500", bg: "bg-indigo-500/10", border: "border-indigo-500/20", trend: "+18%", trendUp: true },
-  { title: "Cảnh báo Đỏ (Red Flags)", value: "12", icon: ShieldAlert, color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20", trend: "-2", trendUp: true },
-  { title: "Cảnh báo Vàng (Cần theo dõi)", value: "27", icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20", trend: "+5", trendUp: false },
+  { title: "Tổng Số Nhóm", value: "12", icon: Users, color: "text-primary", bg: "bg-primary/10", border: "border-primary/20", trend: "Hoạt động", trendUp: true },
+  { title: "Tổng Story Points", value: "842", icon: Layers, color: "text-success", bg: "bg-success/10", border: "border-success/20", trend: "+125 SP", trendUp: true },
+  { title: "Slices Phát sinh", value: "1,240", icon: Zap, color: "text-primary", bg: "bg-primary/10", border: "border-primary/20", trend: "+18%", trendUp: true },
+  { title: "Cảnh báo Đỏ (Red Flags)", value: "12", icon: ShieldAlert, color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20", trend: "-2", trendUp: true },
+  { title: "Cảnh báo Vàng (Cần theo dõi)", value: "27", icon: AlertTriangle, color: "text-warning", bg: "bg-warning/10", border: "border-warning/20", trend: "+5", trendUp: false },
 ];
 
 const urgentAlerts = [
@@ -93,13 +93,13 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
               <ShieldCheck size={14} className="text-primary animate-pulse" />
               SAGA Early Warning System
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-muted-foreground">
+            <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-muted-foreground">
               Tổng quan Lớp {classId}
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi hiệu suất Agile và các rủi ro dự án trên toàn bộ các nhóm.</p>
           </div>
           <Link href={`/lecturer/${classId}/evaluation-config`}>
-            <Button className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+            <Button className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-indigo-500/20 bg-primary hover:bg-indigo-700 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
               <Settings2 size={16} />
               Cấu hình AI Rules & Hệ số
             </Button>
@@ -120,7 +120,7 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                   <div className={`p-2.5 rounded-xl ${stat.bg} ${stat.color} border ${stat.border}`}>
                     <stat.icon size={20} />
                   </div>
-                  <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${stat.trendUp ? 'text-emerald-500 bg-emerald-500/10' : 'text-amber-500 bg-amber-500/10'}`}>
+                  <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${stat.trendUp ? 'text-success bg-success/10' : 'text-warning bg-warning/10'}`}>
                     <Activity size={12} />
                     {stat.trend}
                   </div>
@@ -128,7 +128,7 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
 
                 <div>
                   <h3 className="text-sm font-semibold text-muted-foreground mb-1">{stat.title}</h3>
-                  <p className="text-3xl font-black text-foreground tracking-tight">{stat.value}</p>
+                  <p className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -143,14 +143,14 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
               <div className="flex justify-between items-center">
                 <div>
                   <CardTitle className="text-xl font-bold flex items-center gap-2">
-                    <Activity className="text-indigo-500" size={20} />
+                    <Activity className="text-primary" size={20} />
                     Biểu đồ Velocity & Slices
                   </CardTitle>
                   <CardDescription className="font-medium mt-1">Sản lượng Story Points và Cổ phần Đóng góp qua các Sprints.</CardDescription>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground"><div className="w-2 h-2 rounded-full bg-indigo-500"></div> Slices</span>
-                  <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground"><div className="w-2 h-2 rounded-full bg-emerald-500"></div> Story Points</span>
+                  <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground"><div className="w-2 h-2 rounded-full bg-primary"></div> Slices</span>
+                  <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground"><div className="w-2 h-2 rounded-full bg-success"></div> Story Points</span>
                 </div>
               </div>
             </CardHeader>
@@ -224,7 +224,7 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                         <span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: entry.color }} />
                         <span className="text-muted-foreground">{entry.name}</span>
                       </div>
-                      <span className="font-black px-2 py-0.5 rounded-md" style={{ color: entry.color, backgroundColor: `${entry.color}15` }}>
+                      <span className="font-bold px-2 py-0.5 rounded-md" style={{ color: entry.color, backgroundColor: `${entry.color}15` }}>
                         {entry.value} ca
                       </span>
                     </li>
@@ -239,8 +239,8 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Urgent Alerts */}
           <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden flex flex-col">
-            <CardHeader className="border-b border-border/50 bg-red-500/5 pb-4">
-              <CardTitle className="text-lg font-bold flex items-center gap-2 text-red-500">
+            <CardHeader className="border-b border-border/50 bg-destructive/5 pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-destructive">
                 <Siren size={18} />
                 Cảnh báo Khẩn cấp
               </CardTitle>
@@ -248,13 +248,13 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
             <CardContent className="p-4 flex-1">
               <div className="space-y-3">
                 {urgentAlerts.map((alert, idx) => (
-                  <div key={idx} className={`p-3 rounded-xl border ${alert.severity === 'high' ? 'bg-red-500/10 border-red-500/20' : 'bg-amber-500/10 border-amber-500/20'} flex items-start gap-3 transition-all hover:scale-[1.02]`}>
-                    <div className={`p-2 rounded-lg mt-0.5 ${alert.severity === 'high' ? 'bg-red-500/20 text-red-500' : 'bg-amber-500/20 text-amber-500'}`}>
+                  <div key={idx} className={`p-3 rounded-xl border ${alert.severity === 'high' ? 'bg-destructive/10 border-destructive/20' : 'bg-warning/10 border-warning/20'} flex items-start gap-3 transition-all hover:scale-[1.02]`}>
+                    <div className={`p-2 rounded-lg mt-0.5 ${alert.severity === 'high' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'}`}>
                       <AlertTriangle size={14} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <span className={`font-black text-xs ${alert.severity === 'high' ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`}>{alert.name}</span>
+                        <span className={`font-bold text-xs ${alert.severity === 'high' ? 'text-destructive text-destructive' : 'text-warning text-warning'}`}>{alert.name}</span>
                         <Link href={`/lecturer/${classId}/projects/${alert.groupId}`}>
                           <Button variant="ghost" size="icon" className="h-5 w-5 hover:bg-background/50">
                             <ArrowRight size={12} />
@@ -271,8 +271,8 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
 
           {/* Leaderboard */}
           <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden flex flex-col">
-            <CardHeader className="border-b border-border/50 bg-amber-500/5 pb-4">
-              <CardTitle className="text-lg font-bold flex items-center gap-2 text-amber-500">
+            <CardHeader className="border-b border-border/50 bg-warning/5 pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-warning">
                 <Trophy size={18} />
                 Bảng xếp hạng Velocity
               </CardTitle>
@@ -282,15 +282,15 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                 {leaderboardData.map((team, idx) => (
                   <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/50 hover:border-primary/30 transition-all hover:scale-[1.02]">
                     <div className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shadow-sm ${idx === 0 ? 'bg-amber-400 text-amber-950' : idx === 1 ? 'bg-slate-300 text-slate-800' : idx === 2 ? 'bg-orange-300 text-orange-950' : 'bg-muted text-muted-foreground'}`}>
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ${idx === 0 ? 'bg-amber-400 text-amber-950' : idx === 1 ? 'bg-slate-300 text-foreground' : idx === 2 ? 'bg-orange-300 text-orange-950' : 'bg-muted text-muted-foreground'}`}>
                         {idx + 1}
                       </div>
                       <span className="font-bold text-sm text-foreground">{team.name}</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="text-sm font-black text-primary">{team.velocity} SP</div>
-                        <div className={`text-[10px] font-bold flex items-center justify-end ${team.trendUp ? 'text-emerald-500' : 'text-red-500'}`}>
+                        <div className="text-sm font-bold text-primary">{team.velocity} SP</div>
+                        <div className={`text-[10px] font-bold flex items-center justify-end ${team.trendUp ? 'text-success' : 'text-destructive'}`}>
                           {team.trendUp ? <ArrowUpRight size={10} className="mr-0.5" /> : <ArrowDownRight size={10} className="mr-0.5" />}
                           {team.trend}
                         </div>
@@ -309,8 +309,8 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
 
           {/* Class Health */}
           <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden flex flex-col">
-            <CardHeader className="border-b border-border/50 bg-emerald-500/5 pb-4">
-              <CardTitle className="text-lg font-bold flex items-center gap-2 text-emerald-500">
+            <CardHeader className="border-b border-border/50 bg-success/5 pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-success">
                 <HeartPulse size={18} />
                 Sức khỏe Lớp học
               </CardTitle>
@@ -339,7 +339,7 @@ export default function LecturerDashboard({ params }: { params: Promise<{ classI
                 </ResponsiveContainer>
                 {/* Center Label */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-2xl font-black text-foreground">12</span>
+                  <span className="text-2xl font-bold text-foreground">12</span>
                   <span className="text-[10px] font-bold text-muted-foreground uppercase">Nhóm</span>
                 </div>
               </div>

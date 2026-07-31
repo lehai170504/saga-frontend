@@ -160,7 +160,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div className="relative">
                   <Avatar className="h-24 w-24 border-2 border-border shadow-sm">
                     <AvatarImage src="" alt={user.name} />
-                    <AvatarFallback className="bg-indigo-100 text-indigo-700 text-3xl font-bold dark:bg-indigo-900/40 dark:text-indigo-400">
+                    <AvatarFallback className="bg-primary/10 text-primary text-3xl font-bold bg-primary/20">
                       {user.avatarInitials ?? "?"}
                     </AvatarFallback>
                   </Avatar>
@@ -220,7 +220,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     </Label>
                     <div className="relative flex items-center p-3 rounded-xl border bg-muted/30">
                       <ShieldCheck
-                        className={`h-5 w-5 mr-3 ${user.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}
+                        className={`h-5 w-5 mr-3 ${user.role === "admin" ? "text-success" : "text-primary"}`}
                       />
                       <span className="font-medium text-sm">
                         {user.role ? roleDisplay[user.role] : "Chưa xác định"}
@@ -264,7 +264,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div className="space-y-1.5">
                   <Label className="text-muted-foreground text-xs font-bold">Mật khẩu hiện tại</Label>
                   <div className="relative flex items-center">
-                    <Key className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Key className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       type={showOldPassword ? "text" : "password"}
                       placeholder="••••••••"
@@ -285,7 +285,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div className="space-y-1.5">
                   <Label className="text-muted-foreground text-xs font-bold">Mật khẩu mới</Label>
                   <div className="relative flex items-center">
-                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       type={showNewPassword ? "text" : "password"}
                       placeholder="••••••••"
@@ -306,7 +306,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div className="space-y-1.5">
                   <Label className="text-muted-foreground text-xs font-bold">Xác nhận mật khẩu mới</Label>
                   <div className="relative flex items-center">
-                    <Lock className="absolute left-3 h-4 w-4 text-slate-400" />
+                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       type={showNewPassword ? "text" : "password"}
                       placeholder="••••••••"
@@ -351,7 +351,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           placeholder="ghp_xxxxxxxxxxxx"
                           value={githubToken}
                           onChange={(e) => setGithubToken(e.target.value)}
-                          className="bg-background border-border focus-visible:ring-indigo-500"
+                          className="bg-background border-border focus-visible:ring-primary15973"
                         />
                         <Button
                           variant="secondary"
@@ -372,7 +372,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           placeholder="Nhập Jira token..."
                           value={jiraToken}
                           onChange={(e) => setJiraToken(e.target.value)}
-                          className="bg-background border-border focus-visible:ring-indigo-500"
+                          className="bg-background border-border focus-visible:ring-primary17068"
                         />
                         <Button
                           variant="secondary"

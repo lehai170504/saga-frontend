@@ -64,14 +64,14 @@ export function SlicingPieConfig() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4 p-4 rounded-xl border border-border bg-background/50 relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/40"></div>
+            <div className="space-y-4 p-4 rounded-xl border border-border bg-background/50 relative overflow-hidden group border-success/20 transition-colors">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-success/40"></div>
               <Label className="text-xs font-bold text-muted-foreground uppercase">Hệ số Retrospective</Label>
               <p className="text-[10px] text-muted-foreground">Điều chỉnh tăng/giảm phần trăm tổng Slices cuối Sprint thông qua bầu chọn công khai.</p>
               <div className="space-y-3">
                 <div className="flex justify-between items-center gap-4">
-                  <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">Thưởng (Max)</span>
-                  <Input type="number" step="0.1" value={multipliers.maxRetro} onChange={e => updateMultiplier('maxRetro', parseFloat(e.target.value))} className="w-20 h-8 text-right font-bold text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-sm font-semibold text-success">Thưởng (Max)</span>
+                  <Input type="number" step="0.1" value={multipliers.maxRetro} onChange={e => updateMultiplier('maxRetro', parseFloat(e.target.value))} className="w-20 h-8 text-right font-bold text-success" />
                 </div>
                 <div className="flex justify-between items-center gap-4">
                   <span className="text-sm font-semibold text-destructive">Phạt (Min)</span>
@@ -80,14 +80,14 @@ export function SlicingPieConfig() {
               </div>
             </div>
 
-            <div className="space-y-4 p-4 rounded-xl border border-border bg-background/50 relative overflow-hidden group hover:border-violet-500/30 transition-colors">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-violet-500/40"></div>
+            <div className="space-y-4 p-4 rounded-xl border border-border bg-background/50 relative overflow-hidden group border-primary/20 transition-colors">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/40"></div>
               <Label className="text-xs font-bold text-muted-foreground uppercase">Giới hạn Scrum (SP)</Label>
               <p className="text-[10px] text-muted-foreground">Ngăn chặn khai khống Story Points. Yêu cầu sinh viên chia nhỏ Epic/Task nếu vượt quá ngưỡng.</p>
               <div className="space-y-3 mt-auto">
                 <div className="flex justify-between items-center gap-4 pt-2">
                   <span className="text-sm font-semibold">Max SP / Task</span>
-                  <Input type="number" step="1" value={multipliers.maxSp} onChange={e => updateMultiplier('maxSp', parseInt(e.target.value))} className="w-20 h-8 text-right font-bold text-violet-500" />
+                  <Input type="number" step="1" value={multipliers.maxSp} onChange={e => updateMultiplier('maxSp', parseInt(e.target.value))} className="w-20 h-8 text-right font-bold text-primary" />
                 </div>
               </div>
             </div>

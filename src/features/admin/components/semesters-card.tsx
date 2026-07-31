@@ -31,9 +31,9 @@ export function SemestersGrid({ data, onEdit, onDelete }: SemestersGridProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800";
-      case "upcoming": return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800";
-      case "ended": return "bg-zinc-100 text-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700";
+      case "active": return "bg-success/10 text-success bg-success/20 text-success border-success/20 border-success/20";
+      case "upcoming": return "bg-primary/10 text-primary bg-primary/20 text-primary border-primary/20 border-primary/20";
+      case "ended": return "bg-muted text-foreground bg-card text-muted-foreground border-border border-border";
       default: return "bg-muted text-muted-foreground";
     }
   };
@@ -52,7 +52,7 @@ export function SemestersGrid({ data, onEdit, onDelete }: SemestersGridProps) {
       {data.map((semester) => (
         <Card key={semester.id} className="rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
           {/* Status Indicator Bar */}
-          <div className={`absolute top-0 left-0 w-full h-1.5 ${semester.status === 'active' ? 'bg-emerald-500' : semester.status === 'upcoming' ? 'bg-blue-500' : 'bg-zinc-400'}`} />
+          <div className={`absolute top-0 left-0 w-full h-1.5 ${semester.status === 'active' ? 'bg-success' : semester.status === 'upcoming' ? 'bg-primary' : 'bg-zinc-400'}`} />
 
           <CardContent className="p-6 pt-7">
             <div className="flex justify-between items-start mb-6">

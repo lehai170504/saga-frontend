@@ -175,7 +175,7 @@ export function StudentProjectCreate() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
 
@@ -241,12 +241,12 @@ export function StudentProjectCreate() {
                 <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 flex flex-col justify-between space-y-6">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-purple-500/10 text-purple-500 rounded-2xl">
+                      <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                         <GitBranch size={20} />
                       </div>
 
                       {githubConnected ? (
-                        <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-full text-[10px] font-black uppercase">
+                        <span className="flex items-center gap-1 px-2.5 py-1 bg-success/10 border border-success/20 text-success rounded-full text-[10px] font-bold uppercase">
                           <CheckCircle2 size={10} className="fill-current" />
                           Đã liên kết
                         </span>
@@ -320,12 +320,12 @@ export function StudentProjectCreate() {
                 <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 flex flex-col justify-between space-y-6">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                      <div className="p-3 bg-indigo-500/10 text-indigo-500 rounded-2xl">
+                      <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                         <Compass size={20} />
                       </div>
 
                       {jiraConnected ? (
-                        <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-full text-[10px] font-black uppercase">
+                        <span className="flex items-center gap-1 px-2.5 py-1 bg-success/10 border border-success/20 text-success rounded-full text-[10px] font-bold uppercase">
                           <CheckCircle2 size={10} className="fill-current" />
                           Đã liên kết
                         </span>
@@ -415,15 +415,15 @@ export function StudentProjectCreate() {
 
                 <Button
                   type="submit"
-                  className="w-full h-11 rounded-xl font-black text-xs uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md shadow-primary/10"
+                  className="w-full h-11 rounded-xl font-bold text-xs uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md shadow-primary/10"
                 >
                   Lưu cấu hình Project
                 </Button>
               </Card>
 
               {/* Informative tips */}
-              <Card className="border border-indigo-100 dark:border-indigo-950/40 bg-indigo-50/20 dark:bg-indigo-950/5 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
-                <Link2 className="text-indigo-500 shrink-0" size={16} />
+              <Card className="border border-primary/20 bg-primary/10 dark:bg-indigo-950/5 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
+                <Link2 className="text-primary shrink-0" size={16} />
                 <div className="space-y-1">
                   <h4 className="font-extrabold text-foreground text-[11px] uppercase tracking-wide">Lưu ý kết nối</h4>
                   <p className="text-muted-foreground text-[10px] font-medium leading-relaxed">

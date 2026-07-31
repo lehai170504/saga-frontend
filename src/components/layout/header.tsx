@@ -144,18 +144,18 @@ export function Header({ onMenuClick }: HeaderProps) {
               >
                 <Bell className="h-5 w-5 text-muted-foreground" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-background animate-pulse shadow-[0_0_8px_rgba(243,24,66,0.8)]"></span>
+                  <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-background animate-pulse shadow-[0_0_8px_rgba(243,24,66,0.8)]"></span>
                 )}
               </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-[360px] rounded-[2rem] p-3 border-border/60 bg-card/95 backdrop-blur-xl shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
               <div className="flex items-center justify-between px-3 py-2 border-b border-border/40 mb-2">
-                <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
                   <Bell size={13} className="text-primary animate-pulse" />
                   Thông báo
                   {unreadCount > 0 && (
-                    <span className="text-[10px] font-black text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-destructive bg-destructive/10 px-2 py-0.5 rounded-full">
                       {unreadCount} mới
                     </span>
                   )}
@@ -164,7 +164,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllRead}
-                    className="text-[10px] font-black text-primary hover:underline cursor-pointer"
+                    className="text-[10px] font-bold text-primary hover:underline cursor-pointer"
                   >
                     Đọc tất cả
                   </button>
@@ -178,17 +178,17 @@ export function Header({ onMenuClick }: HeaderProps) {
                   </div>
                 ) : (
                   notifications.map((notif) => {
-                    let iconBg = "bg-purple-500/10 text-purple-500";
+                    let iconBg = "bg-primary/10 text-primary";
                     let icon = <GitBranch size={13} />;
 
                     if (notif.type === "jira") {
-                      iconBg = "bg-sky-500/10 text-sky-500";
+                      iconBg = "bg-primary/10 text-primary";
                       icon = <Compass size={13} />;
                     } else if (notif.type === "feedback") {
-                      iconBg = "bg-violet-500/10 text-violet-500";
+                      iconBg = "bg-primary/10 text-primary";
                       icon = <MessageSquare size={13} />;
                     } else if (notif.type === "absence") {
-                      iconBg = "bg-emerald-500/10 text-emerald-500";
+                      iconBg = "bg-success/10 text-success";
                       icon = <Check size={13} />;
                     }
 
@@ -205,7 +205,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
                         <div className="flex-1 space-y-0.5 text-left min-w-0">
                           <div className="flex justify-between items-start gap-2">
-                            <h4 className={`text-xs truncate ${notif.read ? "font-bold text-foreground/80" : "font-black text-foreground"}`}>
+                            <h4 className={`text-xs truncate ${notif.read ? "font-bold text-foreground/80" : "font-bold text-foreground"}`}>
                               {notif.title}
                             </h4>
                             <span className="text-[9px] font-bold text-muted-foreground shrink-0">{notif.time}</span>
@@ -228,7 +228,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
               <DropdownMenuItem
                 onClick={() => router.push(user?.role === "student" ? "/student/audit-logs" : "/lecturer")}
-                className="justify-center text-center text-[10px] font-black uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
+                className="justify-center text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
               >
                 Xem tất cả nhật ký
               </DropdownMenuItem>
@@ -244,8 +244,8 @@ export function Header({ onMenuClick }: HeaderProps) {
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
             <div className="relative h-5 w-5 flex items-center justify-center">
-              <Sun className="absolute h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-violet-500" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
+              <Sun className="absolute h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-primary" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-primary" />
             </div>
           </Button>
 
@@ -261,7 +261,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                 <div className="text-right hidden sm:block transition-transform duration-300 group-hover:-translate-x-1">
                   <p className="text-sm font-bold text-foreground leading-tight flex justify-end items-center gap-1.5">
                     {user?.role === "admin" && (
-                      <ShieldCheck size={14} className="text-emerald-500 drop-shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
+                      <ShieldCheck size={14} className="text-success drop-shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
                     )}
                     {user?.name ?? "Khách"}
                   </p>
@@ -271,14 +271,14 @@ export function Header({ onMenuClick }: HeaderProps) {
                 </div>
                 <Avatar className="h-10 w-10 border-2 border-background shadow-md ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300 group-hover:scale-105">
                   <AvatarImage src="" alt={user?.name ?? "User"} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-black text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold text-sm">
                     {user?.avatarInitials ?? "?"}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64 rounded-2xl shadow-2xl border-border/40 bg-background/95 backdrop-blur-xl p-2 animate-in slide-in-from-top-2">
-              <DropdownMenuLabel className="font-black text-xs text-muted-foreground uppercase tracking-widest px-3 pt-2 pb-1">Tài khoản của tôi</DropdownMenuLabel>
+              <DropdownMenuLabel className="font-bold text-xs text-muted-foreground uppercase tracking-widest px-3 pt-2 pb-1">Tài khoản của tôi</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
@@ -290,7 +290,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="cursor-pointer font-bold text-rose-600 focus:text-rose-700 focus:bg-rose-50 dark:focus:bg-rose-950/30 rounded-xl px-3 py-2.5 transition-colors group"
+                className="cursor-pointer font-bold text-destructive bg-destructive/10 dark:focus:bg-rose-950/30 rounded-xl px-3 py-2.5 transition-colors group"
               >
                 <LogOut className="mr-3 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 <span>Đăng xuất</span>

@@ -44,18 +44,18 @@ export default function MasterGradebookPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 text-xs font-bold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
               <CheckCircle2 size={14} />
               Final Evaluation Export
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-foreground">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               Bảng Điểm Tổng Hợp
             </h1>
             <p className="text-muted-foreground font-medium">Đối chiếu phần trăm Slices của toàn bộ sinh viên và xuất báo cáo nộp lên FAP</p>
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="rounded-xl border-border/50 h-10 font-bold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/30">
+            <Button variant="outline" className="rounded-xl border-border/50 h-10 font-bold text-success bg-success/10 dark:hover:bg-emerald-950/30">
               <FileSpreadsheet size={16} className="mr-2" />
               Xuất Excel (FAP Format)
             </Button>
@@ -100,8 +100,8 @@ export default function MasterGradebookPage() {
                     <TableHead className="text-center font-bold text-muted-foreground">Tổng Slices</TableHead>
                     <TableHead className="text-center font-bold text-muted-foreground">% Cổ phần</TableHead>
                     <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
-                    <TableHead className="text-center bg-indigo-500/5 font-bold text-indigo-600 border-x border-indigo-500/10">Điểm Đề Xuất (Hệ Thống)</TableHead>
-                    <TableHead className="text-center bg-primary/5 font-black text-primary border-r border-primary/10">Điểm Chốt Cuối (GV)</TableHead>
+                    <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20">Điểm Đề Xuất (Hệ Thống)</TableHead>
+                    <TableHead className="text-center bg-primary/5 font-bold text-primary border-r border-primary/10">Điểm Chốt Cuối (GV)</TableHead>
                     <TableHead className="font-bold text-muted-foreground">Lý do Ghi đè (Nếu có)</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -118,22 +118,22 @@ export default function MasterGradebookPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-center font-medium text-muted-foreground">{student.details.slices}</TableCell>
-                        <TableCell className="text-center font-black text-indigo-500">{student.details.percentage}</TableCell>
+                        <TableCell className="text-center font-bold text-primary">{student.details.percentage}</TableCell>
                         <TableCell className="text-center">
                           {student.details.aiFlag ? (
                             <div className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-bold">
                               <AlertTriangle size={12} /> Có cờ đỏ
                             </div>
                           ) : (
-                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded-md text-xs font-bold">
+                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-success/10 text-success rounded-md text-xs font-bold">
                               <CheckCircle2 size={12} /> Hợp lệ
                             </div>
                           )}
                         </TableCell>
 
                         {/* System Score */}
-                        <TableCell className="text-center bg-indigo-500/5 border-x border-indigo-500/10">
-                          <span className="font-bold text-indigo-600 text-lg">{student.sysScore.toFixed(1)}</span>
+                        <TableCell className="text-center bg-primary/5 border-x border-primary/20">
+                          <span className="font-bold text-primary text-lg">{student.sysScore.toFixed(1)}</span>
                         </TableCell>
 
                         {/* Manual Override Score */}
@@ -143,12 +143,12 @@ export default function MasterGradebookPage() {
                             step="0.5"
                             min="0"
                             max="10"
-                            className={`w-20 mx-auto text-center font-black text-lg border-2 ${isOverridden ? 'border-violet-500 text-violet-600 focus-visible:ring-violet-500' : 'border-transparent text-primary bg-transparent focus-visible:ring-primary'}`}
+                            className={`w-20 mx-auto text-center font-bold text-lg border-2 ${isOverridden ? 'border-primary/20 text-primary focus-visible:ring-primary8698' : 'border-transparent text-primary bg-transparent focus-visible:ring-primary'}`}
                             defaultValue={student.manualScore}
                             onBlur={(e) => handleManualScoreChange(student.id, e.target.value)}
                           />
                           {isOverridden && (
-                            <div className="absolute top-1 right-2 w-2 h-2 rounded-full bg-violet-500" title="Điểm đã bị ghi đè" />
+                            <div className="absolute top-1 right-2 w-2 h-2 rounded-full bg-primary" title="Điểm đã bị ghi đè" />
                           )}
                         </TableCell>
 

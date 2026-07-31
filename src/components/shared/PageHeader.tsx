@@ -11,17 +11,17 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, children, workspace }: PageHeaderProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-2 mb-8">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {workspace && (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary w-fit text-sm font-medium backdrop-blur-md">
-            <Sparkles size={16} className="animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold">
+            <Sparkles size={16} />
             <span>{workspace}</span>
           </div>
         )}
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
           {title}
         </h1>
-        <p className="text-muted-foreground font-medium max-w-2xl text-base">
+        <p className="text-muted-foreground text-base max-w-2xl">
           {description}
         </p>
       </div>

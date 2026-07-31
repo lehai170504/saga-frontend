@@ -80,41 +80,41 @@ const TraceNode = ({ data }: any) => {
 
   if (data.nodeType === 'commit') {
     Icon = GitCommit;
-    colorClass = "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900";
-    iconClass = "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400";
+    colorClass = "border-border border-border bg-background bg-card";
+    iconClass = "bg-muted bg-card text-muted-foreground text-muted-foreground";
   } else if (data.nodeType === 'task') {
     Icon = ClipboardList;
-    colorClass = "border-blue-200 dark:border-blue-900 bg-white dark:bg-zinc-900";
-    iconClass = "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
+    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
+    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
   } else if (data.nodeType === 'missing') {
     Icon = ShieldAlert;
-    colorClass = "border-violet-200 dark:border-violet-900 bg-white dark:bg-zinc-900";
-    iconClass = "bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400";
+    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
+    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
   } else if (data.nodeType === 'penalty') {
     Icon = AlertTriangle;
-    colorClass = "border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-900/10";
-    iconClass = "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400";
+    colorClass = "border-destructive/20 border-destructive/20 bg-destructive/10 bg-destructive/20";
+    iconClass = "bg-destructive/10 bg-destructive/20 text-destructive text-destructive";
   } else if (data.nodeType === 'score') {
     Icon = Star;
-    colorClass = "border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-900/10";
-    iconClass = "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
+    colorClass = "border-success/20 border-success/20 bg-success/10 bg-success/20";
+    iconClass = "bg-success/10 bg-success/20 text-success text-success";
   } else if (data.nodeType === 'multiplier') {
     Icon = data.iconType === 'code' ? Code2 : data.iconType === 'design' ? PenTool : FileText;
-    colorClass = "border-indigo-200 dark:border-indigo-900 bg-white dark:bg-zinc-900";
-    iconClass = "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400";
+    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
+    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
   } else if (data.nodeType === 'proof') {
     Icon = Link;
-    colorClass = "border-fuchsia-200 dark:border-fuchsia-900 bg-white dark:bg-zinc-900";
-    iconClass = "bg-fuchsia-50 dark:bg-fuchsia-900/30 text-fuchsia-600 dark:text-fuchsia-400";
+    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
+    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
   } else if (data.nodeType === 'peerReview') {
     Icon = UserCheck;
-    colorClass = "border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10";
-    iconClass = "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400";
+    colorClass = "border-primary/20 border-primary/20 bg-primary/10 bg-primary/20";
+    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
   }
 
   return (
     <div
-      className={`min-w-[200px] px-4 py-3 shadow-lg rounded-2xl border ${colorClass} flex items-center gap-3 relative ${data.link ? 'cursor-pointer hover:ring-2 ring-indigo-400/50 hover:shadow-xl hover:-translate-y-0.5 transition-all' : ''}`}
+      className={`min-w-[200px] px-4 py-3 shadow-lg rounded-2xl border ${colorClass} flex items-center gap-3 relative ${data.link ? 'cursor-pointer hover:ring-2 ring-primary4104 hover:shadow-xl hover:-translate-y-0.5 transition-all' : ''}`}
       onClick={() => {
         if (data.link) {
           window.open(data.link, '_blank');
@@ -128,10 +128,10 @@ const TraceNode = ({ data }: any) => {
       </div>
       <div className="pr-4">
         <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{data.subtitle}</div>
-        <div className="text-sm font-black text-foreground">{data.title}</div>
+        <div className="text-sm font-bold text-foreground">{data.title}</div>
       </div>
       {data.link && (
-        <div className="absolute top-3 right-3 text-muted-foreground/50 hover:text-indigo-500 transition-colors">
+        <div className="absolute top-3 right-3 text-muted-foreground/50 text-primary transition-colors">
           <ExternalLink size={14} strokeWidth={2.5} />
         </div>
       )}
@@ -278,7 +278,7 @@ export function StudentScoreTraceGraph() {
               <SelectItem value="phase1" className="font-medium">Phase 1 (Design)</SelectItem>
               <SelectItem value="phase2" className="font-medium">Phase 2 (Coding)</SelectItem>
               <SelectItem value="phase3" className="font-medium">Phase 3 (Testing & Docs)</SelectItem>
-              <SelectItem value="final" className="font-bold text-indigo-600">Final Report</SelectItem>
+              <SelectItem value="final" className="font-bold text-primary">Final Report</SelectItem>
             </SelectContent>
           </Select>
         </div>

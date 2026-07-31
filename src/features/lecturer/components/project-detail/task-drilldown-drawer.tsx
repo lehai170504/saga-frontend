@@ -61,7 +61,7 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
           <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Danh sách Task từ Jira</div>
 
           {data.tasks.map((task, idx) => (
-            <div key={idx} className={`p-4 border ${editingTaskId === task.id ? 'border-violet-400 bg-violet-50/10 dark:bg-violet-900/10 shadow-md' : 'border-border bg-card'} rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden relative group`}>
+            <div key={idx} className={`p-4 border ${editingTaskId === task.id ? 'border-primary/20 bg-primary/10 bg-primary/20 shadow-md' : 'border-border bg-card'} rounded-2xl shadow-sm hover:shadow-md transition-all overflow-hidden relative group`}>
 
               <div className="flex flex-wrap justify-between items-start mb-3 gap-2">
                 <Badge variant="outline" className="font-bold border-primary text-primary bg-primary/10 whitespace-nowrap">
@@ -70,31 +70,31 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
 
                 {/* SP Display or Override Input */}
                 {editingTaskId === task.id ? (
-                  <div className="flex items-center gap-1.5 bg-violet-100 dark:bg-violet-900/30 px-2 py-1 rounded-md border border-violet-300">
+                  <div className="flex items-center gap-1.5 bg-primary/10 px-2 py-1 rounded-md border border-primary/20">
                     <Input
                       value={overrideSp}
                       onChange={(e) => setOverrideSp(e.target.value)}
-                      className="h-6 w-14 text-center font-black text-violet-700 dark:text-violet-400 px-1 py-0 text-xs border-violet-400 bg-white dark:bg-black"
+                      className="h-6 w-14 text-center font-bold text-primary px-1 py-0 text-xs border-primary/20 bg-background dark:bg-black"
                       type="number"
                       step="0.5"
                     />
-                    <span className="text-xs font-bold text-violet-700 dark:text-violet-400 mr-1">SP</span>
-                    <Button size="icon" variant="ghost" className="h-5 w-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full" onClick={() => handleSaveOverride(task.id)}>
+                    <span className="text-xs font-bold text-primary mr-1">SP</span>
+                    <Button size="icon" variant="ghost" className="h-5 w-5 bg-success text-white rounded-full" onClick={() => handleSaveOverride(task.id)}>
                       <Check className="h-3 w-3" />
                     </Button>
-                    <Button size="icon" variant="ghost" className="h-5 w-5 bg-zinc-400 hover:bg-zinc-500 text-white rounded-full" onClick={() => setEditingTaskId(null)}>
+                    <Button size="icon" variant="ghost" className="h-5 w-5 bg-zinc-400 bg-muted0 text-white rounded-full" onClick={() => setEditingTaskId(null)}>
                       <X className="h-3 w-3" />
                     </Button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 group/edit">
-                    <div className="text-sm font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md whitespace-nowrap">
+                    <div className="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-md whitespace-nowrap">
                       {task.sp} Story Points
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-violet-100 hover:bg-violet-200 text-violet-600 rounded-full"
+                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 text-primary rounded-full"
                       onClick={() => handleEditClick(task)}
                       title="Ghi đè SP (Manual Override)"
                     >
@@ -117,8 +117,8 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`font-mono font-bold px-2 py-0.5 rounded break-all border border-border/50 shadow-sm flex items-center gap-1 transition-all ${task.proofType === 'commit'
-                      ? 'text-foreground bg-background hover:bg-muted hover:text-indigo-600'
-                      : 'text-fuchsia-600 bg-fuchsia-50 dark:bg-fuchsia-900/30 hover:bg-fuchsia-100 dark:hover:bg-fuchsia-900/50'
+                      ? 'text-foreground bg-background hover:bg-muted text-primary'
+                      : 'text-primary bg-primary/10 bg-primary/20 bg-primary/10 dark:bg-primary/20'
                       }`}
                   >
                     {task.proofText}
@@ -133,8 +133,8 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
             </div>
           ))}
 
-          <div className="mt-8 p-4 bg-violet-50/50 dark:bg-violet-900/10 border border-violet-200/50 dark:border-violet-900/50 rounded-2xl">
-            <h4 className="font-bold text-violet-600 dark:text-violet-400 mb-2 flex items-center gap-2">
+          <div className="mt-8 p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+            <h4 className="font-bold text-primary mb-2 flex items-center gap-2">
               <AlertCircle className="w-5 h-5 shrink-0" /> Governance by Exception
             </h4>
             <p className="text-sm text-muted-foreground font-medium leading-relaxed">

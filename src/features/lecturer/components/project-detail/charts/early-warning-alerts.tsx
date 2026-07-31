@@ -54,7 +54,7 @@ export function EarlyWarningAlerts() {
         ))}
 
         {aiAlerts.length === 0 && (
-          <div className="flex flex-col items-center justify-center p-8 text-emerald-600">
+          <div className="flex flex-col items-center justify-center p-8 text-success">
             <CheckCircle2 size={40} className="mb-2 opacity-50" />
             <p className="font-bold">Nhóm hoạt động hoàn hảo, không phát hiện rủi ro (Bus Factor/Ghosting)!</p>
           </div>

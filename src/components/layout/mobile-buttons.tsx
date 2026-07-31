@@ -7,7 +7,7 @@ export function MobileMenuButton({ onClick }: { onClick: () => void }) {
     <Button
       variant="ghost"
       size="icon"
-      className="lg:hidden ml-2 text-slate-600 hover:text-slate-900 shrink-0"
+      className="lg:hidden ml-2 text-muted-foreground text-foreground shrink-0"
       onClick={onClick}
     >
       <Menu className="w-6 h-6" />
@@ -20,7 +20,7 @@ export function MobileCloseButton({ onClick }: { onClick: () => void }) {
     <Button
       variant="ghost"
       size="icon"
-      className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+      className="text-muted-foreground text-foreground bg-muted"
       onClick={onClick}
     >
       <X className="w-6 h-6" />

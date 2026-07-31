@@ -239,7 +239,7 @@ export function StudentCommits() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       {/* Ambient Background Glows */}
       <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/5 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         
@@ -265,7 +265,7 @@ export function StudentCommits() {
             {/* Create Branch Button */}
             <Button 
               onClick={() => setIsModalOpen(true)}
-              className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
+              className="h-10 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
             >
               <Plus size={14} className="mr-1.5" />
               Tạo Nhánh Mới
@@ -277,8 +277,8 @@ export function StudentCommits() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="rounded-[2rem] border border-border bg-card/25 dark:bg-card/20 backdrop-blur-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Tổng số Commits</span>
-              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tổng số Commits</span>
+              <div className="p-2 rounded-xl bg-primary/10 text-primary">
                 <GitCommit size={14} />
               </div>
             </div>
@@ -288,34 +288,34 @@ export function StudentCommits() {
 
           <Card className="rounded-[2rem] border border-border bg-card/25 dark:bg-card/20 backdrop-blur-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Số dòng Code thêm</span>
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Số dòng Code thêm</span>
+              <div className="p-2 rounded-xl bg-success/10 text-success">
                 <PlusCircle size={14} />
               </div>
             </div>
-            <h3 className="text-3xl font-extrabold text-emerald-500">+{isLoading ? "-" : totalAdditions.toLocaleString()}</h3>
+            <h3 className="text-3xl font-extrabold text-success">+{isLoading ? "-" : totalAdditions.toLocaleString()}</h3>
             <p className="text-[10px] text-muted-foreground font-semibold mt-1">Lines of code added</p>
           </Card>
 
           <Card className="rounded-[2rem] border border-border bg-card/25 dark:bg-card/20 backdrop-blur-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Số dòng Code xóa</span>
-              <div className="p-2 rounded-xl bg-rose-500/10 text-rose-500">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Số dòng Code xóa</span>
+              <div className="p-2 rounded-xl bg-destructive/10 text-destructive">
                 <MinusCircle size={14} />
               </div>
             </div>
-            <h3 className="text-3xl font-extrabold text-rose-500">-{isLoading ? "-" : totalDeletions.toLocaleString()}</h3>
+            <h3 className="text-3xl font-extrabold text-destructive">-{isLoading ? "-" : totalDeletions.toLocaleString()}</h3>
             <p className="text-[10px] text-muted-foreground font-semibold mt-1">Lines of code deleted</p>
           </Card>
 
           <Card className="rounded-[2rem] border border-border bg-card/25 dark:bg-card/20 backdrop-blur-3xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Tổng Files tác động</span>
-              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tổng Files tác động</span>
+              <div className="p-2 rounded-xl bg-primary/10 text-primary">
                 <FileCode size={14} />
               </div>
             </div>
-            <h3 className="text-3xl font-extrabold text-indigo-500">{isLoading ? "-" : Math.round(totalCommitsCount * 2.3)}</h3>
+            <h3 className="text-3xl font-extrabold text-primary">{isLoading ? "-" : Math.round(totalCommitsCount * 2.3)}</h3>
             <p className="text-[10px] text-muted-foreground font-semibold mt-1">Sửa đổi trung bình 2.3 files/commit</p>
           </Card>
         </div>
@@ -327,7 +327,7 @@ export function StudentCommits() {
               
               {/* Branch Filter dropdown */}
               <div className="space-y-1">
-                <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-wider">Chọn Nhánh</Label>
+                <Label className="text-[9px] font-bold uppercase text-muted-foreground tracking-wider">Chọn Nhánh</Label>
                 <Select value={selectedBranch} onValueChange={setSelectedBranch}>
                   <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border rounded-xl font-bold text-xs">
                     <div className="flex items-center gap-1.5 truncate">
@@ -348,7 +348,7 @@ export function StudentCommits() {
 
               {/* Author Filter dropdown */}
               <div className="space-y-1">
-                <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-wider">Người đóng góp</Label>
+                <Label className="text-[9px] font-bold uppercase text-muted-foreground tracking-wider">Người đóng góp</Label>
                 <Select value={selectedAuthor} onValueChange={setSelectedAuthor}>
                   <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border rounded-xl font-bold text-xs">
                     <div className="flex items-center gap-1.5 truncate">
@@ -370,7 +370,7 @@ export function StudentCommits() {
 
             {/* Commit Message Search */}
             <div className="w-full md:max-w-xs space-y-1">
-              <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-wider">Tìm kiếm Commit</Label>
+              <Label className="text-[9px] font-bold uppercase text-muted-foreground tracking-wider">Tìm kiếm Commit</Label>
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={14} />
                 <Input 
@@ -420,11 +420,11 @@ export function StudentCommits() {
                           </span>
 
                           {/* Commit Card Container */}
-                          <div className="p-4 rounded-2xl border border-border/60 bg-card/45 dark:bg-zinc-950/80 hover:border-primary/40 hover:bg-card/65 transition-all duration-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                          <div className="p-4 rounded-2xl border border-border/60 bg-card/45 bg-card hover:border-primary/40 hover:bg-card/65 transition-all duration-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
                             
                             <div className="flex items-start gap-3.5 min-w-0">
                               {/* Author initials avatar */}
-                              <div className="w-9 h-9 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-xs font-black shrink-0 shadow-sm">
+                              <div className="w-9 h-9 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
                                 {initials}
                               </div>
 
@@ -456,11 +456,11 @@ export function StudentCommits() {
                             <div className="flex items-center gap-3 shrink-0 justify-between md:justify-end border-t md:border-t-0 pt-3.5 md:pt-0 border-border/40">
                               
                               {/* Lines Added / Deleted */}
-                              <div className="flex items-center gap-1.5 text-[10px] font-black tracking-wider">
-                                <span className="text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">
+                              <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider">
+                                <span className="text-success bg-success/10 px-2 py-0.5 rounded">
                                   +{commit.additions}
                                 </span>
-                                <span className="text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded">
+                                <span className="text-destructive bg-destructive/10 px-2 py-0.5 rounded">
                                   -{commit.deletions}
                                 </span>
                               </div>
@@ -469,7 +469,7 @@ export function StudentCommits() {
                               <a 
                                 href="#" 
                                 onClick={(e) => { e.preventDefault(); toast.info(`Đang mở chi tiết commit [${commit.hash}] trên GitHub...`); }}
-                                className="flex items-center gap-1 text-[10px] font-black text-muted-foreground bg-muted hover:bg-muted/80 hover:text-foreground px-2.5 py-1 rounded-md border border-border/40 font-mono transition-colors"
+                                className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-muted hover:bg-muted/80 hover:text-foreground px-2.5 py-1 rounded-md border border-border/40 font-mono transition-colors"
                               >
                                 <span>{commit.hash}</span>
                                 <ExternalLink size={10} />
@@ -493,7 +493,7 @@ export function StudentCommits() {
 
                   return (
                     <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-border/40 mt-6 gap-4">
-                      <div className="text-[10px] font-black uppercase text-muted-foreground tracking-wide">
+                      <div className="text-[10px] font-bold uppercase text-muted-foreground tracking-wide">
                         Hiển thị {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredCommits.length)} trên {filteredCommits.length} commits
                       </div>
                       <div className="flex items-center gap-2">
@@ -514,7 +514,7 @@ export function StudentCommits() {
                                 onClick={() => setCurrentPage(pageNum)}
                                 className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
                                   currentPage === pageNum
-                                    ? "bg-primary text-primary-foreground font-black shadow-sm"
+                                    ? "bg-primary text-primary-foreground font-bold shadow-sm"
                                     : "hover:bg-muted text-muted-foreground hover:text-foreground"
                                 }`}
                               >
@@ -558,8 +558,8 @@ export function StudentCommits() {
                     placeholder="Ví dụ: feature/dashboard-stats"
                     className="h-10 rounded-xl"
                   />
-                  <div className="flex gap-1.5 p-2 border border-blue-100 dark:border-blue-950/40 bg-blue-50/10 rounded-lg text-[10px] text-muted-foreground leading-normal mt-1">
-                    <Info size={12} className="text-blue-500 shrink-0 mt-0.5" />
+                  <div className="flex gap-1.5 p-2 border border-primary/20 bg-primary/10 rounded-lg text-[10px] text-muted-foreground leading-normal mt-1">
+                    <Info size={12} className="text-primary shrink-0 mt-0.5" />
                     <span>Tên nhánh sẽ được chuẩn hóa thành dạng chữ thường không dấu, khoảng trắng thay bằng dấu gạch ngang (-).</span>
                   </div>
                 </div>

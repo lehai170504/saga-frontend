@@ -141,7 +141,7 @@ export default function StudentLayout({
 
               {/* Header Title Section */}
               <div className="flex flex-col items-center text-center space-y-3 max-w-xl mx-auto">
-                <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
                   Lựa chọn Môn học
                 </h1>
               </div>
@@ -164,7 +164,7 @@ export default function StudentLayout({
 
               {/* Global Class Dropdown Filter (No Background Box Container) - Aligned to Right */}
               <div className="w-full flex justify-end px-8 animate-in fade-in duration-300 items-center gap-2">
-                <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground shrink-0 hidden sm:inline">
+                <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground shrink-0 hidden sm:inline">
                   Bộ lọc lớp:
                 </Label>
                 <Select
@@ -210,7 +210,7 @@ export default function StudentLayout({
 
                         {/* Card Inner Content */}
                         <Card
-                          className="relative overflow-hidden w-full h-full bg-white/80 dark:bg-zinc-950/90 border border-white/10 dark:border-white/5 backdrop-blur-3xl rounded-[calc(2rem-1.5px)] p-8 flex flex-col items-start justify-between text-left z-10"
+                          className="relative overflow-hidden w-full h-full bg-background/80 bg-card border border-white/10 dark:border-white/5 backdrop-blur-3xl rounded-[calc(2rem-1.5px)] p-8 flex flex-col items-start justify-between text-left z-10"
                         >
                           {/* Dreamy radial neon glow spots (behind content) */}
                           <div className="absolute -top-16 -right-16 w-36 h-36 bg-primary/10 rounded-full blur-[40px] group-hover:bg-primary/25 group-hover:scale-125 transition-all duration-700 pointer-events-none" />
@@ -220,27 +220,27 @@ export default function StudentLayout({
                           <div className="flex flex-col items-start space-y-5 relative z-10 w-full mt-1">
 
                             <div className="flex justify-between items-center w-full">
-                              <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-lg w-fit shadow-[0_2px_10px_rgba(234,88,12,0.08)]">
+                              <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-lg w-fit shadow-[0_2px_10px_rgba(234,88,12,0.08)]">
                                 {subj.code}
                               </span>
                               {getSemesterStatus(selectedSemester) === "active" ? (
-                                <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 backdrop-blur-md">
+                                <div className="flex items-center gap-1.5 text-[9px] font-bold text-success bg-success/10 px-2.5 py-1 rounded-full border border-success/20 backdrop-blur-md">
                                   <span className="relative flex h-1.5 w-1.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success"></span>
                                   </span>
                                   ĐANG DIỄN RA
                                 </div>
                               ) : getSemesterStatus(selectedSemester) === "upcoming" ? (
-                                <div className="flex items-center gap-1.5 text-[9px] font-black text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full border border-violet-500/20 backdrop-blur-md">
+                                <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 backdrop-blur-md">
                                   <span className="relative flex h-1.5 w-1.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-violet-500"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
                                   </span>
                                   SẮP DIỄN RA
                                 </div>
                               ) : (
-                                <div className="text-[9px] font-black text-muted-foreground bg-muted/40 px-2.5 py-1 rounded-full border border-border backdrop-blur-md uppercase tracking-wider">
+                                <div className="text-[9px] font-bold text-muted-foreground bg-muted/40 px-2.5 py-1 rounded-full border border-border backdrop-blur-md uppercase tracking-wider">
                                   ĐÃ KẾT THÚC
                                 </div>
                               )}
@@ -248,11 +248,11 @@ export default function StudentLayout({
 
                             {/* Details wrapper */}
                             <div className="flex flex-col items-start space-y-2.5 w-full">
-                              <h3 className="text-xl font-black text-foreground mt-1 group-hover:text-primary transition-colors line-clamp-2 pr-2 text-left tracking-tight">
+                              <h3 className="text-xl font-bold text-foreground mt-1 group-hover:text-primary transition-colors line-clamp-2 pr-2 text-left tracking-tight">
                                 {subj.name}
                               </h3>
 
-                              <p className="text-xs font-black text-muted-foreground mt-1 bg-white/5 dark:bg-white/5 px-3 py-1 rounded-xl border border-white/10 dark:border-white/5 w-fit shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                              <p className="text-xs font-bold text-muted-foreground mt-1 bg-background/5 px-3 py-1 rounded-xl border border-white/10 dark:border-white/5 w-fit shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                                 {defaultClass.name}
                               </p>
 
@@ -262,7 +262,7 @@ export default function StudentLayout({
                                   <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
                                   GV: {defaultClass.lecturer}
                                 </span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/25 w-fit shadow-[0_2px_8px_rgba(234,88,12,0.1)]">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/25 w-fit shadow-[0_2px_8px_rgba(234,88,12,0.1)]">
                                   {defaultClass.slot}
                                 </span>
                               </div>
@@ -275,7 +275,7 @@ export default function StudentLayout({
                               onClick={() => handleConfirmCardSelection(subj.id, defaultClass.id)}
                               className="h-11 rounded-full px-5 flex items-center gap-2 shadow-[0_4px_14px_rgba(234,88,12,0.3)] hover:shadow-[0_6px_20px_rgba(234,88,12,0.55)] bg-primary text-primary-foreground hover:scale-[1.04] active:scale-[0.97] transition-all duration-300 group/btn"
                             >
-                              <span className="text-xs font-black uppercase tracking-wider">Dashboard</span>
+                              <span className="text-xs font-bold uppercase tracking-wider">Dashboard</span>
                               <ArrowRight className="w-4.5 h-4.5 group-hover/btn:translate-x-1 group-hover:translate-x-0.5 transition-transform duration-300" />
                             </Button>
                           </div>

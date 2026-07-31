@@ -132,12 +132,12 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
       </TableCell>
       <TableCell>
         {student.leader?.toLowerCase() === 'x' ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 border border-violet-200 dark:border-violet-800 shadow-sm">
-            <Crown size={12} className="text-violet-600 dark:text-violet-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-primary/10 text-primary bg-primary/20 border border-primary/20 shadow-sm">
+            <Crown size={12} className="text-primary" />
             Leader
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-muted text-foreground bg-card text-muted-foreground border border-border shadow-sm">
             Member
           </span>
         )}
@@ -160,7 +160,7 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
         <div className="flex gap-2">
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="gap-2 text-emerald-600 border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 shadow-sm">
+              <Button variant="outline" className="gap-2 text-success border-success/20 bg-success/10 shadow-sm">
                 <FileSpreadsheet size={16} />
                 Import Excel
               </Button>

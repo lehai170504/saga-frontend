@@ -133,7 +133,7 @@ export function StudentProjectsList() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         
@@ -161,14 +161,14 @@ export function StudentProjectsList() {
                   className={`relative rounded-3xl p-5 md:p-6 transition-all duration-300 border flex flex-col gap-4 ${
                     isOwnGroup 
                       ? "bg-gradient-to-br from-primary/10 via-indigo-500/5 to-transparent border-primary dark:border-primary/90 shadow-[0_0_30px_rgba(234,88,12,0.35)] dark:shadow-[0_0_35px_rgba(234,88,12,0.25)]" 
-                      : "bg-card/25 dark:bg-card/20 backdrop-blur-3xl border-zinc-200 dark:border-zinc-800/90 hover:border-zinc-400 dark:hover:border-zinc-700 hover:bg-card/40"
+                      : "bg-card/25 dark:bg-card/20 backdrop-blur-3xl border-border border-border border-border dark:border-border hover:bg-card/40"
                   }`}
                 >
                   {/* Top Row: Group Identity & Leader */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
                           isOwnGroup 
                             ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(234,88,12,0.3)]" 
                             : "bg-muted/50 text-muted-foreground"
@@ -176,7 +176,7 @@ export function StudentProjectsList() {
                           {group.name}
                         </span>
                         {isOwnGroup && (
-                          <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded animate-pulse">
+                          <span className="text-[10px] font-bold uppercase text-success bg-success/10 border border-success/20 px-2 py-0.5 rounded animate-pulse">
                             Nhóm của bạn
                           </span>
                         )}
@@ -191,15 +191,15 @@ export function StudentProjectsList() {
                     <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-2xl px-4 py-2 w-fit shrink-0 shadow-[0_2px_8px_rgba(234,88,12,0.05)]">
                       <Crown size={14} className="text-primary fill-current shrink-0 animate-bounce" />
                       <div className="flex flex-col text-left">
-                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-wide">Trưởng nhóm</span>
-                        <span className="text-xs font-black text-primary truncate max-w-[130px]">{group.leader}</span>
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Trưởng nhóm</span>
+                        <span className="text-xs font-bold text-primary truncate max-w-[130px]">{group.leader}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Bottom Row: Member Names list (on its own line) */}
                   <div className="border-t border-border/20 pt-4 mt-1 space-y-2">
-                    <div className="text-[9px] font-black text-muted-foreground uppercase tracking-wide">Thành viên trong nhóm</div>
+                    <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Thành viên trong nhóm</div>
                     <div className="flex flex-wrap gap-1.5">
                       {otherMembers.map((member, i) => (
                         <div 

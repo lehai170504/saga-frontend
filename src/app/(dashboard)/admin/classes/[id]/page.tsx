@@ -183,9 +183,9 @@ export default function ClassDetailsPage() {
           </div>
         ) : (
           <div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
               Lớp {mockClassDetails.className}
-              <span className="text-xs px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
+              <span className="text-xs px-2.5 py-1 bg-success/10 text-success dark:bg-emerald-950/40 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
                 {mockClassDetails.status}
               </span>
             </h1>

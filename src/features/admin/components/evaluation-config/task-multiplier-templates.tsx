@@ -56,7 +56,7 @@ export function TaskMultiplierTemplates() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 p-4 rounded-xl">
+      <div className="flex items-center justify-between bg-success/10 border border-success/20 text-success p-4 rounded-xl">
         <div className="flex items-start gap-3">
           <ShieldAlert className="w-5 h-5 mt-0.5 shrink-0" />
           <div>

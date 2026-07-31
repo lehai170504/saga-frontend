@@ -11,13 +11,13 @@ interface SectionHeaderProps {
 export function SectionHeader({
   title,
   description,
-  indicatorColor = "bg-slate-500",
+  indicatorColor = "bg-muted0",
   rightElement,
 }: SectionHeaderProps) {
   return (
-    <CardHeader className="px-6 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-50">
+    <CardHeader className="px-6 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border">
       <div>
-        <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+        <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
           {indicatorColor && (
             <span
               className={`w-2 h-6 rounded-full inline-block ${indicatorColor}`}
@@ -26,7 +26,7 @@ export function SectionHeader({
           {title}
         </CardTitle>
         {description && (
-          <p className="text-sm text-slate-500 mt-1 pl-4">{description}</p>
+          <p className="text-sm text-muted-foreground mt-1 pl-4">{description}</p>
         )}
       </div>
 

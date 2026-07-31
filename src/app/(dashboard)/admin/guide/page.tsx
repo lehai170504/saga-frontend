@@ -20,7 +20,7 @@ export default function AdminGuidePage() {
         description="Tài liệu vận hành hệ thống SAGA toàn diện dành riêng cho Admin."
         workspace="Workspace Quản trị"
       >
-        <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 font-medium px-4 py-2 rounded-xl border border-emerald-200 dark:border-emerald-900/50">
+        <div className="flex items-center gap-2 text-sm text-success bg-success/10 dark:bg-emerald-950/30 font-medium px-4 py-2 rounded-xl border border-success/20">
           <CheckCircle2 className="w-4 h-4" /> Phiên bản 1.2
         </div>
       </PageHeader>
@@ -84,13 +84,13 @@ export default function AdminGuidePage() {
                 <h3 className="font-bold text-foreground">Quy trình luân chuyển dữ liệu (Data Pipeline)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
                   <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 text-center flex flex-col items-center justify-center gap-2 h-full">
-                    <Server className="w-6 h-6 text-indigo-500" />
+                    <Server className="w-6 h-6 text-primary" />
                     <span className="text-xs font-bold uppercase">1. Dữ liệu Đầu vào</span>
                     <span className="text-[11px] text-muted-foreground">Nhập thủ công</span>
                   </div>
                   <div className="hidden md:flex justify-center text-muted-foreground"><ArrowRight /></div>
                   <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 text-center flex flex-col items-center justify-center gap-2 h-full">
-                    <Settings className="w-6 h-6 text-blue-500" />
+                    <Settings className="w-6 h-6 text-primary" />
                     <span className="text-xs font-bold uppercase">2. Xử lý Backend</span>
                     <span className="text-[11px] text-muted-foreground">Phân tích & Ánh xạ</span>
                   </div>
@@ -112,7 +112,7 @@ export default function AdminGuidePage() {
           <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm">
             <CardHeader className="border-b border-border/50 bg-muted/20">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-violet-500/10 text-violet-500 rounded-2xl">
+                <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                   <Calendar size={24} />
                 </div>
                 <div>
@@ -127,15 +127,15 @@ export default function AdminGuidePage() {
                   <h3 className="font-bold text-foreground">Dữ liệu cần quản lý bao gồm:</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" />
                       <span><strong>Kỳ học (Semesters):</strong> Thiết lập học kỳ hiện tại và thời gian.</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" />
                       <span><strong>Môn học (Courses):</strong> Các môn học đang vận hành trong kỳ.</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" />
                       <span><strong>Danh sách Lớp (Classes & Rosters):</strong> Phân công sinh viên và Giảng viên thủ công.</span>
                     </li>
                   </ul>
@@ -143,12 +143,12 @@ export default function AdminGuidePage() {
                 <div className="p-5 bg-background rounded-2xl border border-border/50 space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="font-bold text-foreground">Quy trình Cập nhật Dữ liệu</h3>
-                    <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-200">Cập nhật thủ công</Badge>
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">Cập nhật thủ công</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Hệ thống hiện tại hoạt động độc lập và yêu cầu Admin tự quản lý dữ liệu. Khi có lớp mới hoặc sinh viên chuyển lớp, Admin cần vào trang <strong>Dữ liệu Học vụ</strong> để thêm mới hoặc cập nhật thông tin tương ứng.
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 dark:bg-blue-950/30 p-2 rounded-lg border border-blue-200 dark:border-blue-900">
+                  <div className="flex items-center gap-2 text-xs text-primary bg-primary/10 dark:bg-blue-950/30 p-2 rounded-lg border border-primary/20">
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
                     <span>Mẹo: Hãy đảm bảo email của sinh viên và giảng viên chính xác để hệ thống phân quyền đúng.</span>
                   </div>
@@ -163,7 +163,7 @@ export default function AdminGuidePage() {
           <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm">
             <CardHeader className="border-b border-border/50 bg-muted/20">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-blue-500/10 text-blue-500 rounded-2xl">
+                <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                   <Network size={24} />
                 </div>
                 <div>
@@ -173,9 +173,9 @@ export default function AdminGuidePage() {
               </div>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-2xl border border-blue-100 dark:border-blue-900/50 mb-4">
-                <h4 className="font-bold text-blue-700 dark:text-blue-400 mb-2">Đồ thị Mạng tương tác (Interaction Graph) hoạt động như thế nào?</h4>
-                <p className="text-sm text-blue-600/80 dark:text-blue-300">
+              <div className="p-4 bg-primary/10 dark:bg-blue-950/20 rounded-2xl border border-primary/20 mb-4">
+                <h4 className="font-bold text-primary mb-2">Đồ thị Mạng tương tác (Interaction Graph) hoạt động như thế nào?</h4>
+                <p className="text-sm text-primary/80 dark:text-blue-300">
                   Mỗi khi một sinh viên push code, tạo Pull Request trên GitHub, hoặc chuyển trạng thái task trên Jira, hệ thống sẽ ánh xạ hành động đó thành <strong>Cạnh (Edge)</strong> nối giữa sinh viên đó và các thành viên khác trong Node Mạng tương tác. Admin không cần can thiệp quá trình này, nhưng cần hướng dẫn sinh viên liên kết đúng tài khoản.
                 </p>
               </div>
@@ -193,7 +193,7 @@ export default function AdminGuidePage() {
           <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm">
             <CardHeader className="border-b border-border/50 bg-muted/20">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl">
+                <div className="p-3 bg-success/10 text-success rounded-2xl">
                   <Users size={24} />
                 </div>
                 <div>
@@ -214,24 +214,24 @@ export default function AdminGuidePage() {
                   <div className="font-semibold text-foreground flex items-center gap-2">
                     <ShieldCheck size={16} className="text-primary" /> Admin
                   </div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
                 </div>
                 <div className="grid grid-cols-4 p-4 border-b border-border/50 items-center hover:bg-muted/30 transition-colors">
                   <div className="font-semibold text-foreground flex items-center gap-2">
-                    <FileText size={16} className="text-blue-500" /> Giảng viên
+                    <FileText size={16} className="text-primary" /> Giảng viên
                   </div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
                   <div className="text-center text-muted-foreground">-</div>
                 </div>
                 <div className="grid grid-cols-4 p-4 items-center hover:bg-muted/30 transition-colors">
                   <div className="font-semibold text-foreground flex items-center gap-2">
-                    <Users size={16} className="text-violet-500" /> Sinh viên
+                    <Users size={16} className="text-primary" /> Sinh viên
                   </div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto text-emerald-500/50" /> <span className="text-[10px] text-muted-foreground block">(Nhóm của mình)</span></div>
-                  <div className="text-center text-emerald-500"><CheckCircle2 className="w-5 h-5 mx-auto text-emerald-500/50" /> <span className="text-[10px] text-muted-foreground block">(Chấm chéo)</span></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto text-success/50" /> <span className="text-[10px] text-muted-foreground block">(Nhóm của mình)</span></div>
+                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto text-success/50" /> <span className="text-[10px] text-muted-foreground block">(Chấm chéo)</span></div>
                   <div className="text-center text-muted-foreground">-</div>
                 </div>
               </div>
@@ -244,7 +244,7 @@ export default function AdminGuidePage() {
           <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm">
             <CardHeader className="border-b border-border/50 bg-muted/20">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-indigo-500/10 text-indigo-500 rounded-2xl">
+                <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                   <HelpCircle size={24} />
                 </div>
                 <div>

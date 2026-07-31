@@ -50,10 +50,10 @@ export function ProjectHeatmap({ projectId }: { projectId: string }) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/50 border border-border/50 text-muted-foreground text-xs font-semibold backdrop-blur-md">
-            <Activity size={14} className="text-teal-500" />
+            <Activity size={14} className="text-success" />
             Agile Velocity & Code Quality
           </div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">
             Biểu đồ Nhiệt Vận tốc
           </h2>
           <p className="text-muted-foreground font-medium">Theo dõi tiến độ cày Story Points và Nợ Kỹ thuật (Bug Rate) của các thành viên trong nhóm</p>

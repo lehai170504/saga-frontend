@@ -22,7 +22,7 @@ export function HeroSection() {
           scale: [1, 1.1, 1, 1.1, 1]
         }}
         transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none -z-10"
+        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/15 blur-[120px] rounded-full pointer-events-none -z-10"
       />
       <motion.div
         animate={{
@@ -30,7 +30,7 @@ export function HeroSection() {
           scale: [1, 1.2, 1, 1.2, 1]
         }}
         transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none -z-10"
+        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none -z-10"
       />
 
       <motion.div
@@ -40,8 +40,8 @@ export function HeroSection() {
         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/80 backdrop-blur-md border border-border shadow-sm text-sm font-bold text-foreground mb-8 hover:bg-muted/80 transition-colors cursor-pointer group"
       >
         <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600" />
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
         </span>
         <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent group-hover:from-indigo-600 group-hover:to-violet-600">SAGA v1.0</span> đã chính thức ra mắt
         <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
@@ -51,7 +51,7 @@ export function HeroSection() {
         initial="hidden"
         animate="visible"
         variants={fadeUp}
-        className="text-5xl md:text-[5.5rem] font-black text-foreground tracking-tight mb-8 max-w-5xl leading-[1.05]"
+        className="text-5xl md:text-[5.5rem] font-bold text-foreground tracking-tight mb-8 max-w-5xl leading-[1.05]"
       >
         Loại bỏ Free-rider với <br className="hidden md:block" />
         <span className="relative inline-block mt-2">
@@ -63,7 +63,7 @@ export function HeroSection() {
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.6, ease: "easeInOut" }}
-            className="absolute -bottom-2 w-full h-4 text-indigo-500/30 -z-10"
+            className="absolute -bottom-2 w-full h-4 text-primary/30 -z-10"
             viewBox="0 0 100 10"
             preserveAspectRatio="none"
           >
@@ -120,7 +120,7 @@ export function HeroSection() {
               <div className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e]" />
               <div className="w-3.5 h-3.5 rounded-full bg-[#27c93f]" />
             </div>
-            <div className="mx-auto w-1/2 h-6 bg-white/5 rounded-md flex items-center justify-center text-[10px] text-white/30 font-medium">
+            <div className="mx-auto w-1/2 h-6 bg-background/5 rounded-md flex items-center justify-center text-[10px] text-white/30 font-medium">
               saga.fpt.edu.vn
             </div>
           </div>
@@ -128,51 +128,51 @@ export function HeroSection() {
           {/* Dashboard Skeleton UI */}
           <div className="aspect-[16/9] bg-[#0a0a0a] relative overflow-hidden group/image p-3 sm:p-5 flex gap-3 sm:gap-5 select-none">
             {/* Sidebar Skeleton */}
-            <div className="w-12 sm:w-16 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center py-4 gap-4 shrink-0 shadow-inner">
+            <div className="w-12 sm:w-16 rounded-2xl bg-background/5 border border-white/5 flex flex-col items-center py-4 gap-4 shrink-0 shadow-inner">
               <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 mb-2 sm:mb-6 shadow-lg shadow-indigo-500/20" />
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/10" />
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/10" />
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/10" />
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-white/5 mt-auto" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-background/10" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-background/10" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-background/10" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-xl bg-background/5 mt-auto" />
             </div>
 
             {/* Main Content Skeleton */}
             <div className="flex-1 flex flex-col gap-3 sm:gap-5 overflow-hidden">
               {/* Header */}
-              <div className="h-10 sm:h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between px-4 shrink-0">
-                <div className="w-1/3 h-3 sm:h-4 rounded-full bg-white/10" />
+              <div className="h-10 sm:h-12 rounded-2xl bg-background/5 border border-white/5 flex items-center justify-between px-4 shrink-0">
+                <div className="w-1/3 h-3 sm:h-4 rounded-full bg-background/10" />
                 <div className="flex gap-2 items-center">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10" />
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/20 bg-white/5" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-background/10" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-white/20 bg-background/5" />
                 </div>
               </div>
 
               {/* Stats Row */}
               <div className="grid grid-cols-4 gap-3 sm:gap-5 shrink-0 h-16 sm:h-24">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col justify-center gap-2 sm:gap-3 group-hover/image:bg-white/[0.07] transition-colors duration-500">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
-                      <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-indigo-500/50" />
+                  <div key={i} className="rounded-2xl bg-background/5 border border-white/5 p-3 sm:p-4 flex flex-col justify-center gap-2 sm:gap-3 group-hover/image:bg-background/[0.07] transition-colors duration-500">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-primary/50" />
                     </div>
-                    <div className="w-1/2 h-2 sm:h-3 rounded-full bg-white/20" />
-                    <div className="w-3/4 h-3 sm:h-4 rounded-full bg-white/40" />
+                    <div className="w-1/2 h-2 sm:h-3 rounded-full bg-background/20" />
+                    <div className="w-3/4 h-3 sm:h-4 rounded-full bg-background/40" />
                   </div>
                 ))}
               </div>
 
               {/* Middle Row (Traceability Graph) */}
-              <div className="h-28 sm:h-40 rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col gap-2 shrink-0 relative overflow-hidden group/graph">
+              <div className="h-28 sm:h-40 rounded-2xl bg-background/5 border border-white/5 p-3 sm:p-4 flex flex-col gap-2 shrink-0 relative overflow-hidden group/graph">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-blue-500/5 to-purple-500/5 opacity-0 group-hover/graph:opacity-100 transition-opacity duration-1000" />
-                <div className="w-1/4 h-3 sm:h-4 rounded-full bg-white/20 mb-1 sm:mb-2 z-10" />
+                <div className="w-1/4 h-3 sm:h-4 rounded-full bg-background/20 mb-1 sm:mb-2 z-10" />
                 <div className="flex-1 flex relative items-center justify-center">
                   {/* Nodes */}
-                  <div className="absolute left-[10%] w-8 h-8 rounded-full border border-emerald-500/50 bg-emerald-500/10 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(16,185,129,0.3)] animate-pulse"><div className="w-3 h-3 bg-emerald-400 rounded-full" /></div>
+                  <div className="absolute left-[10%] w-8 h-8 rounded-full border border-success/20 bg-success/10 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(16,185,129,0.3)] animate-pulse"><div className="w-3 h-3 bg-emerald-400 rounded-full" /></div>
 
-                  <div className="absolute left-[45%] top-[10%] w-10 h-10 rounded-xl border border-blue-500/50 bg-blue-500/10 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-110 transition-transform"><div className="w-4 h-4 bg-blue-400 rounded-sm" /></div>
+                  <div className="absolute left-[45%] top-[10%] w-10 h-10 rounded-xl border border-primary/20 bg-primary/10 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-110 transition-transform"><div className="w-4 h-4 bg-blue-400 rounded-sm" /></div>
 
-                  <div className="absolute left-[45%] bottom-[10%] w-10 h-10 rounded-xl border border-indigo-500/50 bg-indigo-500/10 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:scale-110 transition-transform"><div className="w-4 h-4 bg-indigo-400 rounded-sm" /></div>
+                  <div className="absolute left-[45%] bottom-[10%] w-10 h-10 rounded-xl border border-primary/20 bg-primary/10 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:scale-110 transition-transform"><div className="w-4 h-4 bg-indigo-400 rounded-sm" /></div>
 
-                  <div className="absolute right-[10%] w-12 h-12 rounded-full border border-purple-500/50 bg-purple-500/10 flex items-center justify-center z-20 shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover/graph:scale-110 transition-transform duration-500"><div className="w-5 h-5 bg-purple-400 rounded-full animate-pulse" /></div>
+                  <div className="absolute right-[10%] w-12 h-12 rounded-full border border-primary/20 bg-primary/10 flex items-center justify-center z-20 shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover/graph:scale-110 transition-transform duration-500"><div className="w-5 h-5 bg-purple-400 rounded-full animate-pulse" /></div>
                   {/* Edges */}
                   <svg className="absolute inset-0 w-full h-full opacity-60 z-10" preserveAspectRatio="none">
                     <path d="M 15% 50% Q 30% 25% 45% 25%" fill="none" stroke="url(#grad-emerald-blue)" strokeWidth="2" strokeDasharray="4 4" className="animate-[dash_3s_linear_infinite]" />
@@ -193,11 +193,11 @@ export function HeroSection() {
               {/* Bottom Row */}
               <div className="flex-1 flex gap-3 sm:gap-5 min-h-0">
                 {/* Bar chart */}
-                <div className="flex-[2] rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col gap-2 relative overflow-hidden">
-                  <div className="w-1/3 h-3 sm:h-4 rounded-full bg-white/20 mb-2" />
+                <div className="flex-[2] rounded-2xl bg-background/5 border border-white/5 p-3 sm:p-4 flex flex-col gap-2 relative overflow-hidden">
+                  <div className="w-1/3 h-3 sm:h-4 rounded-full bg-background/20 mb-2" />
                   <div className="flex-1 flex items-end justify-between gap-1 sm:gap-2 px-1 sm:px-2 z-10">
                     {[40, 70, 45, 90, 65, 80, 55, 30, 85].map((h, i) => (
-                      <div key={i} className="w-full bg-blue-500/20 rounded-t-md relative group-hover/image:bg-blue-500/30 transition-colors duration-700 delay-75" style={{ height: `${h}%` }}>
+                      <div key={i} className="w-full bg-primary/20 rounded-t-md relative group-hover/image:bg-primary/30 transition-colors duration-700 delay-75" style={{ height: `${h}%` }}>
                         <div className="absolute top-0 left-0 w-full bg-blue-400 rounded-t-md" style={{ height: '4px' }} />
                       </div>
                     ))}
@@ -212,14 +212,14 @@ export function HeroSection() {
                 </div>
 
                 {/* Donut Chart */}
-                <div className="flex-[1] rounded-2xl bg-white/5 border border-white/5 p-3 sm:p-4 flex flex-col items-center justify-center relative">
+                <div className="flex-[1] rounded-2xl bg-background/5 border border-white/5 p-3 sm:p-4 flex flex-col items-center justify-center relative">
                   {/* Fake Donut Chart via Borders */}
                   <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full border-[8px] sm:border-[12px] border-white/5 relative group-hover/image:scale-105 transition-transform duration-700">
-                    <div className="absolute inset-[-8px] sm:inset-[-12px] rounded-full border-[8px] sm:border-[12px] border-indigo-500 border-r-transparent border-t-transparent rotate-45" />
-                    <div className="absolute inset-[-8px] sm:inset-[-12px] rounded-full border-[8px] sm:border-[12px] border-blue-500 border-l-transparent border-b-transparent -rotate-12 opacity-80" />
+                    <div className="absolute inset-[-8px] sm:inset-[-12px] rounded-full border-[8px] sm:border-[12px] border-primary/20 border-r-transparent border-t-transparent rotate-45" />
+                    <div className="absolute inset-[-8px] sm:inset-[-12px] rounded-full border-[8px] sm:border-[12px] border-primary/20 border-l-transparent border-b-transparent -rotate-12 opacity-80" />
                   </div>
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none">
-                    <div className="text-base sm:text-xl font-black text-white">85%</div>
+                    <div className="text-base sm:text-xl font-bold text-white">85%</div>
                     <div className="text-[8px] sm:text-[10px] text-white/50 uppercase tracking-widest font-bold">Tiến độ</div>
                   </div>
                 </div>
@@ -238,7 +238,7 @@ export function HeroSection() {
             variants={float} initial="hidden" animate="visible"
             className="bg-card/90 backdrop-blur-xl border border-border p-4 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex items-center gap-4 hover:scale-105 transition-transform cursor-pointer"
           >
-            <div className="bg-emerald-500/20 p-2 rounded-full"><CheckCircle2 className="w-6 h-6 text-emerald-500" /></div>
+            <div className="bg-success/20 p-2 rounded-full"><CheckCircle2 className="w-6 h-6 text-success" /></div>
             <div className="text-left">
               <p className="text-sm font-bold text-foreground">Đồng bộ FAP</p>
               <p className="text-xs text-muted-foreground">Thành công lúc 08:30</p>
@@ -251,7 +251,7 @@ export function HeroSection() {
             variants={float} initial="hidden" animate="visible" transition={{ delay: 0.5 }}
             className="bg-card/90 backdrop-blur-xl border border-border p-4 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex items-center gap-4 hover:scale-105 transition-transform cursor-pointer"
           >
-            <div className="bg-blue-500/20 p-2 rounded-full"><GitBranch className="w-6 h-6 text-blue-500" /></div>
+            <div className="bg-primary/20 p-2 rounded-full"><GitBranch className="w-6 h-6 text-primary" /></div>
             <div className="text-left">
               <p className="text-sm font-bold text-foreground">14 Commits mới</p>
               <p className="text-xs text-muted-foreground">Team Backend</p>

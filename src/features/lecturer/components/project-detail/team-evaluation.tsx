@@ -27,7 +27,7 @@ export function TeamEvaluation() {
 
       {/* Final Action */}
       <div className="flex justify-end pt-4">
-        <Button onClick={handleApprove} className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
+        <Button onClick={handleApprove} className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
           <CheckCircle2 className="w-5 h-5 mr-2" />
           Phê duyệt Kết quả Đánh giá Sprint này
         </Button>

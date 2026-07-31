@@ -47,7 +47,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
             description="Chi tiết dự án, tiến độ Agile và đánh giá cổ phần Slices của từng thành viên."
           />
           <div className="flex gap-3">
-            <Button variant="outline" className="gap-2 rounded-xl border-border/50 hover:bg-slate-50 dark:hover:bg-accent/50 shadow-sm">
+            <Button variant="outline" className="gap-2 rounded-xl border-border/50 bg-muted dark:hover:bg-accent/50 shadow-sm">
               <FileText size={16} />
               Báo cáo Sprint
             </Button>
@@ -93,7 +93,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                   <div className="pt-4 border-t border-border/50">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Tiến độ chung (Burn-down)</span>
-                      <span className="text-sm font-black text-primary">{projectDetail.progress}%</span>
+                      <span className="text-sm font-bold text-primary">{projectDetail.progress}%</span>
                     </div>
                     <div className="h-2.5 w-full bg-secondary/50 rounded-full overflow-hidden">
                       <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{ width: `${projectDetail.progress}%` }} />
@@ -123,7 +123,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                             </div>
                             <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-0.5">
                               {member.role === 'Core Member' ? (
-                                <span className="text-violet-600 dark:text-violet-400">Core Member</span>
+                                <span className="text-primary">Core Member</span>
                               ) : (
                                 <span>Thành viên</span>
                               )}
@@ -137,11 +137,11 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                           </div>
                           <div className="text-right">
                             <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">Slices</div>
-                            <div className="text-xs font-black text-primary">{member.slices}</div>
+                            <div className="text-xs font-bold text-primary">{member.slices}</div>
                           </div>
                         </div>
                         {member.warning && (
-                          <div className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1.5 rounded-xl text-center ${member.warning.includes('Ghosting') ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'}`}>
+                          <div className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-xl text-center ${member.warning.includes('Ghosting') ? 'bg-destructive/10 text-destructive bg-destructive/20 text-destructive' : 'bg-warning/10 text-warning bg-warning/20 text-warning'}`}>
                             Cảnh báo: {member.warning}
                           </div>
                         )}

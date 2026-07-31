@@ -15,7 +15,7 @@ export function SystemAnomalyChart() {
     <Card className="rounded-[2rem] shadow-sm border-border bg-card/40 backdrop-blur-xl">
       <CardHeader>
         <CardTitle className="text-lg font-bold flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-violet-500" />
+          <AlertTriangle className="h-5 w-5 text-primary" />
           Tín hiệu Cảnh báo (Toàn hệ thống)
         </CardTitle>
       </CardHeader>

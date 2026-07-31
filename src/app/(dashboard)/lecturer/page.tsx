@@ -21,7 +21,7 @@ const MOCK_CLASSES = [
     studentCount: 45,
     status: "active",
     theme: "from-indigo-500 via-purple-500 to-pink-500",
-    bgAccent: "bg-indigo-500/10",
+    bgAccent: "bg-primary/10",
     glow: "group-hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)]",
     tasks: 120,
     progress: 75,
@@ -33,7 +33,7 @@ const MOCK_CLASSES = [
     studentCount: 38,
     status: "active",
     theme: "from-violet-400 via-indigo-500 to-rose-500",
-    bgAccent: "bg-indigo-500/10",
+    bgAccent: "bg-primary/10",
     glow: "group-hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)]",
     tasks: 85,
     progress: 40,
@@ -45,7 +45,7 @@ const MOCK_CLASSES = [
     studentCount: 50,
     status: "active",
     theme: "from-emerald-400 via-teal-500 to-cyan-500",
-    bgAccent: "bg-teal-500/10",
+    bgAccent: "bg-success/10",
     glow: "group-hover:shadow-[0_0_40px_-10px_rgba(20,184,166,0.5)]",
     tasks: 210,
     progress: 90,
@@ -57,7 +57,7 @@ const MOCK_CLASSES = [
     studentCount: 42,
     status: "completed",
     theme: "from-slate-400 via-gray-500 to-zinc-600",
-    bgAccent: "bg-slate-500/10",
+    bgAccent: "bg-muted0/10",
     glow: "group-hover:shadow-[0_0_40px_-10px_rgba(148,163,184,0.5)]",
     tasks: 150,
     progress: 100,
@@ -88,7 +88,7 @@ export default function ClassSelectionPage() {
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-        
+
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-8">
           <PageHeader
             workspace="Workspace Giảng viên"
@@ -119,120 +119,88 @@ export default function ClassSelectionPage() {
         </div>
 
         {/* Classes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             // Skeleton Loading State
             Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="relative rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl p-6 overflow-hidden h-[340px] flex flex-col">
-                <div className="absolute inset-0 bg-gradient-to-br from-muted/50 to-transparent animate-pulse" />
-                <div className="relative flex justify-between items-start mb-6">
-                  <div className="h-8 w-24 bg-muted/80 rounded-xl animate-pulse" />
-                  <div className="h-8 w-28 bg-muted/80 rounded-full animate-pulse" />
-                </div>
-                <div className="h-8 w-3/4 bg-muted/80 rounded-xl animate-pulse mb-4" />
-                <div className="h-5 w-1/2 bg-muted/80 rounded-xl animate-pulse mb-auto" />
-                
-                <div className="space-y-4 mt-8">
-                  <div className="flex justify-between">
-                    <div className="h-10 w-1/3 bg-muted/80 rounded-2xl animate-pulse" />
-                    <div className="h-10 w-1/3 bg-muted/80 rounded-2xl animate-pulse" />
+              <div key={i} className="rounded-xl border border-border bg-card p-6 h-[260px] flex flex-col">
+                <div className="h-6 w-24 bg-muted rounded-md animate-pulse mb-4" />
+                <div className="h-6 w-3/4 bg-muted rounded-md animate-pulse mb-2" />
+                <div className="h-4 w-1/2 bg-muted rounded-md animate-pulse mb-auto" />
+                <div className="space-y-3 mt-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="h-14 bg-muted rounded-lg animate-pulse" />
+                    <div className="h-14 bg-muted rounded-lg animate-pulse" />
                   </div>
-                  <div className="h-12 w-full bg-muted/80 rounded-xl animate-pulse mt-4" />
+                  <div className="h-10 w-full bg-muted rounded-lg animate-pulse mt-4" />
                 </div>
               </div>
             ))
           ) : filteredClasses.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-20 text-muted-foreground">
-              <BookOpen size={48} className="mb-4 opacity-20" />
-              <p className="text-xl font-medium">Không tìm thấy lớp học nào</p>
+            <div className="col-span-full flex flex-col items-center justify-center py-20 text-muted-foreground border border-dashed rounded-xl bg-muted/20">
+              <BookOpen size={48} className="mb-4 text-muted-foreground/50" />
+              <p className="text-lg font-medium text-foreground">Không tìm thấy lớp học nào</p>
               <p className="text-sm">Vui lòng chọn học kỳ khác hoặc hiển thị tất cả.</p>
             </div>
           ) : (
             // Real Data State
-            filteredClasses.map((cls, idx) => (
-              <Link 
-                href={`/lecturer/${cls.id}`} 
-                key={cls.id} 
-                className={`group block relative rounded-[2rem] transition-all duration-500 ease-out hover:-translate-y-2 ${cls.glow}`}
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                {/* Glassmorphism Card */}
-                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-white/40 to-white/10 dark:from-white/5 dark:to-white/0 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] overflow-hidden">
-                  {/* Hover Gradient Overlay */}
-                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-to-br ${cls.theme}`} />
-                </div>
-
-                {/* Card Content */}
-                <div className="relative p-7 h-[340px] flex flex-col">
-                  {/* Top Header */}
-                  <div className="flex justify-between items-start mb-5">
-                    <div className={`px-4 py-1.5 rounded-xl text-sm font-black border border-white/20 dark:border-white/10 shadow-sm backdrop-blur-md ${
-                      cls.status === "active" ? "bg-white/60 dark:bg-black/40 text-foreground" : "bg-muted/50 text-muted-foreground"
-                    }`}>
+            filteredClasses.map((cls) => (
+              <div key={cls.id} className="group relative rounded-xl border border-border bg-card text-card-foreground shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex flex-col h-[280px]">
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground border border-border/50">
                       {cls.id}
                     </div>
                     {cls.status === "active" ? (
-                      <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-success bg-success/10 px-2.5 py-1 rounded-md">
                         <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
                         </span>
-                        ĐANG DIỄN RA
+                        Đang diễn ra
                       </div>
                     ) : (
-                      <div className="text-xs font-bold text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full border border-border backdrop-blur-md">
-                        ĐÃ KẾT THÚC
+                      <div className="text-xs font-medium text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
+                        Đã kết thúc
                       </div>
                     )}
                   </div>
 
-                  {/* Title Area */}
                   <div className="mb-auto">
-                    <h3 className="text-2xl font-bold leading-tight text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-muted-foreground transition-all duration-300 line-clamp-2">
+                    <h3 className="text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2 mb-2">
                       {cls.name}
                     </h3>
-                    <div className="flex items-center gap-2 mt-3 text-muted-foreground font-medium">
-                      <Calendar size={16} />
-                      <span className="text-sm">{cls.semester}</span>
+                    <div className="flex items-center gap-1.5 text-muted-foreground font-medium text-sm">
+                      <Calendar size={14} />
+                      <span>{cls.semester}</span>
                     </div>
                   </div>
 
-                  {/* Stats Area */}
-                  <div className="grid grid-cols-2 gap-3 mb-6">
-                    <div className={`flex flex-col p-3 rounded-2xl ${cls.bgAccent} border border-white/10 backdrop-blur-sm`}>
-                      <span className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-1.5">
-                        <Users size={12} /> SINH VIÊN
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    <div className="flex flex-col p-3 rounded-lg bg-muted/50 border border-border/50">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Users size={12} /> Sinh viên
                       </span>
-                      <span className="text-xl font-black text-foreground">{cls.studentCount}</span>
+                      <span className="text-lg font-bold text-foreground">{cls.studentCount}</span>
                     </div>
-                    <div className={`flex flex-col p-3 rounded-2xl ${cls.bgAccent} border border-white/10 backdrop-blur-sm`}>
-                      <span className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-1.5">
-                        <Network size={12} /> NHIỆM VỤ
+                    <div className="flex flex-col p-3 rounded-lg bg-muted/50 border border-border/50">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                        <Network size={12} /> Nhiệm vụ
                       </span>
-                      <span className="text-xl font-black text-foreground">{cls.tasks}</span>
-                    </div>
-                  </div>
-
-                  {/* Bottom Action Area */}
-                  <div className="relative h-12 w-full overflow-hidden rounded-xl bg-muted/30 border border-border/50 group-hover:border-transparent transition-colors">
-                    {/* Progress Bar Background */}
-                    <div 
-                      className={`absolute left-0 top-0 bottom-0 bg-gradient-to-r ${cls.theme} opacity-20 transition-all duration-1000 ease-out`}
-                      style={{ width: `${cls.progress}%` }}
-                    />
-                    
-                    {/* Button Text */}
-                    <div className="absolute inset-0 flex items-center justify-between px-5 font-semibold text-sm">
-                      <span className="text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-foreground group-hover:to-foreground/70 transition-all">
-                        Truy cập Dashboard
-                      </span>
-                      <div className="w-8 h-8 rounded-full bg-background/50 flex items-center justify-center backdrop-blur-md shadow-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                        <ArrowRight size={16} className="text-foreground group-hover:translate-x-0.5 transition-transform" />
-                      </div>
+                      <span className="text-lg font-bold text-foreground">{cls.tasks}</span>
                     </div>
                   </div>
                 </div>
-              </Link>
+
+                <div className="p-6 pt-0 mt-auto">
+                  <Link href={`/lecturer/${cls.id}`} className="block w-full">
+                    <button className="w-full flex items-center justify-between px-4 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-sm rounded-lg transition-colors group/btn">
+                      Truy cập Dashboard
+                      <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </Link>
+                </div>
+              </div>
             ))
           )}
         </div>

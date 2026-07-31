@@ -49,13 +49,13 @@ interface TeamMemberContribution {
 }
 
 const avatarColors = [
-  "bg-slate-500",
-  "bg-indigo-500",
-  "bg-rose-500",
-  "bg-indigo-500",
-  "bg-blue-500",
-  "bg-teal-500",
-  "bg-violet-500",
+  "bg-muted0",
+  "bg-primary",
+  "bg-destructive",
+  "bg-primary",
+  "bg-primary",
+  "bg-success",
+  "bg-primary",
 ];
 
 export default function ContributionPage() {
@@ -304,10 +304,10 @@ export default function ContributionPage() {
                     : teamContributionRows.map((row, index) => {
                       const scoreBadgeClass =
                         row.score >= 8.0
-                          ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                          ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
                           : row.score >= 5.0
-                            ? "bg-indigo-100/80 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
-                            : "bg-red-100/80 text-red-600 dark:bg-red-950/40 dark:text-red-400";
+                            ? "bg-primary/10 text-primary dark:bg-indigo-950/40 text-primary"
+                            : "bg-destructive/10 text-destructive dark:bg-red-950/40 text-destructive";
                       return (
                         <TableRow
                           key={row.id}

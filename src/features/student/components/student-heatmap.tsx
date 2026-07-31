@@ -100,7 +100,7 @@ export function StudentHeatmap() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         
@@ -166,7 +166,7 @@ export function StudentHeatmap() {
                 Tần suất hoạt động theo ngày (30 ngày qua)
               </CardTitle>
               
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wide text-muted-foreground bg-background/50 px-3.5 py-1.5 rounded-full border border-border/40">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide text-muted-foreground bg-background/50 px-3.5 py-1.5 rounded-full border border-border/40">
                 <span>Ít</span>
                 <div className="flex gap-1 mx-2">
                   <div className="w-3.5 h-3.5 rounded-[4px] bg-muted/20 border border-border/10" />
@@ -195,7 +195,7 @@ export function StudentHeatmap() {
                 {/* Days Header */}
                 <div className="flex mb-4 ml-[160px]">
                   {Array.from({ length: 30 }, (_, i) => (
-                    <div key={i} className="flex-1 text-center text-[10px] font-black text-muted-foreground/60 uppercase w-6">
+                    <div key={i} className="flex-1 text-center text-[10px] font-bold text-muted-foreground/60 uppercase w-6">
                       {(i + 1) % 5 === 0 || i === 0 ? i + 1 : ""}
                     </div>
                   ))}
@@ -209,7 +209,7 @@ export function StudentHeatmap() {
                         <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors cursor-pointer truncate w-full text-right">
                           {student.name}
                         </span>
-                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-wide">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">
                           {student.group}
                         </span>
                       </div>

@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 
 // Mock data cho Mạng tương tác & Phân tích NLP (SAGA Early Warning) cho một nhóm cụ thể
 const projectNodes = [
-  { id: "1", name: "Nguyễn Văn A", size: 60, x: 50, y: 30, color: "bg-indigo-500", interactions: 45, role: "Core Member" },
-  { id: "2", name: "Trần Thị B", size: 45, x: 25, y: 60, color: "bg-teal-500", interactions: 28, role: "Member" },
-  { id: "3", name: "Lê Văn C", size: 40, x: 75, y: 55, color: "bg-amber-500", interactions: 15, role: "Ghosting Warning" },
+  { id: "1", name: "Nguyễn Văn A", size: 60, x: 50, y: 30, color: "bg-primary", interactions: 45, role: "Core Member" },
+  { id: "2", name: "Trần Thị B", size: 45, x: 25, y: 60, color: "bg-success", interactions: 28, role: "Member" },
+  { id: "3", name: "Lê Văn C", size: 40, x: 75, y: 55, color: "bg-warning", interactions: 15, role: "Ghosting Warning" },
 ];
 
 const projectEdges = [
@@ -29,7 +29,7 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
             <Share2 size={14} className="text-primary" />
             SAGA Early Warning System
           </div>
-          <h2 className="text-2xl font-black tracking-tight text-foreground">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">
             Mạng tương tác & NLP
           </h2>
           <p className="text-muted-foreground font-medium">Bản đồ đồ thị phân tích văn hóa làm việc nhóm, cảnh báo xung đột (Toxic) và hỗ trợ chéo.</p>
@@ -55,19 +55,19 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Chú giải mạng lưới</h3>
               <div className="space-y-2 text-sm font-medium">
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-4 h-1 bg-indigo-500 rounded-full" />
+                  <div className="w-4 h-1 bg-primary rounded-full" />
                   <span>Commits & Push</span>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-4 h-1 border-b-2 border-dashed border-teal-500" />
+                  <div className="w-4 h-1 border-b-2 border-dashed border-success/20" />
                   <span>PR Reviews</span>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-4 h-1 border-b-2 border-dotted border-violet-500" />
+                  <div className="w-4 h-1 border-b-2 border-dotted border-primary/20" />
                   <span>Comments</span>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-4 h-1 bg-rose-500 rounded-full" />
+                  <div className="w-4 h-1 bg-destructive rounded-full" />
                   <span>Issue Assignment</span>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
             {selectedNode ? (
               <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
                 <div className="text-center space-y-2">
-                  <div className={`w-20 h-20 mx-auto rounded-full ${selectedNode.color} flex items-center justify-center text-white text-2xl font-black shadow-lg mb-4`}>
+                  <div className={`w-20 h-20 mx-auto rounded-full ${selectedNode.color} flex items-center justify-center text-white text-2xl font-bold shadow-lg mb-4`}>
                     {selectedNode.name.charAt(0)}
                   </div>
                   <h2 className="text-xl font-bold text-foreground">{selectedNode.name}</h2>
@@ -157,11 +157,11 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-muted/50 rounded-xl p-3 text-center border border-border/50">
                     <p className="text-xs font-semibold text-muted-foreground mb-1">Tương tác</p>
-                    <p className="text-2xl font-black text-primary">{selectedNode.interactions}</p>
+                    <p className="text-2xl font-bold text-primary">{selectedNode.interactions}</p>
                   </div>
                   <div className="bg-muted/50 rounded-xl p-3 text-center border border-border/50">
                     <p className="text-xs font-semibold text-muted-foreground mb-1">Mức độ</p>
-                    <p className="text-lg font-black text-emerald-500 mt-1">Năng nổ</p>
+                    <p className="text-lg font-bold text-success mt-1">Năng nổ</p>
                   </div>
                 </div>
 
@@ -180,16 +180,16 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
                       };
 
                       const getBadgeColor = () => {
-                        if (edge.type === "toxic") return "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400";
-                        if (edge.type === "ghost") return "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400";
-                        if (edge.type === "review") return "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400";
-                        return "bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400";
+                        if (edge.type === "toxic") return "bg-destructive/10 text-destructive border-destructive/20 bg-destructive/20 text-destructive";
+                        if (edge.type === "ghost") return "bg-warning/10 text-warning border-warning/20 bg-warning/20 text-warning";
+                        if (edge.type === "review") return "bg-success/10 text-success border-success/20 bg-success/20 text-success";
+                        return "bg-primary/10 text-primary border-primary/20 bg-primary/20 text-primary";
                       };
 
                       return (
                         <div key={idx} className="flex justify-between items-center text-sm p-2 rounded-xl bg-background/50 border border-border/50">
                           <span className="font-medium text-foreground text-xs">{getActionText()} <span className="font-bold">{otherNode?.name}</span></span>
-                          <span className={`text-[9px] px-2 py-0.5 rounded-md border font-black uppercase tracking-wider ${getBadgeColor()}`}>
+                          <span className={`text-[9px] px-2 py-0.5 rounded-md border font-bold uppercase tracking-wider ${getBadgeColor()}`}>
                             {edge.type}
                           </span>
                         </div>

@@ -252,7 +252,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               </p>
               <p className="text-xs text-muted-foreground truncate flex items-center gap-1 mt-0.5">
                 {user?.role === "admin" && (
-                  <ShieldCheck size={12} className="text-emerald-500" />
+                  <ShieldCheck size={12} className="text-success" />
                 )}
                 {user?.role ? roleDisplay[user.role] : "Chưa xác định"}
               </p>
@@ -265,7 +265,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
           {navGroups.map((group, idx) => (
             <div key={idx} className="space-y-2 animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
               {!isCollapsed && (
-                <h4 className="px-3 text-[11px] font-black text-muted-foreground/50 uppercase tracking-widest select-none">
+                <h4 className="px-3 text-[11px] font-bold text-muted-foreground/50 uppercase tracking-widest select-none">
                   {group.title}
                 </h4>
               )}

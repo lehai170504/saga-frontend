@@ -59,14 +59,14 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-bold text-muted-foreground">
                   Giảng viên
                 </CardTitle>
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                  <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <div className="p-2 bg-primary/10 rounded-xl">
+                  <Users className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-extrabold text-foreground">45</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Trong hệ thống
+                  <CheckCircle2 className="w-3 h-3 text-success" /> Trong hệ thống
                 </p>
               </CardContent>
             </Card>
@@ -76,14 +76,14 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-bold text-muted-foreground">
                   Sinh viên
                 </CardTitle>
-                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
-                  <GraduationCap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                <div className="p-2 bg-primary/10 rounded-xl">
+                  <GraduationCap className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-extrabold text-foreground">1,248</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Trong hệ thống
+                  <CheckCircle2 className="w-3 h-3 text-success" /> Trong hệ thống
                 </p>
               </CardContent>
             </Card>
@@ -93,14 +93,14 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-bold text-muted-foreground">
                   Lớp học (Kỳ hiện tại)
                 </CardTitle>
-                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
-                  <Network className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-2 bg-success/10 bg-success/20 rounded-xl">
+                  <Network className="h-4 w-4 text-success" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-extrabold text-foreground">32</div>
                 <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="h-2 w-2 rounded-full bg-success animate-pulse"></span>
                   Thuộc Học kỳ Fall 2026
                 </p>
               </CardContent>
@@ -111,14 +111,14 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-bold text-muted-foreground">
                   Khối lượng Đồ thị (24h)
                 </CardTitle>
-                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
-                  <Network className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                <div className="p-2 bg-primary/10 rounded-xl">
+                  <Network className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-extrabold text-foreground">24.5k</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium">
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Đỉnh & Cạnh</span> đã trích xuất
+                  <span className="text-success font-bold">Đỉnh & Cạnh</span> đã trích xuất
                 </p>
               </CardContent>
             </Card>
@@ -163,8 +163,8 @@ export default function AdminDashboard() {
               <>
                 <div className="flex justify-between items-center p-4 border border-border/50 rounded-xl bg-muted/20 hover:bg-muted/50 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="currentColor">
+                    <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" className="h-6 w-6 text-primary" fill="currentColor">
                         <path d="M12.004 0c-2.35 2.395-2.365 6.185.133 8.585l3.412 3.413-3.197 3.198a6.501 6.501 0 0 1 1.412 7.04l9.566-9.566a.95.95 0 0 0 0-1.344L12.004 0zm-1.748 1.74L.67 11.327a.95.95 0 0 0 0 1.344C4.45 16.44 8.22 20.244 12 24c2.295-2.298 2.395-6.096-.08-8.533l-3.47-3.469 3.2-3.2c-1.918-1.955-2.363-4.725-1.394-7.057z" />
                       </svg>
                     </div>
@@ -174,8 +174,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-bold tracking-wide">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success bg-success/20 text-xs font-bold tracking-wide">
+                      <div className="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></div>
                       CONNECTED
                     </div>
                     <span className="text-[10px] text-muted-foreground font-medium">Last ping: 2m ago</span>
@@ -184,8 +184,8 @@ export default function AdminDashboard() {
 
                 <div className="flex justify-between items-center p-4 border border-border/50 rounded-xl bg-muted/20 hover:bg-muted/50 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="h-6 w-6 text-zinc-900 dark:text-zinc-100" fill="currentColor">
+                    <div className="h-10 w-10 rounded-xl bg-card flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" className="h-6 w-6 text-foreground dark:text-zinc-100" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                       </svg>
                     </div>
@@ -195,8 +195,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-bold tracking-wide">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success bg-success/20 text-xs font-bold tracking-wide">
+                      <div className="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></div>
                       CONNECTED
                     </div>
                     <span className="text-[10px] text-muted-foreground font-medium">Last ping: 15s ago</span>
@@ -231,48 +231,48 @@ export default function AdminDashboard() {
             ) : (
               <div className="space-y-6 pl-2">
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-destructive/10 text-destructive bg-destructive/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <GitCommit className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-red-600 dark:text-red-500">Tiến trình MSR</span> vừa quét và đánh dấu 15 <span className="font-bold">Task Ảo</span> do thiếu liên kết Code (Task-Code Linkage).
+                      <span className="font-bold text-destructive">Tiến trình MSR</span> vừa quét và đánh dấu 15 <span className="font-bold">Task Ảo</span> do thiếu liên kết Code (Task-Code Linkage).
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">Vừa xong</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-violet-100 text-violet-600 dark:bg-violet-900/40 dark:text-violet-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary bg-primary/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Activity className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-violet-600 dark:text-violet-500">Process Mining</span> ghi nhận hiện tượng <span className="font-bold">Cày Deadline (Burst)</span> tăng 25% ở nhóm các lớp sáng thứ 2.
+                      <span className="font-bold text-primary">Process Mining</span> ghi nhận hiện tượng <span className="font-bold">Cày Deadline (Burst)</span> tăng 25% ở nhóm các lớp sáng thứ 2.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">15 phút trước</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary bg-primary/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Network className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-purple-600 dark:text-purple-400">SNA Module</span> đã hoàn tất tính toán <span className="font-bold">Độ bao phủ cộng tác</span> cho 32 đồ thị lớp học mới.
+                      <span className="font-bold text-primary">SNA Module</span> đã hoàn tất tính toán <span className="font-bold">Độ bao phủ cộng tác</span> cho 32 đồ thị lớp học mới.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">5 giờ trước</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-success/10 text-success bg-success/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Database className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
                     <p className="text-sm text-foreground">
-                      <span className="font-bold text-emerald-600 dark:text-emerald-500">Quản trị viên</span> vừa nhập dữ liệu và cấu trúc <strong>1,248 sinh viên</strong> vào hệ thống đồ thị.
+                      <span className="font-bold text-success">Quản trị viên</span> vừa nhập dữ liệu và cấu trúc <strong>1,248 sinh viên</strong> vào hệ thống đồ thị.
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 font-medium">1 ngày trước</p>
                   </div>

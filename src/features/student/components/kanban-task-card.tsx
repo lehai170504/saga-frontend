@@ -32,9 +32,9 @@ export function KanbanTaskCard({
   };
 
   const getPriorityColor = (priority: string) => {
-    if (priority === "high") return "bg-rose-500/10 text-rose-500 border-rose-500/20";
-    if (priority === "medium") return "bg-violet-500/10 text-violet-500 border-violet-500/20";
-    return "bg-sky-50/10 text-sky-500 border-sky-500/20";
+    if (priority === "high") return "bg-destructive/10 text-destructive border-destructive/20";
+    if (priority === "medium") return "bg-primary/10 text-primary border-primary/20";
+    return "bg-primary/10 text-primary border-primary/20";
   };
 
   return (
@@ -49,10 +49,10 @@ export function KanbanTaskCard({
       </div>
 
       {/* Card Inner Content */}
-      <div className={`relative bg-card/90 dark:bg-zinc-950 border-y border-r border-border/60 border-l-[5px] ${getLeftBorderColor(task.priority)} rounded-[15px] p-4 space-y-3.5 w-full h-full z-10`}>
+      <div className={`relative bg-card/90 bg-card border-y border-r border-border/60 border-l-[5px] ${getLeftBorderColor(task.priority)} rounded-[15px] p-4 space-y-3.5 w-full h-full z-10`}>
         {/* Card top details */}
         <div className="flex justify-between items-start gap-2">
-          <span className="text-[10px] font-black text-muted-foreground uppercase bg-muted/50 px-2 py-0.5 rounded border border-border/40">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase bg-muted/50 px-2 py-0.5 rounded border border-border/40">
             {task.key}
           </span>
 
@@ -98,7 +98,7 @@ export function KanbanTaskCard({
               </div>
             ) : null}
             {task.pullRequestsCount ? (
-              <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-sm border border-emerald-500/20">
+              <div className="flex items-center gap-1 text-[9px] font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-sm border border-success/20">
                 <GitPullRequest size={10} />
                 {task.pullRequestsCount}
               </div>
@@ -115,12 +115,12 @@ export function KanbanTaskCard({
 
           <div className="flex items-center gap-1.5 shrink-0">
             {/* Priority indicator */}
-            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${getPriorityColor(task.priority)}`}>
+            <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded border ${getPriorityColor(task.priority)}`}>
               {task.priority}
             </span>
 
             {/* Story Points */}
-            <span className="text-[10px] font-black text-primary-foreground bg-primary rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
+            <span className="text-[10px] font-bold text-primary-foreground bg-primary rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
               {task.storyPoints}
             </span>
           </div>

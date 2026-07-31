@@ -87,8 +87,8 @@ export function ClassStudentsTab({
                   <span
                     className={`px-2.5 py-1 text-xs font-bold rounded-md ${
                       student.status === "Bình thường"
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
-                        : "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400"
+                        ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
+                        : "bg-destructive/10 text-destructive dark:bg-rose-950/40 text-destructive"
                     }`}
                   >
                     {student.status}

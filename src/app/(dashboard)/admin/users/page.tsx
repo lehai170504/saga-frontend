@@ -52,7 +52,7 @@ export default function UsersManagementPage() {
             <div className="flex justify-between items-start">
               <div className="space-y-1">
                 <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Tổng Người Dùng</p>
-                <p className="text-3xl font-black text-foreground">{users.length}</p>
+                <p className="text-3xl font-bold text-foreground">{users.length}</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Users className="text-primary" size={20} />
@@ -65,13 +65,13 @@ export default function UsersManagementPage() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <p className="text-sm font-bold text-emerald-500 uppercase tracking-wider">Sinh viên Active</p>
-                <p className="text-3xl font-black text-foreground">
+                <p className="text-sm font-bold text-success uppercase tracking-wider">Sinh viên Active</p>
+                <p className="text-3xl font-bold text-foreground">
                   {users.filter(u => u.role === 'student' && u.status === 'active').length}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                <GraduationCap className="text-emerald-500" size={20} />
+              <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+                <GraduationCap className="text-success" size={20} />
               </div>
             </div>
           </CardContent>
@@ -81,13 +81,13 @@ export default function UsersManagementPage() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <p className="text-sm font-bold text-blue-500 uppercase tracking-wider">Giảng viên Active</p>
-                <p className="text-3xl font-black text-foreground">
+                <p className="text-sm font-bold text-primary uppercase tracking-wider">Giảng viên Active</p>
+                <p className="text-3xl font-bold text-foreground">
                   {users.filter(u => u.role === 'lecturer' && u.status === 'active').length}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-                <UserCircle2 className="text-blue-500" size={20} />
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <UserCircle2 className="text-primary" size={20} />
               </div>
             </div>
           </CardContent>
@@ -97,13 +97,13 @@ export default function UsersManagementPage() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <p className="text-sm font-bold text-rose-500 uppercase tracking-wider">Tài khoản bị Khóa</p>
-                <p className="text-3xl font-black text-foreground">
+                <p className="text-sm font-bold text-destructive uppercase tracking-wider">Tài khoản bị Khóa</p>
+                <p className="text-3xl font-bold text-foreground">
                   {users.filter(u => u.status === 'inactive').length}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center">
-                <ShieldAlert className="text-rose-500" size={20} />
+              <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                <ShieldAlert className="text-destructive" size={20} />
               </div>
             </div>
           </CardContent>

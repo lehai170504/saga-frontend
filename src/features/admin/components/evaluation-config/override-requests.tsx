@@ -55,7 +55,7 @@ export function OverrideRequests() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-violet-500/10 border border-violet-500/20 text-violet-700 dark:text-violet-500 p-4 rounded-xl">
+      <div className="flex items-center justify-between bg-primary/10 border border-primary/20 text-primary p-4 rounded-xl">
         <div className="flex items-start gap-3">
           <ShieldAlert className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
@@ -102,14 +102,14 @@ export function OverrideRequests() {
 
                     <div>
                       <p className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3 text-violet-500" /> Lý do ghi đè:
+                        <AlertTriangle className="w-3 h-3 text-primary" /> Lý do ghi đè:
                       </p>
-                      <p className="text-sm text-foreground italic bg-violet-500/5 p-2 rounded-lg mt-1 border border-violet-500/20 text-violet-900 dark:text-violet-200">{req.reason}</p>
+                      <p className="text-sm text-foreground italic bg-primary/5 p-2 rounded-lg mt-1 border border-primary/20 text-violet-900 dark:text-violet-200">{req.reason}</p>
                     </div>
                   </div>
 
                   <div className="flex flex-row lg:flex-col justify-end lg:justify-center gap-3 shrink-0 lg:border-l lg:border-border/50 lg:pl-6">
-                    <Button onClick={() => handleApprove(req.id)} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl h-10 w-full lg:w-32">
+                    <Button onClick={() => handleApprove(req.id)} className="bg-success hover:bg-emerald-700 text-white font-bold rounded-xl h-10 w-full lg:w-32">
                       <CheckCircle2 className="w-4 h-4 mr-2" /> Phê duyệt
                     </Button>
                     <Button onClick={() => handleReject(req.id)} variant="outline" className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20 font-bold rounded-xl h-10 w-full lg:w-32">
@@ -143,7 +143,7 @@ export function OverrideRequests() {
                   </div>
                   <div>
                     {req.status === "approved" ? (
-                      <Badge className="bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/20 border-0">Đã phê duyệt</Badge>
+                      <Badge className="bg-success/20 text-success border-0">Đã phê duyệt</Badge>
                     ) : (
                       <Badge className="bg-destructive/20 text-destructive hover:bg-destructive/20 border-0">Đã từ chối</Badge>
                     )}

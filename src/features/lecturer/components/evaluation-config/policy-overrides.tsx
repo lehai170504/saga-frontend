@@ -43,7 +43,7 @@ export function PolicyOverrides() {
           <div className="flex items-start justify-between">
             <div className="space-y-1 mr-4">
               <Label className="font-bold text-sm flex items-center gap-2">
-                <Activity className="w-4 h-4 text-indigo-500" /> Cảnh báo Lười biếng (Ghosting Warning)
+                <Activity className="w-4 h-4 text-primary" /> Cảnh báo Lười biếng (Ghosting Warning)
               </Label>
               <p className="text-xs text-muted-foreground">Phát hiện "Zero Contribution". Cảnh báo đỏ nếu sinh viên không phát sinh Slices mới trong 5 ngày (vi phạm Daily Scrum).</p>
             </div>
@@ -110,7 +110,7 @@ export function PolicyOverrides() {
           <div className="flex items-start justify-between">
             <div className="space-y-1 mr-4">
               <Label className="font-bold text-sm flex items-center gap-2">
-                <Users className="w-4 h-4 text-violet-500" /> Mất cân bằng Slices (Bus Factor Risk)
+                <Users className="w-4 h-4 text-primary" /> Mất cân bằng Slices (Bus Factor Risk)
               </Label>
               <p className="text-xs text-muted-foreground">Phát hiện "Gánh team". Cảnh báo khi 1-2 cá nhân chiếm trên 60% tổng Slices của toàn bộ Sprint. Trợ lý AI sẽ yêu cầu Scrum Master can thiệp.</p>
             </div>
@@ -141,8 +141,8 @@ export function PolicyOverrides() {
 
         {/* Reason for Override & Submit Request */}
         {hasAnyOverride && (
-          <div className="p-5 rounded-xl border border-violet-500/30 bg-violet-500/5 space-y-4 animate-in fade-in slide-in-from-top-4">
-            <div className="flex items-start gap-2 text-violet-600 dark:text-violet-500">
+          <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 space-y-4 animate-in fade-in slide-in-from-top-4">
+            <div className="flex items-start gap-2 text-primary">
               <Info className="w-5 h-5 shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
@@ -152,7 +152,7 @@ export function PolicyOverrides() {
 
             <Textarea
               placeholder="Ví dụ: Lớp học này có sinh viên part-time, cần nới lỏng Ghosting Warning lên 7 ngày..."
-              className="min-h-[100px] border-violet-500/30 focus-visible:ring-violet-500/20"
+              className="min-h-[100px] border-primary/20 focus-visible:ring-primary8605"
               value={overrideReason}
               onChange={(e) => setOverrideReason(e.target.value)}
             />
@@ -160,7 +160,7 @@ export function PolicyOverrides() {
             <div className="flex justify-end">
               <Button
                 disabled={!overrideReason.trim() || !isGhostingValid || !isBugRateValid || !isBusFactorValid}
-                className="bg-violet-500 hover:bg-violet-600 text-white font-bold rounded-xl"
+                className="bg-primary text-white font-bold rounded-xl"
               >
                 Gửi yêu cầu Ghi đè AI Rules
               </Button>

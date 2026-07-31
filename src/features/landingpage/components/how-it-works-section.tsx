@@ -17,8 +17,8 @@ export function HowItWorksSection() {
     <section id="how-it-works" ref={containerRef} className="py-32 bg-background relative overflow-hidden">
       {/* Background Ambient Effects */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       {/* Center Animated Timeline Line (Visible on Desktop) */}
       <div className="hidden md:block absolute left-1/2 top-40 bottom-40 w-px bg-border/50 -translate-x-1/2 z-0">
@@ -36,10 +36,10 @@ export function HowItWorksSection() {
           viewport={{ once: true }}
           className="text-center mb-24 relative"
         >
-          <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20 shadow-[0_0_30px_rgba(99,102,241,0.15)]">
+          <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-primary/10 text-primary ring-1 ring-primary1948 shadow-[0_0_30px_rgba(99,102,241,0.15)]">
             <Zap size={28} className="drop-shadow-md" />
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-foreground mb-6 tracking-tight">
+          <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
             Quy trình <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-violet-500 drop-shadow-sm">Slicing Pie</span>
           </h2>
           <p className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
@@ -51,8 +51,8 @@ export function HowItWorksSection() {
           {/* Step 1 */}
           <div className="flex flex-col md:flex-row items-center gap-16 group relative">
             {/* Timeline Dot */}
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-indigo-500 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-              <span className="text-indigo-500 font-black">1</span>
+            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-primary/20 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+              <span className="text-primary font-bold">1</span>
             </div>
 
             <motion.div
@@ -62,10 +62,10 @@ export function HowItWorksSection() {
               viewport={{ once: true, margin: "-100px" }}
               className="flex-1 space-y-6 md:pr-12"
             >
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-black tracking-widest uppercase text-xs">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold tracking-widest uppercase text-xs">
                 <GitMerge size={16} /> Tích lũy liên tục
               </div>
-              <h3 className="text-3xl md:text-4xl font-black text-foreground leading-tight">Tích lũy đóng góp qua từng nhiệm vụ</h3>
+              <h3 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Tích lũy đóng góp qua từng nhiệm vụ</h3>
               <p className="text-muted-foreground font-medium leading-relaxed text-lg">
                 Điểm số được tính toán tự động dựa trên Story Points mỗi khi bạn hoàn thành nhiệm vụ và được duyệt mã nguồn. Hệ thống đồng bộ tức thời từ Github & Jira.
               </p>
@@ -78,7 +78,7 @@ export function HowItWorksSection() {
               viewport={{ once: true }}
               className="flex-1 w-full perspective-1000"
             >
-              <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 hover:border-indigo-500/30">
+              <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 border-primary/20">
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 {/* Simulated UI */}
@@ -90,18 +90,18 @@ export function HowItWorksSection() {
                       whileInView={{ x: 0, opacity: 1 }}
                       transition={{ duration: 0.5, delay: i * 0.2 + 0.4 }}
                       viewport={{ once: true }}
-                      className={`flex items-center justify-between p-4 rounded-2xl border ${i === 1 ? 'bg-indigo-500/10 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.15)] scale-105 z-10 relative' : 'bg-background/60 border-border/50 opacity-60'}`}
+                      className={`flex items-center justify-between p-4 rounded-2xl border ${i === 1 ? 'bg-primary/10 border-primary/20 shadow-[0_0_20px_rgba(99,102,241,0.15)] scale-105 z-10 relative' : 'bg-background/60 border-border/50 opacity-60'}`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${i === 1 ? 'bg-indigo-500 text-white' : 'bg-muted text-muted-foreground'}`}>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${i === 1 ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
                           <ShieldCheck size={20} />
                         </div>
                         <div className="space-y-2">
-                          <div className={`h-2.5 w-32 rounded-full ${i === 1 ? 'bg-indigo-500' : 'bg-muted-foreground/30'}`} />
-                          <div className={`h-2 w-20 rounded-full ${i === 1 ? 'bg-indigo-500/50' : 'bg-muted-foreground/20'}`} />
+                          <div className={`h-2.5 w-32 rounded-full ${i === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+                          <div className={`h-2 w-20 rounded-full ${i === 1 ? 'bg-primary/50' : 'bg-muted-foreground/20'}`} />
                         </div>
                       </div>
-                      <div className={`font-black text-lg ${i === 1 ? 'text-indigo-500' : 'text-muted-foreground'}`}>
+                      <div className={`font-bold text-lg ${i === 1 ? 'text-primary' : 'text-muted-foreground'}`}>
                         +{i === 1 ? '8' : '3'} SP
                       </div>
                     </motion.div>
@@ -113,8 +113,8 @@ export function HowItWorksSection() {
 
           {/* Step 2 */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-16 group relative">
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-violet-500 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-              <span className="text-violet-500 font-black">2</span>
+            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-primary/20 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+              <span className="text-primary font-bold">2</span>
             </div>
 
             <motion.div
@@ -124,10 +124,10 @@ export function HowItWorksSection() {
               viewport={{ once: true, margin: "-100px" }}
               className="flex-1 space-y-6 md:pl-12"
             >
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 font-black tracking-widest uppercase text-xs">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold tracking-widest uppercase text-xs">
                 <Users size={16} /> Hiệu chỉnh tập thể
               </div>
-              <h3 className="text-3xl md:text-4xl font-black text-foreground leading-tight">Hiệu chỉnh tại Sprint Retrospective</h3>
+              <h3 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Hiệu chỉnh tại Sprint Retrospective</h3>
               <p className="text-muted-foreground font-medium leading-relaxed text-lg">
                 Điểm cứng từ hệ thống được cả nhóm thảo luận để áp dụng các hệ số thưởng/phạt (x1.2, x0.8) cho các hoạt động hỗ trợ đồng đội hoặc vi phạm kỷ luật.
               </p>
@@ -140,7 +140,7 @@ export function HowItWorksSection() {
               viewport={{ once: true }}
               className="flex-1 w-full perspective-1000"
             >
-              <div className="bg-gradient-to-bl from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 hover:border-violet-500/30">
+              <div className="bg-gradient-to-bl from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 border-primary/20">
                 <div className="absolute inset-0 bg-gradient-to-bl from-violet-500/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 {/* Simulated UI: Floating Avatars */}
@@ -149,7 +149,7 @@ export function HowItWorksSection() {
                   <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute z-20 w-24 h-24 rounded-full bg-violet-500 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)] border-4 border-background"
+                    className="absolute z-20 w-24 h-24 rounded-full bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)] border-4 border-background"
                   >
                     <Star className="text-white" size={32} fill="currentColor" />
                   </motion.div>
@@ -158,24 +158,24 @@ export function HowItWorksSection() {
                   <motion.div
                     animate={{ y: [0, -15, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0 }}
-                    className="absolute -top-4 -left-4 bg-background border border-violet-500/50 p-3 rounded-2xl shadow-xl z-30 flex items-center gap-3"
+                    className="absolute -top-4 -left-4 bg-background border border-primary/20 p-3 rounded-2xl shadow-xl z-30 flex items-center gap-3"
                   >
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-black text-xs">+</div>
+                    <div className="w-8 h-8 rounded-full bg-success/20 text-success flex items-center justify-center font-bold text-xs">+</div>
                     <div>
                       <div className="h-2 w-16 bg-foreground/80 rounded-full mb-1" />
-                      <div className="text-emerald-500 font-black text-sm">x1.2</div>
+                      <div className="text-success font-bold text-sm">x1.2</div>
                     </div>
                   </motion.div>
 
                   <motion.div
                     animate={{ y: [0, 15, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute -bottom-4 right-0 bg-background border border-red-500/50 p-3 rounded-2xl shadow-xl z-30 flex items-center gap-3"
+                    className="absolute -bottom-4 right-0 bg-background border border-destructive/20 p-3 rounded-2xl shadow-xl z-30 flex items-center gap-3"
                   >
-                    <div className="w-8 h-8 rounded-full bg-red-500/20 text-red-500 flex items-center justify-center font-black text-xs">-</div>
+                    <div className="w-8 h-8 rounded-full bg-destructive/20 text-destructive flex items-center justify-center font-bold text-xs">-</div>
                     <div>
                       <div className="h-2 w-16 bg-foreground/80 rounded-full mb-1" />
-                      <div className="text-red-500 font-black text-sm">x0.8</div>
+                      <div className="text-destructive font-bold text-sm">x0.8</div>
                     </div>
                   </motion.div>
 
@@ -191,8 +191,8 @@ export function HowItWorksSection() {
 
           {/* Step 3 */}
           <div className="flex flex-col md:flex-row items-center gap-16 group relative">
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-emerald-500 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-              <span className="text-emerald-500 font-black">3</span>
+            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-success/20 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+              <span className="text-success font-bold">3</span>
             </div>
 
             <motion.div
@@ -202,10 +202,10 @@ export function HowItWorksSection() {
               viewport={{ once: true, margin: "-100px" }}
               className="flex-1 space-y-6 md:pr-12"
             >
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-black tracking-widest uppercase text-xs">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-success/10 border border-success/20 text-success font-bold tracking-widest uppercase text-xs">
                 <PieChart size={16} /> Tổng kết minh bạch
               </div>
-              <h3 className="text-3xl md:text-4xl font-black text-foreground leading-tight">Tự động chốt tỷ lệ cổ phần công bằng</h3>
+              <h3 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Tự động chốt tỷ lệ cổ phần công bằng</h3>
               <p className="text-muted-foreground font-medium leading-relaxed text-lg">
                 Tất cả điểm số sau khi hiệu chỉnh được cộng dồn và tự động chuyển đổi thành phần trăm % Cổ phần của từng cá nhân. Giảng viên chỉ cần xem đồ thị trực quan và phê duyệt.
               </p>
@@ -218,7 +218,7 @@ export function HowItWorksSection() {
               viewport={{ once: true }}
               className="flex-1 w-full perspective-1000"
             >
-              <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 hover:border-emerald-500/30 flex items-center justify-center min-h-[340px]">
+              <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 border-success/20 flex items-center justify-center min-h-[340px]">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 {/* 3D Animated Pie Chart */}
@@ -264,7 +264,7 @@ export function HowItWorksSection() {
                   {/* Center Content */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-20 h-20 bg-background rounded-full shadow-inner flex items-center justify-center flex-col">
-                      <span className="text-xl font-black text-foreground">100%</span>
+                      <span className="text-xl font-bold text-foreground">100%</span>
                       <span className="text-[9px] font-bold text-muted-foreground uppercase">Equity</span>
                     </div>
                   </div>
@@ -277,7 +277,7 @@ export function HowItWorksSection() {
                     viewport={{ once: true }}
                     className="absolute -top-6 -right-12 bg-background border border-border shadow-lg rounded-xl px-3 py-1.5 flex items-center gap-2"
                   >
-                    <div className="w-3 h-3 rounded-full bg-indigo-500" />
+                    <div className="w-3 h-3 rounded-full bg-primary" />
                     <span className="font-bold text-sm">45%</span>
                   </motion.div>
                 </div>

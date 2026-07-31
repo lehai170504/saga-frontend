@@ -14,7 +14,7 @@ export function LegalModal({ isOpen, onClose, defaultTab = "privacy" }: LegalMod
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[90vw] md:max-w-4xl bg-card border-border p-0 overflow-hidden gap-0">
         <DialogHeader className="px-8 pr-14 pt-8 pb-6 border-b border-border bg-muted/30">
-          <DialogTitle className="text-2xl font-black">Chính sách & Điều khoản</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Chính sách & Điều khoản</DialogTitle>
           <DialogDescription className="text-base mt-2">
             Các quy định và cam kết bảo mật khi sử dụng hệ thống đánh giá quá trình học tập SAGA.
           </DialogDescription>

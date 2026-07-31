@@ -87,7 +87,7 @@ export function StudentAuditLogs() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       {/* Background Ambient Glows */}
       <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/5 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         
@@ -107,22 +107,22 @@ export function StudentAuditLogs() {
           <MetricCard
             title="Tổng sự kiện cá nhân"
             value={isLoading ? "-" : "48 lần"}
-            icon={<Activity className="w-4 h-4 text-blue-500" />}
+            icon={<Activity className="w-4 h-4 text-primary" />}
           />
           <MetricCard
             title="Đồng bộ GitHub gần nhất"
             value={isLoading ? "-" : "15 phút trước"}
-            icon={<GitCommit className="w-4 h-4 text-purple-500" />}
+            icon={<GitCommit className="w-4 h-4 text-primary" />}
           />
           <MetricCard
             title="Bài tập đã nộp"
             value={isLoading ? "-" : "8 bài"}
-            icon={<FileText className="w-4 h-4 text-emerald-500" />}
+            icon={<FileText className="w-4 h-4 text-success" />}
           />
           <MetricCard
             title="Đánh giá chéo"
             value={isLoading ? "-" : "Đã hoàn thành"}
-            icon={<CheckCircle2 className="w-4 h-4 text-violet-500" />}
+            icon={<CheckCircle2 className="w-4 h-4 text-primary" />}
           />
         </div>
 
@@ -169,12 +169,12 @@ export function StudentAuditLogs() {
                   {/* Console Header */}
                   <div className="bg-[#141416] px-4 py-2.5 flex items-center gap-2 border-b border-border/40">
                     <div className="flex gap-1.5 shrink-0">
-                      <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-destructive/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-warning/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-success/80"></div>
                     </div>
-                    <span className="text-[11px] text-zinc-500 font-mono ml-2 flex-1 text-center font-bold tracking-wider flex items-center justify-center gap-1.5">
-                      <Terminal size={12} className="text-zinc-500" />
+                    <span className="text-[11px] text-muted-foreground font-mono ml-2 flex-1 text-center font-bold tracking-wider flex items-center justify-center gap-1.5">
+                      <Terminal size={12} className="text-muted-foreground" />
                       STUDENT CONSOLE — SAGA-AUDIT.LOG
                     </span>
                   </div>
@@ -186,17 +186,17 @@ export function StudentAuditLogs() {
                         const isError = log.status === "error";
                         const isWarning = log.status === "warning";
                         
-                        let categoryColor = "text-sky-400";
-                        if (log.category === "github") categoryColor = "text-purple-400";
-                        if (log.category === "jira") categoryColor = "text-indigo-400";
-                        if (log.category === "academic") categoryColor = "text-emerald-400";
+                        let categoryColor = "text-primary";
+                        if (log.category === "github") categoryColor = "text-primary";
+                        if (log.category === "jira") categoryColor = "text-primary";
+                        if (log.category === "academic") categoryColor = "text-success";
 
                         return (
-                          <div key={log.id} className="flex gap-3 hover:bg-white/5 px-2.5 py-1.5 -mx-2.5 rounded transition-colors group">
-                            <span className="text-zinc-600 shrink-0">[{log.timestamp}]</span>
+                          <div key={log.id} className="flex gap-3 bg-background/5 px-2.5 py-1.5 -mx-2.5 rounded transition-colors group">
+                            <span className="text-muted-foreground shrink-0">[{log.timestamp}]</span>
                             
-                            <span className={`shrink-0 font-black ${
-                              isError ? "text-red-400" : isWarning ? "text-yellow-400" : "text-emerald-400"
+                            <span className={`shrink-0 font-bold ${
+                              isError ? "text-destructive" : isWarning ? "text-warning" : "text-success"
                             }`}>
                               [{log.status.toUpperCase()}]
                             </span>
@@ -205,7 +205,7 @@ export function StudentAuditLogs() {
                               [{log.category.toUpperCase()}]
                             </span>
                             
-                            <span className="text-zinc-400 shrink-0 font-medium">{log.action}:</span>
+                            <span className="text-muted-foreground shrink-0 font-medium">{log.action}:</span>
                             
                             <span className={isError ? "text-red-200" : "text-zinc-300"}>
                               {log.details}
@@ -214,15 +214,15 @@ export function StudentAuditLogs() {
                         )
                       })
                     ) : (
-                      <div className="text-zinc-600 italic flex items-center justify-center h-full text-xs font-bold uppercase tracking-wider">
+                      <div className="text-muted-foreground italic flex items-center justify-center h-full text-xs font-bold uppercase tracking-wider">
                         Không tìm thấy sự kiện nào khớp điều kiện lọc.
                       </div>
                     )}
                     
                     <div className="flex gap-3 px-2.5 py-1.5 mt-2 border-t border-white/5">
-                      <span className="text-zinc-600 shrink-0">[{new Date().toISOString().replace('T', ' ').substring(0, 19)}]</span>
-                      <span className="text-primary shrink-0 font-black">[CONSOLE]</span>
-                      <span className="text-zinc-400">Đang lắng nghe sự kiện mới từ các webhooks liên kết... <span className="inline-block w-1.5 h-3 bg-zinc-400 animate-pulse align-middle ml-1"></span></span>
+                      <span className="text-muted-foreground shrink-0">[{new Date().toISOString().replace('T', ' ').substring(0, 19)}]</span>
+                      <span className="text-primary shrink-0 font-bold">[CONSOLE]</span>
+                      <span className="text-muted-foreground">Đang lắng nghe sự kiện mới từ các webhooks liên kết... <span className="inline-block w-1.5 h-3 bg-zinc-400 animate-pulse align-middle ml-1"></span></span>
                     </div>
                   </div>
                 </div>

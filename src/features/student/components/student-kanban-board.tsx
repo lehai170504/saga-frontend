@@ -283,38 +283,38 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
   }> = {
     todo: {
       title: "Cần làm (To Do)",
-      bgClass: "bg-sky-50/40 dark:bg-sky-950/25",
-      borderClass: "border-sky-500/30 dark:border-sky-500/20 focus-within:border-sky-500/40",
-      accentClass: "text-sky-500 dark:text-sky-400",
+      bgClass: "bg-primary/10 dark:bg-sky-950/25",
+      borderClass: "border-primary/20 border-primary/20 focus-within:border-primary/20",
+      accentClass: "text-primary text-primary",
       glowBg: "bg-gradient-to-b from-sky-500/10 via-transparent to-transparent",
-      dotBg: "bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]",
+      dotBg: "bg-primary shadow-[0_0_8px_rgba(14,165,233,0.6)]",
       headerGradient: "from-sky-500/10 to-transparent",
     },
     inprogress: {
       title: "Đang làm (In Progress)",
-      bgClass: "bg-violet-50/40 dark:bg-violet-950/25",
-      borderClass: "border-violet-500/30 dark:border-violet-500/20 focus-within:border-violet-500/40",
-      accentClass: "text-violet-500 dark:text-violet-400",
+      bgClass: "bg-primary/10 dark:bg-violet-950/25",
+      borderClass: "border-primary/20 border-primary/20 focus-within:border-primary/20",
+      accentClass: "text-primary text-primary",
       glowBg: "bg-gradient-to-b from-violet-500/10 via-transparent to-transparent",
-      dotBg: "bg-violet-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+      dotBg: "bg-primary shadow-[0_0_8px_rgba(245,158,11,0.6)]",
       headerGradient: "from-violet-500/10 to-transparent",
     },
     inreview: {
       title: "Đang duyệt (In Review)",
-      bgClass: "bg-indigo-50/40 dark:bg-indigo-950/25",
-      borderClass: "border-indigo-500/30 dark:border-indigo-500/20 focus-within:border-indigo-500/40",
-      accentClass: "text-indigo-500 dark:text-indigo-400",
+      bgClass: "bg-primary/10 dark:bg-indigo-950/25",
+      borderClass: "border-primary/20 border-primary/20 focus-within:border-primary/20",
+      accentClass: "text-primary text-primary",
       glowBg: "bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent",
-      dotBg: "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]",
+      dotBg: "bg-primary shadow-[0_0_8px_rgba(99,102,241,0.6)]",
       headerGradient: "from-indigo-500/10 to-transparent",
     },
     done: {
       title: "Hoàn thành (Done)",
-      bgClass: "bg-emerald-50/40 dark:bg-emerald-950/25",
-      borderClass: "border-emerald-500/30 dark:border-emerald-500/20 focus-within:border-emerald-500/40",
-      accentClass: "text-emerald-500 dark:text-emerald-400",
+      bgClass: "bg-success/10 dark:bg-emerald-950/25",
+      borderClass: "border-success/20 border-success/20 focus-within:border-success/20",
+      accentClass: "text-success text-success",
       glowBg: "bg-gradient-to-b from-emerald-500/10 via-transparent to-transparent",
-      dotBg: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]",
+      dotBg: "bg-success shadow-[0_0_8px_rgba(16,185,129,0.6)]",
       headerGradient: "from-emerald-500/10 to-transparent",
     },
   };
@@ -333,11 +333,11 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
         <div className={`absolute top-0 inset-x-0 h-28 ${config.glowBg} pointer-events-none`} />
 
         <div className="flex justify-between items-center px-1 border-b border-border/40 pb-2.5 relative z-10">
-          <h4 className="text-xs font-black text-foreground uppercase tracking-wider flex items-center gap-2">
+          <h4 className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
             <span className={`w-2.5 h-2.5 rounded-full ${config.dotBg}`} />
             <span className={config.accentClass}>{config.title}</span>
           </h4>
-          <span className="text-[10px] font-black text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-bold text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">
             {columnTasks.length}
           </span>
         </div>
@@ -380,7 +380,7 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
       `}} />
       {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
 
@@ -435,7 +435,7 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
               {/* Sprint Add Button */}
               <Button
                 onClick={() => handleOpenSprintModal(null)}
-                className="h-10 rounded-xl font-bold text-xs bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 dark:border-indigo-500/20 hover:border-indigo-500/50 hover:scale-105 transition-all duration-300 hover:shadow-[0_0_15px_rgba(99,102,241,0.25)] cursor-pointer"
+                className="h-10 rounded-xl font-bold text-xs bg-primary/10 text-primary border border-primary/20 hover:scale-105 transition-all duration-300 hover:shadow-[0_0_15px_rgba(99,102,241,0.25)] cursor-pointer"
               >
                 <Plus size={14} className="mr-1.5" />
                 Sprint mới
@@ -444,7 +444,7 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
               {/* Task Add Button */}
               <Button
                 onClick={() => handleOpenTaskModal(null)}
-                className="h-10 rounded-xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
+                className="h-10 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
               >
                 <Plus size={14} className="mr-1.5" />
                 Tạo Task mới
@@ -630,9 +630,9 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
                         <SelectValue placeholder="Độ ưu tiên" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
-                        <SelectItem value="high" className="text-xs font-semibold text-rose-500">Cao (High)</SelectItem>
-                        <SelectItem value="medium" className="text-xs font-semibold text-violet-500">Vừa (Medium)</SelectItem>
-                        <SelectItem value="low" className="text-xs font-semibold text-sky-500">Thấp (Low)</SelectItem>
+                        <SelectItem value="high" className="text-xs font-semibold text-destructive">Cao (High)</SelectItem>
+                        <SelectItem value="medium" className="text-xs font-semibold text-primary">Vừa (Medium)</SelectItem>
+                        <SelectItem value="low" className="text-xs font-semibold text-primary">Thấp (Low)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

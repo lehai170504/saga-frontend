@@ -10,13 +10,13 @@ import { Skeleton } from "@/components/shared/Skeleton";
 
 // Static mock data for node graph
 const nodes = [
-  { id: "1", name: "Minh Nguyễn", size: 60, x: 50, y: 35, color: "bg-indigo-500", interactions: 45, initials: "M" },
-  { id: "2", name: "Linh Trần", size: 45, x: 25, y: 60, color: "bg-teal-500", interactions: 28, initials: "L" },
-  { id: "3", name: "An Lê", size: 75, x: 45, y: 70, color: "bg-indigo-500", interactions: 62, initials: "A" },
-  { id: "4", name: "Huy Hoàng", size: 50, x: 75, y: 55, color: "bg-pink-500", interactions: 35, initials: "H" },
-  { id: "5", name: "Thúc Nguyễn", size: 40, x: 65, y: 85, color: "bg-indigo-500", interactions: 15, initials: "T" },
-  { id: "6", name: "Tuấn Lê", size: 55, x: 20, y: 30, color: "bg-violet-500", interactions: 40, initials: "T" },
-  { id: "7", name: "Phương Ngô", size: 35, x: 85, y: 25, color: "bg-teal-500", interactions: 12, initials: "P" },
+  { id: "1", name: "Minh Nguyễn", size: 60, x: 50, y: 35, color: "bg-primary", interactions: 45, initials: "M" },
+  { id: "2", name: "Linh Trần", size: 45, x: 25, y: 60, color: "bg-success", interactions: 28, initials: "L" },
+  { id: "3", name: "An Lê", size: 75, x: 45, y: 70, color: "bg-primary", interactions: 62, initials: "A" },
+  { id: "4", name: "Huy Hoàng", size: 50, x: 75, y: 55, color: "bg-destructive", interactions: 35, initials: "H" },
+  { id: "5", name: "Thúc Nguyễn", size: 40, x: 65, y: 85, color: "bg-primary", interactions: 15, initials: "T" },
+  { id: "6", name: "Tuấn Lê", size: 55, x: 20, y: 30, color: "bg-primary", interactions: 40, initials: "T" },
+  { id: "7", name: "Phương Ngô", size: 35, x: 85, y: 25, color: "bg-success", interactions: 12, initials: "P" },
 ];
 
 const edges = [
@@ -81,7 +81,7 @@ export function StudentInteractionGraph() {
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       {/* Ambient Background Glows */}
       <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/5 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         
@@ -121,19 +121,19 @@ export function StudentInteractionGraph() {
                 <h3 className="font-extrabold text-xs uppercase tracking-wider text-muted-foreground">Chú giải mạng lưới</h3>
                 <div className="space-y-2 text-xs font-bold text-foreground/80">
                   <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/30 cursor-pointer transition-colors">
-                    <div className="w-4.5 h-1 bg-indigo-500 rounded-full" />
+                    <div className="w-4.5 h-1 bg-primary rounded-full" />
                     <span>Commits & Push</span>
                   </div>
                   <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/30 cursor-pointer transition-colors">
-                    <div className="w-4.5 h-1 border-b-2 border-dashed border-teal-500" />
+                    <div className="w-4.5 h-1 border-b-2 border-dashed border-success/20" />
                     <span>PR Reviews</span>
                   </div>
                   <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/30 cursor-pointer transition-colors">
-                    <div className="w-4.5 h-1 border-b-2 border-dotted border-violet-500" />
+                    <div className="w-4.5 h-1 border-b-2 border-dotted border-primary/20" />
                     <span>Comments</span>
                   </div>
                   <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/30 cursor-pointer transition-colors">
-                    <div className="w-4.5 h-1 bg-rose-500 rounded-full" />
+                    <div className="w-4.5 h-1 bg-destructive rounded-full" />
                     <span>Issue Assignment</span>
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export function StudentInteractionGraph() {
                 {filteredNodes.map(node => (
                   <button 
                     key={node.id}
-                    className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-black shadow-lg ${node.color} ${selectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background dark:ring-offset-background/30 z-20 scale-[1.08]' : 'opacity-90 z-10'}`}
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-bold shadow-lg ${node.color} ${selectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background dark:ring-offset-background/30 z-20 scale-[1.08]' : 'opacity-90 z-10'}`}
                     style={{ 
                       left: `${node.x}%`, 
                       top: `${node.y}%`,
@@ -215,7 +215,7 @@ export function StudentInteractionGraph() {
               ) : selectedNode ? (
                 <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
                   <div className="text-center space-y-2">
-                    <div className={`w-20 h-20 mx-auto rounded-full ${selectedNode.color} flex items-center justify-center text-white text-2xl font-black shadow-lg mb-4 ring-4 ring-white/10`}>
+                    <div className={`w-20 h-20 mx-auto rounded-full ${selectedNode.color} flex items-center justify-center text-white text-2xl font-bold shadow-lg mb-4 ring-4 ring-white/10`}>
                       {selectedNode.initials}
                     </div>
                     <h2 className="text-lg font-extrabold text-foreground">{selectedNode.name}</h2>
@@ -225,13 +225,13 @@ export function StudentInteractionGraph() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-3.5 text-center shadow-sm">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-1">Tương tác</p>
-                      <p className="text-2xl font-black text-primary">{selectedNode.interactions}</p>
+                    <div className="bg-background/5 border border-white/10 rounded-xl p-3.5 text-center shadow-sm">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Tương tác</p>
+                      <p className="text-2xl font-bold text-primary">{selectedNode.interactions}</p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-3.5 text-center shadow-sm">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-wider mb-1">Mức độ</p>
-                      <p className="text-base font-black text-emerald-500 mt-1">Năng nổ</p>
+                    <div className="bg-background/5 border border-white/10 rounded-xl p-3.5 text-center shadow-sm">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Mức độ</p>
+                      <p className="text-base font-bold text-success mt-1">Năng nổ</p>
                     </div>
                   </div>
 
@@ -239,17 +239,17 @@ export function StudentInteractionGraph() {
                     <h3 className="font-extrabold text-xs uppercase tracking-wider text-muted-foreground">Cộng tác nhiều nhất</h3>
                     
                     <div className="space-y-2.5">
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-background/5 border border-white/10">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-500 flex items-center justify-center text-xs font-black ring-1 ring-indigo-500/30">M</div>
+                          <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold ring-1 ring-primary14005">M</div>
                           <span className="text-xs font-bold text-foreground">Minh Nguyễn</span>
                         </div>
                         <span className="text-xs font-extrabold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-md">15 lần</span>
                       </div>
                       
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-background/5 border border-white/10">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-pink-500/20 text-pink-500 flex items-center justify-center text-xs font-black ring-1 ring-pink-500/30">H</div>
+                          <div className="w-7 h-7 rounded-full bg-destructive/20 text-destructive flex items-center justify-center text-xs font-bold ring-1 ring-pink-500/30">H</div>
                           <span className="text-xs font-bold text-foreground">Huy Hoàng</span>
                         </div>
                         <span className="text-xs font-extrabold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-md">8 lần</span>
@@ -257,7 +257,7 @@ export function StudentInteractionGraph() {
                     </div>
                   </div>
 
-                  <Button className="w-full h-11 rounded-xl font-black text-xs uppercase tracking-wider shadow-sm bg-primary text-primary-foreground hover:bg-primary/95 transition-all">
+                  <Button className="w-full h-11 rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm bg-primary text-primary-foreground hover:bg-primary/95 transition-all">
                     Xem Profile Chi Tiết
                   </Button>
                 </div>

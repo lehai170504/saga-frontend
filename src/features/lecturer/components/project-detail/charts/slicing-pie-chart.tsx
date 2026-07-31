@@ -16,7 +16,7 @@ export function SlicingPieChart() {
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
       <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <Sparkles className="text-indigo-500" size={20} />
+          <Sparkles className="text-primary" size={20} />
           Biểu đồ Slicing Pie (Phân bổ Cổ phần)
         </CardTitle>
         <CardDescription className="font-medium mt-1">
@@ -50,7 +50,7 @@ export function SlicingPieChart() {
           </ResponsiveContainer>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col">
             <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Tổng Slices</span>
-            <span className="text-4xl font-black text-foreground">100%</span>
+            <span className="text-4xl font-bold text-foreground">100%</span>
           </div>
         </div>
 
@@ -59,7 +59,7 @@ export function SlicingPieChart() {
             <div key={idx} className="flex items-center gap-2 bg-background border border-border/50 px-3 py-1.5 rounded-xl">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
               <span className="text-sm font-bold">{item.name}</span>
-              <span className="text-sm font-black" style={{ color: item.color }}>{item.value}%</span>
+              <span className="text-sm font-bold" style={{ color: item.color }}>{item.value}%</span>
             </div>
           ))}
         </div>

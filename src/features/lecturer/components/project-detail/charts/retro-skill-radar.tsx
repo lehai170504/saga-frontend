@@ -18,7 +18,7 @@ export function RetroSkillRadar() {
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
       <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <TrendingUp className="text-emerald-500" size={20} />
+          <TrendingUp className="text-success" size={20} />
           Đánh giá Retrospective & Hiệu suất
         </CardTitle>
         <CardDescription className="font-medium mt-1">

@@ -19,12 +19,12 @@ export function GraphProcessingChart() {
     <Card className="rounded-[2rem] shadow-sm border-border bg-card/40 backdrop-blur-xl">
       <CardHeader>
         <CardTitle className="text-lg font-bold flex items-center gap-2">
-          <Network className="h-5 w-5 text-indigo-500" />
+          <Network className="h-5 w-5 text-primary" />
           Mật độ Xử lý Đồ thị (7 ngày qua)
         </CardTitle>
         <div className="text-xs text-muted-foreground mt-1.5 space-y-1">
-          <p><span className="font-semibold text-indigo-600 dark:text-indigo-400">Đỉnh (Nodes):</span> Các thực thể như Student, Git Issues, Commit, Comment, Task Jira...</p>
-          <p><span className="font-semibold text-emerald-600 dark:text-emerald-400">Cạnh (Edges):</span> Các hành động thực thi, luồng tác động (Authored, Assigned, Reviewed...)</p>
+          <p><span className="font-semibold text-primary">Đỉnh (Nodes):</span> Các thực thể như Student, Git Issues, Commit, Comment, Task Jira...</p>
+          <p><span className="font-semibold text-success">Cạnh (Edges):</span> Các hành động thực thi, luồng tác động (Authored, Assigned, Reviewed...)</p>
         </div>
       </CardHeader>
       <CardContent>

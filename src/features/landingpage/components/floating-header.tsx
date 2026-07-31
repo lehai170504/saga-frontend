@@ -17,7 +17,7 @@ export function FloatingHeader() {
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
     >
-      <header className="pointer-events-auto bg-background/70 backdrop-blur-3xl border border-border/50 rounded-full px-2 h-14 flex items-center justify-between gap-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-500 hover:shadow-[0_8px_40px_rgba(99,102,241,0.15)] hover:border-indigo-500/30">
+      <header className="pointer-events-auto bg-background/70 backdrop-blur-3xl border border-border/50 rounded-full px-2 h-14 flex items-center justify-between gap-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-500 hover:shadow-[0_8px_40px_rgba(99,102,241,0.15)] border-primary/20">
         <Link href="/" className="pl-4 flex items-center">
           <SagaLogo />
         </Link>
@@ -52,8 +52,8 @@ export function FloatingHeader() {
             className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted/80 transition-all duration-300 cursor-pointer relative"
             aria-label="Chuyển đổi giao diện"
           >
-            <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 text-violet-500" />
-            <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100 text-indigo-400" />
+            <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 text-primary" />
+            <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100 text-primary" />
           </button>
           <AuthModal />
         </div>

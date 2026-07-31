@@ -15,7 +15,7 @@ export function SprintVelocityBar() {
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
       <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <BarChartIcon className="text-blue-500" size={20} />
+          <BarChartIcon className="text-primary" size={20} />
           Tiến độ Đóng góp theo Sprints
         </CardTitle>
         <CardDescription className="font-medium mt-1">

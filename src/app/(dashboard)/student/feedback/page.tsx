@@ -255,8 +255,8 @@ export default function InstructorFeedbackInbox() {
             size={13}
             className={`${
               s <= score
-                ? "text-indigo-500 fill-indigo-500"
-                : "text-slate-200 dark:text-slate-800"
+                ? "text-primary fill-indigo-500"
+                : "text-slate-200 text-foreground"
             }`}
           />
         ))}
@@ -291,7 +291,7 @@ export default function InstructorFeedbackInbox() {
                     <h4 className="font-extrabold text-foreground text-sm flex items-center gap-1.5">
                       Danh sách phản hồi
                       {unreadCount > 0 && (
-                        <span className="bg-indigo-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+                        <span className="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
                           {unreadCount} mới
                         </span>
                       )}
@@ -316,8 +316,8 @@ export default function InstructorFeedbackInbox() {
                     onClick={() => setFilterTab("all")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       filterTab === "all"
-                        ? "bg-slate-900 dark:bg-slate-800 text-white shadow-sm"
-                        : "bg-slate-50 dark:bg-slate-950 text-muted-foreground hover:text-foreground"
+                        ? "bg-card bg-card text-white shadow-sm"
+                        : "bg-muted bg-card text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Tất cả
@@ -326,19 +326,19 @@ export default function InstructorFeedbackInbox() {
                     onClick={() => setFilterTab("unread")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1 ${
                       filterTab === "unread"
-                        ? "bg-slate-900 dark:bg-slate-800 text-white shadow-sm"
-                        : "bg-slate-50 dark:bg-slate-950 text-muted-foreground hover:text-foreground"
+                        ? "bg-card bg-card text-white shadow-sm"
+                        : "bg-muted bg-card text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full" />
                     Chưa đọc
                   </button>
                   <button
                     onClick={() => setFilterTab("sprint4")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       filterTab === "sprint4"
-                        ? "bg-slate-900 dark:bg-slate-800 text-white shadow-sm"
-                        : "bg-slate-50 dark:bg-slate-950 text-muted-foreground hover:text-foreground"
+                        ? "bg-card bg-card text-white shadow-sm"
+                        : "bg-muted bg-card text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Sprint 4
@@ -347,8 +347,8 @@ export default function InstructorFeedbackInbox() {
                     onClick={() => setFilterTab("sprint3")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer ${
                       filterTab === "sprint3"
-                        ? "bg-slate-900 dark:bg-slate-800 text-white shadow-sm"
-                        : "bg-slate-50 dark:bg-slate-950 text-muted-foreground hover:text-foreground"
+                        ? "bg-card bg-card text-white shadow-sm"
+                        : "bg-muted bg-card text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Sprint 3
@@ -371,12 +371,12 @@ export default function InstructorFeedbackInbox() {
                         onClick={() => handleSelectFeedback(item.id)}
                         className={`w-full p-3.5 text-left rounded-2xl flex flex-col gap-2 transition-all cursor-pointer ${
                           isSelected
-                            ? "bg-indigo-50/50 dark:bg-indigo-950/20 font-bold shadow-inner"
-                            : "hover:bg-slate-50 dark:hover:bg-slate-900/40"
+                            ? "bg-primary/10 dark:bg-indigo-950/20 font-bold shadow-inner"
+                            : "bg-muted dark:bg-card"
                         }`}
                       >
                         <div className="flex justify-between items-start gap-2">
-                          <span className="bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[9px] font-extrabold">
+                          <span className="bg-primary/10 dark:bg-indigo-950 text-primary px-2 py-0.5 rounded-full text-[9px] font-extrabold">
                             {item.sprint}
                           </span>
                           <span className="text-[10px] text-muted-foreground font-semibold">
@@ -385,11 +385,11 @@ export default function InstructorFeedbackInbox() {
                         </div>
                         
                         <div className="min-w-0">
-                          <h5 className={`text-xs truncate ${!item.read ? "font-black text-foreground" : "font-medium text-slate-700 dark:text-slate-300"}`}>
+                          <h5 className={`text-xs truncate ${!item.read ? "font-bold text-foreground" : "font-medium text-foreground dark:text-slate-300"}`}>
                             {item.title}
                           </h5>
                           <div className="flex items-center gap-1.5 mt-1">
-                            <span className={`w-1.5 h-1.5 rounded-full ${!item.read ? "bg-indigo-500" : "bg-transparent"}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${!item.read ? "bg-primary" : "bg-transparent"}`} />
                             <p className="text-[10px] text-muted-foreground truncate font-bold">
                               {item.instructorName}
                             </p>
@@ -411,7 +411,7 @@ export default function InstructorFeedbackInbox() {
           >
             {selectedFeedback ? (
               <Card className="border border-border shadow-sm rounded-3xl bg-card overflow-hidden !pt-0">
-                <div className="h-2 w-full bg-indigo-500" />
+                <div className="h-2 w-full bg-primary" />
                 
                 <div className="p-6 space-y-6">
                   {/* MOBILE BACK BUTTON */}
@@ -425,7 +425,7 @@ export default function InstructorFeedbackInbox() {
                   {/* HEADER */}
                   <div className="space-y-3 pb-5 border-b border-border">
                     <div className="flex justify-between items-center">
-                      <span className="bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-black">
+                      <span className="bg-primary/10 dark:bg-indigo-950 text-primary px-3 py-1 rounded-full text-xs font-bold">
                         {selectedFeedback.sprint}
                       </span>
                       <span className="text-xs text-muted-foreground font-bold flex items-center gap-1">
@@ -434,19 +434,19 @@ export default function InstructorFeedbackInbox() {
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-black text-foreground leading-normal">
+                    <h3 className="text-xl font-bold text-foreground leading-normal">
                       {selectedFeedback.title}
                     </h3>
 
                     {/* SENDER CARD */}
-                    <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-950/60 p-3.5 rounded-2xl border border-border">
-                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
+                    <div className="flex items-center gap-3 bg-card p-3.5 rounded-2xl border border-border">
+                      <div className="w-10 h-10 rounded-xl bg-card text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
                         {selectedFeedback.instructorName.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <h4 className="font-extrabold text-foreground text-xs flex items-center gap-1">
                           {selectedFeedback.instructorName}
-                          <ShieldCheck size={13} className="text-emerald-500" />
+                          <ShieldCheck size={13} className="text-success" />
                         </h4>
                         <p className="text-[10px] text-muted-foreground font-semibold">
                           {selectedFeedback.instructorRole}
@@ -461,34 +461,34 @@ export default function InstructorFeedbackInbox() {
                       Điểm thành phần & Đánh giá tiêu chí
                     </h5>
                     <div className="grid gap-3 sm:grid-cols-3">
-                      <div className="bg-slate-50 dark:bg-slate-950/40 p-3.5 rounded-2xl border border-border flex flex-col justify-between h-20 shadow-inner">
+                      <div className="bg-card p-3.5 rounded-2xl border border-border flex flex-col justify-between h-20 shadow-inner">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
                           Chất lượng Code
                         </span>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-base font-black text-foreground">
+                          <span className="text-base font-bold text-foreground">
                             {selectedFeedback.scores.codeQuality}/5
                           </span>
                           {renderStars(selectedFeedback.scores.codeQuality)}
                         </div>
                       </div>
-                      <div className="bg-slate-50 dark:bg-slate-950/40 p-3.5 rounded-2xl border border-border flex flex-col justify-between h-20 shadow-inner">
+                      <div className="bg-card p-3.5 rounded-2xl border border-border flex flex-col justify-between h-20 shadow-inner">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
                           Task & Đúng Hạn
                         </span>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-base font-black text-foreground">
+                          <span className="text-base font-bold text-foreground">
                             {selectedFeedback.scores.deadlines}/5
                           </span>
                           {renderStars(selectedFeedback.scores.deadlines)}
                         </div>
                       </div>
-                      <div className="bg-slate-50 dark:bg-slate-950/40 p-3.5 rounded-2xl border border-border flex flex-col justify-between h-20 shadow-inner">
+                      <div className="bg-card p-3.5 rounded-2xl border border-border flex flex-col justify-between h-20 shadow-inner">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
                           Hợp tác Nhóm
                         </span>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-base font-black text-foreground">
+                          <span className="text-base font-bold text-foreground">
                             {selectedFeedback.scores.teamwork}/5
                           </span>
                           {renderStars(selectedFeedback.scores.teamwork)}
@@ -501,9 +501,9 @@ export default function InstructorFeedbackInbox() {
                   <div className="space-y-5">
                     
                     {/* Strengths */}
-                    <div className="space-y-2 bg-emerald-50/20 dark:bg-emerald-950/10 p-4 border border-emerald-100/30 rounded-2xl">
-                      <h5 className="font-extrabold text-emerald-800 dark:text-emerald-400 text-xs flex items-center gap-1.5">
-                        <Check size={14} className="bg-emerald-100 dark:bg-emerald-900/30 p-0.5 rounded-full" />
+                    <div className="space-y-2 bg-success/10 dark:bg-emerald-950/10 p-4 border border-success/20 rounded-2xl">
+                      <h5 className="font-extrabold text-emerald-800 text-success text-xs flex items-center gap-1.5">
+                        <Check size={14} className="bg-success/10 bg-success/20 p-0.5 rounded-full" />
                         Điểm mạnh chính (Strengths)
                       </h5>
                       <ul className="list-disc list-inside text-muted-foreground text-xs font-medium space-y-1.5 pl-1 leading-relaxed">
@@ -514,9 +514,9 @@ export default function InstructorFeedbackInbox() {
                     </div>
 
                     {/* Areas for Improvement */}
-                    <div className="space-y-2 bg-indigo-50/20 dark:bg-indigo-950/10 p-4 border border-indigo-100/30 rounded-2xl">
-                      <h5 className="font-extrabold text-indigo-800 dark:text-indigo-400 text-xs flex items-center gap-1.5">
-                        <AlertCircle size={14} className="bg-indigo-100 dark:bg-indigo-900/30 p-0.5 rounded-full" />
+                    <div className="space-y-2 bg-primary/10 dark:bg-indigo-950/10 p-4 border border-primary/20 rounded-2xl">
+                      <h5 className="font-extrabold text-indigo-800 text-primary text-xs flex items-center gap-1.5">
+                        <AlertCircle size={14} className="bg-primary/10 p-0.5 rounded-full" />
                         Điểm cần khắc phục (Improvements)
                       </h5>
                       <ul className="list-disc list-inside text-muted-foreground text-xs font-medium space-y-1.5 pl-1 leading-relaxed">
@@ -527,9 +527,9 @@ export default function InstructorFeedbackInbox() {
                     </div>
 
                     {/* Recommendations */}
-                    <div className="space-y-2 bg-blue-50/20 dark:bg-blue-950/10 p-4 border border-blue-100/30 rounded-2xl">
-                      <h5 className="font-extrabold text-blue-800 dark:text-blue-400 text-xs flex items-center gap-1.5">
-                        <MessageSquare size={14} className="bg-blue-100 dark:bg-blue-900/30 p-0.5 rounded-full" />
+                    <div className="space-y-2 bg-primary/10 dark:bg-blue-950/10 p-4 border border-primary/20 rounded-2xl">
+                      <h5 className="font-extrabold text-blue-800 text-primary text-xs flex items-center gap-1.5">
+                        <MessageSquare size={14} className="bg-primary/10 p-0.5 rounded-full" />
                         Hành động đề xuất (Recommendations)
                       </h5>
                       <ul className="list-disc list-inside text-muted-foreground text-xs font-medium space-y-1.5 pl-1 leading-relaxed">
@@ -544,7 +544,7 @@ export default function InstructorFeedbackInbox() {
                   <div className="pt-2 border-t border-border flex justify-end">
                     <Button
                       onClick={() => handleAcknowledge()}
-                      className="h-10 px-5 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      className="h-10 px-5 bg-card dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <CheckCircle size={14} />
                       Xác nhận đã đọc & hiểu ý kiến
@@ -560,7 +560,7 @@ export default function InstructorFeedbackInbox() {
 
                     {/* List replies */}
                     {selectedFeedback.replies.length > 0 && (
-                      <div className="space-y-3.5 bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl border border-border">
+                      <div className="space-y-3.5 bg-card p-4 rounded-2xl border border-border">
                         {selectedFeedback.replies.map((rep, idx) => (
                           <div key={idx} className="flex gap-2 items-start text-xs leading-relaxed">
                             <CornerDownRight size={14} className="text-muted-foreground shrink-0 mt-0.5" />
@@ -588,13 +588,13 @@ export default function InstructorFeedbackInbox() {
                           placeholder="Ví dụ: Dạ em xin phép hỏi thầy rõ hơn về tiêu chuẩn commit message..."
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
+                          className="w-full p-3.5 bg-background border border-border focus:outline-none focus:ring-2 ring-primary26783 border-primary/20 rounded-2xl text-xs font-medium leading-relaxed resize-none shadow-inner text-foreground placeholder:text-muted-foreground"
                         />
                       </div>
                       <div className="flex justify-end">
                         <Button
                           type="submit"
-                          className="h-9 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-500/10"
+                          className="h-9 px-4 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-500/10"
                         >
                           <Send size={12} />
                           Gửi câu hỏi làm rõ
@@ -608,7 +608,7 @@ export default function InstructorFeedbackInbox() {
               </Card>
             ) : (
               <Card className="h-96 flex flex-col justify-center items-center text-muted-foreground border border-dashed border-border rounded-3xl bg-card">
-                <Inbox size={48} className="text-slate-300 dark:text-slate-800 mb-3" />
+                <Inbox size={48} className="text-slate-300 text-foreground mb-3" />
                 <p className="text-xs font-bold">Vui lòng chọn một nhận xét ở cột bên trái để xem chi tiết</p>
               </Card>
             )}

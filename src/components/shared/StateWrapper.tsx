@@ -22,14 +22,14 @@ export function StateWrapper({
 
   if (error)
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-red-500 animate-in fade-in duration-500">
+      <div className="flex flex-col items-center justify-center py-20 text-destructive animate-in fade-in duration-500">
         <AlertTriangle size={48} className="opacity-50" />
         <p className="mt-4 font-bold">{error}</p>
         {onRetry && (
           <Button
             variant="outline"
             onClick={onRetry}
-            className="mt-4 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="mt-4 border-destructive/20 text-destructive bg-destructive/10"
           >
             Thử lại
           </Button>
@@ -39,12 +39,12 @@ export function StateWrapper({
 
   if (isEmpty)
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-slate-400 animate-in fade-in duration-500">
+      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground animate-in fade-in duration-500">
         <Inbox size={48} className="opacity-50" />
-        <p className="mt-4 font-medium text-slate-500">
+        <p className="mt-4 font-medium text-muted-foreground">
           Chưa có dữ liệu để hiển thị
         </p>
-        <Button variant="link" className="mt-2 text-indigo-600">
+        <Button variant="link" className="mt-2 text-primary">
           Hướng dẫn tích hợp
         </Button>
       </div>

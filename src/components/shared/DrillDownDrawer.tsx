@@ -23,8 +23,8 @@ export function DrillDownDrawer({ open, onClose, date }: DrillDownDrawerProps) {
       user: "Minh Anh",
       action: "feat: update heatmap UI integration",
       time: "10:30 AM",
-      icon: <GitCommit className="w-4 h-4 text-indigo-500" />,
-      bg: "bg-indigo-50",
+      icon: <GitCommit className="w-4 h-4 text-primary" />,
+      bg: "bg-primary/10",
     },
     {
       id: 2,
@@ -32,8 +32,8 @@ export function DrillDownDrawer({ open, onClose, date }: DrillDownDrawerProps) {
       user: "Hoang Long",
       action: "Đã review và approve PR #45",
       time: "14:15 PM",
-      icon: <MessageSquare className="w-4 h-4 text-blue-500" />,
-      bg: "bg-blue-50",
+      icon: <MessageSquare className="w-4 h-4 text-primary" />,
+      bg: "bg-primary/10",
     },
     {
       id: 3,
@@ -41,8 +41,8 @@ export function DrillDownDrawer({ open, onClose, date }: DrillDownDrawerProps) {
       user: "Thu Hien",
       action: "Hoàn thành SAGA-102: API Setup",
       time: "16:45 PM",
-      icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />,
-      bg: "bg-emerald-50",
+      icon: <CheckCircle2 className="w-4 h-4 text-success" />,
+      bg: "bg-success/10",
     },
   ];
 
