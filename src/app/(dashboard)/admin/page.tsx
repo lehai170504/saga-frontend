@@ -93,7 +93,7 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-bold text-muted-foreground">
                   Lớp học (Kỳ hiện tại)
                 </CardTitle>
-                <div className="p-2 bg-success/10 bg-success/20 rounded-xl">
+                <div className="p-2 bg-success/10 rounded-xl">
                   <Network className="h-4 w-4 text-success" />
                 </div>
               </CardHeader>
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success bg-success/20 text-xs font-bold tracking-wide">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-bold tracking-wide">
                       <div className="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></div>
                       CONNECTED
                     </div>
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success bg-success/20 text-xs font-bold tracking-wide">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-bold tracking-wide">
                       <div className="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></div>
                       CONNECTED
                     </div>
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="space-y-6 pl-2">
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-destructive/10 text-destructive bg-destructive/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-destructive/10 text-destructive flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <GitCommit className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary bg-primary/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Activity className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
@@ -255,7 +255,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary bg-primary/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Network className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-success/10 text-success bg-success/20 flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
+                  <div className="h-10 w-10 rounded-full bg-success/10 text-success flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
                     <Database className="h-4 w-4" />
                   </div>
                   <div className="pt-1.5">

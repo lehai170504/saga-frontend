@@ -235,21 +235,21 @@ export default function AbsenceDelayReporting() {
     switch (status) {
       case "approved":
         return (
-          <span className="bg-success/10 dark:bg-emerald-950/40 text-success border border-success/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
+          <span className="bg-success/10 dark:bg-success/20 text-success border border-success/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
             <CheckCircle size={10} />
             Đã đồng ý
           </span>
         );
       case "rejected":
         return (
-          <span className="bg-destructive/10 dark:bg-rose-950/40 text-destructive border border-destructive/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
+          <span className="bg-destructive/10 dark:bg-destructive/20 text-destructive border border-destructive/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1">
             <XCircle size={10} />
             Từ chối
           </span>
         );
       default:
         return (
-          <span className="bg-primary/10 dark:bg-violet-950/40 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 animate-pulse">
+          <span className="bg-primary/10 dark:bg-primary/20 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 animate-pulse">
             <Clock size={10} />
             Chờ duyệt
           </span>
@@ -401,7 +401,7 @@ export default function AbsenceDelayReporting() {
                   <div className="flex justify-end pt-2">
                     <Button
                       type="submit"
-                      className="h-11 px-6 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 cursor-pointer"
+                      className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-primary/10 cursor-pointer"
                     >
                       <Send size={13} />
                       Gửi báo cáo vắng mặt
@@ -505,7 +505,7 @@ export default function AbsenceDelayReporting() {
                   <div className="flex justify-end pt-2">
                     <Button
                       type="submit"
-                      className="h-11 px-6 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 cursor-pointer"
+                      className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-primary/10 cursor-pointer"
                     >
                       <Send size={13} />
                       Gửi giải trình trễ hạn
@@ -542,7 +542,7 @@ export default function AbsenceDelayReporting() {
             <div className="space-y-3 max-h-[550px] overflow-y-auto pr-1">
               {history.length === 0 ? (
                 <div className="py-12 text-center text-muted-foreground">
-                  <CalendarX size={36} className="mx-auto text-slate-300 text-foreground mb-2" />
+                  <CalendarX size={36} className="mx-auto text-muted-foreground mb-2" />
                   <p className="text-xs font-bold">Chưa gửi báo cáo nào</p>
                 </div>
               ) : (
@@ -554,8 +554,8 @@ export default function AbsenceDelayReporting() {
                     <div className="flex justify-between items-start gap-2">
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold ${
                         item.type === "absence"
-                          ? "bg-primary/10 dark:bg-blue-950/50 text-primary text-primary"
-                          : "bg-primary/10 dark:bg-indigo-950/50 text-primary text-primary"
+                          ? "bg-primary/10 dark:bg-primary/20 text-primary"
+                          : "bg-primary/10 dark:bg-primary/20 text-primary"
                       }`}>
                         {item.type === "absence" ? "Vắng mặt" : "Trễ tiến độ"}
                       </span>

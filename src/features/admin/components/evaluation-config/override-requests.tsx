@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, XCircle, Clock, ShieldAlert, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -104,7 +104,7 @@ export function OverrideRequests() {
                       <p className="text-xs font-bold text-muted-foreground flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3 text-primary" /> Lý do ghi đè:
                       </p>
-                      <p className="text-sm text-foreground italic bg-primary/5 p-2 rounded-lg mt-1 border border-primary/20 text-violet-900 dark:text-violet-200">{req.reason}</p>
+                      <p className="text-sm text-foreground italic bg-primary/5 p-2 rounded-lg mt-1 border border-primary/20 text-primary">{req.reason}</p>
                     </div>
                   </div>
 

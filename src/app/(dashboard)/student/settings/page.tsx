@@ -143,7 +143,7 @@ export default function SettingsPage() {
                 {/* Submit Action */}
                 <Button
                   onClick={handleSaveGeneral}
-                  className="w-full h-10 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   Lưu cấu hình cá nhân
                 </Button>
@@ -216,7 +216,7 @@ export default function SettingsPage() {
                 <Button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="w-full h-10 mt-2 bg-card dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+                  className="w-full h-10 mt-2 bg-card dark:hover:bg-muted text-foreground text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50 border border-border"
                 >
                   {isChangingPassword ? (
                     <>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
             {/* Quick Status / Profile Summary Card */}
             <Card className="border border-border shadow-sm rounded-3xl bg-card p-5 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary text-white font-extrabold flex items-center justify-center shadow-md shadow-indigo-500/20">
+                <div className="w-10 h-10 rounded-2xl bg-primary text-primary-foreground font-extrabold flex items-center justify-center shadow-md shadow-primary/20">
                   LH
                 </div>
                 <div>

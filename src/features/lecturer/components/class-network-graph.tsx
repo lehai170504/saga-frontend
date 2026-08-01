@@ -163,7 +163,7 @@ const RetroNode = ({ data }: any) => {
 
 const SliceNode = ({ data }: any) => {
   return (
-    <div className="min-w-[180px] px-4 py-4 shadow-xl rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center gap-3 relative overflow-hidden">
+    <div className="min-w-[180px] px-4 py-4 shadow-xl rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 text-primary-foreground flex items-center gap-3 relative overflow-hidden">
       <Handle type="target" position={Position.Top} className="w-3 h-3 bg-background border-2 border-primary/20" />
       <div className="absolute -right-4 -bottom-4 opacity-20">
         <PieChart size={64} />
@@ -172,8 +172,8 @@ const SliceNode = ({ data }: any) => {
         <PieChart size={20} className="text-white" />
       </div>
       <div className="relative z-10">
-        <div className="text-[10px] font-bold text-indigo-100 uppercase tracking-wider">{data.label || 'Tổng Slices Đóng góp'}</div>
-        <div className="text-xl font-bold">{data.slices} {data.percentage && <span className="text-sm font-semibold text-indigo-200">({data.percentage}%)</span>}</div>
+        <div className="text-[10px] font-bold text-primary-foreground/80 uppercase tracking-wider">{data.label || 'Tổng Slices Đóng góp'}</div>
+        <div className="text-xl font-bold">{data.slices} {data.percentage && <span className="text-sm font-semibold text-primary-foreground/90">({data.percentage}%)</span>}</div>
       </div>
     </div>
   );
@@ -436,10 +436,7 @@ export function ClassNetworkGraph() {
             </Select>
 
             <Button
-              className={`h-10 rounded-xl font-bold px-6 shadow-md transition-all gap-2 ${selectedPhase === 'final'
-                ? 'bg-primary hover:bg-indigo-700 text-white'
-                : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                }`}
+              className="h-10 rounded-xl font-bold px-6 shadow-md transition-all gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <Save className="w-4 h-4" />
               {selectedPhase === 'final' ? 'Chốt Sổ (Publish)' : `Chốt Điểm ${selectedPhase === 'phase1' ? 'Sprint 1' : selectedPhase === 'phase2' ? 'Sprint 2' : 'Sprint 3'

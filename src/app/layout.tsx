@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import QueryProvider from "@/components/providers/query-provider";
-const beVietnamPro = Be_Vietnam_Pro({
-  weight: ['300', '400', '500', '600', '700', '800'],
+
+const inter = Inter({
   subsets: ["vietnamese", "latin"],
   variable: "--font-sans",
 });
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning className="scroll-smooth">
       <body
-        className={`${beVietnamPro.variable} font-sans bg-background text-foreground antialiased min-h-screen`}
+        className={`${inter.variable} font-sans bg-background text-foreground antialiased min-h-screen`}
       >
         <ThemeProvider
           attribute="class"
@@ -38,8 +38,8 @@ export default function RootLayout({
         >
           <QueryProvider>
             <div className="relative flex min-h-screen flex-col bg-background selection:bg-primary/20 selection:text-primary">
-              {/* Premium Subtle Grid Background */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none -z-10"></div>
+              {/* Enterprise Grid Background */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none -z-10"></div>
               {children}
             </div>
             <Toaster

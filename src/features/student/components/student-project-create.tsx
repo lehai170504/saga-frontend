@@ -422,7 +422,7 @@ export function StudentProjectCreate() {
               </Card>
 
               {/* Informative tips */}
-              <Card className="border border-primary/20 bg-primary/10 dark:bg-indigo-950/5 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
+              <Card className="border border-primary/20 bg-primary/10 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
                 <Link2 className="text-primary shrink-0" size={16} />
                 <div className="space-y-1">
                   <h4 className="font-extrabold text-foreground text-[11px] uppercase tracking-wide">Lưu ý kết nối</h4>

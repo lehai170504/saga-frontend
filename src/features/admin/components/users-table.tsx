@@ -80,7 +80,7 @@ export const columns: ColumnDef<User>[] = [
       return (
         <span
           className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${status === "active"
-            ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
+            ? "bg-success/10 text-success"
             : "bg-muted text-muted-foreground"
             }`}
         >

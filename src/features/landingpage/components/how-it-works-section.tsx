@@ -2,288 +2,211 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { GitMerge, Users, PieChart, Star, ShieldCheck, Zap } from "lucide-react";
+import { GitMerge, Users, PieChart, ShieldCheck, CheckCircle2, FileText, Check, GripHorizontal, Terminal, Activity, ChevronRight, BarChart3 } from "lucide-react";
+import { fadeUp, staggerContainer, scaleUp } from "./animations";
 
 export function HowItWorksSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"],
-  });
-
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
   return (
-    <section id="how-it-works" ref={containerRef} className="py-32 bg-background relative overflow-hidden">
-      {/* Background Ambient Effects */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-success/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+    <section id="how-it-works" className="py-24 bg-muted/30 relative overflow-hidden">
+      <div className="max-w-[90rem] mx-auto px-6 relative z-10">
+        <div className="text-center mb-24 max-w-3xl mx-auto">
+          <motion.h2
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
+            className="text-3xl md:text-5xl font-black tracking-tight text-foreground mb-6"
+          >
+            Tích hợp <span className="text-primary">Không chạm</span>
+          </motion.h2>
+          <motion.p
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
+            className="text-muted-foreground font-medium text-lg leading-relaxed"
+          >
+            SAGA hoạt động ngầm. Không cài đặt phức tạp, không đổi thói quen. Chỉ cần code và kéo thả task.
+          </motion.p>
+        </div>
 
-      {/* Center Animated Timeline Line (Visible on Desktop) */}
-      <div className="hidden md:block absolute left-1/2 top-40 bottom-40 w-px bg-border/50 -translate-x-1/2 z-0">
-        <motion.div
-          className="absolute top-0 left-0 w-full bg-gradient-to-b from-indigo-500 via-violet-500 to-emerald-500 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
-          style={{ height: lineHeight }}
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-24 relative"
-        >
-          <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-primary/10 text-primary ring-1 ring-primary1948 shadow-[0_0_30px_rgba(99,102,241,0.15)]">
-            <Zap size={28} className="drop-shadow-md" />
-          </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
-            Quy trình <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-violet-500 drop-shadow-sm">Slicing Pie</span>
-          </h2>
-          <p className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
-            Khung đánh giá động dựa trên giá trị thực tế, tích hợp hoàn hảo với quy trình làm việc Agile để ghi nhận mọi nỗ lực của bạn.
-          </p>
-        </motion.div>
-
-        <div className="space-y-32">
+        <div className="space-y-32 max-w-6xl mx-auto">
           {/* Step 1 */}
-          <div className="flex flex-col md:flex-row items-center gap-16 group relative">
-            {/* Timeline Dot */}
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-primary/20 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-              <span className="text-primary font-bold">1</span>
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20 group">
+            <div className="flex-1 space-y-6 md:pr-8">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold text-xs uppercase tracking-wider">
+                Bước 1
+              </motion.div>
+              <motion.h3 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">Làm việc bình thường</motion.h3>
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-muted-foreground font-medium leading-relaxed text-lg">
+                Code trên GitHub, kéo thả task trên Jira y như quy trình Agile chuẩn.
+              </motion.p>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="flex-1 space-y-6 md:pr-12"
-            >
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold tracking-widest uppercase text-xs">
-                <GitMerge size={16} /> Tích lũy liên tục
-              </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Tích lũy đóng góp qua từng nhiệm vụ</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed text-lg">
-                Điểm số được tính toán tự động dựa trên Story Points mỗi khi bạn hoàn thành nhiệm vụ và được duyệt mã nguồn. Hệ thống đồng bộ tức thời từ Github & Jira.
-              </p>
-            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleUp} className="flex-1 w-full relative">
+              {/* Decorative background glow */}
+              <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full -z-10" />
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
-              whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-              viewport={{ once: true }}
-              className="flex-1 w-full perspective-1000"
-            >
-              <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 border-primary/20">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                {/* Simulated UI */}
-                <div className="relative z-10 space-y-4">
-                  {[1, 2, 3].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ x: 50, opacity: 0 }}
-                      whileInView={{ x: 0, opacity: 1 }}
-                      transition={{ duration: 0.5, delay: i * 0.2 + 0.4 }}
-                      viewport={{ once: true }}
-                      className={`flex items-center justify-between p-4 rounded-2xl border ${i === 1 ? 'bg-primary/10 border-primary/20 shadow-[0_0_20px_rgba(99,102,241,0.15)] scale-105 z-10 relative' : 'bg-background/60 border-border/50 opacity-60'}`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${i === 1 ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
-                          <ShieldCheck size={20} />
-                        </div>
-                        <div className="space-y-2">
-                          <div className={`h-2.5 w-32 rounded-full ${i === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
-                          <div className={`h-2 w-20 rounded-full ${i === 1 ? 'bg-primary/50' : 'bg-muted-foreground/20'}`} />
-                        </div>
+              {/* Realistic Mockup: Kanban Board & Code */}
+              <div className="bg-card border border-border rounded-2xl p-4 shadow-2xl flex flex-col gap-4 transform-gpu group-hover:scale-[1.02] transition-transform duration-500">
+                {/* Kanban Header */}
+                <div className="flex gap-4">
+                  {/* To Do Column */}
+                  <div className="flex-1 bg-muted/30 rounded-xl p-3 border border-border/50">
+                    <div className="text-[10px] font-bold text-muted-foreground uppercase mb-2">To Do (2)</div>
+                    <div className="bg-background border border-border p-2 rounded-lg shadow-sm text-xs font-medium text-muted-foreground mb-2 opacity-60">Thiết kế UI/UX</div>
+                    <div className="bg-background border border-border p-2 rounded-lg shadow-sm text-xs font-medium text-muted-foreground opacity-60">Viết API Docs</div>
+                  </div>
+                  {/* In Progress Column */}
+                  <div className="flex-1 bg-muted/50 rounded-xl p-3 border border-primary/20">
+                    <div className="text-[10px] font-bold text-primary uppercase mb-2">In Progress (1)</div>
+                    <div className="bg-background border border-primary/40 p-3 rounded-lg shadow-sm cursor-grab active:cursor-grabbing relative hover:-translate-y-1 transition-transform">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-[10px] text-blue-500 font-bold bg-blue-500/10 px-1.5 py-0.5 rounded">SAGA-45</span>
+                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">H</div>
                       </div>
-                      <div className={`font-bold text-lg ${i === 1 ? 'text-primary' : 'text-muted-foreground'}`}>
-                        +{i === 1 ? '8' : '3'} SP
+                      <div className="text-xs font-bold text-foreground mb-2">Build Authentication API</div>
+                      <div className="flex items-center justify-between text-[10px] text-muted-foreground font-medium">
+                        <span className="bg-muted px-1.5 rounded flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> 5 Story Points</span>
                       </div>
-                    </motion.div>
-                  ))}
+                    </div>
+                  </div>
+                </div>
+                {/* GitHub Commit Bar */}
+                <div className="bg-[#0d1117] rounded-xl border border-border/50 p-3 flex items-center gap-3 overflow-hidden">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                    <GitMerge className="w-4 h-4 text-emerald-500" />
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <div className="text-xs font-mono text-emerald-500 mb-1">Merge pull request #12</div>
+                    <div className="text-[10px] text-muted-foreground font-mono">Le Hoang Hai committed 2 mins ago</div>
+                  </div>
+                  <div className="text-[10px] font-mono text-emerald-500">+254 -12</div>
                 </div>
               </div>
             </motion.div>
           </div>
 
           {/* Step 2 */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-16 group relative">
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-primary/20 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-              <span className="text-primary font-bold">2</span>
+          <div className="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-20 group">
+            <div className="flex-1 space-y-6 md:pl-8">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-bold text-xs uppercase tracking-wider">
+                Bước 2
+              </motion.div>
+              <motion.h3 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">SAGA tự động Tracking</motion.h3>
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-muted-foreground font-medium leading-relaxed text-lg">
+                SAGA âm thầm bắt sự kiện (Webhooks), đo lường Story Points và Commits để ghi nhận đóng góp.
+              </motion.p>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="flex-1 space-y-6 md:pl-12"
-            >
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold tracking-widest uppercase text-xs">
-                <Users size={16} /> Hiệu chỉnh tập thể
-              </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Hiệu chỉnh tại Sprint Retrospective</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed text-lg">
-                Điểm cứng từ hệ thống được cả nhóm thảo luận để áp dụng các hệ số thưởng/phạt (x1.2, x0.8) cho các hoạt động hỗ trợ đồng đội hoặc vi phạm kỷ luật.
-              </p>
-            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleUp} className="flex-1 w-full relative">
+              <div className="absolute inset-0 bg-emerald-500/10 blur-3xl rounded-full -z-10" />
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateY: -15 }}
-              whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-              viewport={{ once: true }}
-              className="flex-1 w-full perspective-1000"
-            >
-              <div className="bg-gradient-to-bl from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 border-primary/20">
-                <div className="absolute inset-0 bg-gradient-to-bl from-violet-500/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                {/* Simulated UI: Floating Avatars */}
-                <div className="relative z-10 h-64 flex items-center justify-center">
-                  {/* Central Node */}
-                  <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute z-20 w-24 h-24 rounded-full bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)] border-4 border-background"
-                  >
-                    <Star className="text-white" size={32} fill="currentColor" />
-                  </motion.div>
-
-                  {/* Orbital Nodes */}
-                  <motion.div
-                    animate={{ y: [0, -15, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0 }}
-                    className="absolute -top-4 -left-4 bg-background border border-primary/20 p-3 rounded-2xl shadow-xl z-30 flex items-center gap-3"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-success/20 text-success flex items-center justify-center font-bold text-xs">+</div>
-                    <div>
-                      <div className="h-2 w-16 bg-foreground/80 rounded-full mb-1" />
-                      <div className="text-success font-bold text-sm">x1.2</div>
+              {/* Realistic Mockup: Terminal / Webhook Logs */}
+              <div className="bg-[#0c0c0c] border border-border/20 rounded-2xl overflow-hidden shadow-2xl transform-gpu group-hover:scale-[1.02] transition-transform duration-500">
+                {/* Mac Window Header */}
+                <div className="bg-[#1a1a1a] px-4 py-3 flex items-center border-b border-white/5">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                    <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                    <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                  </div>
+                  <div className="mx-auto flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                    <Terminal className="w-3 h-3" /> saga-sync-worker
+                  </div>
+                </div>
+                {/* Terminal Body */}
+                <div className="p-4 font-mono text-xs leading-relaxed text-[#00ff00] h-[240px] flex flex-col justify-end overflow-hidden relative">
+                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#0c0c0c] to-transparent z-10" />
+                  <div className="space-y-2 opacity-50">
+                    <div><span className="text-[#888]">[14:22:01]</span> INFO: Polling Jira API for project SAGA...</div>
+                    <div><span className="text-[#888]">[14:22:05]</span> INFO: Received webhook from GitHub (event: push)</div>
+                  </div>
+                  <div className="space-y-2 mt-2">
+                    <div><span className="text-[#888]">[14:22:06]</span> <span className="text-blue-400">JIRA</span> ➔ Task <span className="font-bold">SAGA-45</span> transitioned to <span className="text-emerald-400">DONE</span> (Points: 5)</div>
+                    <div><span className="text-[#888]">[14:22:06]</span> <span className="text-blue-400">JIRA</span> ➔ Assignee: <span className="font-bold">lehoanghai</span></div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-[#888] shrink-0">[14:22:07]</span>
+                      <span className="text-purple-400 shrink-0">GITHUB</span>
+                      <span>➔ Commit <span className="font-bold text-white">#8f2a1b</span> by <span className="font-bold">lehoanghai</span> (+254 lines)</span>
                     </div>
-                  </motion.div>
-
-                  <motion.div
-                    animate={{ y: [0, 15, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute -bottom-4 right-0 bg-background border border-destructive/20 p-3 rounded-2xl shadow-xl z-30 flex items-center gap-3"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-destructive/20 text-destructive flex items-center justify-center font-bold text-xs">-</div>
-                    <div>
-                      <div className="h-2 w-16 bg-foreground/80 rounded-full mb-1" />
-                      <div className="text-destructive font-bold text-sm">x0.8</div>
+                    <div className="text-yellow-400 font-bold flex items-center gap-2 mt-2 bg-yellow-400/10 p-1.5 rounded">
+                      <ChevronRight className="w-3 h-3" /> CALCULATING SLICING PIE: +8.5 SLICE for lehoanghai
                     </div>
-                  </motion.div>
-
-                  {/* Connecting Lines */}
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="50%" y1="50%" x2="20%" y2="20%" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
-                    <line x1="50%" y1="50%" x2="80%" y2="80%" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
-                  </svg>
+                  </div>
                 </div>
               </div>
             </motion.div>
           </div>
 
           {/* Step 3 */}
-          <div className="flex flex-col md:flex-row items-center gap-16 group relative">
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background border-4 border-success/20 rounded-full items-center justify-center z-10 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-              <span className="text-success font-bold">3</span>
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20 group">
+            <div className="flex-1 space-y-6 md:pr-8">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-500 font-bold text-xs uppercase tracking-wider">
+                Bước 3
+              </motion.div>
+              <motion.h3 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">Báo cáo minh bạch</motion.h3>
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-muted-foreground font-medium leading-relaxed text-lg">
+                Tự động xuất Bảng xếp hạng % Đóng góp minh bạch tuyệt đối tại các buổi Sprint Retrospective.
+              </motion.p>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="flex-1 space-y-6 md:pr-12"
-            >
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-success/10 border border-success/20 text-success font-bold tracking-widest uppercase text-xs">
-                <PieChart size={16} /> Tổng kết minh bạch
-              </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Tự động chốt tỷ lệ cổ phần công bằng</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed text-lg">
-                Tất cả điểm số sau khi hiệu chỉnh được cộng dồn và tự động chuyển đổi thành phần trăm % Cổ phần của từng cá nhân. Giảng viên chỉ cần xem đồ thị trực quan và phê duyệt.
-              </p>
-            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleUp} className="flex-1 w-full relative">
+              <div className="absolute inset-0 bg-purple-500/10 blur-3xl rounded-full -z-10" />
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
-              whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-              viewport={{ once: true }}
-              className="flex-1 w-full perspective-1000"
-            >
-              <div className="bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border border-border/50 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500 border-success/20 flex items-center justify-center min-h-[340px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              {/* Realistic Mockup: Leaderboard / Pie Chart */}
+              <div className="bg-card border border-border rounded-2xl p-6 shadow-2xl transform-gpu group-hover:scale-[1.02] transition-transform duration-500">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-purple-500" />
+                    <h4 className="font-bold text-sm">Sprint 1 - Contribution</h4>
+                  </div>
+                  <span className="text-[10px] bg-success/10 text-success px-2 py-1 rounded font-bold uppercase tracking-wider">Finalized</span>
+                </div>
 
-                {/* 3D Animated Pie Chart */}
-                <div className="relative z-10 w-48 h-48">
-                  <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 drop-shadow-[0_10px_20px_rgba(0,0,0,0.1)]">
-                    {/* Dev 1: 45% */}
-                    <motion.circle
-                      cx="50" cy="50" r="40"
-                      fill="none"
-                      stroke="#f97316"
-                      strokeWidth="20"
-                      initial={{ strokeDasharray: "0 251.2" }}
-                      whileInView={{ strokeDasharray: `${251.2 * 0.45} 251.2` }}
-                      transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                      viewport={{ once: true }}
-                    />
-                    {/* Dev 2: 35% */}
-                    <motion.circle
-                      cx="50" cy="50" r="40"
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="20"
-                      strokeDashoffset={-(251.2 * 0.45)}
-                      initial={{ strokeDasharray: "0 251.2" }}
-                      whileInView={{ strokeDasharray: `${251.2 * 0.35} 251.2` }}
-                      transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                      viewport={{ once: true }}
-                    />
-                    {/* Dev 3: 20% */}
-                    <motion.circle
-                      cx="50" cy="50" r="40"
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="20"
-                      strokeDashoffset={-(251.2 * 0.80)}
-                      initial={{ strokeDasharray: "0 251.2" }}
-                      whileInView={{ strokeDasharray: `${251.2 * 0.20} 251.2` }}
-                      transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                      viewport={{ once: true }}
-                    />
-                  </svg>
-
-                  {/* Center Content */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-background rounded-full shadow-inner flex items-center justify-center flex-col">
-                      <span className="text-xl font-bold text-foreground">100%</span>
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase">Equity</span>
+                <div className="space-y-4">
+                  {/* Person 1 */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-end text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">H</div>
+                        <span className="font-bold text-foreground">Lê Hoàng Hải</span>
+                      </div>
+                      <span className="font-bold text-primary">45%</span>
+                    </div>
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-primary rounded-full relative" style={{ width: '45%' }}>
+                        <div className="absolute inset-0 bg-white/20 w-full animate-[shimmer_2s_infinite]" style={{ transform: 'translateX(-100%)' }} />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Tooltips */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.8 }}
-                    viewport={{ once: true }}
-                    className="absolute -top-6 -right-12 bg-background border border-border shadow-lg rounded-xl px-3 py-1.5 flex items-center gap-2"
-                  >
-                    <div className="w-3 h-3 rounded-full bg-primary" />
-                    <span className="font-bold text-sm">45%</span>
-                  </motion.div>
+                  {/* Person 2 */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-end text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px] font-bold text-emerald-500">A</div>
+                        <span className="font-bold text-foreground">Nguyễn Văn A</span>
+                      </div>
+                      <span className="font-bold text-emerald-500">35%</span>
+                    </div>
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: '35%' }} />
+                    </div>
+                  </div>
+
+                  {/* Person 3 */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-end text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-warning/20 flex items-center justify-center text-[10px] font-bold text-warning">B</div>
+                        <span className="font-bold text-foreground">Trần Thị B</span>
+                      </div>
+                      <span className="font-bold text-warning">20%</span>
+                    </div>
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-warning rounded-full" style={{ width: '20%' }} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
           </div>
+
         </div>
       </div>
     </section>

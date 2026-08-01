@@ -100,7 +100,7 @@ export function PeerReviewRules() {
                         <p className="text-success font-semibold"><strong className="text-success">3 Sao (1.0) - MỐC CHUẨN:</strong> Hoàn thành 100% khối lượng kỳ vọng thì nhận 100% điểm. (Baseline).</p>
                       </div>
                       <p><strong className="text-primary">4 Sao (1.05):</strong> Bonus 5% - Phần thưởng khích lệ an toàn.</p>
-                      <p><strong className="text-primary">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống "chính trị chốn công sở".</p>
+                      <p><strong className="text-primary">5 Sao (1.10):</strong> Performance Bonus. Mức thưởng 10% tiêu chuẩn đánh giá 360 độ của doanh nghiệp IT, chống &quot;chính trị chốn công sở&quot;.</p>
                     </div>
                   </div>
 

@@ -14,7 +14,12 @@ interface ClassStudentModalProps {
     email: string;
     status: string;
   };
-  setStudentFormData: (data: any) => void;
+  setStudentFormData: (data: {
+    studentId: string;
+    name: string;
+    email: string;
+    status: string;
+  }) => void;
   onSave: () => void;
 }
 

@@ -61,7 +61,7 @@ export function StudentInteractionGraph() {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    
+
     setSelectedClass(cls);
     setSelectedNode(nodes[2]); // Default selection (An Lê)
 
@@ -69,7 +69,7 @@ export function StudentInteractionGraph() {
     return () => clearTimeout(timer);
   }, []);
 
-  const filteredNodes = nodes.filter(node => 
+  const filteredNodes = nodes.filter(node =>
     node.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -84,7 +84,7 @@ export function StudentInteractionGraph() {
       <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
           <PageHeader
@@ -99,7 +99,7 @@ export function StudentInteractionGraph() {
             <CardContent className="p-6 space-y-6">
               <div className="space-y-3">
                 <h3 className="font-extrabold text-xs uppercase tracking-wider text-muted-foreground">Nhóm & Tìm kiếm</h3>
-                
+
                 {/* Locked Group Badge */}
                 <div className="flex items-center gap-2 px-4 h-10 bg-primary/10 border border-primary/20 text-primary rounded-xl font-bold text-xs shadow-[0_2px_8px_rgba(234,88,12,0.08)] w-full justify-center">
                   <Users size={14} />
@@ -108,8 +108,8 @@ export function StudentInteractionGraph() {
 
                 <div className="relative w-full">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={14} />
-                  <Input 
-                    placeholder="Tìm sinh viên..." 
+                  <Input
+                    placeholder="Tìm sinh viên..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-9 bg-background/50 border-border/50 h-10 rounded-xl font-medium text-xs placeholder:text-muted-foreground"
@@ -145,7 +145,7 @@ export function StudentInteractionGraph() {
           <Card className="lg:col-span-2 rounded-[2rem] border border-white/10 dark:border-white/5 bg-card/25 dark:bg-card/20 backdrop-blur-3xl shadow-lg overflow-hidden relative min-h-[500px] flex flex-col justify-between">
             {/* Grid Pattern Background */}
             <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
-            
+
             {isLoading ? (
               <div className="flex-1 flex items-center justify-center p-12">
                 <Skeleton className="w-full h-96 rounded-2xl bg-muted/50" />
@@ -158,7 +158,7 @@ export function StudentInteractionGraph() {
                     const source = nodes.find(n => n.id === edge.source);
                     const target = nodes.find(n => n.id === edge.target);
                     if (!source || !target) return null;
-                    
+
                     let strokeDasharray = "";
                     let stroke = "#6366f1"; // indigo
                     if (edge.type === "review") { stroke = "#14b8a6"; strokeDasharray = "4 4"; } // teal
@@ -166,12 +166,12 @@ export function StudentInteractionGraph() {
                     if (edge.type === "issue") { stroke = "#f43f5e"; } // rose
 
                     return (
-                      <line 
+                      <line
                         key={i}
-                        x1={`${source.x}%`} 
-                        y1={`${source.y}%`} 
-                        x2={`${target.x}%`} 
-                        y2={`${target.y}%`} 
+                        x1={`${source.x}%`}
+                        y1={`${source.y}%`}
+                        x2={`${target.x}%`}
+                        y2={`${target.y}%`}
                         stroke={stroke}
                         strokeWidth={edge.width}
                         strokeDasharray={strokeDasharray}
@@ -183,18 +183,18 @@ export function StudentInteractionGraph() {
 
                 {/* Node Buttons */}
                 {filteredNodes.map(node => (
-                  <button 
+                  <button
                     key={node.id}
                     className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-bold shadow-lg ${node.color} ${selectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background dark:ring-offset-background/30 z-20 scale-[1.08]' : 'opacity-90 z-10'}`}
-                    style={{ 
-                      left: `${node.x}%`, 
+                    style={{
+                      left: `${node.x}%`,
                       top: `${node.y}%`,
                       width: `${node.size}px`,
                       height: `${node.size}px`,
                     }}
                     onClick={() => setSelectedNode(node)}
                   >
-                    <span className="truncate w-full text-center tracking-tight px-1" style={{ fontSize: `${Math.max(10, node.size/5.2)}px` }}>
+                    <span className="truncate w-full text-center tracking-tight px-1" style={{ fontSize: `${Math.max(10, node.size / 5.2)}px` }}>
                       {node.name.split(' ')[0]}
                     </span>
                   </button>
@@ -237,19 +237,19 @@ export function StudentInteractionGraph() {
 
                   <div className="space-y-3 pt-4 border-t border-border/40">
                     <h3 className="font-extrabold text-xs uppercase tracking-wider text-muted-foreground">Cộng tác nhiều nhất</h3>
-                    
+
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between p-2.5 rounded-xl bg-background/5 border border-white/10">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold ring-1 ring-primary14005">M</div>
+                          <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold ring-1 ring-primary/20">M</div>
                           <span className="text-xs font-bold text-foreground">Minh Nguyễn</span>
                         </div>
                         <span className="text-xs font-extrabold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-md">15 lần</span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between p-2.5 rounded-xl bg-background/5 border border-white/10">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-destructive/20 text-destructive flex items-center justify-center text-xs font-bold ring-1 ring-pink-500/30">H</div>
+                          <div className="w-7 h-7 rounded-full bg-destructive/20 text-destructive flex items-center justify-center text-xs font-bold ring-1 ring-destructive/30">H</div>
                           <span className="text-xs font-bold text-foreground">Huy Hoàng</span>
                         </div>
                         <span className="text-xs font-extrabold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-md">8 lần</span>
@@ -264,7 +264,7 @@ export function StudentInteractionGraph() {
               ) : (
                 <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground">
                   <span className="mb-4 opacity-25 text-primary text-2xl">👥</span>
-                  <p className="text-xs font-bold text-center leading-relaxed">Chọn một sinh viên trên biểu đồ<br/>để xem chi tiết</p>
+                  <p className="text-xs font-bold text-center leading-relaxed">Chọn một sinh viên trên biểu đồ<br />để xem chi tiết</p>
                 </div>
               )}
             </CardContent>

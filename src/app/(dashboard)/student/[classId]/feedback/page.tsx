@@ -359,7 +359,7 @@ export default function InstructorFeedbackInbox() {
               <CardContent className="p-3 divide-y divide-border/60">
                 {filteredFeedbacks.length === 0 ? (
                   <div className="py-12 text-center text-muted-foreground">
-                    <Inbox size={32} className="mx-auto text-slate-300 mb-2" />
+                    <Inbox size={32} className="mx-auto text-muted-foreground mb-2" />
                     <p className="text-xs font-bold">Không tìm thấy nhận xét nào</p>
                   </div>
                 ) : (
@@ -385,7 +385,7 @@ export default function InstructorFeedbackInbox() {
                         </div>
                         
                         <div className="min-w-0">
-                          <h5 className={`text-xs truncate ${!item.read ? "font-bold text-foreground" : "font-medium text-foreground dark:text-slate-300"}`}>
+                          <h5 className={`text-xs truncate ${!item.read ? "font-bold text-foreground" : "font-medium text-foreground dark:text-muted-foreground"}`}>
                             {item.title}
                           </h5>
                           <div className="flex items-center gap-1.5 mt-1">
@@ -515,7 +515,7 @@ export default function InstructorFeedbackInbox() {
 
                     {/* Areas for Improvement */}
                     <div className="space-y-2 bg-primary/10 dark:bg-indigo-950/10 p-4 border border-primary/20 rounded-2xl">
-                      <h5 className="font-extrabold text-indigo-800 text-primary text-xs flex items-center gap-1.5">
+                      <h5 className="font-extrabold text-primary text-xs flex items-center gap-1.5">
                         <AlertCircle size={14} className="bg-primary/10 p-0.5 rounded-full" />
                         Điểm cần khắc phục (Improvements)
                       </h5>
@@ -528,7 +528,7 @@ export default function InstructorFeedbackInbox() {
 
                     {/* Recommendations */}
                     <div className="space-y-2 bg-primary/10 dark:bg-blue-950/10 p-4 border border-primary/20 rounded-2xl">
-                      <h5 className="font-extrabold text-blue-800 text-primary text-xs flex items-center gap-1.5">
+                      <h5 className="font-extrabold text-primary text-xs flex items-center gap-1.5">
                         <MessageSquare size={14} className="bg-primary/10 p-0.5 rounded-full" />
                         Hành động đề xuất (Recommendations)
                       </h5>
@@ -544,7 +544,7 @@ export default function InstructorFeedbackInbox() {
                   <div className="pt-2 border-t border-border flex justify-end">
                     <Button
                       onClick={() => handleAcknowledge()}
-                      className="h-10 px-5 bg-card dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      className="h-10 px-5 bg-card dark:hover:bg-muted text-foreground text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm border border-border"
                     >
                       <CheckCircle size={14} />
                       Xác nhận đã đọc & hiểu ý kiến
@@ -594,7 +594,7 @@ export default function InstructorFeedbackInbox() {
                       <div className="flex justify-end">
                         <Button
                           type="submit"
-                          className="h-9 px-4 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-indigo-500/10"
+                          className="h-9 px-4 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-primary/10"
                         >
                           <Send size={12} />
                           Gửi câu hỏi làm rõ
@@ -608,7 +608,7 @@ export default function InstructorFeedbackInbox() {
               </Card>
             ) : (
               <Card className="h-96 flex flex-col justify-center items-center text-muted-foreground border border-dashed border-border rounded-3xl bg-card">
-                <Inbox size={48} className="text-slate-300 text-foreground mb-3" />
+                <Inbox size={48} className="text-muted-foreground mb-3" />
                 <p className="text-xs font-bold">Vui lòng chọn một nhận xét ở cột bên trái để xem chi tiết</p>
               </Card>
             )}

@@ -20,15 +20,15 @@ export function KanbanTaskCard({
   onMoveTaskColumn
 }: KanbanTaskCardProps) {
   const getConicGradientColor = (priority: string) => {
-    if (priority === "high") return "bg-[conic-gradient(from_0deg,transparent_35%,#f43f5e_50%,transparent_65%)]";
-    if (priority === "medium") return "bg-[conic-gradient(from_0deg,transparent_35%,#f59e0b_50%,transparent_65%)]";
-    return "bg-[conic-gradient(from_0deg,transparent_35%,#0ea5e9_50%,transparent_65%)]";
+    if (priority === "high") return "bg-[conic-gradient(from_0deg,transparent_35%,var(--destructive)_50%,transparent_65%)]";
+    if (priority === "medium") return "bg-[conic-gradient(from_0deg,transparent_35%,var(--warning)_50%,transparent_65%)]";
+    return "bg-[conic-gradient(from_0deg,transparent_35%,var(--primary)_50%,transparent_65%)]";
   };
 
   const getLeftBorderColor = (priority: string) => {
-    if (priority === "high") return "border-l-rose-500";
-    if (priority === "medium") return "border-l-violet-500";
-    return "border-l-sky-500";
+    if (priority === "high") return "border-l-destructive";
+    if (priority === "medium") return "border-l-warning";
+    return "border-l-primary";
   };
 
   const getPriorityColor = (priority: string) => {

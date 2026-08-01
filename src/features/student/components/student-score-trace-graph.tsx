@@ -80,41 +80,41 @@ const TraceNode = ({ data }: any) => {
 
   if (data.nodeType === 'commit') {
     Icon = GitCommit;
-    colorClass = "border-border border-border bg-background bg-card";
-    iconClass = "bg-muted bg-card text-muted-foreground text-muted-foreground";
+    colorClass = "border-border bg-card";
+    iconClass = "bg-muted text-muted-foreground";
   } else if (data.nodeType === 'task') {
     Icon = ClipboardList;
-    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
-    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
+    colorClass = "border-primary/20 bg-card";
+    iconClass = "bg-primary/20 text-primary";
   } else if (data.nodeType === 'missing') {
     Icon = ShieldAlert;
-    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
-    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
+    colorClass = "border-primary/20 bg-card";
+    iconClass = "bg-primary/20 text-primary";
   } else if (data.nodeType === 'penalty') {
     Icon = AlertTriangle;
-    colorClass = "border-destructive/20 border-destructive/20 bg-destructive/10 bg-destructive/20";
-    iconClass = "bg-destructive/10 bg-destructive/20 text-destructive text-destructive";
+    colorClass = "border-destructive/20 bg-destructive/20";
+    iconClass = "bg-destructive/20 text-destructive";
   } else if (data.nodeType === 'score') {
     Icon = Star;
-    colorClass = "border-success/20 border-success/20 bg-success/10 bg-success/20";
-    iconClass = "bg-success/10 bg-success/20 text-success text-success";
+    colorClass = "border-success/20 bg-success/20";
+    iconClass = "bg-success/20 text-success";
   } else if (data.nodeType === 'multiplier') {
     Icon = data.iconType === 'code' ? Code2 : data.iconType === 'design' ? PenTool : FileText;
-    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
-    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
+    colorClass = "border-primary/20 bg-card";
+    iconClass = "bg-primary/20 text-primary";
   } else if (data.nodeType === 'proof') {
     Icon = Link;
-    colorClass = "border-primary/20 border-primary/20 bg-background bg-card";
-    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
+    colorClass = "border-primary/20 bg-card";
+    iconClass = "bg-primary/20 text-primary";
   } else if (data.nodeType === 'peerReview') {
     Icon = UserCheck;
-    colorClass = "border-primary/20 border-primary/20 bg-primary/10 bg-primary/20";
-    iconClass = "bg-primary/10 bg-primary/20 text-primary text-primary";
+    colorClass = "border-primary/20 bg-primary/20";
+    iconClass = "bg-primary/20 text-primary";
   }
 
   return (
     <div
-      className={`min-w-[200px] px-4 py-3 shadow-lg rounded-2xl border ${colorClass} flex items-center gap-3 relative ${data.link ? 'cursor-pointer hover:ring-2 ring-primary4104 hover:shadow-xl hover:-translate-y-0.5 transition-all' : ''}`}
+      className={`min-w-[200px] px-4 py-3 shadow-lg rounded-2xl border ${colorClass} flex items-center gap-3 relative ${data.link ? 'cursor-pointer hover:ring-2 hover:ring-primary/50 hover:shadow-xl hover:-translate-y-0.5 transition-all' : ''}`}
       onClick={() => {
         if (data.link) {
           window.open(data.link, '_blank');
@@ -122,7 +122,7 @@ const TraceNode = ({ data }: any) => {
       }}
       title={data.link ? "Nhấp để mở chi tiết" : ""}
     >
-      {data.targetHandle && <Handle type="target" position={Position.Top} className="w-3 h-3 bg-slate-400 border-2 border-background" />}
+      {data.targetHandle && <Handle type="target" position={Position.Top} className="w-3 h-3 bg-muted-foreground border-2 border-background" />}
       <div className={`p-2 rounded-xl ${iconClass}`}>
         <Icon size={18} strokeWidth={2.5} />
       </div>
@@ -135,7 +135,7 @@ const TraceNode = ({ data }: any) => {
           <ExternalLink size={14} strokeWidth={2.5} />
         </div>
       )}
-      {data.sourceHandle && <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-slate-400 border-2 border-background" />}
+      {data.sourceHandle && <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-muted-foreground border-2 border-background" />}
     </div>
   );
 };

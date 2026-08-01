@@ -127,7 +127,7 @@ export function TaskMultiplierTemplates() {
             <CardContent className="space-y-4 text-sm text-muted-foreground pt-4">
               <div>
                 <strong className="text-foreground">1. Lập trình & Logic (2.0):</strong>
-                <p className="mt-1">Theo chuẩn Agile, thước đo chính là "Phần mềm chạy được". Công việc code đòi hỏi tư duy phức tạp và tốn nhiều effort nhất trong Sprint.</p>
+                <p className="mt-1">Theo chuẩn Agile, thước đo chính là &quot;Phần mềm chạy được&quot;. Công việc code đòi hỏi tư duy phức tạp và tốn nhiều effort nhất trong Sprint.</p>
               </div>
               <div>
                 <strong className="text-foreground">2. Thiết kế Kiến trúc/DB (1.5):</strong>

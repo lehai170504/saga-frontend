@@ -17,7 +17,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 const generateHeatmapData = (groupName: string) => {
   const students = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Văn Cường", "Phạm Thị Dung", "Hoàng Văn Em", "Nguyễn Tuấn Anh"];
   const days = Array.from({ length: 30 }, (_, i) => i + 1); // 30 days
-  
+
   return students.map(student => ({
     name: student,
     group: groupName,
@@ -81,7 +81,7 @@ export function StudentHeatmap() {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    
+
     setSelectedSemester(sem);
     setSelectedClass(cls);
 
@@ -103,7 +103,7 @@ export function StudentHeatmap() {
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <PageHeader
@@ -165,7 +165,7 @@ export function StudentHeatmap() {
                 <Sparkles className="text-primary" size={18} />
                 Tần suất hoạt động theo ngày (30 ngày qua)
               </CardTitle>
-              
+
               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide text-muted-foreground bg-background/50 px-3.5 py-1.5 rounded-full border border-border/40">
                 <span>Ít</span>
                 <div className="flex gap-1 mx-2">
@@ -179,7 +179,7 @@ export function StudentHeatmap() {
               </div>
             </div>
           </CardHeader>
-          
+
           <CardContent className="p-6 md:p-8 overflow-x-auto custom-scrollbar">
             {isLoading ? (
               <div className="space-y-4">
@@ -213,15 +213,15 @@ export function StudentHeatmap() {
                           {student.group}
                         </span>
                       </div>
-                      
+
                       <div className="flex-1 flex gap-1.5">
                         {student.data.map((dayData, dayIdx) => (
-                          <div 
-                            key={dayIdx} 
+                          <div
+                            key={dayIdx}
                             className="relative flex-1 group/cell"
                           >
-                            <div 
-                              className={`w-full aspect-shadow rounded-[4px] aspect-square border transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer ${getColorClass(dayData.count)}`}
+                            <div
+                              className={`w-full rounded-[4px] aspect-square border transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer ${getColorClass(dayData.count)}`}
                             />
                             {/* Custom Tooltip on Hover */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-3 py-1.5 bg-foreground text-background text-[11px] font-bold rounded-xl opacity-0 invisible group-hover/cell:opacity-100 group-hover/cell:visible transition-all z-20 shadow-xl pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground">

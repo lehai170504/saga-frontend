@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
 
 const data = [
-  { name: "Task Ảo (MSR)", value: 342, color: "#ef4444" }, // red-500
-  { name: "Cày Deadline (Process)", value: 520, color: "#f59e0b" }, // violet-500
-  { name: "Cô Lập (SNA)", value: 145, color: "#8b5cf6" }, // purple-500
+  { name: "Task Ảo (MSR)", value: 342, color: "hsl(var(--destructive))" }, // red-500
+  { name: "Cày Deadline (Process)", value: 520, color: "hsl(var(--warning))" }, // violet-500
+  { name: "Cô Lập (SNA)", value: 145, color: "hsl(var(--primary))" }, // purple-500
 ];
 
 export function SystemAnomalyChart() {
@@ -37,8 +37,8 @@ export function SystemAnomalyChart() {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip 
-                contentStyle={{ borderRadius: '16px', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+              <Tooltip
+                contentStyle={{ borderRadius: '16px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--card))' }}
               />
               <Legend verticalAlign="bottom" height={36} iconType="circle" />
             </PieChart>

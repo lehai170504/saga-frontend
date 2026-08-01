@@ -283,39 +283,39 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
   }> = {
     todo: {
       title: "Cần làm (To Do)",
-      bgClass: "bg-primary/10 dark:bg-sky-950/25",
-      borderClass: "border-primary/20 border-primary/20 focus-within:border-primary/20",
-      accentClass: "text-primary text-primary",
-      glowBg: "bg-gradient-to-b from-sky-500/10 via-transparent to-transparent",
-      dotBg: "bg-primary shadow-[0_0_8px_rgba(14,165,233,0.6)]",
-      headerGradient: "from-sky-500/10 to-transparent",
+      bgClass: "bg-primary/10",
+      borderClass: "border-primary/20 focus-within:border-primary/20",
+      accentClass: "text-primary",
+      glowBg: "bg-gradient-to-b from-primary/10 via-transparent to-transparent",
+      dotBg: "bg-primary shadow-sm",
+      headerGradient: "from-primary/10 to-transparent",
     },
     inprogress: {
       title: "Đang làm (In Progress)",
-      bgClass: "bg-primary/10 dark:bg-violet-950/25",
-      borderClass: "border-primary/20 border-primary/20 focus-within:border-primary/20",
-      accentClass: "text-primary text-primary",
-      glowBg: "bg-gradient-to-b from-violet-500/10 via-transparent to-transparent",
-      dotBg: "bg-primary shadow-[0_0_8px_rgba(245,158,11,0.6)]",
-      headerGradient: "from-violet-500/10 to-transparent",
+      bgClass: "bg-warning/10",
+      borderClass: "border-warning/20 focus-within:border-warning/20",
+      accentClass: "text-warning",
+      glowBg: "bg-gradient-to-b from-warning/10 via-transparent to-transparent",
+      dotBg: "bg-warning shadow-sm",
+      headerGradient: "from-warning/10 to-transparent",
     },
     inreview: {
       title: "Đang duyệt (In Review)",
-      bgClass: "bg-primary/10 dark:bg-indigo-950/25",
-      borderClass: "border-primary/20 border-primary/20 focus-within:border-primary/20",
-      accentClass: "text-primary text-primary",
-      glowBg: "bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent",
-      dotBg: "bg-primary shadow-[0_0_8px_rgba(99,102,241,0.6)]",
-      headerGradient: "from-indigo-500/10 to-transparent",
+      bgClass: "bg-primary/10",
+      borderClass: "border-primary/20 focus-within:border-primary/20",
+      accentClass: "text-primary",
+      glowBg: "bg-gradient-to-b from-primary/10 via-transparent to-transparent",
+      dotBg: "bg-primary shadow-sm",
+      headerGradient: "from-primary/10 to-transparent",
     },
     done: {
       title: "Hoàn thành (Done)",
-      bgClass: "bg-success/10 dark:bg-emerald-950/25",
-      borderClass: "border-success/20 border-success/20 focus-within:border-success/20",
-      accentClass: "text-success text-success",
-      glowBg: "bg-gradient-to-b from-emerald-500/10 via-transparent to-transparent",
-      dotBg: "bg-success shadow-[0_0_8px_rgba(16,185,129,0.6)]",
-      headerGradient: "from-emerald-500/10 to-transparent",
+      bgClass: "bg-success/10",
+      borderClass: "border-success/20 focus-within:border-success/20",
+      accentClass: "text-success",
+      glowBg: "bg-gradient-to-b from-success/10 via-transparent to-transparent",
+      dotBg: "bg-success shadow-sm",
+      headerGradient: "from-success/10 to-transparent",
     },
   };
 
@@ -444,7 +444,7 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
               {/* Task Add Button */}
               <Button
                 onClick={() => handleOpenTaskModal(null)}
-                className="h-10 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
+                className="h-10 rounded-xl font-bold text-xs uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
               >
                 <Plus size={14} className="mr-1.5" />
                 Tạo Task mới

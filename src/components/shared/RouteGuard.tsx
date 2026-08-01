@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ApplicationRole } from "@/stores/authStore";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { API_BASE_URL } from "@/lib/axios";
 
 interface RouteGuardProps {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ export function RouteGuard({ children, allowedRoles }: RouteGuardProps) {
   useEffect(() => {
     if (!isLoading) {
       if (!user) {
-        router.replace("/login");
+        window.location.assign(`${API_BASE_URL}/api/auth/login`);
         return;
       }
       if (allowedRoles && user && !allowedRoles.includes(user.applicationRole)) {

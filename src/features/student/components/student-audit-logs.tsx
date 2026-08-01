@@ -62,7 +62,7 @@ export function StudentAuditLogs() {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
     const cls = localStorage.getItem("saga-student-class") || "";
-    
+
     setSelectedSemester(sem);
     setSelectedClass(cls);
 
@@ -90,7 +90,7 @@ export function StudentAuditLogs() {
       <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <PageHeader
@@ -165,9 +165,9 @@ export function StudentAuditLogs() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-border/40 overflow-hidden bg-[#0a0a0c] shadow-inner">
+                <div className="rounded-2xl border border-border/40 overflow-hidden bg-card/50 shadow-inner">
                   {/* Console Header */}
-                  <div className="bg-[#141416] px-4 py-2.5 flex items-center gap-2 border-b border-border/40">
+                  <div className="bg-muted px-4 py-2.5 flex items-center gap-2 border-b border-border/40">
                     <div className="flex gap-1.5 shrink-0">
                       <div className="w-3 h-3 rounded-full bg-destructive/80"></div>
                       <div className="w-3 h-3 rounded-full bg-warning/80"></div>
@@ -178,14 +178,14 @@ export function StudentAuditLogs() {
                       STUDENT CONSOLE — SAGA-AUDIT.LOG
                     </span>
                   </div>
-                  
+
                   {/* Console Body */}
                   <div className="p-4 md:p-6 h-[480px] overflow-y-auto font-mono text-[12.5px] leading-relaxed custom-scrollbar">
                     {filteredLogs.length > 0 ? (
                       filteredLogs.map((log) => {
                         const isError = log.status === "error";
                         const isWarning = log.status === "warning";
-                        
+
                         let categoryColor = "text-primary";
                         if (log.category === "github") categoryColor = "text-primary";
                         if (log.category === "jira") categoryColor = "text-primary";
@@ -194,20 +194,19 @@ export function StudentAuditLogs() {
                         return (
                           <div key={log.id} className="flex gap-3 bg-background/5 px-2.5 py-1.5 -mx-2.5 rounded transition-colors group">
                             <span className="text-muted-foreground shrink-0">[{log.timestamp}]</span>
-                            
-                            <span className={`shrink-0 font-bold ${
-                              isError ? "text-destructive" : isWarning ? "text-warning" : "text-success"
-                            }`}>
+
+                            <span className={`shrink-0 font-bold ${isError ? "text-destructive" : isWarning ? "text-warning" : "text-success"
+                              }`}>
                               [{log.status.toUpperCase()}]
                             </span>
-                            
+
                             <span className={`shrink-0 font-bold ${categoryColor}`}>
                               [{log.category.toUpperCase()}]
                             </span>
-                            
+
                             <span className="text-muted-foreground shrink-0 font-medium">{log.action}:</span>
-                            
-                            <span className={isError ? "text-red-200" : "text-zinc-300"}>
+
+                            <span className={isError ? "text-destructive" : "text-muted-foreground"}>
                               {log.details}
                             </span>
                           </div>
@@ -218,11 +217,11 @@ export function StudentAuditLogs() {
                         Không tìm thấy sự kiện nào khớp điều kiện lọc.
                       </div>
                     )}
-                    
+
                     <div className="flex gap-3 px-2.5 py-1.5 mt-2 border-t border-white/5">
                       <span className="text-muted-foreground shrink-0">[{new Date().toISOString().replace('T', ' ').substring(0, 19)}]</span>
                       <span className="text-primary shrink-0 font-bold">[CONSOLE]</span>
-                      <span className="text-muted-foreground">Đang lắng nghe sự kiện mới từ các webhooks liên kết... <span className="inline-block w-1.5 h-3 bg-zinc-400 animate-pulse align-middle ml-1"></span></span>
+                      <span className="text-muted-foreground">Đang lắng nghe sự kiện mới từ các webhooks liên kết... <span className="inline-block w-1.5 h-3 bg-muted-foreground animate-pulse align-middle ml-1"></span></span>
                     </div>
                   </div>
                 </div>

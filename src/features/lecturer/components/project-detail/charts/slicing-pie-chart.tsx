@@ -6,9 +6,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Sparkles } from "lucide-react";
 
 const slicingData = [
-  { name: "Nguyễn Văn A", value: 35, color: "#6366f1" }, // indigo-500
-  { name: "Trần Thị B", value: 25, color: "#f59e0b" }, // amber-500
-  { name: "Lê Văn C", value: 40, color: "#10b981" }, // emerald-500
+  { name: "Nguyễn Văn A", value: 35, color: "hsl(var(--primary))" },
+  { name: "Trần Thị B", value: 25, color: "hsl(var(--warning))" },
+  { name: "Lê Văn C", value: 40, color: "hsl(var(--success))" },
 ];
 
 export function SlicingPieChart() {

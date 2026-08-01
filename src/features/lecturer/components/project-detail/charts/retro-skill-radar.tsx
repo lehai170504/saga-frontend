@@ -32,9 +32,9 @@ export function RetroSkillRadar() {
               <PolarGrid stroke="var(--border)" />
               <PolarAngleAxis dataKey="skill" tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-              <Radar name="Nguyễn Văn A" dataKey="A" stroke="#6366f1" fill="#6366f1" fillOpacity={0.3} />
-              <Radar name="Trần Thị B" dataKey="B" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
-              <Radar name="Lê Văn C" dataKey="C" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+              <Radar name="Nguyễn Văn A" dataKey="A" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
+              <Radar name="Trần Thị B" dataKey="B" stroke="hsl(var(--warning))" fill="hsl(var(--warning))" fillOpacity={0.3} />
+              <Radar name="Lê Văn C" dataKey="C" stroke="hsl(var(--success))" fill="hsl(var(--success))" fillOpacity={0.3} />
               <Tooltip
                 contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
               />

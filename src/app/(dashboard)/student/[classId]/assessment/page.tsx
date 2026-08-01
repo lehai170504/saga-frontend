@@ -348,17 +348,17 @@ export default function PeerAssessmentPage() {
                       key={m.id}
                       onClick={() => setSelectedMember(m)}
                       className={`w-full p-3.5 rounded-2xl border text-left flex justify-between items-center transition-all cursor-pointer ${isSelected
-                          ? "bg-primary/10 dark:bg-indigo-950/20 border-primary/20 shadow-sm text-indigo-950 dark:text-indigo-300 font-bold"
-                          : "bg-background bg-card border-border border-border text-foreground border-border dark:border-border font-semibold"
+                        ? "bg-primary/10 dark:bg-indigo-950/20 border-primary/20 shadow-sm text-indigo-950 dark:text-indigo-300 font-bold"
+                        : "bg-background bg-card border-border border-border text-foreground border-border dark:border-border font-semibold"
                         }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           className={`w-8 h-8 rounded-xl font-bold flex items-center justify-center text-xs shrink-0 ${m.isSelf
-                              ? "bg-primary text-white shadow-md shadow-indigo-500/20"
-                              : isSelected
-                                ? "bg-primary/10 bg-primary/20 text-primary text-primary"
-                                : "bg-muted bg-card text-muted-foreground text-muted-foreground"
+                            ? "bg-primary text-white shadow-md shadow-indigo-500/20"
+                            : isSelected
+                              ? "bg-primary/10 bg-primary/20 text-primary text-primary"
+                              : "bg-muted bg-card text-muted-foreground text-muted-foreground"
                             }`}
                         >
                           {m.name.charAt(0).toUpperCase()}
@@ -375,7 +375,7 @@ export default function PeerAssessmentPage() {
                           <CheckCircle2 size={16} />
                         </span>
                       ) : (
-                        <ChevronRight size={14} className="text-slate-300 text-muted-foreground" />
+                        <ChevronRight size={14} className="text-muted-foreground" />
                       )}
                     </button>
                   );
@@ -411,7 +411,7 @@ export default function PeerAssessmentPage() {
                 <Button
                   onClick={handleFinalSubmit}
                   disabled={isSubmitting || totalCompleted !== teamMembers.length || currentTotalShare !== 100}
-                  className="w-full h-11 bg-primary hover:bg-indigo-700 text-white text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-md shadow-indigo-500/10 disabled:opacity-50 disabled:shadow-none"
+                  className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-md shadow-primary/10 disabled:opacity-50 disabled:shadow-none"
                 >
                   {isSubmitting ? (
                     <>
@@ -496,8 +496,8 @@ export default function PeerAssessmentPage() {
                             type="button"
                             onClick={() => handleRatingChange("codeQuality", star)}
                             className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
-                                ? "bg-primary/10 dark:bg-indigo-950/40 border-primary/20 border-primary/20 text-primary text-primary scale-[1.05]"
-                                : "bg-background bg-card border-border border-border text-slate-300 text-muted-foreground border-border dark:border-border"
+                              ? "bg-primary/10 dark:bg-indigo-950/40 border-primary/20 text-primary scale-[1.05]"
+                              : "bg-card border-border text-muted-foreground"
                               }`}
                           >
                             <Star className="h-5 w-5 fill-current" />
@@ -528,8 +528,8 @@ export default function PeerAssessmentPage() {
                             type="button"
                             onClick={() => handleRatingChange("deadlines", star)}
                             className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
-                                ? "bg-primary/10 dark:bg-indigo-950/40 border-primary/20 border-primary/20 text-primary text-primary scale-[1.05]"
-                                : "bg-background bg-card border-border border-border text-slate-300 text-muted-foreground border-border dark:border-border"
+                              ? "bg-primary/10 dark:bg-indigo-950/40 border-primary/20 text-primary scale-[1.05]"
+                              : "bg-card border-border text-muted-foreground"
                               }`}
                           >
                             <Star className="h-5 w-5 fill-current" />
@@ -560,8 +560,8 @@ export default function PeerAssessmentPage() {
                             type="button"
                             onClick={() => handleRatingChange("teamwork", star)}
                             className={`p-2.5 rounded-xl border transition-all cursor-pointer ${active
-                                ? "bg-primary/10 dark:bg-indigo-950/40 border-primary/20 border-primary/20 text-primary text-primary scale-[1.05]"
-                                : "bg-background bg-card border-border border-border text-slate-300 text-muted-foreground border-border dark:border-border"
+                              ? "bg-primary/10 dark:bg-indigo-950/40 border-primary/20 text-primary scale-[1.05]"
+                              : "bg-card border-border text-muted-foreground"
                               }`}
                           >
                             <Star className="h-5 w-5 fill-current" />
@@ -628,7 +628,7 @@ export default function PeerAssessmentPage() {
                       <Button
                         type="submit"
                         disabled={isSaving}
-                        className="h-10 px-5 bg-card dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                        className="h-10 px-5 bg-card dark:hover:bg-muted text-foreground text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer border border-border"
                       >
                         {isSaving ? (
                           <>

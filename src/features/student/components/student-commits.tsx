@@ -9,15 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
-import { 
-  GitCommit, 
-  GitBranch, 
-  RefreshCw, 
-  Plus, 
-  User, 
-  Calendar, 
-  FileCode, 
-  PlusCircle, 
+import {
+  GitCommit,
+  GitBranch,
+  RefreshCw,
+  Plus,
+  User,
+  Calendar,
+  FileCode,
+  PlusCircle,
   MinusCircle,
   Search,
   ExternalLink,
@@ -150,7 +150,7 @@ export function StudentCommits() {
     setIsSyncing(true);
     setTimeout(() => {
       setIsSyncing(false);
-      
+
       // Simulate adding a new commit on sync
       const nextHash = Math.random().toString(16).substring(2, 9);
       const newSyncCommit: Commit = {
@@ -169,7 +169,7 @@ export function StudentCommits() {
       if (selectedClass) {
         localStorage.setItem(`saga-commits-list-${selectedClass}`, JSON.stringify(updated));
       }
-      
+
       toast.success("Đồng bộ hóa Commits với GitHub Repository thành công!");
     }, 1500);
   };
@@ -225,7 +225,7 @@ export function StudentCommits() {
   const filteredCommits = commits.filter(commit => {
     const matchesBranch = selectedBranch === "all" || commit.branch === selectedBranch;
     const matchesAuthor = selectedAuthor === "Tất cả thành viên" || commit.author === selectedAuthor;
-    const matchesSearch = commit.message.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = commit.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
       commit.hash.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesBranch && matchesAuthor && matchesSearch;
   });
@@ -242,7 +242,7 @@ export function StudentCommits() {
       <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <PageHeader
@@ -252,7 +252,7 @@ export function StudentCommits() {
 
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
             {/* Sync Button */}
-            <Button 
+            <Button
               onClick={handleSyncGit}
               disabled={isSyncing}
               variant="outline"
@@ -262,10 +262,9 @@ export function StudentCommits() {
               {isSyncing ? "Đang đồng bộ..." : "Đồng bộ GitHub"}
             </Button>
 
-            {/* Create Branch Button */}
-            <Button 
+            <Button
               onClick={() => setIsModalOpen(true)}
-              className="h-10 rounded-xl font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-primary to-violet-500 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.45)] cursor-pointer"
+              className="h-10 rounded-xl font-bold text-xs uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
             >
               <Plus size={14} className="mr-1.5" />
               Tạo Nhánh Mới
@@ -324,7 +323,7 @@ export function StudentCommits() {
         <Card className="rounded-[2rem] border border-border bg-card/25 dark:bg-card/20 backdrop-blur-3xl shadow-sm overflow-hidden p-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-              
+
               {/* Branch Filter dropdown */}
               <div className="space-y-1">
                 <Label className="text-[9px] font-bold uppercase text-muted-foreground tracking-wider">Chọn Nhánh</Label>
@@ -373,8 +372,8 @@ export function StudentCommits() {
               <Label className="text-[9px] font-bold uppercase text-muted-foreground tracking-wider">Tìm kiếm Commit</Label>
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={14} />
-                <Input 
-                  placeholder="Từ khóa commit hoặc mã hash..." 
+                <Input
+                  placeholder="Từ khóa commit hoặc mã hash..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 bg-background/50 border-border h-10 rounded-xl font-medium text-xs placeholder:text-muted-foreground"
@@ -408,12 +407,12 @@ export function StudentCommits() {
                   {(() => {
                     const startIndex = (currentPage - 1) * itemsPerPage;
                     const paginatedCommits = filteredCommits.slice(startIndex, startIndex + itemsPerPage);
-                    
+
                     return paginatedCommits.map((commit) => {
                       const initials = commit.author.split(' ').map(n => n[0]).join('').substring(0, 2);
                       return (
                         <div key={commit.hash} className="relative group/commit">
-                          
+
                           {/* Timeline Dot Marker */}
                           <span className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-background border border-primary flex items-center justify-center z-10 transition-colors group-hover/commit:bg-primary">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary group-hover/commit:bg-background" />
@@ -421,7 +420,7 @@ export function StudentCommits() {
 
                           {/* Commit Card Container */}
                           <div className="p-4 rounded-2xl border border-border/60 bg-card/45 bg-card hover:border-primary/40 hover:bg-card/65 transition-all duration-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            
+
                             <div className="flex items-start gap-3.5 min-w-0">
                               {/* Author initials avatar */}
                               <div className="w-9 h-9 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
@@ -432,11 +431,11 @@ export function StudentCommits() {
                                 <h4 className="text-xs font-bold text-foreground leading-relaxed line-clamp-1 group-hover/commit:text-primary transition-colors">
                                   {commit.message}
                                 </h4>
-                                
+
                                 <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold text-muted-foreground">
                                   <span className="text-foreground font-extrabold shrink-0">{commit.author}</span>
                                   <span className="text-border">•</span>
-                                  
+
                                   {/* Branch tag indicator */}
                                   <span className="flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded text-[9px] border border-border/40 shrink-0">
                                     <GitBranch size={9} />
@@ -454,7 +453,7 @@ export function StudentCommits() {
 
                             {/* Right Section: Hash & Lines changes */}
                             <div className="flex items-center gap-3 shrink-0 justify-between md:justify-end border-t md:border-t-0 pt-3.5 md:pt-0 border-border/40">
-                              
+
                               {/* Lines Added / Deleted */}
                               <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider">
                                 <span className="text-success bg-success/10 px-2 py-0.5 rounded">
@@ -466,8 +465,8 @@ export function StudentCommits() {
                               </div>
 
                               {/* Git Commit Hash code badge */}
-                              <a 
-                                href="#" 
+                              <a
+                                href="#"
                                 onClick={(e) => { e.preventDefault(); toast.info(`Đang mở chi tiết commit [${commit.hash}] trên GitHub...`); }}
                                 className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-muted hover:bg-muted/80 hover:text-foreground px-2.5 py-1 rounded-md border border-border/40 font-mono transition-colors"
                               >
@@ -488,7 +487,7 @@ export function StudentCommits() {
                 {(() => {
                   const totalPages = Math.ceil(filteredCommits.length / itemsPerPage);
                   const startIndex = (currentPage - 1) * itemsPerPage;
-                  
+
                   if (totalPages <= 1) return null;
 
                   return (
@@ -512,11 +511,10 @@ export function StudentCommits() {
                               <button
                                 key={pageNum}
                                 onClick={() => setCurrentPage(pageNum)}
-                                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                                  currentPage === pageNum
+                                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === pageNum
                                     ? "bg-primary text-primary-foreground font-bold shadow-sm"
                                     : "hover:bg-muted text-muted-foreground hover:text-foreground"
-                                }`}
+                                  }`}
                               >
                                 {pageNum}
                               </button>
@@ -551,7 +549,7 @@ export function StudentCommits() {
               <form onSubmit={handleCreateBranch} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="branch-name" className="text-[10px] font-bold text-muted-foreground uppercase">Tên nhánh (Branch Name)</Label>
-                  <Input 
+                  <Input
                     id="branch-name"
                     value={newBranchName}
                     onChange={(e) => setNewBranchName(e.target.value)}
@@ -565,7 +563,7 @@ export function StudentCommits() {
                 </div>
 
                 <div className="flex gap-3.5 pt-2">
-                  <Button 
+                  <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsModalOpen(false)}
@@ -573,7 +571,7 @@ export function StudentCommits() {
                   >
                     Hủy bỏ
                   </Button>
-                  <Button 
+                  <Button
                     type="submit"
                     className="flex-1 h-10 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
                   >

@@ -180,10 +180,10 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
                       };
 
                       const getBadgeColor = () => {
-                        if (edge.type === "toxic") return "bg-destructive/10 text-destructive border-destructive/20 bg-destructive/20 text-destructive";
-                        if (edge.type === "ghost") return "bg-warning/10 text-warning border-warning/20 bg-warning/20 text-warning";
-                        if (edge.type === "review") return "bg-success/10 text-success border-success/20 bg-success/20 text-success";
-                        return "bg-primary/10 text-primary border-primary/20 bg-primary/20 text-primary";
+                        if (edge.type === "toxic") return "bg-destructive/10 text-destructive border-destructive/20";
+                        if (edge.type === "ghost") return "bg-warning/10 text-warning border-warning/20";
+                        if (edge.type === "review") return "bg-success/10 text-success border-success/20";
+                        return "bg-primary/10 text-primary border-primary/20";
                       };
 
                       return (

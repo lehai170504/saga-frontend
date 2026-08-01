@@ -136,7 +136,7 @@ export function StudentProjectsList() {
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Header Section */}
         <PageHeader
           title="Danh sách nhóm dự án"
@@ -156,23 +156,21 @@ export function StudentProjectsList() {
               const otherMembers = group.members.filter(m => m.name !== group.leader);
 
               return (
-                <div 
+                <div
                   key={group.id}
-                  className={`relative rounded-3xl p-5 md:p-6 transition-all duration-300 border flex flex-col gap-4 ${
-                    isOwnGroup 
-                      ? "bg-gradient-to-br from-primary/10 via-indigo-500/5 to-transparent border-primary dark:border-primary/90 shadow-[0_0_30px_rgba(234,88,12,0.35)] dark:shadow-[0_0_35px_rgba(234,88,12,0.25)]" 
-                      : "bg-card/25 dark:bg-card/20 backdrop-blur-3xl border-border border-border border-border dark:border-border hover:bg-card/40"
-                  }`}
+                  className={`relative rounded-3xl p-5 md:p-6 transition-all duration-300 border flex flex-col gap-4 ${isOwnGroup
+                      ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary shadow-lg shadow-primary/20"
+                      : "bg-card/25 dark:bg-card/20 backdrop-blur-3xl border-border hover:bg-card/40"
+                    }`}
                 >
                   {/* Top Row: Group Identity & Leader */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                          isOwnGroup 
-                            ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(234,88,12,0.3)]" 
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${isOwnGroup
+                            ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(234,88,12,0.3)]"
                             : "bg-muted/50 text-muted-foreground"
-                        }`}>
+                          }`}>
                           {group.name}
                         </span>
                         {isOwnGroup && (
@@ -202,8 +200,8 @@ export function StudentProjectsList() {
                     <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Thành viên trong nhóm</div>
                     <div className="flex flex-wrap gap-1.5">
                       {otherMembers.map((member, i) => (
-                        <div 
-                          key={i} 
+                        <div
+                          key={i}
                           className="bg-muted/30 border border-border/10 rounded-full px-3 py-1 text-xs font-bold text-foreground/80 hover:bg-muted/50 transition-colors"
                         >
                           {member.name}

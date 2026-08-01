@@ -12,10 +12,12 @@ import {
 import { CreateClassDialog } from "./create-class-dialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function ClassList() {
   const { data: page, isLoading, error } = useClasses();
   const { user } = useAuth();
+  const router = useRouter();
 
   const isAdmin = user?.applicationRole === "ADMIN";
 
@@ -54,7 +56,19 @@ export function ClassList() {
           <TableBody>
             {page?.content && page.content.length > 0 ? (
               page.content.map((clazz) => (
-                <TableRow key={clazz.id} className="hover:bg-muted/30 transition-colors">
+                <TableRow 
+                  key={clazz.id} 
+                  className="hover:bg-muted/30 transition-colors cursor-pointer"
+                  onClick={() => {
+                    if (user?.applicationRole === "ADMIN") {
+                      router.push(`/admin/classes/${clazz.id}`);
+                    } else if (user?.applicationRole === "LECTURER") {
+                      router.push(`/lecturer/${clazz.id}`);
+                    } else if (user?.applicationRole === "STUDENT") {
+                      // Handle student navigation if needed (e.g. /student/classes/${clazz.id})
+                    }
+                  }}
+                >
                   <TableCell className="font-medium text-primary">{clazz.classCode}</TableCell>
                   <TableCell>{clazz.name}</TableCell>
                   <TableCell className="text-muted-foreground">
