@@ -12,6 +12,7 @@ import {
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getNavigationConfig } from "@/config/navigation";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 
 
 import {
@@ -43,22 +44,17 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
     logout();
   };
 
-  const getNavGroups = () => {
-    if (!user) return [];
+  // 1. Xác định classId từ URL
+  const lecturerClassIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
+  const studentClassIdMatch = pathname.match(/^\/student\/([^/]+)/);
+  const classId = (lecturerClassIdMatch ? lecturerClassIdMatch[1] : null) ||
+    (studentClassIdMatch && studentClassIdMatch[1] !== "settings" ? studentClassIdMatch[1] : null);
 
-    // ClassId from lecturer URL
-    const lecturerClassIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
-    const lecturerClassId = lecturerClassIdMatch ? lecturerClassIdMatch[1] : null;
+  // 2. Fetch course data
+  const { data: course } = useCourse(classId || "");
 
-    // ClassId from student URL
-    const studentClassIdMatch = pathname.match(/^\/student\/([^/]+)/);
-    const studentClassId = studentClassIdMatch && studentClassIdMatch[1] !== "settings" ? studentClassIdMatch[1] : null;
-
-    const classId = lecturerClassId || studentClassId;
-    return getNavigationConfig(user.applicationRole, classId);
-  };
-
-  const navGroups = getNavGroups();
+  // 3. Khởi tạo navigation
+  const navGroups = getNavigationConfig(user?.applicationRole || "", classId, course?.clazz?.name || course?.courseCode);
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -99,9 +95,9 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
         </div>
 
         {/* Navigation Groups */}
-        <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10">
-          {navGroups.map((group, idx) => (
-            <div key={idx} className="space-y-2 animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6 custom-scrollbar relative z-10">
+          {navGroups.map((group, groupIndex) => (
+            <div key={groupIndex} className="space-y-2 animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${groupIndex * 100}ms` }}>
               {!isCollapsed && (
                 <h4 className="px-3 text-[11px] font-bold text-muted-foreground/50 uppercase tracking-widest select-none">
                   {group.title}
@@ -134,7 +130,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
               </div>
             </div>
           ))}
-        </nav>
+        </div>
 
         {/* Bottom Footer Actions */}
         <div className="p-4 border-t border-border/40 relative z-10 bg-background/50 backdrop-blur-md">

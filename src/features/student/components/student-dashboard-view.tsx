@@ -4,13 +4,17 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { GitCommit, MessageSquare, CheckCircle2, ArrowRight, AlertTriangle } from "lucide-react";
 import { AreaChart, Area, XAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { semestersData, subjectsData } from "@/mock-data/classes";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
-import { Skeleton } from "@/components/shared/Skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/DataState";
 import { StudentScoreTraceGraph } from "@/features/student/components/student-score-trace-graph";
+import { useCourse } from "@/features/courses/hooks/useCourses";
+
+interface StudentDashboardViewProps {
+  classId?: string;
+}
 
 const recentActivities = [
   {
@@ -39,13 +43,13 @@ const recentActivities = [
   },
 ];
 
-export function StudentDashboardView() {
-  const [isLoading, setIsLoading] = useState(true);
+export function StudentDashboardView({ classId }: StudentDashboardViewProps) {
   const [mounted, setMounted] = useState(false);
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
 
-  const offset = selectedClass ? selectedClass.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 50 : 0;
+  // Fetch real data for course
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(classId || "");
+
+  const offset = classId ? classId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 50 : 0;
 
   const dynamicActivityData = [
     { name: "Thứ 2", commits: 12 + offset % 5, comments: 8 + offset % 3 },
@@ -88,59 +92,20 @@ export function StudentDashboardView() {
     },
   ];
 
-  const getSemesterName = (semId: string) => {
-    return semestersData.find((s) => s.id === semId)?.name ?? semId;
-  };
-
-  const getClassName = (semId: string, classId: string) => {
-    if (!semId || !classId) return "";
-    const subjects = subjectsData[semId] || [];
-    for (const sub of subjects) {
-      const cls = sub.classes.find((c) => c.id === classId);
-      if (cls) return `${sub.name} - ${cls.name}`;
-    }
-    return classId;
-  };
-
-  const getClassProject = (semId: string, classId: string) => {
-    if (!semId || !classId) return "";
-    const subjects = subjectsData[semId] || [];
-    for (const sub of subjects) {
-      const cls = sub.classes.find((c) => c.id === classId);
-      if (cls) return cls.project;
-    }
-    return "";
-  };
-
   useEffect(() => {
     setMounted(true);
-
-    const loadSelection = () => {
-      const sem = localStorage.getItem("saga-student-semester") || "";
-      const cls = localStorage.getItem("saga-student-class") || "";
-      setSelectedSemester(sem);
-      setSelectedClass(cls);
-    };
-
-    loadSelection();
-    const timer = setTimeout(() => setIsLoading(false), 800);
-
-    window.addEventListener("saga-student-class-changed", loadSelection);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("saga-student-class-changed", loadSelection);
-    };
   }, []);
+
+  const isLoading = isLoadingCourse || !mounted;
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-500 bg-background min-h-screen">
       <PageHeader
-        title="Tổng quan — Sprint 4"
+        title="Tổng quan"
         description={
-          selectedSemester && selectedClass
-            ? `${getSemesterName(selectedSemester)} · ${getClassName(selectedSemester, selectedClass)} · ${getClassProject(selectedSemester, selectedClass)}`
-            : "Đang tải dữ liệu lớp học..."
+          courseData
+            ? `${courseData.semester?.name || ""} · Khóa học ${courseData.courseCode || ""} · ${courseData.subject?.subjectCode || ""}`
+            : "Đang tải dữ liệu khóa học..."
         }
       />
 

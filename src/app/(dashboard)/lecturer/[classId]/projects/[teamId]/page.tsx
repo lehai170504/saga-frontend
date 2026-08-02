@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle2, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2, KanbanSquare } from "lucide-react";
+import { ArrowLeft, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2, KanbanSquare } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,24 +14,38 @@ import { ProjectInteractionGraph } from "@/features/lecturer/components/project-
 import { EarlyWarningAlerts } from "@/features/lecturer/components/project-detail/charts/early-warning-alerts";
 import { SprintVelocityBar } from "@/features/lecturer/components/project-detail/charts/sprint-velocity-bar";
 import { StudentKanbanBoard } from "@/features/student/components/student-kanban-board";
+import { useCourseStudents, useTeamMembers } from "@/features/courses/hooks/useCourseStudents";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ classId: string, projectId: string }> }) {
-  const { classId, projectId } = React.use(params);
+export default function ProjectDetailPage({ params }: { params: Promise<{ classId: string, teamId: string }> }) {
+  const { classId, teamId } = React.use(params);
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Dữ liệu giả lập cho chi tiết nhóm (Mock data theo SAGA Agile):
+  // Fetch real data
+  const { data: studentsData } = useCourseStudents(classId);
+  const { data: membersData, isLoading: isLoadingMembers } = useTeamMembers(classId, teamId);
+
+  // Extract team context
+  const studentsWithTeam = studentsData?.studentsWithTeam.content || [];
+  const teamContext = studentsWithTeam.find(s => s.team?.teamId === teamId)?.team;
+
+  const teamName = teamContext?.teamName || `Nhóm ${teamId.slice(0, 8)}...`;
+  const projectName = teamContext?.projectName || "Chưa có dự án";
+
+  // Dùng dữ liệu từ useCourseStudents để đảm bảo có thông tin sinh viên đầy đủ
+  const membersList = studentsWithTeam.filter(s => s.team?.teamId === teamId);
+
   const projectDetail = {
-    id: projectId,
-    name: `Nhóm ${projectId}`,
-    project: "Hệ thống quản lý thư viện",
-    description: "Xây dựng hệ thống quản lý thư viện sử dụng Next.js, Node.js và PostgreSQL. Đánh giá dựa trên mô hình Slicing Pie Scrum & Early Warning AI.",
-    members: [
-      { name: "Nguyễn Văn A", role: "Core Member", totalSp: 45, completedSp: 38, slices: "42.75", warning: "Bus Factor" },
-      { name: "Trần Thị B", role: "Thành viên", totalSp: 25, completedSp: 25, slices: "19.0", warning: null },
-      { name: "Lê Văn C", role: "Thành viên", totalSp: 15, completedSp: 5, slices: "1.0", warning: "Ghosting (PIP)" },
-    ],
-    status: "warning",
-    progress: 75,
+    id: teamId,
+    name: teamName,
+    project: projectName,
+    members: membersList.map(s => {
+      const roleInTeam = s.team?.teamMembers?.find(m => m.studentId === s.studentId)?.roleInTeam;
+      return {
+        name: s.fullName,
+        role: roleInTeam === "LEADER" ? "Leader" : "Thành viên",
+      };
+    }),
   };
 
   return (
@@ -88,17 +102,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {projectDetail.description}
+                    Chưa có mô tả dự án từ hệ thống.
                   </p>
-                  <div className="pt-4 border-t border-border/50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Tiến độ chung (Burn-down)</span>
-                      <span className="text-sm font-bold text-primary">{projectDetail.progress}%</span>
-                    </div>
-                    <div className="h-2.5 w-full bg-secondary/50 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{ width: `${projectDetail.progress}%` }} />
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
 
@@ -111,42 +116,45 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ classI
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4 mt-2">
-                    {projectDetail.members.map((member, idx) => (
-                      <div key={idx} className="flex flex-col p-4 rounded-2xl border border-border/50 bg-background hover:shadow-md hover:border-primary/30 transition-all duration-300 gap-3">
-                        <div className="flex items-center gap-4">
-                          <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
-                            <AvatarFallback className="font-bold bg-primary/10 text-primary">{member.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <div className="font-bold text-foreground text-sm">{member.name}</div>
-                            </div>
-                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-0.5">
-                              {member.role === 'Core Member' ? (
-                                <span className="text-primary">Core Member</span>
-                              ) : (
-                                <span>Thành viên</span>
-                              )}
+                    {isLoadingMembers ? (
+                      Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex flex-col p-4 rounded-2xl border border-border/50 bg-background gap-3">
+                          <div className="flex items-center gap-4">
+                            <Skeleton className="w-10 h-10 rounded-full" />
+                            <div>
+                              <Skeleton className="h-4 w-32 mb-1" />
+                              <Skeleton className="h-3 w-20" />
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between bg-accent/30 p-2.5 rounded-xl">
-                          <div>
-                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">Story Points</div>
-                            <div className="text-xs font-bold text-foreground">{member.completedSp}/{member.totalSp} SP</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">Slices</div>
-                            <div className="text-xs font-bold text-primary">{member.slices}</div>
+                      ))
+                    ) : projectDetail.members.length > 0 ? (
+                      projectDetail.members.map((member, idx) => (
+                        <div key={idx} className="flex flex-col p-4 rounded-2xl border border-border/50 bg-background hover:shadow-md hover:border-primary/30 transition-all duration-300 gap-3">
+                          <div className="flex items-center gap-4">
+                            <Avatar className="w-10 h-10 border-2 border-background shadow-sm">
+                              <AvatarFallback className="font-bold bg-primary/10 text-primary">{member.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <div className="font-bold text-foreground text-sm">{member.name}</div>
+                              </div>
+                              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-0.5">
+                                {member.role === 'Leader' ? (
+                                  <span className="text-primary">Leader</span>
+                                ) : (
+                                  <span>Thành viên</span>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        {member.warning && (
-                          <div className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-xl text-center ${member.warning.includes('Ghosting') ? 'bg-destructive/10 text-destructive bg-destructive/20 text-destructive' : 'bg-warning/10 text-warning bg-warning/20 text-warning'}`}>
-                            Cảnh báo: {member.warning}
-                          </div>
-                        )}
+                      ))
+                    ) : (
+                      <div className="text-center p-6 text-sm text-muted-foreground border border-dashed rounded-xl">
+                        Chưa có thành viên nào trong nhóm
                       </div>
-                    ))}
+                    )}
                   </div>
                 </CardContent>
               </Card>

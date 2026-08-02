@@ -82,7 +82,10 @@ interface RatingState {
   isSaved: boolean;
 }
 
-export default function PeerAssessmentPage() {
+import { useCourse } from "@/features/courses/hooks/useCourses";
+export default function PeerAssessmentPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
+  const { data: courseData } = useCourse(classId || "");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<TeamMember>(teamMembers[0]);
   const [assessments, setAssessments] = useState<Record<string, RatingState>>({});
@@ -254,7 +257,7 @@ export default function PeerAssessmentPage() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16 bg-background text-foreground">
       <PageHeader
         title="Tự đánh giá & Đánh giá chéo"
-        description="Đánh giá đóng góp cá nhân và đánh giá hiệu quả làm việc của các thành viên trong nhóm PBL-07 cho đợt báo cáo Sprint 4."
+        description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
       />
 
       {/* CONFIDENTIAL ALERT BANNER */}

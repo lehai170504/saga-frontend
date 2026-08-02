@@ -1,3 +1,4 @@
+import { useCourse } from "@/features/courses/hooks/useCourses";
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -30,10 +31,15 @@ const mockStudentLogs: StudentAuditLog[] = [
   { id: "8", timestamp: "2026-06-25 08:30:00", action: "RECEIVE_FEEDBACK", category: "academic", status: "success", details: "Giảng viên Dr. Nguyen Van A đã gửi nhận xét mới về Sprint 3." },
 ];
 
-export function StudentAuditLogs() {
+interface StudentAuditLogsProps {
+  classId?: string;
+}
+
+export function StudentAuditLogs({ classId }: StudentAuditLogsProps) {
+  const { data: courseData } = useCourse(classId || "");
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
+  
   const [selectedSemester, setSelectedSemester] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -61,10 +67,10 @@ export function StudentAuditLogs() {
   useEffect(() => {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+    
 
     setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
 
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -95,7 +101,7 @@ export function StudentAuditLogs() {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <PageHeader
             title="Nhật ký hoạt động (Audit Logs)"
-            description={`Danh sách lịch sử thao tác, nộp bài, đồng bộ hóa của bạn tại ${getStudentGroup(selectedClass)} (Lớp ${getClassName(selectedClass)})`}
+            description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
           />
           <Button variant="outline" className="rounded-xl h-11 shadow-sm text-foreground bg-card/40 backdrop-blur-xl border-border/50 hover:bg-card/70 font-bold text-xs uppercase tracking-wider">
             <Download className="mr-2 h-4 w-4" /> Xuất Log (CSV)

@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/sheet";
 import { GitCommit } from "lucide-react";
 import { toast } from "sonner";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 
 interface TeamMemberContribution {
   id: string;
@@ -58,12 +59,14 @@ const avatarColors = [
   "bg-primary",
 ];
 
-export default function ContributionPage() {
+export default function ContributionPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
+  const { data: courseData } = useCourse(classId || "");
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [selectedUser, setSelectedUser] =
     useState<TeamMemberContribution | null>(null);
-  const [selectedClass, setSelectedClass] = useState("");
+
   const [selectedSemester, setSelectedSemester] = useState("");
 
 
@@ -145,8 +148,8 @@ export default function ContributionPage() {
     if (!semId || !classId) return "";
     const subjects = subjectsData[semId] || [];
     for (const sub of subjects) {
-      const cls = sub.classes.find((c) => c.id === classId);
-      if (cls) return `${sub.name} - ${cls.name}`;
+      const matchedClass = sub.classes.find((c: any) => c.id === classId);
+      if (matchedClass) return `${sub.name} - ${matchedClass.name}`;
     }
     return classId;
   };
@@ -155,9 +158,9 @@ export default function ContributionPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+
     setSelectedSemester(sem);
-    setSelectedClass(cls);
+
 
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
@@ -180,7 +183,7 @@ export default function ContributionPage() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
         title="Đóng góp cá nhân"
-        description={`Đánh giá chi tiết năng lực, hiệu suất và mức độ đóng góp của từng thành viên trong ${getClassName(selectedSemester, selectedClass)}.`}
+        description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
       />
 
       {/* Main Grid */}

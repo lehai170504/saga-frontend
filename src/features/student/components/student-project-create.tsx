@@ -11,10 +11,13 @@ import { toast } from "sonner";
 import { FolderKanban, GitBranch, Compass, RefreshCw, CheckCircle2, Link2, ShieldCheck, Plus, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 
-export function StudentProjectCreate() {
+import { useCourse } from "@/features/courses/hooks/useCourses";
+interface StudentProjectCreateProps { classId?: string; }
+export function StudentProjectCreate({ classId }: StudentProjectCreateProps) {
+  const { data: courseData } = useCourse(classId || "");
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
+
   const [selectedSemester, setSelectedSemester] = useState("");
 
   // Project Info states
@@ -59,26 +62,26 @@ export function StudentProjectCreate() {
   useEffect(() => {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+
 
     setSelectedSemester(sem);
-    setSelectedClass(cls);
 
-    if (cls) {
-      const savedTopic = localStorage.getItem(`saga-project-topic-${cls}`) || "";
-      const savedDesc = localStorage.getItem(`saga-project-desc-${cls}`) || "";
-      const savedGitUrl = localStorage.getItem(`saga-project-git-url-${cls}`) || "";
-      const savedGitBranch = localStorage.getItem(`saga-project-git-branch-${cls}`) || "main";
-      const savedGitConn = localStorage.getItem(`saga-project-git-conn-${cls}`) === "true";
-      const savedJiraUrl = localStorage.getItem(`saga-project-jira-url-${cls}`) || "";
-      const savedJiraKey = localStorage.getItem(`saga-project-jira-key-${cls}`) || "";
-      const savedJiraConn = localStorage.getItem(`saga-project-jira-conn-${cls}`) === "true";
+
+    if ((classId || "")) {
+      const savedTopic = localStorage.getItem(`saga-project-topic-${(classId || "")}`) || "";
+      const savedDesc = localStorage.getItem(`saga-project-desc-${(classId || "")}`) || "";
+      const savedGitUrl = localStorage.getItem(`saga-project-git-url-${(classId || "")}`) || "";
+      const savedGitBranch = localStorage.getItem(`saga-project-git-branch-${(classId || "")}`) || "main";
+      const savedGitConn = localStorage.getItem(`saga-project-git-conn-${(classId || "")}`) === "true";
+      const savedJiraUrl = localStorage.getItem(`saga-project-jira-url-${(classId || "")}`) || "";
+      const savedJiraKey = localStorage.getItem(`saga-project-jira-key-${(classId || "")}`) || "";
+      const savedJiraConn = localStorage.getItem(`saga-project-jira-conn-${(classId || "")}`) === "true";
 
       setTopicName(savedTopic);
       setDescription(savedDesc);
 
       try {
-        const savedGitReposStr = localStorage.getItem(`saga-project-git-repos-${cls}`);
+        const savedGitReposStr = localStorage.getItem(`saga-project-git-repos-${(classId || "")}`);
         if (savedGitReposStr) {
           setGithubRepos(JSON.parse(savedGitReposStr));
         }
@@ -96,7 +99,7 @@ export function StudentProjectCreate() {
       setIsLoading(false);
     }, 600);
     return () => clearTimeout(timer);
-  }, [selectedClass]);
+  }, [(classId || "")]);
 
   const handleAddRepo = () => {
     setGithubRepos([...githubRepos, { id: Date.now().toString(), type: "Khác", url: "", branch: "main" }]);
@@ -120,8 +123,8 @@ export function StudentProjectCreate() {
     setTimeout(() => {
       setIsTestingGithub(false);
       setGithubConnected(true);
-      if (selectedClass) {
-        localStorage.setItem(`saga-project-git-conn-${selectedClass}`, "true");
+      if ((classId || "")) {
+        localStorage.setItem(`saga-project-git-conn-${(classId || "")}`, "true");
       }
       toast.success("Kết nối thử nghiệm đến GitHub Repository thành công!");
     }, 1500);
@@ -136,8 +139,8 @@ export function StudentProjectCreate() {
     setTimeout(() => {
       setIsTestingJira(false);
       setJiraConnected(true);
-      if (selectedClass) {
-        localStorage.setItem(`saga-project-jira-conn-${selectedClass}`, "true");
+      if ((classId || "")) {
+        localStorage.setItem(`saga-project-jira-conn-${(classId || "")}`, "true");
       }
       toast.success("Kết nối thử nghiệm đến Jira Cloud thành công!");
     }, 1500);
@@ -154,14 +157,14 @@ export function StudentProjectCreate() {
       return;
     }
 
-    if (selectedClass) {
-      localStorage.setItem(`saga-project-topic-${selectedClass}`, topicName);
-      localStorage.setItem(`saga-project-desc-${selectedClass}`, description);
-      localStorage.setItem(`saga-project-git-repos-${selectedClass}`, JSON.stringify(githubRepos));
-      localStorage.setItem(`saga-project-jira-url-${selectedClass}`, jiraUrl);
-      localStorage.setItem(`saga-project-jira-key-${selectedClass}`, jiraProjectKey);
+    if ((classId || "")) {
+      localStorage.setItem(`saga-project-topic-${(classId || "")}`, topicName);
+      localStorage.setItem(`saga-project-desc-${(classId || "")}`, description);
+      localStorage.setItem(`saga-project-git-repos-${(classId || "")}`, JSON.stringify(githubRepos));
+      localStorage.setItem(`saga-project-jira-url-${(classId || "")}`, jiraUrl);
+      localStorage.setItem(`saga-project-jira-key-${(classId || "")}`, jiraProjectKey);
 
-      toast.success(`Đã lưu cấu hình dự án cho ${getStudentGroup(selectedClass)} thành công!`);
+      toast.success(`Đã lưu cấu hình dự án cho ${getStudentGroup((classId || ""))} thành công!`);
     }
   };
 
@@ -169,7 +172,7 @@ export function StudentProjectCreate() {
     return <div className="p-6 min-h-screen bg-background" />;
   }
 
-  const activeGroup = getStudentGroup(selectedClass);
+  const activeGroup = getStudentGroup((classId || ""));
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
@@ -182,7 +185,7 @@ export function StudentProjectCreate() {
         {/* Header Section */}
         <PageHeader
           title="Cấu hình & Kết nối Dự án Nhóm"
-          description={`Tạo/cập nhật thông tin dự án, kết nối GitHub & Jira để lưu trữ mã nguồn và quản lý tasks cho ${activeGroup} (Lớp ${getClassName(selectedClass)})`}
+          description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
         />
 
         {isLoading ? (
@@ -405,7 +408,7 @@ export function StudentProjectCreate() {
                   </div>
                   <div className="flex justify-between items-start gap-4">
                     <span className="text-muted-foreground">Lớp học:</span>
-                    <span className="text-foreground text-right font-extrabold">{getClassName(selectedClass)}</span>
+                    <span className="text-foreground text-right font-extrabold">{getClassName((classId || ""))}</span>
                   </div>
                   <div className="flex justify-between items-start gap-4">
                     <span className="text-muted-foreground">Nhóm dự án:</span>

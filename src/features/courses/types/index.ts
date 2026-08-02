@@ -1,3 +1,5 @@
+import { Page } from "@/types/pagination";
+
 export interface Course {
   id: string; // UUID
   courseCode: string;
@@ -31,4 +33,40 @@ export interface CourseRequest {
   classId: string;
   semesterId: string;
   instructorId: string;
+}
+
+export interface TeamMemberResponse {
+  id: string;
+  teamId: string;
+  studentId: string;
+  roleInTeam: string;
+  student: {
+    id: string;
+    studentCode: string;
+    name: string;
+  };
+}
+
+export interface CourseStudent {
+  studentId: string;
+  fullName: string;
+  studentCode: string;
+  email: string;
+  team: {
+    teamId: string;
+    teamName: string;
+    projectId: string;
+    projectName: string;
+    teamMembers: {
+      studentId: string;
+      fullName: string;
+      studentCode: string;
+      roleInTeam: string;
+    }[];
+  } | null;
+}
+
+export interface CourseStudentsResponse {
+  studentsWithTeam: Page<CourseStudent>;
+  studentsWithoutTeam: Page<CourseStudent>;
 }

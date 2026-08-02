@@ -28,6 +28,7 @@ import { useCreateCourse } from "../hooks/useCourses";
 import { useSubjects } from "@/features/subjects/hooks/useSubjects";
 import { useClasses } from "@/features/classes/hooks/useClasses";
 import { useSemesters } from "@/features/semesters/hooks/useSemesters";
+import { useLecturers } from "@/features/user/hooks/useUsers";
 
 export function CreateCourseDialog() {
   const [open, setOpen] = useState(false);
@@ -37,6 +38,7 @@ export function CreateCourseDialog() {
   const { data: subjectsPage, isLoading: loadingSubjects } = useSubjects({ size: 100 });
   const { data: classesPage, isLoading: loadingClasses } = useClasses({ size: 100 });
   const { data: semestersPage, isLoading: loadingSemesters } = useSemesters({ size: 100 });
+  const { data: lecturers, isLoading: loadingLecturers } = useLecturers();
 
   const {
     register,
@@ -188,15 +190,30 @@ export function CreateCourseDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="instructorId" className="font-semibold text-foreground/80">
-              ID Giảng viên (UUID)
-            </Label>
-            <Input
-              id="instructorId"
-              placeholder="Nhập ID giảng viên..."
-              className={`rounded-xl h-11 ${errors.instructorId ? "border-destructive focus-visible:ring-destructive" : ""
-                }`}
-              {...register("instructorId")}
+            <Label className="font-semibold text-foreground/80">Giảng viên</Label>
+            <Controller
+              name="instructorId"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className={`rounded-xl h-11 ${errors.instructorId ? "border-destructive focus-visible:ring-destructive" : ""}`}>
+                    <SelectValue placeholder={loadingLecturers ? "Đang tải..." : "Chọn giảng viên phụ trách"} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {loadingLecturers ? (
+                      <SelectItem value="loading" disabled>Đang tải danh sách...</SelectItem>
+                    ) : lecturers?.content && lecturers.content.length > 0 ? (
+                      lecturers.content.map((lecturer) => (
+                        <SelectItem key={lecturer.id} value={lecturer.id}>
+                          {lecturer.fullName} ({lecturer.email})
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="empty" disabled>Không có giảng viên nào</SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
             />
             {errors.instructorId && (
               <p className="text-xs text-destructive mt-1 font-medium">{errors.instructorId.message}</p>

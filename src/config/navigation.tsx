@@ -38,9 +38,7 @@ export type NavGroupType = {
 export const getNavigationConfig = (
   role: string,
   classId: string | null,
-  handlers?: {
-    onStudentSwitchClass?: (e?: React.MouseEvent) => void;
-  }
+  className?: string | null
 ): NavGroupType[] => {
   switch (role) {
     case "ADMIN":
@@ -82,7 +80,7 @@ export const getNavigationConfig = (
       if (classId) {
         return [
           {
-            title: `Đang xem: LỚP ${classId.toUpperCase()}`,
+            title: className ? `Đang xem: Lớp ${className}` : `Đang xem: LỚP ${classId.toUpperCase()}`,
             items: [
               { href: "/lecturer", icon: <ArrowLeft size={18} />, label: "Chọn lớp khác", hideChevron: true, exact: true },
             ],
@@ -117,7 +115,7 @@ export const getNavigationConfig = (
       if (classId) {
         return [
           {
-            title: `Đang xem: LỚP ${classId.toUpperCase()}`,
+            title: className ? `Đang xem: Lớp ${className}` : `Đang xem: LỚP ${classId.toUpperCase()}`,
             items: [
               { href: "/student", icon: <ArrowLeft size={18} />, label: "Chọn lớp khác", hideChevron: true, exact: true },
             ],

@@ -1,8 +1,8 @@
-"use client";
 
+"use client";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,15 +10,8 @@ import {
   ClipboardList,
   Plus,
   Trash2,
-  Edit2,
   Calendar,
-  User,
-  ChevronRight,
-  ChevronLeft,
   Settings,
-  GitBranch,
-  GitCommit,
-  GitPullRequest
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
@@ -27,9 +20,10 @@ import { JiraSprint, JiraTask, DEFAULT_SPRINTS, DEFAULT_TASKS, TEAM_MEMBERS } fr
 import { KanbanTaskCard } from "./kanban-task-card";
 
 export function StudentKanbanBoard({ isLecturerView = false, classId = "", projectId = "" }: { isLecturerView?: boolean, classId?: string, projectId?: string }) {
+  const { data: courseData } = useCourse(classId || "");
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
+
   const [selectedSemester, setSelectedSemester] = useState("");
 
   // Kanban states
@@ -81,10 +75,10 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
       cls = localStorage.getItem("saga-student-class") || "";
     }
     setSelectedSemester(sem);
-    setSelectedClass(cls);
 
-    const localSprints = localStorage.getItem(`saga-kanban-sprints-${cls}`);
-    const localTasks = localStorage.getItem(`saga-kanban-tasks-${cls}`);
+
+    const localSprints = localStorage.getItem(`saga-kanban-sprints-${(classId || "")}`);
+    const localTasks = localStorage.getItem(`saga-kanban-tasks-${(classId || "")}`);
 
     if (localSprints) {
       const parsedSprints = JSON.parse(localSprints);
@@ -94,33 +88,33 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
     } else {
       setSprints(DEFAULT_SPRINTS);
       setCurrentSprintId("sprint-3");
-      localStorage.setItem(`saga-kanban-sprints-${cls}`, JSON.stringify(DEFAULT_SPRINTS));
+      localStorage.setItem(`saga-kanban-sprints-${(classId || "")}`, JSON.stringify(DEFAULT_SPRINTS));
     }
 
     if (localTasks) {
       setTasks(JSON.parse(localTasks));
     } else {
       setTasks(DEFAULT_TASKS);
-      localStorage.setItem(`saga-kanban-tasks-${cls}`, JSON.stringify(DEFAULT_TASKS));
+      localStorage.setItem(`saga-kanban-tasks-${(classId || "")}`, JSON.stringify(DEFAULT_TASKS));
     }
 
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 600);
     return () => clearTimeout(timer);
-  }, [selectedClass]);
+  }, [(classId || "")]);
 
   const syncSprints = (updatedSprints: JiraSprint[]) => {
     setSprints(updatedSprints);
-    if (selectedClass) {
-      localStorage.setItem(`saga-kanban-sprints-${selectedClass}`, JSON.stringify(updatedSprints));
+    if ((classId || "")) {
+      localStorage.setItem(`saga-kanban-sprints-${(classId || "")}`, JSON.stringify(updatedSprints));
     }
   };
 
   const syncTasks = (updatedTasks: JiraTask[]) => {
     setTasks(updatedTasks);
-    if (selectedClass) {
-      localStorage.setItem(`saga-kanban-tasks-${selectedClass}`, JSON.stringify(updatedTasks));
+    if ((classId || "")) {
+      localStorage.setItem(`saga-kanban-tasks-${(classId || "")}`, JSON.stringify(updatedTasks));
     }
   };
 
@@ -270,7 +264,7 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
   };
 
   const sprintTasks = tasks.filter(t => t.sprintId === currentSprintId);
-  const activeGroup = getStudentGroup(selectedClass);
+  const activeGroup = getStudentGroup((classId || ""));
 
   const statusConfig: Record<JiraTask["status"], {
     title: string;
@@ -388,7 +382,7 @@ export function StudentKanbanBoard({ isLecturerView = false, classId = "", proje
         <div className={`flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10 ${isLecturerView ? 'hidden' : ''}`}>
           <PageHeader
             title="Bảng Kanban Tasks (Jira)"
-            description={`Theo dõi và quản lý các Tasks công việc của ${activeGroup} (Lớp ${getClassName(selectedClass)})`}
+            description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
           />
 
           {isLoading ? (

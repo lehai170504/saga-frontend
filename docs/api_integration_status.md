@@ -37,6 +37,14 @@ Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Setti
 - `GET /api/me/integrations`: Xem danh sách liên kết cá nhân.
 - `DELETE /api/me/integrations/{provider}`: Hủy liên kết cá nhân.
 
+### 1.6. Quản lý Sinh viên & Nhóm (Course Students & Teams)
+- `POST /api/v1/courses/{courseId}/import-students`: Import danh sách sinh viên vào khóa học bằng file Excel (Đã tích hợp UI Modal upload file thực tế).
+- `GET /api/v1/courses/{courseId}/students`: Lấy danh sách toàn bộ sinh viên của một khóa học, chia thành 2 danh sách Đã có nhóm và Chưa có nhóm (Đã setup API, Hook và UI hiển thị).
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/members`: Lấy danh sách thành viên của một nhóm (Đã setup API và Hook, chờ UI danh sách nhóm).
+
+### 1.7. Quản lý Người dùng (Users)
+- `GET /api/v1/courses/instructors`: Lấy danh sách giảng viên phân trang (Đã tích hợp API, Hook và đổ dữ liệu vào Dropdown chọn Giảng viên trong Form Tạo Khóa học).
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)
@@ -46,14 +54,10 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 ### 2.1. Phía Backend (BE cần cung cấp thêm API)
 > **Đây là những API mang tính chất chặn (blocker), nếu không có thì luồng nghiệp vụ bị đứt gãy.**
 
-1. **API Quản lý Sinh viên trong Lớp (Class Members):**
-   - Thiếu: `GET /api/v1/classes/{classId}/students` (Lấy danh sách sinh viên của lớp).
-   - *Hiện trạng:* Đang dùng Mock Data cứng `INITIAL_STUDENTS` trong `/lecturer/[classId]/students/page.tsx`.
-   
-2. **API Quản lý Nhóm (Teams):**
-   - Thiếu: `GET /api/v1/classes/{classId}/teams` (Lấy danh sách nhóm trong 1 lớp).
-   - Thiếu: API thêm sinh viên vào nhóm, chọn Leader.
-   - *Hiện trạng:* Giao diện Tích hợp Dự án phải mock cứng ID là `"project-123"` vì không lấy được `teamId` thật để sinh ra `projectId`.
+1. **API Quản lý Nhóm (Teams) trong Khóa học:**
+   - Thiếu: `GET /api/v1/courses/{courseId}/teams` (Lấy danh sách nhóm trong 1 khóa học).
+   - Thiếu: API thêm sinh viên vào nhóm, chọn Leader, tự động tạo nhóm.
+   - *Hiện trạng:* Đã có API lấy `members` của 1 team cụ thể (`GET /api/v1/courses/{courseId}/teams/{teamId}/members`), nhưng chưa có API để lấy ra danh sách các `teamId` thuộc về `courseId` đó. Do vậy giao diện Tích hợp Dự án phải mock cứng ID là `"project-123"`.
 
 3. **Master Data - Cập nhật và Xóa (PUT / DELETE):**
    - Hiện tại Master Data (Subject, Course, Class, Semester) mới chỉ có API Tạo mới (`POST`). Chưa có API sửa tên, xóa, hoặc vô hiệu hóa.
@@ -71,8 +75,8 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 2. **Giao diện Chọn Nhóm / Danh sách Lớp của Sinh viên:**
    - Trang `/student/page.tsx` hiện tại chỉ đang render tĩnh các Course lưới card. Chưa có luồng Sinh viên chọn lớp -> vào xem mình thuộc nhóm nào -> xem điểm cá nhân.
 
-3. **Tính năng Import / Export Danh sách Sinh viên:**
-   - Nút "Import Excel" trong màn hình Quản lý Sinh viên đang giả lập `setTimeout`. Cần chốt định dạng (Schema) với Backend và làm chức năng upload file (`multipart/form-data`).
+3. **Tính năng Export Danh sách Sinh viên:**
+   - Đã hoàn thành phần Import (gọi api `/import-students`), nhưng chức năng tải file mẫu Template (.csv/.xlsx) vẫn đang chờ chốt định dạng (Schema) với Backend.
 
 4. **Biểu đồ (Dashboards) & Đánh giá Năng lực (Evaluations):**
    - Radar Chart và Timeline trong trang chi tiết Sinh viên đang dùng Mock Data.

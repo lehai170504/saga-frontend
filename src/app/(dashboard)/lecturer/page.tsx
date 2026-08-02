@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, Users, Calendar, ArrowRight, Network, Loader2 } from "lucide-react";
+import { BookOpen, Users, Calendar, ArrowRight, Network } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import {
   Select,
@@ -82,90 +82,99 @@ export default function ClassSelectionPage() {
           {isLoadingCourses ? (
             // Skeleton Loading State
             Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="rounded-xl border border-border bg-card p-6 h-[260px] flex flex-col">
-                <div className="h-6 w-24 bg-muted rounded-md animate-pulse mb-4" />
-                <div className="h-6 w-3/4 bg-muted rounded-md animate-pulse mb-2" />
+              <div key={i} className="rounded-3xl border border-border/50 bg-card p-6 h-full min-h-[320px] flex flex-col shadow-sm">
+                <div className="h-6 w-24 bg-muted rounded-full animate-pulse mb-4" />
+                <div className="h-8 w-3/4 bg-muted rounded-xl animate-pulse mb-4" />
                 <div className="h-4 w-1/2 bg-muted rounded-md animate-pulse mb-auto" />
                 <div className="space-y-3 mt-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="h-14 bg-muted rounded-lg animate-pulse" />
-                    <div className="h-14 bg-muted rounded-lg animate-pulse" />
+                    <div className="h-14 bg-muted rounded-2xl animate-pulse" />
+                    <div className="h-14 bg-muted rounded-2xl animate-pulse" />
                   </div>
-                  <div className="h-10 w-full bg-muted rounded-lg animate-pulse mt-4" />
+                  <div className="h-12 w-full bg-muted rounded-2xl animate-pulse mt-4" />
                 </div>
               </div>
             ))
           ) : courses.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-20 text-muted-foreground border border-dashed rounded-xl bg-muted/20">
-              <BookOpen size={48} className="mb-4 text-muted-foreground/50" />
-              <p className="text-lg font-medium text-foreground">Không tìm thấy lớp học nào</p>
-              <p className="text-sm">Vui lòng chọn học kỳ khác hoặc hiển thị tất cả.</p>
+            <div className="col-span-full flex flex-col items-center justify-center py-24 text-muted-foreground border border-dashed border-border/60 rounded-[2rem] bg-muted/10">
+              <div className="p-4 bg-muted/30 rounded-full mb-4">
+                <BookOpen size={40} className="text-muted-foreground/60" />
+              </div>
+              <p className="text-xl font-bold text-foreground">Không tìm thấy lớp học nào</p>
+              <p className="text-sm font-medium mt-1">Vui lòng chọn học kỳ khác hoặc thử lại sau.</p>
             </div>
           ) : (
             // Real Data State
             courses.map((course) => {
               const status = getSemesterStatus(course.semester.id);
               return (
-                <div key={course.id} className="group relative rounded-xl border border-border bg-card text-card-foreground shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex flex-col h-[280px]">
-                  <div className="p-6 flex-1 flex flex-col">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground border border-border/50">
-                        {course.clazz.name}
-                      </div>
-                      {status === "active" ? (
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-success bg-success/10 px-2.5 py-1 rounded-md">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-                          </span>
-                          Đang diễn ra
-                        </div>
-                      ) : status === "upcoming" ? (
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                          </span>
-                          Sắp diễn ra
-                        </div>
-                      ) : (
-                        <div className="text-xs font-medium text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
-                          Đã kết thúc
-                        </div>
-                      )}
-                    </div>
+                <div key={course.id} className="group relative rounded-3xl border border-border/50 bg-card/60 backdrop-blur-sm text-card-foreground shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/40 transition-all duration-300 flex flex-col h-full min-h-[320px] overflow-hidden">
+                  {/* Decorative Gradient Background */}
+                  <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-primary/5 blur-3xl group-hover:bg-primary/10 transition-colors pointer-events-none" />
 
+                  <div className="p-6 flex-1 flex flex-col relative z-10">
                     <div className="mb-auto">
-                      <h3 className="text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2 mb-2">
-                        {course.subject.name}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-muted-foreground font-medium text-sm">
-                        <Calendar size={14} />
-                        <span>{course.semester.name}</span>
+                      <div className="flex justify-between items-start gap-3 mb-3">
+                        <h3 className="text-xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                          {course.name}
+                        </h3>
+                        <div className="shrink-0 mt-1">
+                          {status === "active" ? (
+                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-success bg-success/15 px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
+                              <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success"></span>
+                              </span>
+                              Đang diễn ra
+                            </div>
+                          ) : status === "upcoming" ? (
+                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-primary bg-primary/15 px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
+                              <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+                              </span>
+                              Sắp diễn ra
+                            </div>
+                          ) : (
+                            <div className="text-[11px] font-bold text-muted-foreground bg-muted/80 px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
+                              Đã kết thúc
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
+                          <BookOpen size={16} className="text-primary/70" />
+                          <span className="truncate" title={course.subject.name}>{course.subject.name} ({course.subject.subjectCode})</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
+                          <Calendar size={16} className="text-primary/70" />
+                          <span>Học kỳ {course.semester.name}</span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 mt-6 opacity-30 cursor-not-allowed" title="Chức năng đang chờ API phân tích tích hợp">
-                      <div className="flex flex-col p-3 rounded-lg bg-muted/50 border border-border/50">
-                        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                          <Users size={12} /> Nhóm
+                    <div className="grid grid-cols-2 gap-3 mt-6">
+                      <div className="flex flex-col p-3.5 rounded-2xl bg-secondary/40 border border-border/50 group-hover:bg-secondary/60 transition-colors">
+                        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                          <Users size={14} className="text-primary/70" /> Nhóm
                         </span>
-                        <span className="text-lg font-bold text-foreground">--</span>
+                        <span className="text-lg font-black text-foreground">--</span>
                       </div>
-                      <div className="flex flex-col p-3 rounded-lg bg-muted/50 border border-border/50">
-                        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                          <Network size={12} /> Cảnh báo
+                      <div className="flex flex-col p-3.5 rounded-2xl bg-secondary/40 border border-border/50 group-hover:bg-secondary/60 transition-colors">
+                        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                          <Network size={14} className="text-warning/70" /> Cảnh báo
                         </span>
-                        <span className="text-lg font-bold text-foreground">--</span>
+                        <span className="text-lg font-black text-foreground">--</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-6 pt-0 mt-auto">
+                  <div className="p-6 pt-0 mt-auto relative z-10">
                     <Link href={`/lecturer/${course.id}`} className="block w-full">
-                      <button className="w-full flex items-center justify-between px-4 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-sm rounded-lg transition-colors group/btn">
+                      <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground font-bold text-sm rounded-2xl transition-all duration-300 group/btn shadow-sm">
                         Truy cập Dashboard
-                        <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                        <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                       </button>
                     </Link>
                   </div>

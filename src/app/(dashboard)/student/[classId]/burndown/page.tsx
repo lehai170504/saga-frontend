@@ -31,12 +31,15 @@ interface BurndownDay {
   actual: number;
 }
 
-export default function StudentBurndownPage() {
+import { useCourse } from "@/features/courses/hooks/useCourses";
+export default function StudentBurndownPage({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
+  const { data: courseData } = useCourse(classId || "");
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [selectedDay, setSelectedDay] = useState<BurndownDay | null>(null);
-  const [selectedClass, setSelectedClass] = useState("");
+
   const [selectedSemester, setSelectedSemester] = useState("");
 
 
@@ -128,9 +131,9 @@ export default function StudentBurndownPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+
     setSelectedSemester(sem);
-    setSelectedClass(cls);
+
 
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
@@ -140,7 +143,7 @@ export default function StudentBurndownPage() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-background min-h-screen">
       <PageHeader
         title="Biểu đồ Burndown"
-        description={`Số Story Points còn lại — Sprint 4 của ${getClassName(selectedSemester, selectedClass)}`}
+        description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
       />
 
       <Card className="border-border shadow-sm rounded-2xl bg-card text-card-foreground flex flex-col pt-6">

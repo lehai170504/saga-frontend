@@ -1,3 +1,4 @@
+import { useCourse } from "@/features/courses/hooks/useCourses";
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -29,10 +30,15 @@ const edges = [
   { source: "4", target: "7", width: 2, type: "issue" },
 ];
 
-export function StudentInteractionGraph() {
+interface StudentInteractionGraphProps {
+  classId?: string;
+}
+
+export function StudentInteractionGraph({ classId }: StudentInteractionGraphProps) {
+  const { data: courseData } = useCourse(classId || "");
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
+  
   const [selectedSemester, setSelectedSemester] = useState("");
   const [selectedNode, setSelectedNode] = useState<typeof nodes[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,9 +66,9 @@ export function StudentInteractionGraph() {
   useEffect(() => {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+    
 
-    setSelectedClass(cls);
+    
     setSelectedNode(nodes[2]); // Default selection (An Lê)
 
     const timer = setTimeout(() => setIsLoading(false), 600);
@@ -89,7 +95,7 @@ export function StudentInteractionGraph() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
           <PageHeader
             title="Mạng lưới tương tác"
-            description={`Bản đồ kết nối mức độ cộng tác giữa các thành viên của ${getStudentGroup(selectedClass)} (Lớp ${getClassName(selectedClass)})`}
+            description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
           />
         </div>
 
@@ -103,7 +109,7 @@ export function StudentInteractionGraph() {
                 {/* Locked Group Badge */}
                 <div className="flex items-center gap-2 px-4 h-10 bg-primary/10 border border-primary/20 text-primary rounded-xl font-bold text-xs shadow-[0_2px_8px_rgba(234,88,12,0.08)] w-full justify-center">
                   <Users size={14} />
-                  <span>{getStudentGroup(selectedClass)}</span>
+                  <span>{getStudentGroup((classId || ""))}</span>
                 </div>
 
                 <div className="relative w-full">
@@ -220,7 +226,7 @@ export function StudentInteractionGraph() {
                     </div>
                     <h2 className="text-lg font-extrabold text-foreground">{selectedNode.name}</h2>
                     <p className="text-xs font-bold text-muted-foreground/80 uppercase tracking-wider bg-muted/40 dark:bg-muted/20 px-3 py-1 rounded-full border border-border/10 w-fit mx-auto">
-                      {getStudentGroup(selectedClass)}
+                      {getStudentGroup((classId || ""))}
                     </p>
                   </div>
 

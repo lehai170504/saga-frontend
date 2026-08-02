@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 import Link from "next/link";
 
 interface GroupMember {
@@ -22,7 +24,7 @@ interface GroupMember {
 }
 
 interface ProjectGroup {
-  id: number;
+  id: string;
   name: string;
   topic: string;
   leader: string;
@@ -30,82 +32,20 @@ interface ProjectGroup {
   projectId?: string;
 }
 
-const MOCK_GROUPS: ProjectGroup[] = [
-  {
-    id: 1,
-    name: "Nhóm PBL-01",
-    topic: "Hệ thống quản lý thư viện số SAGA",
-    leader: "Nguyễn Văn An",
-    projectId: "project-123",
-    members: [
-      { name: "Nguyễn Văn An", role: "Trưởng nhóm / Backend Developer", email: "annvse180001@fpt.edu.vn", initials: "A" },
-      { name: "Trần Thị Bình", role: "Frontend Developer / UI Designer", email: "binhttse180002@fpt.edu.vn", initials: "B" },
-      { name: "Lê Văn Cường", role: "DevOps Engineer", email: "cuonglvse180003@fpt.edu.vn", initials: "C" },
-      { name: "Phạm Thị Dung", role: "Quality Assurance (QA)", email: "dungptse180004@fpt.edu.vn", initials: "D" },
-      { name: "Hoàng Văn Em", role: "Fullstack Developer", email: "emhvse180005@fpt.edu.vn", initials: "E" },
-    ]
-  },
-  {
-    id: 2,
-    name: "Nhóm PBL-02",
-    topic: "App ứng dụng đặt đồ ăn trực tuyến FPT Food",
-    leader: "Mr. Tran Thi B",
-    members: [
-      { name: "Mr. Tran Thi B", role: "Trưởng nhóm / Mobile Lead", email: "tranb@fpt.edu.vn", initials: "B" },
-      { name: "Vũ Văn Giang", role: "Frontend Developer", email: "giangvv@fpt.edu.vn", initials: "G" },
-      { name: "Bùi Thị Hằng", role: "Backend Developer", email: "hangbt@fpt.edu.vn", initials: "H" },
-      { name: "Đỗ Văn Inh", role: "Tester", email: "inhdv@fpt.edu.vn", initials: "I" },
-    ]
-  },
-  {
-    id: 3,
-    name: "Nhóm PBL-03",
-    topic: "Nền tảng thi và học thử trực tuyến Coursera-Lite",
-    leader: "Dr. Le Van C",
-    members: [
-      { name: "Dr. Le Van C", role: "Trưởng nhóm / AI Developer", email: "clevan@fpt.edu.vn", initials: "C" },
-      { name: "Ngô Thị Phương", role: "Frontend Developer", email: "phuongnt@fpt.edu.vn", initials: "P" },
-      { name: "Lý Thị Kim", role: "Database Admin", email: "kimlt@fpt.edu.vn", initials: "K" },
-      { name: "Phạm Văn Hải", role: "Backend Developer", email: "haipv@fpt.edu.vn", initials: "H" },
-      { name: "Hoàng Thị Mai", role: "Business Analyst (BA)", email: "maiht@fpt.edu.vn", initials: "M" },
-    ]
-  },
-  {
-    id: 4,
-    name: "Nhóm PBL-04",
-    topic: "Cổng thông tin hỗ trợ tìm nhà trọ trọ sinh viên",
-    leader: "Ms. Pham Thi D",
-    members: [
-      { name: "Ms. Pham Thi D", role: "Trưởng nhóm / Fullstack Lead", email: "dpham@fpt.edu.vn", initials: "D" },
-      { name: "Dương Văn Nam", role: "UI/UX Designer", email: "namdv@fpt.edu.vn", initials: "N" },
-      { name: "Đỗ Thị Thu", role: "Backend Developer", email: "thudt@fpt.edu.vn", initials: "T" },
-      { name: "Lê Văn Sang", role: "Frontend Developer", email: "sanglv@fpt.edu.vn", initials: "S" },
-      { name: "Trần Văn Khánh", role: "Quality Control", email: "khanhtv@fpt.edu.vn", initials: "K" },
-    ]
-  },
-  {
-    id: 5,
-    name: "Nhóm PBL-05",
-    topic: "Hệ thống quản lý điểm danh thông minh điểm danh",
-    leader: "Mr. Hoang Van E",
-    members: [
-      { name: "Mr. Hoang Van E", role: "Trưởng nhóm / Backend Lead", email: "ehoang@fpt.edu.vn", initials: "E" },
-      { name: "Ngô Thị Thu", role: "Frontend Developer", email: "thunt@fpt.edu.vn", initials: "T" },
-      { name: "Vũ Thị Vân", role: "Mobile Developer", email: "vanvt@fpt.edu.vn", initials: "V" },
-      { name: "Bùi Văn Lâm", role: "Tester / QA", email: "lambv@fpt.edu.vn", initials: "L" },
-    ]
-  }
-];
+interface StudentProjectsListProps {
+  classId?: string;
+}
 
-export function StudentProjectsList() {
+export function StudentProjectsList({ classId }: StudentProjectsListProps) {
   const [mounted, setMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
   const { user } = useAuth();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [activeTeamId, setActiveTeamId] = useState<string>("");
+
+  const { data: studentsData, isLoading: isLoadingStudents, refetch } = useCourseStudents(classId || "");
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(classId || "");
 
   const createProjectMutation = useCreateTeamProject(activeTeamId);
 
@@ -123,6 +63,7 @@ export function StudentProjectsList() {
           toast.success("Khởi tạo dự án thành công!");
           setIsDialogOpen(false);
           setProjectName("");
+          refetch();
         },
         onError: () => {
           toast.error("Có lỗi xảy ra khi khởi tạo dự án");
@@ -131,42 +72,52 @@ export function StudentProjectsList() {
     );
   };
 
-  const subjectsData = [
-    { code: "WDP301", name: "Dự án phát triển web", classId: "wdp301-pbl", className: "SE1801", project: "Nhóm PBL-01" },
-    { code: "PRN211", name: "Lập trình C# nâng cao", classId: "prn211-pbl", className: "SE1802", project: "Nhóm PBL-02" },
-    { code: "CS101", name: "Nhập môn Lập trình", classId: "cs101-pbl", className: "SE1803", project: "Nhóm PBL-03" },
-    { code: "SWT301", name: "Kiểm thử phần mềm", classId: "swt301-pbl", className: "SE1804", project: "Nhóm PBL-04" },
-    { code: "DBI202", name: "Hệ cơ sở dữ liệu", classId: "dbi202-pbl", className: "SE1805", project: "Nhóm PBL-05" },
-  ];
-
-  const getClassName = (classId: string) => {
-    if (!classId) return "";
-    const match = subjectsData.find((c) => c.classId === classId);
-    if (match) return `${match.code} - Lớp ${match.className}`;
-    return classId.toUpperCase();
-  };
-
-  const getStudentGroup = (classId: string) => {
-    const match = subjectsData.find((c) => c.classId === classId);
-    return match ? match.project : "Nhóm PBL-01";
-  };
-
   useEffect(() => {
     setMounted(true);
-    const cls = localStorage.getItem("saga-student-class") || "";
-    setSelectedClass(cls);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
     return <div className="p-6 min-h-screen bg-background" />;
   }
 
-  const activeGroup = getStudentGroup(selectedClass);
+  const isLoading = isLoadingCourse || isLoadingStudents;
+
+  // Xử lý dữ liệu thật từ API
+  const studentsWithTeam = studentsData?.studentsWithTeam?.content || [];
+  const teamsMap = new Map<string, ProjectGroup>();
+
+  studentsWithTeam.forEach(s => {
+    if (!s.team) return;
+    const teamId = s.team.teamId;
+
+    if (!teamsMap.has(teamId)) {
+      teamsMap.set(teamId, {
+        id: teamId,
+        name: s.team.teamName,
+        topic: s.team.projectName || "Chưa có đề tài",
+        leader: "",
+        projectId: s.team.projectId,
+        members: []
+      });
+    }
+
+    const team = teamsMap.get(teamId)!;
+    const role = s.team.teamMembers.find(m => m.studentId === s.studentId)?.roleInTeam || "MEMBER";
+
+    team.members.push({
+      name: s.fullName,
+      role: role === "LEADER" ? "Trưởng nhóm" : "Thành viên",
+      email: s.email,
+      initials: s.fullName.charAt(0)
+    });
+
+    if (role === "LEADER") {
+      team.leader = s.fullName;
+    }
+  });
+
+  const realGroups = Array.from(teamsMap.values());
+  const userActiveGroup = realGroups.find(g => g.members.some(m => m.email === user?.email))?.name;
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
@@ -179,7 +130,11 @@ export function StudentProjectsList() {
         {/* Header Section */}
         <PageHeader
           title="Danh sách nhóm dự án"
-          description={`Danh sách thành viên và đề tài của các nhóm trong Lớp ${getClassName(selectedClass)}`}
+          description={
+            courseData
+              ? `Danh sách thành viên và đề tài của các nhóm trong Khóa học ${courseData.courseCode || ""}`
+              : "Đang tải dữ liệu khóa học..."
+          }
         />
 
         {isLoading ? (
@@ -190,8 +145,13 @@ export function StudentProjectsList() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {MOCK_GROUPS.map((group) => {
-              const isOwnGroup = group.name === activeGroup;
+            {realGroups.length === 0 && (
+              <div className="text-center p-8 text-muted-foreground border border-dashed rounded-3xl">
+                Chưa có nhóm nào được tạo trong khóa học này.
+              </div>
+            )}
+            {realGroups.map((group) => {
+              const isOwnGroup = group.name === userActiveGroup;
               const otherMembers = group.members.filter(m => m.name !== group.leader);
 
               return (
@@ -229,13 +189,13 @@ export function StudentProjectsList() {
                       <Crown size={14} className="text-primary fill-current shrink-0 animate-bounce" />
                       <div className="flex flex-col text-left">
                         <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Trưởng nhóm</span>
-                        <span className="text-xs font-bold text-primary truncate max-w-[130px]">{group.leader}</span>
+                        <span className="text-xs font-bold text-primary truncate max-w-[130px]">{group.leader || "Chưa có"}</span>
                       </div>
                     </div>
 
                     {isOwnGroup && (
                       group.projectId ? (
-                        <Link href={`/student/${selectedClass}/projects/${group.projectId}/settings`}>
+                        <Link href={`/student/${classId}/projects/${group.projectId}/settings`}>
                           <Button className="rounded-xl shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-bold shrink-0 w-full sm:w-auto">
                             <Settings size={16} className="mr-2" strokeWidth={3} />
                             Cấu hình Dự án
@@ -246,7 +206,7 @@ export function StudentProjectsList() {
                           <DialogTrigger asChild>
                             <Button
                               className="rounded-xl shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-bold shrink-0 w-full sm:w-auto"
-                              onClick={() => setActiveTeamId(group.id.toString())}
+                              onClick={() => setActiveTeamId(group.id)}
                             >
                               <Plus size={16} className="mr-2" strokeWidth={3} />
                               Khởi tạo Dự án
@@ -308,14 +268,16 @@ export function StudentProjectsList() {
                   <div className="border-t border-border/20 pt-4 mt-1 space-y-2">
                     <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Thành viên trong nhóm</div>
                     <div className="flex flex-wrap gap-1.5">
-                      {otherMembers.map((member, i) => (
+                      {otherMembers.length > 0 ? otherMembers.map((member, i) => (
                         <div
                           key={i}
                           className="bg-muted/30 border border-border/10 rounded-full px-3 py-1 text-xs font-bold text-foreground/80 hover:bg-muted/50 transition-colors"
                         >
                           {member.name}
                         </div>
-                      ))}
+                      )) : (
+                        <span className="text-xs text-muted-foreground italic">Không có thành viên nào khác</span>
+                      )}
                     </div>
                   </div>
                 </div>

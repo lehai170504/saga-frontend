@@ -91,7 +91,10 @@ const initialHistory: ReportItem[] = [
   },
 ];
 
-export default function AbsenceDelayReporting() {
+import { useCourse } from "@/features/courses/hooks/useCourses";
+export default function AbsenceDelayReporting({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
+  const { data: courseData } = useCourse(classId || "");
   const [activeTab, setActiveTab] = useState<"absence" | "delay">("absence");
   const [history, setHistory] = useState<ReportItem[]>([]);
   const [, setIsLoading] = useState(true);
@@ -261,7 +264,7 @@ export default function AbsenceDelayReporting() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16 bg-background text-foreground">
       <PageHeader
         title="Báo cáo vắng mặt & Chậm trễ"
-        description="Gửi báo cáo nghỉ học, xin phép vắng mặt trong buổi họp nhóm, hoặc giải trình nguyên nhân chậm trễ tiến độ Jira Task."
+        description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
       />
 
       <div className="grid gap-6 lg:grid-cols-3 items-start">

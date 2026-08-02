@@ -1,3 +1,4 @@
+import { useCourse } from "@/features/courses/hooks/useCourses";
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -49,10 +50,15 @@ interface StudentHeatmapItem {
   data: { day: number; count: number }[];
 }
 
-export function StudentHeatmap() {
+interface StudentHeatmapProps {
+  classId?: string;
+}
+
+export function StudentHeatmap({ classId }: StudentHeatmapProps) {
+  const { data: courseData } = useCourse(classId || "");
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
+  
   const [selectedSemester, setSelectedSemester] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [heatmapData, setHeatmapData] = useState<StudentHeatmapItem[]>([]);
@@ -80,12 +86,12 @@ export function StudentHeatmap() {
   useEffect(() => {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+    
 
     setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
 
-    const groupName = subjectsData.find(c => c.classId === cls)?.project || "Nhóm PBL-01";
+    const groupName = subjectsData.find(c => c.classId === (classId || ""))?.project || "Nhóm PBL-01";
     setHeatmapData(generateHeatmapData(groupName));
 
     const timer = setTimeout(() => setIsLoading(false), 600);
@@ -108,7 +114,7 @@ export function StudentHeatmap() {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <PageHeader
             title="Biểu đồ nhiệt Hoạt động"
-            description={`Bản đồ nhiệt độ theo dõi tần suất đóng góp của các thành viên trong ${getStudentGroup(selectedClass)} (Lớp ${getClassName(selectedClass)})`}
+            description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
           />
 
           {isLoading ? (
@@ -122,7 +128,7 @@ export function StudentHeatmap() {
               {/* Locked Group Indicator */}
               <div className="flex items-center gap-2 px-4 h-10 bg-primary/10 border border-primary/20 text-primary rounded-xl font-bold text-xs shadow-[0_2px_8px_rgba(234,88,12,0.08)]">
                 <Users size={14} />
-                <span>{getStudentGroup(selectedClass)}</span>
+                <span>{getStudentGroup((classId || ""))}</span>
               </div>
 
               <Select value={filterType} onValueChange={setFilterType}>

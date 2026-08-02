@@ -1,3 +1,4 @@
+import { useCourse } from "@/features/courses/hooks/useCourses";
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -70,10 +71,15 @@ const TEAM_MEMBERS = [
   "Hoàng Văn Em"
 ];
 
-export function StudentCommits() {
+interface StudentCommitsProps {
+  classId?: string;
+}
+
+export function StudentCommits({ classId }: StudentCommitsProps) {
+  const { data: courseData } = useCourse(classId || "");
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("");
+  
   const [selectedSemester, setSelectedSemester] = useState("");
 
   // Commits & Branches state
@@ -119,32 +125,32 @@ export function StudentCommits() {
   useEffect(() => {
     setMounted(true);
     const sem = localStorage.getItem("saga-student-semester") || "";
-    const cls = localStorage.getItem("saga-student-class") || "";
+    
     setSelectedSemester(sem);
-    setSelectedClass(cls);
+    
 
-    const savedBranches = localStorage.getItem(`saga-commits-branches-${cls}`);
-    const savedCommits = localStorage.getItem(`saga-commits-list-${cls}`);
+    const savedBranches = localStorage.getItem(`saga-commits-branches-${(classId || "")}`);
+    const savedCommits = localStorage.getItem(`saga-commits-list-${(classId || "")}`);
 
     if (savedBranches) {
       setBranches(JSON.parse(savedBranches));
     } else {
       setBranches(INITIAL_BRANCHES);
-      localStorage.setItem(`saga-commits-branches-${cls}`, JSON.stringify(INITIAL_BRANCHES));
+      localStorage.setItem(`saga-commits-branches-${(classId || "")}`, JSON.stringify(INITIAL_BRANCHES));
     }
 
     if (savedCommits) {
       setCommits(JSON.parse(savedCommits));
     } else {
       setCommits(INITIAL_COMMITS);
-      localStorage.setItem(`saga-commits-list-${cls}`, JSON.stringify(INITIAL_COMMITS));
+      localStorage.setItem(`saga-commits-list-${(classId || "")}`, JSON.stringify(INITIAL_COMMITS));
     }
 
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 600);
     return () => clearTimeout(timer);
-  }, [selectedClass]);
+  }, [(classId || "")]);
 
   const handleSyncGit = () => {
     setIsSyncing(true);
@@ -166,8 +172,8 @@ export function StudentCommits() {
 
       const updated = [newSyncCommit, ...commits];
       setCommits(updated);
-      if (selectedClass) {
-        localStorage.setItem(`saga-commits-list-${selectedClass}`, JSON.stringify(updated));
+      if ((classId || "")) {
+        localStorage.setItem(`saga-commits-list-${(classId || "")}`, JSON.stringify(updated));
       }
 
       toast.success("Đồng bộ hóa Commits với GitHub Repository thành công!");
@@ -188,8 +194,8 @@ export function StudentCommits() {
 
     const updatedBranches = [...branches, cleanName];
     setBranches(updatedBranches);
-    if (selectedClass) {
-      localStorage.setItem(`saga-commits-branches-${selectedClass}`, JSON.stringify(updatedBranches));
+    if ((classId || "")) {
+      localStorage.setItem(`saga-commits-branches-${(classId || "")}`, JSON.stringify(updatedBranches));
     }
 
     // Also add an initial commit for this branch
@@ -207,8 +213,8 @@ export function StudentCommits() {
 
     const updatedCommits = [initCommit, ...commits];
     setCommits(updatedCommits);
-    if (selectedClass) {
-      localStorage.setItem(`saga-commits-list-${selectedClass}`, JSON.stringify(updatedCommits));
+    if ((classId || "")) {
+      localStorage.setItem(`saga-commits-list-${(classId || "")}`, JSON.stringify(updatedCommits));
     }
 
     setSelectedBranch(cleanName);
@@ -247,7 +253,7 @@ export function StudentCommits() {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <PageHeader
             title="Lịch sử Commit (GitHub)"
-            description={`Xem, theo dõi hoạt động commits code trên các nhánh repository của ${getStudentGroup(selectedClass)} (Lớp ${getClassName(selectedClass)})`}
+            description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
           />
 
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">

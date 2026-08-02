@@ -138,7 +138,10 @@ const initialFeedbackData: InstructorFeedback[] = [
   },
 ];
 
-export default function InstructorFeedbackInbox() {
+import { useCourse } from "@/features/courses/hooks/useCourses";
+export default function InstructorFeedbackInbox({ params }: { params: Promise<{ classId: string }> }) {
+  const { classId } = React.use(params);
+  const { data: courseData } = useCourse(classId || "");
   const [feedbacks, setFeedbacks] = useState<InstructorFeedback[]>([]);
   const [selectedId, setSelectedId] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -268,7 +271,7 @@ export default function InstructorFeedbackInbox() {
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16 bg-background text-foreground">
       <PageHeader
         title="Hộp thư nhận xét từ Giảng viên"
-        description="Đọc nhận xét chi tiết, góp ý chuyên môn và điểm thành phần đánh giá liên tục do giảng viên chấm."
+        description={courseData ? `Khóa học ${courseData.courseCode || ""}` : "Đang tải dữ liệu khóa học..."}
       />
 
       {isLoading ? (
