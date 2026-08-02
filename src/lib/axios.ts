@@ -39,11 +39,11 @@ axiosInstance.interceptors.request.use((config) => {
   const isMutation = config.method && ['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase());
 
   if (isMutation) {
-    const csrfToken = getCookie("XSRF-TOKEN");
-    if (csrfToken) {
-      config.headers["X-XSRF-TOKEN"] = csrfToken;
+    const csrf = useAuthStore.getState().csrf;
+    if (csrf) {
+      config.headers[csrf.headerName] = csrf.token;
     } else {
-      console.warn("Missing XSRF-TOKEN cookie. Mutation request might fail if not explicitly exempted.");
+      console.warn("Missing CSRF token in store. Mutation request might fail if not explicitly exempted.");
     }
   }
 

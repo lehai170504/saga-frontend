@@ -12,20 +12,30 @@ export interface AuthMeResponse {
   accountStatus: AccountStatus;
 }
 
+export type CsrfTokenResponse = {
+  token: string;
+  headerName: string;
+  parameterName: string;
+};
+
 interface AuthState {
   user: AuthMeResponse | null;
+  csrf: CsrfTokenResponse | null;
   isAuthenticated: boolean;
   isInitializing: boolean;
   setUser: (user: AuthMeResponse | null) => void;
+  setCsrf: (csrf: CsrfTokenResponse | null) => void;
   setInitializing: (isInit: boolean) => void;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  csrf: null,
   isAuthenticated: false,
   isInitializing: true,
   setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setCsrf: (csrf) => set({ csrf }),
   setInitializing: (isInitializing) => set({ isInitializing }),
-  logout: () => set({ user: null, isAuthenticated: false }),
+  logout: () => set({ user: null, csrf: null, isAuthenticated: false }),
 }));

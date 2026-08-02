@@ -22,13 +22,15 @@ export default function LandingPage() {
   // Tự động redirect về đúng dashboard nếu đã đăng nhập (sau khi từ Cognito trả về)
   useEffect(() => {
     if (!isLoading && user) {
-      if (user.applicationRole === "ADMIN") {
-        router.replace("/admin");
-      } else if (user.applicationRole === "LECTURER") {
-        router.replace("/lecturer");
-      } else {
-        router.replace("/student");
-      }
+      setTimeout(() => {
+        if (user.applicationRole === "ADMIN") {
+          router.replace("/admin");
+        } else if (user.applicationRole === "LECTURER") {
+          router.replace("/lecturer");
+        } else {
+          router.replace("/student");
+        }
+      }, 0);
     }
   }, [user, isLoading, router]);
 

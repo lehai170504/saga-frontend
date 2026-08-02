@@ -3,8 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card } from "@/components/ui/card";
-import { FolderKanban, Crown } from "lucide-react";
+import { FolderKanban, Crown, Plus, Loader2, Settings } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import Link from "next/link";
 
 interface GroupMember {
   name: string;
@@ -19,6 +27,7 @@ interface ProjectGroup {
   topic: string;
   leader: string;
   members: GroupMember[];
+  projectId?: string;
 }
 
 const MOCK_GROUPS: ProjectGroup[] = [
@@ -27,6 +36,7 @@ const MOCK_GROUPS: ProjectGroup[] = [
     name: "Nhóm PBL-01",
     topic: "Hệ thống quản lý thư viện số SAGA",
     leader: "Nguyễn Văn An",
+    projectId: "project-123",
     members: [
       { name: "Nguyễn Văn An", role: "Trưởng nhóm / Backend Developer", email: "annvse180001@fpt.edu.vn", initials: "A" },
       { name: "Trần Thị Bình", role: "Frontend Developer / UI Designer", email: "binhttse180002@fpt.edu.vn", initials: "B" },
@@ -91,6 +101,35 @@ export function StudentProjectsList() {
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState("");
+  const { user } = useAuth();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [projectName, setProjectName] = useState("");
+  const [activeTeamId, setActiveTeamId] = useState<string>("");
+
+  const createProjectMutation = useCreateTeamProject(activeTeamId);
+
+  const handleCreateProject = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectName.trim()) {
+      toast.error("Vui lòng nhập tên dự án");
+      return;
+    }
+
+    createProjectMutation.mutate(
+      { name: projectName },
+      {
+        onSuccess: () => {
+          toast.success("Khởi tạo dự án thành công!");
+          setIsDialogOpen(false);
+          setProjectName("");
+        },
+        onError: () => {
+          toast.error("Có lỗi xảy ra khi khởi tạo dự án");
+        }
+      }
+    );
+  };
 
   const subjectsData = [
     { code: "WDP301", name: "Dự án phát triển web", classId: "wdp301-pbl", className: "SE1801", project: "Nhóm PBL-01" },
@@ -159,8 +198,8 @@ export function StudentProjectsList() {
                 <div
                   key={group.id}
                   className={`relative rounded-3xl p-5 md:p-6 transition-all duration-300 border flex flex-col gap-4 ${isOwnGroup
-                      ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary shadow-lg shadow-primary/20"
-                      : "bg-card/25 dark:bg-card/20 backdrop-blur-3xl border-border hover:bg-card/40"
+                    ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary shadow-lg shadow-primary/20"
+                    : "bg-card/25 dark:bg-card/20 backdrop-blur-3xl border-border hover:bg-card/40"
                     }`}
                 >
                   {/* Top Row: Group Identity & Leader */}
@@ -168,8 +207,8 @@ export function StudentProjectsList() {
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${isOwnGroup
-                            ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(234,88,12,0.3)]"
-                            : "bg-muted/50 text-muted-foreground"
+                          ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(234,88,12,0.3)]"
+                          : "bg-muted/50 text-muted-foreground"
                           }`}>
                           {group.name}
                         </span>
@@ -193,6 +232,76 @@ export function StudentProjectsList() {
                         <span className="text-xs font-bold text-primary truncate max-w-[130px]">{group.leader}</span>
                       </div>
                     </div>
+
+                    {isOwnGroup && (
+                      group.projectId ? (
+                        <Link href={`/student/${selectedClass}/projects/${group.projectId}/settings`}>
+                          <Button className="rounded-xl shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-bold shrink-0 w-full sm:w-auto">
+                            <Settings size={16} className="mr-2" strokeWidth={3} />
+                            Cấu hình Dự án
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button
+                              className="rounded-xl shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-bold shrink-0 w-full sm:w-auto"
+                              onClick={() => setActiveTeamId(group.id.toString())}
+                            >
+                              <Plus size={16} className="mr-2" strokeWidth={3} />
+                              Khởi tạo Dự án
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px] rounded-[2rem] p-6 border-border/50">
+                            <DialogHeader className="mb-4">
+                              <DialogTitle className="text-2xl font-extrabold tracking-tight">Khởi tạo Dự án mới</DialogTitle>
+                              <DialogDescription className="text-sm mt-1">
+                                Tạo một không gian làm việc mới cho <span className="font-bold text-primary">{group.name}</span>. Sau khi khởi tạo, bạn có thể liên kết dự án với Jira và GitHub.
+                              </DialogDescription>
+                            </DialogHeader>
+
+                            <form onSubmit={handleCreateProject} className="space-y-6">
+                              <div className="space-y-2">
+                                <Label htmlFor="projectName" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                  Tên Dự án <span className="text-destructive">*</span>
+                                </Label>
+                                <Input
+                                  id="projectName"
+                                  placeholder="Nhập tên dự án (VD: SAGA Library System)..."
+                                  className="rounded-xl h-12 bg-muted/50 border-border/50 focus-visible:ring-primary/20 font-medium"
+                                  value={projectName}
+                                  onChange={(e) => setProjectName(e.target.value)}
+                                  autoFocus
+                                />
+                              </div>
+
+                              <div className="flex justify-end gap-3 pt-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  className="rounded-xl h-11 px-6 font-bold"
+                                  onClick={() => setIsDialogOpen(false)}
+                                >
+                                  Hủy
+                                </Button>
+                                <Button
+                                  type="submit"
+                                  className="rounded-xl h-11 px-6 font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
+                                  disabled={createProjectMutation.isPending}
+                                >
+                                  {createProjectMutation.isPending ? (
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                  ) : (
+                                    <FolderKanban className="h-4 w-4 mr-2" />
+                                  )}
+                                  Tạo Dự án
+                                </Button>
+                              </div>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
+                      )
+                    )}
                   </div>
 
                   {/* Bottom Row: Member Names list (on its own line) */}

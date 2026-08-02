@@ -90,7 +90,7 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
                           variant="outline"
                           size="sm"
                           className="rounded-xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600"
-                          onClick={() => handleApprove("some-mapping-id-from-object-if-available")} // mapping object might lack ID in provided response type, assuming logic here
+                          onClick={() => handleApprove(mapping.mappingId || "unknown")}
                           disabled={isPending}
                         >
                           <CheckCircle2 className="mr-1.5 h-4 w-4" /> Duyệt
@@ -99,7 +99,7 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
                           variant="outline"
                           size="sm"
                           className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => handleReject("some-mapping-id-from-object-if-available")}
+                          onClick={() => handleReject(mapping.mappingId || "unknown")}
                           disabled={isPending}
                         >
                           <XCircle className="mr-1.5 h-4 w-4" /> Từ chối

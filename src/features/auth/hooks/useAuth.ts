@@ -6,17 +6,22 @@ import { useEffect } from 'react';
 export function useAuth() {
   const queryClient = useQueryClient();
   const setUser = useAuthStore((state) => state.setUser);
+  const setCsrf = useAuthStore((state) => state.setCsrf);
   const setInitializing = useAuthStore((state) => state.setInitializing);
 
-  const { data: user, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ['auth-me'],
     queryFn: async () => {
       try {
-        const data = await authApi.getMe();
-        return data;
+        const user = await authApi.getMe();
+        let csrf = null;
+        if (user) {
+          csrf = await authApi.getCsrf();
+        }
+        return { user, csrf };
       } catch (err: any) {
         if (err?.status === 401) {
-          return null; // Return null gracefully if 401, axios interceptor handles global state
+          return { user: null, csrf: null }; // Return gracefully if 401
         }
         throw err;
       }
@@ -26,51 +31,61 @@ export function useAuth() {
 
   // Sync React Query state to Zustand
   useEffect(() => {
-    if (!isLoading) {
-      setUser(user ?? null);
+    if (!isLoading && !isFetching) {
+      setUser(data?.user ?? null);
+      setCsrf(data?.csrf ?? null);
       setInitializing(false);
     }
-  }, [user, isLoading, setUser, setInitializing]);
+  }, [data, isLoading, isFetching, setUser, setCsrf, setInitializing]);
 
-  const logout = () => {
-    // Clear react query cache
-    queryClient.setQueryData(['auth-me'], null);
+  const logout = async () => {
+    // We intentionally do not clear Zustand / React Query here.
+    // The backend redirect back to /logout/callback will clear them.
 
-    // Clear Zustand store
-    useAuthStore.getState().logout();
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
 
-    // Perform standard HTML Form POST to backend logout endpoint
-    // This allows the browser to natively follow the 302 redirect to Cognito Hosted UI
-    const form = document.createElement('form');
-    form.method = 'POST';
-    // Import API_BASE_URL locally to avoid circular dependencies if any
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
-    form.action = `${API_BASE_URL}/api/auth/logout`;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/csrf`, {
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+        },
+      });
 
-    const getCookie = (name: string): string | null => {
-      const prefix = `${name}=`;
-      const cookie = document.cookie.split("; ").find((item) => item.startsWith(prefix));
-      return cookie ? decodeURIComponent(cookie.substring(prefix.length)) : null;
-    };
+      if (!response.ok) {
+        window.location.replace("/");
+        return;
+      }
 
-    const csrfToken = getCookie("XSRF-TOKEN");
-    if (csrfToken) {
-      const csrfInput = document.createElement('input');
-      csrfInput.type = 'hidden';
-      csrfInput.name = '_csrf';
-      csrfInput.value = csrfToken;
+      const csrf = await response.json();
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = `${API_BASE_URL}/api/auth/logout`;
+      form.style.display = "none";
+
+      const csrfInput = document.createElement("input");
+      csrfInput.type = "hidden";
+      csrfInput.name = csrf.parameterName;
+      csrfInput.value = csrf.token;
+
       form.appendChild(csrfInput);
+      document.body.appendChild(form);
+      form.submit();
+    } catch (error) {
+      console.error("Logout failed", error);
+      window.location.replace("/");
     }
-
-    document.body.appendChild(form);
-    form.submit();
   };
 
   return {
-    user,
+    user: data?.user ?? null,
+    csrf: data?.csrf ?? null,
     isLoading,
+    isFetching,
     error,
     refetch,
     logout,
   };
 }
+

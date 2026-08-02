@@ -27,7 +27,9 @@ export function RouteGuard({ children, allowedRoles }: RouteGuardProps) {
         if (user.applicationRole === "ADMIN") redirectPath = "/admin";
         if (user.applicationRole === "LECTURER") redirectPath = "/lecturer";
 
-        router.replace(redirectPath);
+        setTimeout(() => {
+          router.replace(redirectPath);
+        }, 0);
       }
     }
   }, [isLoading, user, allowedRoles, router]);

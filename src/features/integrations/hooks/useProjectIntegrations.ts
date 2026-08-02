@@ -1,11 +1,41 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectIntegrationApi } from "../api/projectIntegrationApi";
-import { JiraProjectLinkRequest, GitHubRepositoriesLinkRequest } from "../types";
+import { JiraProjectLinkRequest, GitHubRepositoriesLinkRequest, ProjectIntegrationsResponse } from "../types";
 
 export const useProjectIntegrations = (projectId: string) => {
   return useQuery({
     queryKey: ["project-integrations", projectId],
-    queryFn: () => projectIntegrationApi.getProjectIntegrations(projectId),
+    queryFn: async () => {
+      if (projectId === "project-123") {
+        return {
+          projectId: "project-123",
+          jira: {
+            siteUrl: "https://saga-fpt.atlassian.net",
+            projectKey: "SAGA",
+            status: "ACTIVE",
+            webhookExpiresAt: new Date(Date.now() + 86400000).toISOString(),
+            lastSyncedAt: new Date().toISOString(),
+          },
+          githubRepositories: [
+            {
+              repositoryId: 999111,
+              fullName: "fpt-saga/saga-frontend",
+              defaultBranch: "main",
+              status: "ACTIVE",
+              lastSyncedAt: new Date().toISOString(),
+            },
+            {
+              repositoryId: 999222,
+              fullName: "fpt-saga/saga-backend",
+              defaultBranch: "main",
+              status: "BACKFILLING",
+              lastSyncedAt: null,
+            }
+          ]
+        } as ProjectIntegrationsResponse;
+      }
+      return projectIntegrationApi.getProjectIntegrations(projectId);
+    },
     enabled: !!projectId,
   });
 };

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { Textarea } from "@/components/ui/textarea";
+import { IdentityMappingReview } from "@/features/integrations/components/identity-mapping-review";
 
 // Mock Data
 const STUDENT = {
@@ -55,7 +56,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full bg-background overflow-hidden">
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-        
+
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
           <Link href={`/lecturer/${classId}`} className="hover:text-foreground transition-colors">Dashboard</Link>
@@ -90,7 +91,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3 w-full md:w-auto">
             <Button variant="outline" className="rounded-xl border-border/50 font-bold w-full md:w-auto">
               <MessageSquare size={16} className="mr-2" />
@@ -103,7 +104,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
-          
+
           {/* Left Column: Stats & Radar Chart */}
           <div className="space-y-6">
             <Card className="rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden">
@@ -147,7 +148,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
                 </CardContent>
               </Card>
             </div>
-            
+
             {/* Risk Indicator */}
             {STUDENT.riskLevel === 'low' ? (
               <Card className="rounded-2xl border-border/50 bg-success/5 shadow-sm border-dashed">
@@ -162,7 +163,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
                 </CardContent>
               </Card>
             ) : (
-               <Card className="rounded-2xl border-border/50 bg-destructive/5 shadow-sm border-dashed">
+              <Card className="rounded-2xl border-border/50 bg-destructive/5 shadow-sm border-dashed">
                 <CardContent className="p-4 flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center text-destructive">
                     <AlertTriangle size={20} />
@@ -180,27 +181,27 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
           <Card className="lg:col-span-1 rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6">Dấu vết Hoạt động (Evidence)</h3>
-              
+
               <div className="relative flex-1 pl-4 border-l-2 border-muted/50 space-y-8">
                 {TIMELINE.map((item, idx) => (
                   <div key={idx} className="relative">
                     {/* Timeline dot */}
                     <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-background border-2 border-primary ring-4 ring-background" />
-                    
+
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 mb-1">
-                        {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20"><GitCommit size={10} className="mr-1"/> Commit</Badge>}
-                        {item.type === 'review' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-success/10 text-success border-success/20"><GitPullRequest size={10} className="mr-1"/> Review</Badge>}
-                        {item.type === 'issue' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20"><CheckCircle2 size={10} className="mr-1"/> Task</Badge>}
-                        {item.type === 'comment' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-destructive/10 text-destructive border-destructive/20"><MessageSquare size={10} className="mr-1"/> Comment</Badge>}
-                        
+                        {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20"><GitCommit size={10} className="mr-1" /> Commit</Badge>}
+                        {item.type === 'review' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-success/10 text-success border-success/20"><GitPullRequest size={10} className="mr-1" /> Review</Badge>}
+                        {item.type === 'issue' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20"><CheckCircle2 size={10} className="mr-1" /> Task</Badge>}
+                        {item.type === 'comment' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-destructive/10 text-destructive border-destructive/20"><MessageSquare size={10} className="mr-1" /> Comment</Badge>}
+
                         <span className="text-xs text-muted-foreground font-medium">{item.time}</span>
                       </div>
-                      
+
                       <p className="text-sm font-semibold text-foreground line-clamp-2">
                         {item.text}
                       </p>
-                      
+
                       <Button variant="link" className="p-0 h-auto text-xs font-bold text-primary" asChild>
                         <a href={item.link}>Xem bằng chứng <ArrowUpRight size={12} className="ml-1" /></a>
                       </Button>
@@ -208,7 +209,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
                   </div>
                 ))}
               </div>
-              
+
               <Button variant="outline" className="w-full mt-6 rounded-xl border-dashed">
                 Xem toàn bộ lịch sử
               </Button>
@@ -221,9 +222,9 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6 flex items-center gap-2">
                 <Edit3 size={16} /> Ghi chú Giảng viên (Thủ công)
               </h3>
-              
+
               <div className="flex-1 flex flex-col justify-end space-y-6">
-                
+
                 {/* Note Feed */}
                 <div className="space-y-4 flex-1 max-h-[300px] overflow-y-auto pr-2">
                   {savedNotes.map((n) => (
@@ -239,8 +240,8 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
 
                 {/* Input Area */}
                 <div className="space-y-3 pt-4 border-t border-border/50">
-                  <Textarea 
-                    placeholder="Nhập ghi chú cho sinh viên này (vd: Bạn này thuyết trình tốt, điểm mềm cao...)" 
+                  <Textarea
+                    placeholder="Nhập ghi chú cho sinh viên này (vd: Bạn này thuyết trình tốt, điểm mềm cao...)"
                     className="min-h-[100px] rounded-xl bg-background border-border/50 resize-none"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
@@ -255,6 +256,11 @@ export default function StudentProfilePage({ params }: { params: Promise<{ class
             </CardContent>
           </Card>
 
+        </div>
+
+        {/* Identity Mapping Review Section */}
+        <div className="mt-6">
+          <IdentityMappingReview studentId={studentId} />
         </div>
       </div>
     </div>

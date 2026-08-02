@@ -24,16 +24,20 @@ export default function DashboardLayout({
 
   React.useEffect(() => {
     const checkSidebarVisibility = () => {
+      // Hide sidebar on Lecturer Home
       if (pathname === "/lecturer") {
         setIsSidebarHidden(true);
         return;
       }
 
+      // Check Student Routes
       const isStudentRoute = pathname.startsWith("/student");
+      const isStudentHome = pathname === "/student";
       const isStudentSettings = pathname === "/student/settings";
-      const savedClass = localStorage.getItem("saga-student-class");
 
-      if (isStudentRoute && !isStudentSettings && !savedClass) {
+      // Hide sidebar ONLY if student is on Home or Settings. 
+      // If they are in a class (e.g. /student/123), show sidebar.
+      if (isStudentRoute && (isStudentHome || isStudentSettings)) {
         setIsSidebarHidden(true);
       } else {
         setIsSidebarHidden(false);
@@ -41,12 +45,6 @@ export default function DashboardLayout({
     };
 
     checkSidebarVisibility();
-
-    // Listen for class selection changes from student layout/pages
-    window.addEventListener("saga-student-class-changed", checkSidebarVisibility);
-    return () => {
-      window.removeEventListener("saga-student-class-changed", checkSidebarVisibility);
-    };
   }, [pathname]);
 
   return (
@@ -74,9 +72,8 @@ export default function DashboardLayout({
 
             {!isSidebarHidden && (
               <div
-                className={`fixed inset-y-0 left-0 z-50 bg-card border-r border-border transform transition-all duration-300 ease-in-out lg:static lg:inset-0 flex flex-col shrink-0 shadow-lg lg:shadow-none ${
-                  isSidebarOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0"
-                } ${isSidebarCollapsed ? "lg:w-[80px]" : "lg:w-64"}`}
+                className={`fixed inset-y-0 left-0 z-50 bg-card border-r border-border transform transition-all duration-300 ease-in-out lg:static lg:inset-0 flex flex-col shrink-0 shadow-lg lg:shadow-none ${isSidebarOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0"
+                  } ${isSidebarCollapsed ? "lg:w-[80px]" : "lg:w-64"}`}
               >
                 <div className="flex items-center justify-between h-14 px-4 lg:hidden border-b border-border bg-muted/30">
                   <span className="font-bold text-sm text-muted-foreground uppercase tracking-wider">Menu Hệ thống</span>
@@ -84,8 +81,8 @@ export default function DashboardLayout({
                 </div>
 
                 <div className="flex-1 flex flex-col h-full">
-                  <Sidebar 
-                    onClose={() => setIsSidebarOpen(false)} 
+                  <Sidebar
+                    onClose={() => setIsSidebarOpen(false)}
                     isCollapsed={isSidebarCollapsed}
                     onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                   />

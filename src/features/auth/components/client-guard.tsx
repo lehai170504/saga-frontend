@@ -17,11 +17,11 @@ export function ClientGuard({ children, allowedRoles }: ClientGuardProps) {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      // Not authenticated, store current path to redirect back later if backend supports it,
-      // but for now, just redirect to our local login page which has the "Login with SAGA" button.
-      router.replace("/login");
+      // Not authenticated, redirect to API login
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
+      window.location.assign(`${API_BASE_URL}/api/auth/login`);
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading]);
 
   if (isLoading) {
     return (
