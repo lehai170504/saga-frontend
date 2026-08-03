@@ -35,3 +35,11 @@ export const useCourseStudents = (
     enabled: options?.enabled !== undefined ? options.enabled : !!courseId,
   });
 };
+
+export const useMyTeamMembers = (courseId: string, options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ["courses", courseId, "my-team"],
+    queryFn: () => courseApi.getMyTeamMembers(courseId),
+    enabled: options?.enabled !== undefined ? options.enabled : !!courseId,
+  });
+};

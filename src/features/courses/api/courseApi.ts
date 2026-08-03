@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
-import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse } from "../types";
+import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse } from "../types";
 
 export const courseApi = {
   getCourses: async (params?: { subjectId?: string; semesterId?: string; instructorId?: string; page?: number; size?: number }) => {
@@ -32,5 +32,9 @@ export const courseApi = {
     params?: { keyword?: string; hasTeam?: string; page?: number; size?: number; sortBy?: string; sortDirection?: string }
   ) => {
     return axiosInstance.get<never, CourseStudentsResponse>(`/api/v1/courses/${courseId}/students`, { params });
+  },
+
+  getMyTeamMembers: async (courseId: string) => {
+    return axiosInstance.get<never, MyTeamMembersResponse>(`/api/me/courses/${courseId}/team/members`);
   }
 };

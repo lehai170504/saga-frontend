@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import {
   Key,
   RefreshCw,
@@ -18,10 +19,12 @@ import {
   EyeOff,
   Shield,
   Lock,
+  ArrowLeft,
 } from "lucide-react";
 import { PersonalIntegrationPanel } from "@/features/integrations/components/personal-integration-panel";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   // General settings states
@@ -73,6 +76,18 @@ export default function SettingsPage() {
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500 min-h-screen pb-16 bg-background text-foreground">
+      <div className="flex items-center">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 gap-1.5 font-bold h-9 px-3"
+          onClick={() => router.back()}
+        >
+          <ArrowLeft size={16} />
+          Quay lại
+        </Button>
+      </div>
+
       <PageHeader
         title="Kết nối tài khoản & Cài đặt"
         description="Quản lý việc liên kết tài khoản GitHub & Jira cá nhân của sinh viên để đồng bộ hóa chỉ số đóng góp mã nguồn và tiến độ công việc."

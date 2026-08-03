@@ -71,3 +71,21 @@ export interface CourseStudentsResponse {
   studentsWithTeam: Page<CourseStudent>;
   studentsWithoutTeam: Page<CourseStudent>;
 }
+
+export interface MyTeamMembersResponse {
+  courseId: string;
+  teamId: string;
+  teamName: string;
+  roleInTeam: string;
+  project: {
+    projectId: string;
+    name: string;
+  } | null;
+  members: Page<{
+    studentId: string;
+    fullName: string;
+    studentCode: string;
+    roleInTeam: string;
+  }>;
+}
+

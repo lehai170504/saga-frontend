@@ -29,8 +29,8 @@ export function PersonalIntegrationPanel() {
   }
 
   const connections = data?.connections || [];
-  const jiraConnection = connections.find((c) => c.provider === "JIRA");
-  const githubConnection = connections.find((c) => c.provider === "GITHUB");
+  const jiraConnection = connections.find((c) => c.provider === "JIRA" && c.status === "ACTIVE");
+  const githubConnection = connections.find((c) => c.provider === "GITHUB" && c.status === "ACTIVE");
 
   const handleConnectJira = () => {
     window.location.assign(`${API_BASE_URL}/api/me/integrations/jira/connect`);

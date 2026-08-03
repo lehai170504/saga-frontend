@@ -11,30 +11,50 @@ import { FolderKanban, ShieldCheck, Link2 } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useStudentCourse } from "@/context/StudentCourseContext";
-import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
+import { useCourseStudents, useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
 import { ProjectIntegrationPanel } from "@/features/integrations/components/project-integration-panel";
 
 export function StudentProjectCreate() {
   const { courseId, course, isLoading: isLoadingCourse } = useStudentCourse();
   const { user, isLoading: isLoadingAuth } = useAuth();
-  const { data: studentsData, isLoading: isLoadingStudents, refetch } = useCourseStudents(
+
+  const isStudent = user?.applicationRole === "STUDENT";
+
+  const { data: studentsData, isLoading: isLoadingStudents, refetch: refetchStudents } = useCourseStudents(
     courseId,
     undefined,
-    { enabled: user?.applicationRole !== "STUDENT" }
+    { enabled: !isStudent }
+  );
+
+  const { data: myTeamData, isLoading: isLoadingMyTeam, refetch: refetchMyTeam } = useMyTeamMembers(
+    courseId,
+    { enabled: isStudent }
   );
 
   // Find user's student record and team early to pass to hook
   const myProfileId = user?.localProfileId;
   const myStudentRecord = studentsData?.studentsWithTeam?.content?.find((s) => s.studentId === myProfileId);
-  const myTeam = myStudentRecord?.team;
-  const myRole = myTeam?.teamMembers?.find(m => m.studentId === myProfileId)?.roleInTeam;
+
+  const myTeam = isStudent
+    ? (myTeamData ? {
+        teamId: myTeamData.teamId,
+        teamName: myTeamData.teamName,
+        projectId: myTeamData.project?.projectId,
+        projectName: myTeamData.project?.name || "",
+      } : null)
+    : myStudentRecord?.team;
+
+  const myRole = isStudent
+    ? myTeamData?.roleInTeam
+    : myStudentRecord?.team?.teamMembers?.find(m => m.studentId === myProfileId)?.roleInTeam;
 
   const { mutate: createProject, isPending: isCreating } = useCreateTeamProject(myTeam?.teamId || "");
 
   const [projectName, setProjectName] = useState("");
 
-  const isLoading = isLoadingCourse || isLoadingAuth || isLoadingStudents;
+  const isLoading = isLoadingCourse || isLoadingAuth || (isStudent ? isLoadingMyTeam : isLoadingStudents);
+  const refetch = isStudent ? refetchMyTeam : refetchStudents;
 
   if (isLoading) {
     return (

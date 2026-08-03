@@ -2,52 +2,123 @@
 
 Tài liệu này tổng hợp toàn bộ các API đã được tích hợp thành công trên Frontend, cũng như danh sách các tính năng/API còn thiếu cần bổ sung để hoàn thiện 100% hệ thống SAGA.
 
-## 1. Các API đã được gọi và tích hợp thành công
+## 1. Các API đã được gọi và tích hợp thành công trên Frontend
+
+Dưới đây là danh sách **chi tiết và đầy đủ** các API đã được định nghĩa và sử dụng thực tế trong Frontend (`src/features/*/api/*.ts`), bao gồm các tham số Query, Path và Body để đối chiếu với Swagger của Backend.
 
 ### 1.1. Authentication (Xác thực & Phân quyền)
 Toàn bộ luồng xác thực (bao gồm bảo mật CSRF) đã hoàn thiện và chạy thực tế.
 - `POST /api/auth/login`: Đăng nhập.
-- `GET /api/auth/csrf`: Lấy CSRF token (Interceptor tự động gán vào header cho mọi API mutate).
 - `POST /api/auth/refresh`: Refresh token tự động khi hết hạn.
+- `GET /api/auth/csrf`: Lấy CSRF token (Interceptor tự động gán vào header cho mọi API mutate).
 - `GET /api/auth/me`: Lấy thông tin User hiện tại (Role, Profile).
 - `POST /api/auth/logout`: Đăng xuất.
 
 ### 1.2. Master Data (Dữ liệu Hệ thống)
 Các trang Quản trị Master Data đã hoàn thiện cả tính năng Xem danh sách (Table, Phân trang) và Tạo mới (Form, Validate bằng Zod).
-- **Môn học (Subjects):** `GET /api/v1/subjects`, `GET /api/v1/subjects/{id}`, `POST /api/v1/subjects`
-- **Khóa học (Courses):** `GET /api/v1/courses`, `GET /api/v1/courses/{id}`, `POST /api/v1/courses`
-- **Lớp học (Classes):** `GET /api/v1/classes`, `GET /api/v1/classes/{id}`, `POST /api/v1/classes`
-- **Học kỳ (Semesters):** `GET /api/v1/semesters`, `GET /api/v1/semesters/{id}`, `POST /api/v1/semesters`
+
+**Môn học (Subjects):**
+- `GET /api/v1/subjects`
+  - Query Params: `keyword?: string`, `page?: number`, `size?: number`
+  - Response: `Page<Subject>`
+- `GET /api/v1/subjects/{id}`
+  - Path Param: `id`
+  - Response: `Subject`
+- `POST /api/v1/subjects`
+  - Request Body: `SubjectRequest`
+  - Response: `Subject`
+
+**Khóa học (Courses):**
+- `GET /api/v1/courses`
+  - Query Params: `subjectId?: string`, `semesterId?: string`, `instructorId?: string`, `page?: number`, `size?: number`
+  - Response: `Page<Course>`
+- `GET /api/v1/courses/{id}`
+  - Path Param: `id`
+  - Response: `Course`
+- `POST /api/v1/courses`
+  - Request Body: `CourseRequest`
+  - Response: `Course`
+
+**Lớp học (Classes):**
+- `GET /api/v1/classes`
+  - Query Params: `keyword?: string`, `page?: number`, `size?: number`
+  - Response: `Page<Class>`
+- `GET /api/v1/classes/{id}`
+  - Path Param: `id`
+  - Response: `Class`
+- `POST /api/v1/classes`
+  - Request Body: `ClassRequest`
+  - Response: `Class`
+
+**Học kỳ (Semesters):**
+- `GET /api/v1/semesters`
+  - Query Params: `keyword?: string`, `page?: number`, `size?: number`
+  - Response: `Page<Semester>`
+- `GET /api/v1/semesters/{id}`
+  - Path Param: `id`
+  - Response: `Semester`
+- `POST /api/v1/semesters`
+  - Request Body: `SemesterRequest`
+  - Response: `Semester`
 
 ### 1.3. Quản lý Dự án Nhóm (Team Projects)
-- `POST /api/teams/{teamId}/projects`: Khởi tạo không gian dự án cho một nhóm. (Đã tích hợp UI Modal tại `StudentProjectsList`).
+- `POST /api/teams/{teamId}/projects`: Khởi tạo không gian dự án cho một nhóm (Đã tích hợp UI Modal tại `StudentProjectsList`).
+  - Path Param: `teamId`
+  - Request Body: `CreateTeamProjectRequest`
+  - Response: `ProjectResponse`
 
 ### 1.4. Tích hợp Dự án (Project Integrations - Jira/GitHub)
-Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Settings) và Call API đã được thực hiện bằng React Query. Luồng OAuth Connect được thực hiện thông qua `window.location.assign`.
-- `GET /api/projects/{projectId}/integrations`: Lấy trạng thái liên kết Jira/GitHub.
-- `GET /api/projects/{projectId}/jira/connect`: Redirect sang Jira để ủy quyền (OAuth).
-- `GET /api/projects/{projectId}/github/install`: Redirect sang GitHub để cài đặt App.
-- `GET /api/projects/{projectId}/github/setup`: Redirect từ GitHub sau khi setup.
-- `GET /api/projects/{projectId}/github/callback`: Webhook/Callback xử lý mã ủy quyền từ GitHub.
-- `POST /api/projects/{projectId}/jira/link`: Liên kết với 1 Project Key của Jira.
+Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Settings) và Call API đã được thực hiện bằng React Query.
+- `GET /api/projects/{projectId}/integrations`: Lấy trạng thái liên kết.
+- `POST /api/projects/{projectId}/jira/link`: Liên kết với 1 Project Key của Jira (Body: `JiraProjectLinkRequest`).
 - `DELETE /api/projects/{projectId}/jira`: Xóa liên kết Jira.
-- `POST /api/projects/{projectId}/github/repositories`: Thêm repository GitHub vào dự án.
+- `POST /api/projects/{projectId}/github/repositories`: Thêm repository GitHub vào dự án (Body: `GitHubRepositoriesLinkRequest`).
 - `DELETE /api/projects/{projectId}/github/repositories/{repoId}`: Xóa repo GitHub khỏi dự án.
 - `GET /api/projects/{projectId}/sync-status`: Polling (5s/lần) trạng thái đồng bộ dữ liệu.
 
+*Lưu ý luồng OAuth Connect (Redirect bằng trình duyệt, Backend xử lý Callback):*
+- `GET /api/projects/{projectId}/jira/connect`: Redirect sang Jira để ủy quyền (Project OAuth).
+- `GET /api/projects/{projectId}/github/install`: Redirect sang GitHub để cài đặt App (Project OAuth).
+- `GET /api/integrations/github/setup`: Redirect từ GitHub sau khi setup (Project).
+- `GET /api/integrations/github/project/callback`: Webhook/Callback xử lý mã ủy quyền từ GitHub (Project).
+- `GET /api/integrations/jira/callback`: Webhook/Callback xử lý mã ủy quyền từ Jira (Global/Project).
+
 ### 1.5. Cá nhân & Kiểm duyệt Danh tính (Identity Mappings)
-- `GET /api/integrations/identity-mappings?studentId={uuid}`: Lấy danh sách các tài khoản Jira/GitHub cá nhân sinh viên đã link.
-- `PATCH /api/integrations/identity-mappings/{mappingId}`: Giảng viên Duyệt (APPROVE) hoặc Từ chối (REJECT) tài khoản sinh viên (UI: Nằm trong trang Chi tiết hồ sơ Sinh viên).
-- `GET /api/me/integrations`: Xem danh sách liên kết cá nhân.
-- `DELETE /api/me/integrations/{provider}`: Hủy liên kết cá nhân.
+- `GET /api/integrations/identity-mappings`: Lấy danh sách tài khoản liên kết của sinh viên.
+  - Query Param: `studentId={uuid}`
+  - Response: `IdentityConnectionResponse[]`
+- `PATCH /api/integrations/identity-mappings/{mappingId}`: Giảng viên Duyệt hoặc Từ chối tài khoản sinh viên.
+  - Path Param: `mappingId`
+  - Request Body: `IdentityMappingReviewRequest` (chứa status duyệt)
+- `GET /api/me/integrations`: Xem danh sách liên kết cá nhân (Response: `PersonalIntegrationsResponse`).
+- `DELETE /api/me/integrations/jira`: Hủy liên kết cá nhân Jira.
+- `DELETE /api/me/integrations/github`: Hủy liên kết cá nhân GitHub.
+
+*Lưu ý luồng OAuth Connect Cá nhân (Redirect bằng trình duyệt, Backend xử lý Callback):*
+- `GET /api/me/integrations/jira/connect`: Redirect sang Jira để ủy quyền (Personal OAuth).
+- `GET /api/me/integrations/github/connect`: Redirect sang GitHub để ủy quyền (Personal OAuth).
+- `GET /api/me/integrations/github/callback`: Callback xử lý mã ủy quyền từ GitHub (Personal).
 
 ### 1.6. Quản lý Sinh viên & Nhóm (Course Students & Teams)
-- `POST /api/v1/courses/{courseId}/import-students`: Import danh sách sinh viên vào khóa học bằng file Excel (Đã tích hợp UI Modal upload file thực tế).
-- `GET /api/v1/courses/{courseId}/students`: Lấy danh sách toàn bộ sinh viên của một khóa học, chia thành 2 danh sách Đã có nhóm và Chưa có nhóm (Đã setup API, Hook và UI hiển thị).
-- `GET /api/v1/courses/{courseId}/teams/{teamId}/members`: Lấy danh sách thành viên của một nhóm (Đã setup API và Hook, chờ UI danh sách nhóm).
+- `POST /api/v1/courses/{courseId}/import-students`: Import danh sách sinh viên vào khóa học bằng file Excel.
+  - Path Param: `courseId`
+  - Request Body: `FormData` (multipart/form-data chứa file Excel)
+- `GET /api/v1/courses/{courseId}/students`: Lấy danh sách toàn bộ sinh viên của một khóa học.
+  - Path Param: `courseId`
+  - Query Params: `keyword?: string`, `hasTeam?: string`, `page?: number`, `size?: number`, `sortBy?: string`, `sortDirection?: string`
+  - Response: `CourseStudentsResponse`
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/members`: Lấy danh sách thành viên của một nhóm.
+  - Path Params: `courseId`, `teamId`
+  - Query Params: `page?: number`, `size?: number`
+  - Response: `Page<TeamMemberResponse>`
+- `GET /api/me/courses/{courseId}/team/members`: Lấy thông tin nhóm và danh sách thành viên nhóm của sinh viên đang đăng nhập.
+  - Path Param: `courseId`
+  - Response: `MyTeamMembersResponse`
 
 ### 1.7. Quản lý Người dùng (Users)
-- `GET /api/v1/courses/instructors`: Lấy danh sách giảng viên phân trang (Đã tích hợp API, Hook và đổ dữ liệu vào Dropdown chọn Giảng viên trong Form Tạo Khóa học).
+- `GET /api/v1/courses/instructors`: Lấy danh sách giảng viên phân trang (Cho dropdown Form Tạo Khóa học).
+  - Query Params: `keyword?: string`, `sortBy?: string`, `sortDirection?: string`, `page?: number`, `size?: number`
+  - Response: `Page<InstructorResponse>`
 
 ---
 
@@ -74,9 +145,6 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 4. **Tìm kiếm Course/Class bằng Keyword:**
    - Các API List (như `GET /api/v1/courses`) cần bổ sung param `?keyword=...` để thanh Search của Frontend có thể hoạt động.
 
-5. **Quản lý Thông tin Cá nhân (User Profile):**
-   - Thiếu: `PUT /api/auth/me` hoặc API tương đương để cập nhật thông tin cá nhân (Avatar, số điện thoại, mật khẩu).
-
 6. **LỖI NGHIÊM TRỌNG: Luồng OAuth Callback (GitHub/Jira):**
    - Hiện trạng: Khi sinh viên bấm "Liên kết GitHub" hoặc "Jira", Frontend gọi đến API `GET /api/me/integrations/github/connect`. Trình duyệt chuyển sang trang ủy quyền của GitHub/Jira. Sau khi user đồng ý, GitHub/Jira redirect về Callback của Backend (vd: `GET /api/me/integrations/github/callback`).
    - Lỗi Backend: Backend đang xử lý Callback và trả về trực tiếp chuỗi JSON (`IdentityConnectionResponse`) với status 200 OK ngay trên trình duyệt (như hình sinh viên gửi).
@@ -92,6 +160,11 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 
 2. **Giao diện Chọn Nhóm / Danh sách Lớp của Sinh viên:**
    - Trang `/student/page.tsx` hiện tại chỉ đang render tĩnh các Course lưới card. Chưa có luồng Sinh viên chọn lớp -> vào xem mình thuộc nhóm nào -> xem điểm cá nhân.
+
+3. **Cập nhật Thông tin Cá nhân (User Profile):**
+   - *Backend đã cung cấp API:* `PUT /api/v1/users/me` (Cập nhật Profile cá nhân) và `PUT /api/v1/users/{userId}` (Cho Admin).
+   - *Frontend cần làm:* Tích hợp API này vào form "Cập nhật hồ sơ" trong modal Profile để cho phép đổi mật khẩu, số điện thoại, avatar...
+
 
 3. **Tính năng Export Danh sách Sinh viên:**
    - Đã hoàn thành phần Import (gọi api `/import-students`), nhưng chức năng tải file mẫu Template (.csv/.xlsx) vẫn đang chờ chốt định dạng (Schema) với Backend.
