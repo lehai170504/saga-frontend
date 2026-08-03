@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { SagaLogo } from "@/components/ui/saga-logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
-import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command, MessageSquare, GitBranch, Compass, Check } from "lucide-react";
+import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command, MessageSquare, GitBranch, Compass, Check, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -287,6 +287,17 @@ export function Header({ onMenuClick }: HeaderProps) {
                 <UserIcon className="mr-3 h-4 w-4" />
                 <span>Hồ sơ cá nhân</span>
               </DropdownMenuItem>
+
+              {user?.applicationRole === "STUDENT" && (
+                <DropdownMenuItem
+                  className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
+                  onClick={() => router.push("/student/settings")}
+                >
+                  <Settings2 className="mr-3 h-4 w-4" />
+                  <span>Cài đặt & Tích hợp</span>
+                </DropdownMenuItem>
+              )}
+
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 onClick={handleLogout}

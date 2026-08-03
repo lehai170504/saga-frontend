@@ -8,12 +8,12 @@ import { toast } from "sonner";
 import { useImportStudents } from "@/features/courses/hooks/useCourseStudents";
 
 interface ImportStudentsDialogProps {
-  classId: string;
+  courseId: string;
   className?: string;
   onSuccess?: () => void;
 }
 
-export function ImportStudentsDialog({ classId, className = classId, onSuccess }: ImportStudentsDialogProps) {
+export function ImportStudentsDialog({ courseId, className = courseId, onSuccess }: ImportStudentsDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +29,7 @@ export function ImportStudentsDialog({ classId, className = classId, onSuccess }
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    importMutation.mutate({ courseId: classId, formData }, {
+    importMutation.mutate({ courseId, formData }, {
       onSuccess: () => {
         setIsDialogOpen(false);
         setSelectedFile(null);

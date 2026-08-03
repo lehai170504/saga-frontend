@@ -44,17 +44,17 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
     logout();
   };
 
-  // 1. Xác định classId từ URL
-  const lecturerClassIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
-  const studentClassIdMatch = pathname.match(/^\/student\/([^/]+)/);
-  const classId = (lecturerClassIdMatch ? lecturerClassIdMatch[1] : null) ||
-    (studentClassIdMatch && studentClassIdMatch[1] !== "settings" ? studentClassIdMatch[1] : null);
+  // 1. Xác định courseId từ URL
+  const lecturerCourseIdMatch = pathname.match(/^\/lecturer\/([^/]+)/);
+  const studentCourseIdMatch = pathname.match(/^\/student\/([^/]+)/);
+  const courseId = (lecturerCourseIdMatch ? lecturerCourseIdMatch[1] : null) ||
+    (studentCourseIdMatch && studentCourseIdMatch[1] !== "settings" ? studentCourseIdMatch[1] : null);
 
   // 2. Fetch course data
-  const { data: course } = useCourse(classId || "");
+  const { data: course } = useCourse(courseId || "");
 
   // 3. Khởi tạo navigation
-  const navGroups = getNavigationConfig(user?.applicationRole || "", classId, course?.clazz?.name || course?.courseCode);
+  const navGroups = getNavigationConfig(user?.applicationRole || "", courseId, course?.clazz?.name || course?.courseCode);
 
   return (
     <TooltipProvider delayDuration={0}>

@@ -20,10 +20,11 @@ export interface Course {
     name: string;
   };
   instructor: {
-    id: string; // Wait, we don't have full instructor object structure defined, assuming it returns just ID or some details
+    id: string;
+    name: string;
   };
-  createdAt: string; // LocalDateTime string
-  updatedAt: string; // LocalDateTime string
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CourseRequest {

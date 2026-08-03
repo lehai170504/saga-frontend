@@ -26,11 +26,12 @@ export const useTeamMembers = (courseId: string, teamId: string, page = 0, size 
 
 export const useCourseStudents = (
   courseId: string,
-  params?: { keyword?: string; hasTeam?: string; page?: number; size?: number; sortBy?: string; sortDirection?: string }
+  params?: { keyword?: string; hasTeam?: string; page?: number; size?: number; sortBy?: string; sortDirection?: string },
+  options?: { enabled?: boolean }
 ) => {
   return useQuery({
     queryKey: ["courses", courseId, "students", params],
     queryFn: () => courseApi.getCourseStudents(courseId, params),
-    enabled: !!courseId,
+    enabled: options?.enabled !== undefined ? options.enabled : !!courseId,
   });
 };

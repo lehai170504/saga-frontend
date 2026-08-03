@@ -37,7 +37,7 @@ export type NavGroupType = {
 
 export const getNavigationConfig = (
   role: string,
-  classId: string | null,
+  courseId: string | null,
   className?: string | null
 ): NavGroupType[] => {
   switch (role) {
@@ -77,27 +77,27 @@ export const getNavigationConfig = (
       ];
 
     case "LECTURER":
-      if (classId) {
+      if (courseId) {
         return [
           {
-            title: className ? `Đang xem: Lớp ${className}` : `Đang xem: LỚP ${classId.toUpperCase()}`,
+            title: className ? `Đang xem: Khóa học ${className}` : `Đang xem: KHÓA HỌC ${courseId.toUpperCase()}`,
             items: [
-              { href: "/lecturer", icon: <ArrowLeft size={18} />, label: "Chọn lớp khác", hideChevron: true, exact: true },
+              { href: "/lecturer", icon: <ArrowLeft size={18} />, label: "Chọn khóa học khác", hideChevron: true, exact: true },
             ],
           },
           {
-            title: "Quản lý Lớp học",
+            title: "Quản lý Khóa học",
             items: [
-              { href: `/lecturer/${classId}`, icon: <BarChart3 size={18} />, label: "Tổng quan lớp", exact: true },
-              { href: `/lecturer/${classId}/students`, icon: <Users size={18} />, label: "Sinh viên" },
-              { href: `/lecturer/${classId}/projects`, icon: <Network size={18} />, label: "Quản lý nhóm" },
+              { href: `/lecturer/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan khóa", exact: true },
+              { href: `/lecturer/${courseId}/students`, icon: <Users size={18} />, label: "Sinh viên" },
+              { href: `/lecturer/${courseId}/projects`, icon: <Network size={18} />, label: "Quản lý nhóm" },
             ],
           },
           {
             title: "Đánh giá & Điểm số",
             items: [
-              { href: `/lecturer/${classId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
-              { href: `/lecturer/${classId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
+              { href: `/lecturer/${courseId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
+              { href: `/lecturer/${courseId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
             ],
           },
         ];
@@ -106,46 +106,26 @@ export const getNavigationConfig = (
         {
           title: "Tổng quan",
           items: [
-            { href: "/lecturer", icon: <BookOpen size={18} />, label: "Danh sách lớp học", exact: true },
+            { href: "/lecturer", icon: <BookOpen size={18} />, label: "Danh sách khóa học", exact: true },
           ],
         },
       ];
 
     case "STUDENT":
-      if (classId) {
+      if (courseId) {
         return [
           {
-            title: className ? `Đang xem: Lớp ${className}` : `Đang xem: LỚP ${classId.toUpperCase()}`,
+            title: className ? `Đang xem: Khóa học ${className}` : `Đang xem: KHÓA HỌC ${courseId.toUpperCase()}`,
             items: [
-              { href: "/student", icon: <ArrowLeft size={18} />, label: "Chọn lớp khác", hideChevron: true, exact: true },
+              { href: "/student", icon: <ArrowLeft size={18} />, label: "Chọn khóa học khác", hideChevron: true, exact: true },
             ],
           },
           {
             title: "Cá nhân & Nhóm",
             items: [
-              { href: `/student/${classId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
-              { href: `/student/${classId}/projects`, icon: <Network size={18} />, label: "Danh sách nhóm", exact: true },
-              { href: `/student/${classId}/projects/create`, icon: <FolderKanban size={18} />, label: "Cấu hình Project" },
-              { href: `/student/${classId}/commits`, icon: <GitBranch size={18} />, label: "Lịch sử Commits" },
-              { href: `/student/${classId}/kanban`, icon: <ClipboardList size={18} />, label: "Bảng Kanban (Jira)" },
-              { href: `/student/${classId}/burndown`, icon: <Calendar size={18} />, label: "Tiến độ Task" },
-              { href: `/student/${classId}/contribution`, icon: <Users size={18} />, label: "Đóng góp cá nhân" },
-              { href: `/student/${classId}/audit-logs`, icon: <Logs size={18} />, label: "Nhật ký hoạt động" },
-            ],
-          },
-          {
-            title: "Tương tác",
-            items: [
-              { href: `/student/${classId}/assessment`, icon: <UserCheck size={18} />, label: "Đánh giá chéo" },
-              { href: `/student/${classId}/feedback`, icon: <Inbox size={18} />, label: "Nhận xét" },
-              { href: `/student/${classId}/absence`, icon: <CalendarX size={18} />, label: "Báo cáo vắng" },
-            ],
-          },
-          {
-            title: "AI & Phân tích Đồ thị",
-            items: [
-              { href: `/student/${classId}/interaction-graph`, icon: <Share2 size={18} />, label: "Mạng tương tác" },
-              { href: `/student/${classId}/heatmap`, icon: <Activity size={18} />, label: "Biểu đồ nhiệt" },
+              { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
+              { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Danh sách nhóm", exact: true },
+              { href: `/student/${courseId}/projects/create`, icon: <FolderKanban size={18} />, label: "Cấu hình Project" },
             ],
           },
         ];
@@ -154,7 +134,7 @@ export const getNavigationConfig = (
         {
           title: "Điều hướng",
           items: [
-            { href: "/student", icon: <BookOpen size={18} />, label: "Lựa chọn lớp học", exact: true },
+            { href: "/student", icon: <BookOpen size={18} />, label: "Lựa chọn khóa học", exact: true },
           ],
         },
         {

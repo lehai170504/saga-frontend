@@ -33,10 +33,10 @@ interface ProjectGroup {
 }
 
 interface StudentProjectsListProps {
-  classId?: string;
+  courseId?: string;
 }
 
-export function StudentProjectsList({ classId }: StudentProjectsListProps) {
+export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   const [mounted, setMounted] = useState(false);
   const { user } = useAuth();
 
@@ -44,8 +44,12 @@ export function StudentProjectsList({ classId }: StudentProjectsListProps) {
   const [projectName, setProjectName] = useState("");
   const [activeTeamId, setActiveTeamId] = useState<string>("");
 
-  const { data: studentsData, isLoading: isLoadingStudents, refetch } = useCourseStudents(classId || "");
-  const { data: courseData, isLoading: isLoadingCourse } = useCourse(classId || "");
+  const { data: studentsData, isLoading: isLoadingStudents, refetch } = useCourseStudents(
+    courseId || "",
+    undefined,
+    { enabled: user?.applicationRole !== "STUDENT" }
+  );
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
 
   const createProjectMutation = useCreateTeamProject(activeTeamId);
 
@@ -195,7 +199,7 @@ export function StudentProjectsList({ classId }: StudentProjectsListProps) {
 
                     {isOwnGroup && (
                       group.projectId ? (
-                        <Link href={`/student/${classId}/projects/${group.projectId}/settings`}>
+                        <Link href={`/student/${courseId}/projects/create`}>
                           <Button className="rounded-xl shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground font-bold shrink-0 w-full sm:w-auto">
                             <Settings size={16} className="mr-2" strokeWidth={3} />
                             Cấu hình Dự án
