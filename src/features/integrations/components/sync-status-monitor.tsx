@@ -21,9 +21,29 @@ const statusColors: Record<string, string> = {
   FAILED: "bg-destructive/10 text-destructive border-destructive/20",
 };
 
+export function formatSyncTimestamp(value: string | null | undefined): string {
+  if (!value) return "N/A";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "N/A";
+  }
+
+  return new Intl.DateTimeFormat("vi-VN", {
+    dateStyle: "short",
+    timeStyle: "medium",
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(date);
+}
+
 export function SyncStatusMonitor({ projectId }: { projectId: string }) {
-  // Poll every 5 seconds
-  const { data: syncData, isLoading, error, refetch, isFetching } = useSyncStatus(projectId, { refetchInterval: 5000 });
+  const { data: syncData, isLoading, error, refetch, isFetching } = useSyncStatus(projectId, {
+    refetchInterval: (query) => {
+      const jobs = (query.state.data as any)?.recentJobs || [];
+      const hasInProgress = jobs.some((job: any) => job.status === "IN_PROGRESS" || job.status === "PENDING");
+      return hasInProgress ? 5000 : false;
+    }
+  });
 
   if (isLoading) {
     return (
@@ -89,7 +109,7 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
                     )}
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
-                    {job.completedAt ? new Date(job.completedAt).toLocaleString("vi-VN") : (job.startedAt ? new Date(job.startedAt).toLocaleString("vi-VN") : "N/A")}
+                    {formatSyncTimestamp(job.completedAt || job.startedAt)}
                   </TableCell>
                 </TableRow>
               ))
