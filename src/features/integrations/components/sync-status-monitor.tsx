@@ -9,8 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, RefreshCcw } from "lucide-react";
+import { Loader2, RefreshCcw, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const statusColors: Record<string, string> = {
@@ -37,6 +38,7 @@ export function formatSyncTimestamp(value: string | null | undefined): string {
 }
 
 export function SyncStatusMonitor({ projectId }: { projectId: string }) {
+  const [currentPage, setCurrentPage] = useState(1);
   const { data: syncData, isLoading, error, refetch, isFetching } = useSyncStatus(projectId, {
     refetchInterval: (query) => {
       const jobs = (query.state.data as any)?.recentJobs || [];
@@ -62,6 +64,11 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
   }
 
   const jobs = syncData?.recentJobs || [];
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(jobs.length / ITEMS_PER_PAGE);
+  const activePage = Math.min(currentPage, Math.max(1, totalPages));
+  const startIndex = (activePage - 1) * ITEMS_PER_PAGE;
+  const paginatedJobs = jobs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="space-y-4">
@@ -85,8 +92,8 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {jobs.length > 0 ? (
-              jobs.map((job) => (
+            {paginatedJobs.length > 0 ? (
+              paginatedJobs.map((job) => (
                 <TableRow key={job.id} className="hover:bg-muted/30">
                   <TableCell className="font-medium">{job.type}</TableCell>
                   <TableCell>{job.targetSystem}</TableCell>
@@ -123,6 +130,34 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
           </TableBody>
         </Table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2 pb-2 px-1">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Trang {activePage} / {totalPages} (Tổng số {jobs.length} tiến trình)
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-xl h-8 w-8 p-0"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={activePage === 1}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-xl h-8 w-8 p-0"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={activePage === totalPages}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

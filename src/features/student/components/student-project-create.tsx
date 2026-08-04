@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { FolderKanban, ShieldCheck, Link2, Loader2, Plus } from "lucide-react";
+import { FolderKanban, ShieldCheck, Link2, Loader2, Plus, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useStudentCourse } from "@/context/StudentCourseContext";
@@ -17,6 +18,7 @@ import { ProjectIntegrationPanel } from "@/features/integrations/components/proj
 import { SyncStatusMonitor } from "@/features/integrations/components/sync-status-monitor";
 
 export function StudentProjectCreate() {
+  const router = useRouter();
   const { courseId, course, isLoading: isLoadingCourse } = useStudentCourse();
   const { user, isLoading: isLoadingAuth } = useAuth();
 
@@ -87,6 +89,25 @@ export function StudentProjectCreate() {
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
       <div className="p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
+
+        {/* Nút quay lại */}
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-xl font-bold text-muted-foreground hover:text-foreground flex items-center gap-2 hover:bg-muted/50 -mb-2"
+            onClick={() => {
+              if (courseId) {
+                router.push(`/student/${courseId}/projects`);
+              } else {
+                router.back();
+              }
+            }}
+          >
+            <ArrowLeft size={16} />
+            Quay lại
+          </Button>
+        </div>
 
         {/* Header Section */}
         <PageHeader
