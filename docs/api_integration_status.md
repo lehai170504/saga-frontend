@@ -120,6 +120,24 @@ Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Setti
   - Query Params: `keyword?: string`, `sortBy?: string`, `sortDirection?: string`, `page?: number`, `size?: number`
   - Response: `Page<InstructorResponse>`
 
+### 1.8. Luồng Xử lý Callback OAuth mới (Jira/GitHub)
+Toàn bộ luồng nhận ủy quyền từ các nhà cung cấp bên thứ ba (Jira/GitHub) cho cả tài khoản cá nhân và dự án nhóm đã chuyển sang contract mới sử dụng mã trung gian `resultId`.
+
+- **Mở luồng OAuth (Browser Redirection):**
+  - Cá nhân Jira: `GET /api/me/integrations/jira/connect`
+  - Cá nhân GitHub: `GET /api/me/integrations/github/connect`
+  - Dự án Jira: `GET /api/projects/{projectId}/jira/connect`
+  - Dự án GitHub: `GET /api/projects/{projectId}/github/install`
+
+- **Trang Callback của Frontend:** `/integrations/callback`
+  - Nhận tham số `?resultId=...` từ Backend chuyển hướng về (ví dụ: `http://localhost:3000/integrations/callback?resultId=...`).
+  - *Thao tác:* Frontend tự động xóa `resultId` khỏi URL để bảo mật và gửi yêu cầu POST đến API consume bên dưới.
+
+- **API Consume Result:**
+  - `POST /api/integrations/callback-results/{resultId}/consume`
+    - Path Param: `resultId`
+    - Response: `UnifiedCallbackResponse` (Chứa trạng thái `success`, `flow` ("PERSONAL" | "PROJECT"), và kết quả tương ứng lồng bên trong như `identityConnection` (Personal), `jiraAuthorization` (Project Jira), hoặc `gitHubInstallation` (Project GitHub)).
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)
