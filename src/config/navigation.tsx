@@ -53,7 +53,6 @@ export const getNavigationConfig = (
           title: "Quản lý Cốt lõi",
           items: [
             { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
-            { href: "/admin/academic-data", icon: <Database size={18} />, label: "Dữ liệu Học vụ" },
             { href: "/admin/classes", icon: <Network size={18} />, label: "Lớp PBL" },
           ],
         },

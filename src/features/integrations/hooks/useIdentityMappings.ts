@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { identityMappingApi } from "../api/identityMappingApi";
-import { IdentityConnectionResponse, IdentityMappingReviewRequest } from "../types";
+import { IdentityMappingReviewRequest } from "../types";
 
 export const useIdentityMappings = (studentId: string) => {
   return useQuery({
