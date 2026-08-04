@@ -42,10 +42,16 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
   const githubRepositories = projectIntegration?.githubRepositories || [];
 
   const handleConnectJira = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("integration_redirect_back", window.location.pathname);
+    }
     window.location.assign(`${API_BASE_URL}/api/projects/${projectId}/jira/connect`);
   };
 
   const handleInstallGithub = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("integration_redirect_back", window.location.pathname);
+    }
     window.location.assign(`${API_BASE_URL}/api/projects/${projectId}/github/install`);
   };
 

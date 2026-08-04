@@ -33,10 +33,16 @@ export function PersonalIntegrationPanel() {
   const githubConnection = connections.find((c) => c.provider === "GITHUB" && c.status === "ACTIVE");
 
   const handleConnectJira = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("integration_redirect_back", window.location.pathname);
+    }
     window.location.assign(`${API_BASE_URL}/api/me/integrations/jira/connect`);
   };
 
   const handleConnectGithub = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("integration_redirect_back", window.location.pathname);
+    }
     window.location.assign(`${API_BASE_URL}/api/me/integrations/github/connect`);
   };
 
