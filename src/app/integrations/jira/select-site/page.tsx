@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck, ArrowRight, Globe } from "lucide-react";
 import { projectIntegrationApi } from "@/features/integrations/api/projectIntegrationApi";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 type JiraSite = {
   cloudId: string;
@@ -23,6 +24,7 @@ type JiraAuthorizationData = {
 
 export default function JiraSelectSitePage() {
   const router = useRouter();
+  const { isLoading } = useAuth();
   const [data, setData] = useState<JiraAuthorizationData | null>(null);
   const [selectedCloudId, setSelectedCloudId] = useState("");
   const [jiraProjectId, setJiraProjectId] = useState("");
@@ -50,7 +52,7 @@ export default function JiraSelectSitePage() {
     }
   }, [router]);
 
-  if (!data) {
+  if (!data || isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -77,12 +79,12 @@ export default function JiraSelectSitePage() {
       });
       toast.success("Liên kết dự án Jira thành công!");
       sessionStorage.removeItem("integration_callback_result");
-      
+
       const redirectBack = sessionStorage.getItem("integration_redirect_back");
       router.replace(redirectBack || "/student");
     } catch (err: any) {
       console.error(err);
-      toast.error(err.body?.message || err.message || "Có lỗi xảy ra khi liên kết Jira.");
+      toast.error(err.message || "Có lỗi xảy ra khi liên kết Jira.");
     } finally {
       setIsSubmitting(false);
     }
@@ -115,11 +117,10 @@ export default function JiraSelectSitePage() {
                 {data.sites.map((site) => (
                   <label
                     key={site.cloudId}
-                    className={`flex items-center gap-3 p-4 border rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-md ${
-                      selectedCloudId === site.cloudId
-                        ? "border-primary bg-primary/5 text-primary shadow-sm"
-                        : "border-border bg-transparent hover:bg-muted/15"
-                    }`}
+                    className={`flex items-center gap-3 p-4 border rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-md ${selectedCloudId === site.cloudId
+                      ? "border-primary bg-primary/5 text-primary shadow-sm"
+                      : "border-border bg-transparent hover:bg-muted/15"
+                      }`}
                   >
                     <input
                       type="radio"
@@ -158,32 +159,29 @@ export default function JiraSelectSitePage() {
               </p>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="pt-6 flex items-center justify-between gap-4">
               <Button
                 type="button"
                 variant="ghost"
+                className="rounded-xl font-bold hover:bg-muted/50"
                 onClick={() => {
-                  const redirectBack = sessionStorage.getItem("integration_redirect_back");
-                  router.replace(redirectBack || "/student");
+                  sessionStorage.removeItem("integration_callback_result");
+                  router.replace("/student");
                 }}
-                className="flex-1 h-11 rounded-xl font-bold border border-border/50 text-muted-foreground hover:text-foreground"
                 disabled={isSubmitting}
               >
                 Hủy bỏ
               </Button>
               <Button
                 type="submit"
-                className="flex-1 h-11 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center gap-1.5"
+                className="rounded-xl px-6 font-bold bg-[#0052CC] hover:bg-[#0052CC]/90 text-white gap-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    Hoàn tất liên kết
-                    <ArrowRight size={16} />
-                  </>
-                )}
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : null}
+                {isSubmitting ? "Đang xử lý..." : "Hoàn tất liên kết"}
+                {!isSubmitting && <ArrowRight size={16} />}
               </Button>
             </div>
           </form>

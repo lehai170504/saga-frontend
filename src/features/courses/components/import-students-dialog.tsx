@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheet, UploadCloud, DownloadCloud } from "lucide-react";
+import { FileSpreadsheet, UploadCloud, DownloadCloud, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useImportStudents } from "@/features/courses/hooks/useCourseStudents";
 
@@ -35,6 +35,9 @@ export function ImportStudentsDialog({ courseId, className = courseId, onSuccess
         setSelectedFile(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
         if (onSuccess) onSuccess();
+      },
+      onError: (error: any) => {
+        toast.error(error.message || "Có lỗi xảy ra khi import sinh viên.");
       }
     });
   };
@@ -89,7 +92,8 @@ export function ImportStudentsDialog({ courseId, className = courseId, onSuccess
           </div>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleImport} disabled={importMutation.isPending} className="w-full">
+          <Button onClick={handleImport} disabled={importMutation.isPending} className="w-full gap-2">
+            {importMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {importMutation.isPending ? "Đang xử lý..." : "Bắt đầu Import"}
           </Button>
         </div>

@@ -97,8 +97,7 @@ function IntegrationCallbackContent() {
 
         setMessage("Lỗi kết nối tích hợp.");
         setErrorDetails(
-          error?.body?.message || 
-          error?.message || 
+          error?.message ||
           "Kết quả kết nối đã hết hạn, đã được sử dụng hoặc không hợp lệ."
         );
       });

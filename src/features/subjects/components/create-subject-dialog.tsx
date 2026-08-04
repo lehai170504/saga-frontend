@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -42,8 +43,8 @@ export function CreateSubjectDialog() {
       reset();
       setOpen(false);
     } catch (error: any) {
-      // In a real app, you might want to show a toast error here
       console.error("Failed to create subject", error);
+      toast.error(error.message || "Có lỗi xảy ra khi tạo môn học.");
     }
   };
 

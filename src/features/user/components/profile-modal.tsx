@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,8 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Mail, User, ShieldCheck, Camera, Loader2, Key, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { Mail, User, ShieldCheck, Camera, Key, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { PersonalIntegrationPanel } from "@/features/integrations/components/personal-integration-panel";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -32,17 +33,40 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
+  // State quản lý tab đang active
+  const [activeTab, setActiveTab] = useState("profile");
+
   // State lưu trữ dữ liệu chỉnh sửa
   const [name, setName] = useState(user?.fullName || "");
+
+  useEffect(() => {
+    if (isOpen) {
+      if (typeof window !== "undefined") {
+        const savedTab = sessionStorage.getItem("profile_modal_tab");
+        if (savedTab) {
+          setActiveTab(savedTab);
+          sessionStorage.removeItem("profile_modal_tab");
+        } else {
+          setActiveTab("profile");
+        }
+      }
+    }
+  }, [isOpen]);
+
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   const handleSave = () => {
     if (!name.trim()) {
       toast.error("Tên không được để trống!");
       return;
     }
+    setIsSavingProfile(true);
     // Gọi API cập nhật user ở đây
-    toast.success("Đã cập nhật thông tin thành công!");
-    setIsEditing(false);
+    setTimeout(() => {
+      toast.success("Đã cập nhật thông tin thành công!");
+      setIsSavingProfile(false);
+      setIsEditing(false);
+    }, 1000);
   };
 
   const [oldPassword, setOldPassword] = useState("");
@@ -72,43 +96,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }, 1500);
   };
 
-  const [githubToken, setGithubToken] = useState("");
-  const [jiraToken, setJiraToken] = useState("");
-  const [isValidatingGithub, setIsValidatingGithub] = useState(false);
-  const [isValidatingJira, setIsValidatingJira] = useState(false);
-  const [isSavingSettings, setIsSavingSettings] = useState(false);
-
-  const handleValidateToken = async (type: "github" | "jira") => {
-    const token = type === "github" ? githubToken : jiraToken;
-    const setter = type === "github" ? setIsValidatingGithub : setIsValidatingJira;
-    const label = type === "github" ? "GitHub" : "Jira";
-
-    if (!token.trim()) {
-      toast.error(`Vui lòng nhập ${label} Token trước!`);
-      return;
-    }
-
-    setter(true);
-    toast.loading(`Đang xác thực ${label} Token...`, { id: `validate-${type}` });
-
-    await new Promise((res) => setTimeout(res, 1500));
-    setter(false);
-
-    if (token.length > 6) {
-      toast.success(`✅ ${label} Token hợp lệ! Kết nối thành công.`, { id: `validate-${type}`, duration: 3000 });
-    } else {
-      toast.error(`❌ ${label} Token không hợp lệ. Vui lòng kiểm tra lại.`, { id: `validate-${type}`, duration: 4000 });
-    }
-  };
-
-  const handleSaveSettings = async () => {
-    setIsSavingSettings(true);
-    toast.loading("Đang lưu cấu hình...", { id: "save-config" });
-    await new Promise((res) => setTimeout(res, 1200));
-    setIsSavingSettings(false);
-    toast.success("Cấu hình đã được lưu thành công!", { id: "save-config", duration: 3000 });
-  };
-
   // Reset form nếu đóng modal hoặc hủy
   const handleCancel = () => {
     setName(user?.fullName || "");
@@ -127,8 +114,8 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         }
       }}
     >
-      <DialogContent className="sm:max-w-[750px] p-0 overflow-hidden rounded-2xl">
-        <Tabs defaultValue="profile" orientation="vertical" className="flex flex-col sm:flex-row w-full h-full sm:min-h-[500px] sm:max-h-[85vh]">
+      <DialogContent className="sm:max-w-[950px] p-0 overflow-hidden rounded-2xl">
+        <Tabs value={activeTab} onValueChange={setActiveTab} orientation="vertical" className="flex flex-col sm:flex-row w-full h-full sm:min-h-[500px] sm:max-h-[85vh]">
           {/* Left Sidebar */}
           <div className="w-full sm:w-56 bg-muted/30 border-b sm:border-b-0 sm:border-r border-border flex flex-col shrink-0">
             <DialogHeader className="p-6 pb-4 text-left">
@@ -242,9 +229,11 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                       </Button>
                       <Button
                         onClick={handleSave}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl w-full font-bold"
+                        disabled={isSavingProfile}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl w-full font-bold gap-2"
                       >
-                        Lưu thay đổi
+                        {isSavingProfile && <RefreshCw className="w-4 h-4 animate-spin" />}
+                        {isSavingProfile ? "Đang lưu..." : "Lưu thay đổi"}
                       </Button>
                     </>
                   ) : (
@@ -335,63 +324,12 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             </TabsContent>
 
             {user.applicationRole === "STUDENT" && (
-              <TabsContent value="settings" className="mt-0 space-y-4">
-                <div className="space-y-4">
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-bold mb-1">Tích hợp API</h4>
-                      <p className="text-xs text-muted-foreground">Kết nối với Jira và GitHub.</p>
-                    </div>
-
-                    <div className="space-y-3">
-                      <Label className="text-xs font-bold">GitHub Personal Access Token</Label>
-                      <div className="flex flex-col gap-2">
-                        <Input
-                          type="password"
-                          placeholder="ghp_xxxxxxxxxxxx"
-                          value={githubToken}
-                          onChange={(e) => setGithubToken(e.target.value)}
-                          className="bg-background border-border focus-visible:ring-primary15973"
-                        />
-                        <Button
-                          variant="secondary"
-                          className="w-full shrink-0"
-                          onClick={() => handleValidateToken("github")}
-                          disabled={isValidatingGithub}
-                        >
-                          {isValidatingGithub ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Xác thực...</> : "Xác thực Token"}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <Label className="text-xs font-bold">Jira API Token</Label>
-                      <div className="flex flex-col gap-2">
-                        <Input
-                          type="password"
-                          placeholder="Nhập Jira token..."
-                          value={jiraToken}
-                          onChange={(e) => setJiraToken(e.target.value)}
-                          className="bg-background border-border focus-visible:ring-primary17068"
-                        />
-                        <Button
-                          variant="secondary"
-                          className="w-full shrink-0"
-                          onClick={() => handleValidateToken("jira")}
-                          disabled={isValidatingJira}
-                        >
-                          {isValidatingJira ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Xác thực...</> : "Xác thực Token"}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+              <TabsContent value="settings" className="mt-0">
+                <div className="mb-4">
+                  <h4 className="text-sm font-bold mb-1">Tích hợp API</h4>
+                  <p className="text-xs text-muted-foreground">Kết nối với Jira và GitHub để đồng bộ công việc.</p>
                 </div>
-
-                <div className="flex justify-end mt-4 pt-4 border-t border-border">
-                  <Button variant="default" onClick={handleSaveSettings} disabled={isSavingSettings} className="bg-primary hover:bg-primary/90 font-bold text-primary-foreground rounded-xl w-full h-11">
-                    {isSavingSettings ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang lưu...</> : "Lưu cấu hình"}
-                  </Button>
-                </div>
+                <PersonalIntegrationPanel />
               </TabsContent>
             )}
           </div>

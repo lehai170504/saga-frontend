@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SagaLogo } from "@/components/ui/saga-logo";
@@ -40,6 +40,16 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   // State quản lý việc đóng/mở Profile Modal
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const shouldOpenModal = sessionStorage.getItem("open_profile_modal");
+      if (shouldOpenModal === "true") {
+        setIsProfileOpen(true);
+        sessionStorage.removeItem("open_profile_modal");
+      }
+    }
+  }, []);
 
   // State quản lý thông báo
   const [notifications, setNotifications] = useState([
@@ -282,7 +292,12 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
-                onClick={() => setIsProfileOpen(true)}
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    sessionStorage.setItem("profile_modal_tab", "profile");
+                  }
+                  setIsProfileOpen(true);
+                }}
               >
                 <UserIcon className="mr-3 h-4 w-4" />
                 <span>Hồ sơ cá nhân</span>
@@ -291,7 +306,12 @@ export function Header({ onMenuClick }: HeaderProps) {
               {user?.applicationRole === "STUDENT" && (
                 <DropdownMenuItem
                   className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
-                  onClick={() => router.push("/student/settings")}
+                  onClick={() => {
+                    if (typeof window !== "undefined") {
+                      sessionStorage.setItem("profile_modal_tab", "settings");
+                    }
+                    setIsProfileOpen(true);
+                  }}
                 >
                   <Settings2 className="mr-3 h-4 w-4" />
                   <span>Cài đặt & Tích hợp</span>
