@@ -35,6 +35,8 @@ export function PersonalIntegrationPanel() {
   const handleConnectJira = () => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("integration_redirect_back", window.location.pathname);
+      sessionStorage.setItem("open_profile_modal", "true");
+      sessionStorage.setItem("profile_modal_tab", "settings");
     }
     window.location.assign(`${API_BASE_URL}/api/me/integrations/jira/connect`);
   };
@@ -42,6 +44,8 @@ export function PersonalIntegrationPanel() {
   const handleConnectGithub = () => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("integration_redirect_back", window.location.pathname);
+      sessionStorage.setItem("open_profile_modal", "true");
+      sessionStorage.setItem("profile_modal_tab", "settings");
     }
     window.location.assign(`${API_BASE_URL}/api/me/integrations/github/connect`);
   };
@@ -49,7 +53,7 @@ export function PersonalIntegrationPanel() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Jira Card */}
-      <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden">
+      <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-border transition-all duration-300">
         <CardHeader className="bg-muted/30 pb-4">
           <div className="flex justify-between items-start">
             <div>
@@ -68,9 +72,9 @@ export function PersonalIntegrationPanel() {
             )}
           </div>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 flex-1 flex flex-col">
           {jiraConnection ? (
-            <div className="space-y-4">
+            <div className="space-y-4 flex-1 flex flex-col">
               <div className="text-sm">
                 <p className="text-muted-foreground">Tài khoản kết nối</p>
                 <p className="font-semibold text-foreground">{jiraConnection.displayName} ({jiraConnection.email})</p>
@@ -81,7 +85,7 @@ export function PersonalIntegrationPanel() {
               </div>
               <Button
                 variant="destructive"
-                className="w-full rounded-xl font-bold mt-2"
+                className="w-full rounded-xl font-bold mt-auto"
                 onClick={() => deleteJira()}
                 disabled={isDeletingJira}
               >
@@ -90,9 +94,9 @@ export function PersonalIntegrationPanel() {
               </Button>
             </div>
           ) : (
-            <div className="text-center py-4">
+            <div className="text-center py-4 flex-1 flex flex-col items-center justify-center">
               <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-              <Button onClick={handleConnectJira} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white">
+              <Button onClick={handleConnectJira} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white mt-auto">
                 <Plus className="mr-2 h-4 w-4" /> Liên kết với Jira
               </Button>
             </div>
@@ -101,7 +105,7 @@ export function PersonalIntegrationPanel() {
       </Card>
 
       {/* GitHub Card */}
-      <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden">
+      <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-border transition-all duration-300">
         <CardHeader className="bg-muted/30 pb-4">
           <div className="flex justify-between items-start">
             <div>
@@ -120,9 +124,9 @@ export function PersonalIntegrationPanel() {
             )}
           </div>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 flex-1 flex flex-col">
           {githubConnection ? (
-            <div className="space-y-4">
+            <div className="space-y-4 flex-1 flex flex-col">
               <div className="text-sm">
                 <p className="text-muted-foreground">Tài khoản kết nối</p>
                 <p className="font-semibold text-foreground">{githubConnection.displayName} ({githubConnection.email})</p>
@@ -133,7 +137,7 @@ export function PersonalIntegrationPanel() {
               </div>
               <Button
                 variant="destructive"
-                className="w-full rounded-xl font-bold mt-2"
+                className="w-full rounded-xl font-bold mt-auto"
                 onClick={() => deleteGithub()}
                 disabled={isDeletingGithub}
               >
@@ -142,9 +146,9 @@ export function PersonalIntegrationPanel() {
               </Button>
             </div>
           ) : (
-            <div className="text-center py-4">
+            <div className="text-center py-4 flex-1 flex flex-col items-center justify-center">
               <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-              <Button onClick={handleConnectGithub} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white">
+              <Button onClick={handleConnectGithub} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white mt-auto">
                 <Plus className="mr-2 h-4 w-4" /> Liên kết với GitHub
               </Button>
             </div>

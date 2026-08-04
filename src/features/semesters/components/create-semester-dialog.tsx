@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -52,6 +53,7 @@ export function CreateSemesterDialog() {
       setOpen(false);
     } catch (error: any) {
       console.error("Failed to create semester", error);
+      toast.error(error.message || "Có lỗi xảy ra khi tạo học kỳ.");
     }
   };
 

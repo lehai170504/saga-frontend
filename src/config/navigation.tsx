@@ -53,7 +53,6 @@ export const getNavigationConfig = (
           title: "Quản lý Cốt lõi",
           items: [
             { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
-            { href: "/admin/academic-data", icon: <Database size={18} />, label: "Dữ liệu Học vụ" },
             { href: "/admin/classes", icon: <Network size={18} />, label: "Lớp PBL" },
           ],
         },
@@ -124,8 +123,7 @@ export const getNavigationConfig = (
             title: "Cá nhân & Nhóm",
             items: [
               { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
-              { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Danh sách nhóm", exact: true },
-              { href: `/student/${courseId}/projects/create`, icon: <FolderKanban size={18} />, label: "Cấu hình Project" },
+              { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
             ],
           },
         ];

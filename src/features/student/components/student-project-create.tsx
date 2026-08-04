@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { FolderKanban, ShieldCheck, Link2 } from "lucide-react";
+import { FolderKanban, ShieldCheck, Link2, Loader2, Plus } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useStudentCourse } from "@/context/StudentCourseContext";
 import { useCourseStudents, useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
 import { ProjectIntegrationPanel } from "@/features/integrations/components/project-integration-panel";
+import { SyncStatusMonitor } from "@/features/integrations/components/sync-status-monitor";
 
 export function StudentProjectCreate() {
   const { courseId, course, isLoading: isLoadingCourse } = useStudentCourse();
@@ -38,11 +39,11 @@ export function StudentProjectCreate() {
 
   const myTeam = isStudent
     ? (myTeamData ? {
-        teamId: myTeamData.teamId,
-        teamName: myTeamData.teamName,
-        projectId: myTeamData.project?.projectId,
-        projectName: myTeamData.project?.name || "",
-      } : null)
+      teamId: myTeamData.teamId,
+      teamName: myTeamData.teamName,
+      projectId: myTeamData.project?.projectId || (myTeamData.project as any)?.id,
+      projectName: myTeamData.project?.name || "",
+    } : null)
     : myStudentRecord?.team;
 
   const myRole = isStudent
@@ -75,21 +76,17 @@ export function StudentProjectCreate() {
     createProject({ name: projectName }, {
       onSuccess: () => {
         toast.success("Khởi tạo dự án thành công!");
-        refetch(); // Refetch to get the new projectId
+        refetch();
       },
       onError: (err: any) => {
-        toast.error(err.response?.data?.message || "Có lỗi xảy ra khi tạo dự án");
+        toast.error(err.message || "Có lỗi xảy ra khi tạo dự án");
       }
     });
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-
-      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
+    <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
+      <div className="p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
 
         {/* Header Section */}
         <PageHeader
@@ -175,9 +172,10 @@ export function StudentProjectCreate() {
                   <Button
                     type="submit"
                     disabled={isCreating}
-                    className="w-full h-11 rounded-xl font-bold text-xs uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md shadow-primary/10"
+                    className="w-full h-11 rounded-xl font-bold text-xs uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md shadow-primary/10 gap-2"
                   >
-                    {isCreating ? "Đang tạo..." : "Khởi tạo Project"}
+                    {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                    {isCreating ? "Đang xử lý..." : "Khởi tạo Project"}
                   </Button>
                 )}
               </Card>
@@ -196,8 +194,9 @@ export function StudentProjectCreate() {
                 </div>
               </Card>
 
-              {/* Show Integration Panel */}
               <ProjectIntegrationPanel projectId={myTeam.projectId} />
+
+              <SyncStatusMonitor projectId={myTeam.projectId} />
             </div>
 
             <div className="space-y-6">
