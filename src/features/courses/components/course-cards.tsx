@@ -79,13 +79,13 @@ export function CourseCards() {
                 {isAdmin && (
                   <div className="pt-4 border-t border-border/50 mt-auto">
                     <Button
-                      variant="outline"
-                      className="w-full rounded-xl gap-2 hover:bg-primary hover:text-primary-foreground transition-colors group-hover:border-primary/50"
-                      onClick={() => router.push(`/master-data/courses/${course.id}/students`)}
+                      variant="default"
+                      className="w-full rounded-xl gap-2 font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all group-hover:shadow-md"
+                      onClick={() => router.push(`/admin/classes/${course.id}`)}
                     >
-                      <Users size={16} />
-                      <span>Quản lý Sinh viên</span>
-                      <ArrowRight size={16} className="ml-auto opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                      <Network size={16} />
+                      <span>Workspace Quản trị</span>
+                      <ArrowRight size={16} className="ml-auto opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                     </Button>
                   </div>
                 )}

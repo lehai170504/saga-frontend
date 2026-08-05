@@ -147,6 +147,26 @@ Dành cho giảng viên xem và ghi đè phần trăm đóng góp của sinh vi�
   - Path Param: `teamId`
   - Request Body: `ContributionOverrideRequest`
   - Response: Kết quả cập nhật phần trăm.
+- `GET /api/v1/courses/contribution-slice-weight-requests`: Admin xem toàn bộ danh sách yêu cầu thay đổi trọng số Slices trên toàn hệ thống (Đã tích hợp).
+- `PUT /api/v1/courses/contribution-slice-weight-requests/{requestId}/decision`: Admin Duyệt hoặc Từ chối yêu cầu thay đổi trọng số (Đã tích hợp).
+
+### 1.10. Lecturer Analytics (Biểu đồ & Thống kê)
+Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấu hình và gọi thành công trong `src/features/lecturer/api/analyticsApi.ts`:
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/detail`: Lấy chi tiết Team (project, members).
+- `GET /api/v1/courses/{courseId}/students/{studentId}/progress`: Tiến độ công việc (Task completion).
+- `GET /api/v1/courses/{courseId}/students/{studentId}/activities`: Hoạt động gần đây (Commit, Docs).
+- `GET /api/v1/courses/{courseId}/students/{studentId}/contribution-detail`: Chi tiết điểm đóng góp cá nhân.
+- `GET /api/v1/courses/{courseId}/early-warnings`: Danh sách cảnh báo sớm (OVERDUE_TASK).
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/interactions`: Dữ liệu cho đồ thị tương tác Node-Edge.
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/heatmap`: Dữ liệu cho biểu đồ nhiệt (Heatmap).
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/sprints/velocity`: Vận tốc làm việc theo Sprint.
+
+### 1.11. Admin & Team Analytics (Sprints & Peer Review)
+- `GET /api/v1/teams/{teamId}/sprints`: Lấy danh sách Sprint của một nhóm.
+- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Đọc kết quả Peer Review của nhóm trong một Sprint cụ thể.
+- `GET /api/v1/peer-review-rubrics/default`: Lấy cấu hình Rubric đánh giá chéo chuẩn của toàn trường (Admin sử dụng).
+- `GET /api/v1/courses/contribution-slice-weights`: Lấy trọng số đóng góp của một khóa học.
+- `POST /api/v1/courses/{courseId}/contribution-slice-weight-requests`: Gửi yêu cầu thay đổi trọng số (Lecturer).
 
 ---
 
@@ -173,11 +193,13 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 4. **Tìm kiếm Course/Class bằng Keyword:**
    - Các API List (như `GET /api/v1/courses`) cần bổ sung param `?keyword=...` để thanh Search của Frontend có thể hoạt động.
 
-6. **LỖI NGHIÊM TRỌNG: Luồng OAuth Callback (GitHub/Jira):**
-   - Hiện trạng: Khi sinh viên bấm "Liên kết GitHub" hoặc "Jira", Frontend gọi đến API `GET /api/me/integrations/github/connect`. Trình duyệt chuyển sang trang ủy quyền của GitHub/Jira. Sau khi user đồng ý, GitHub/Jira redirect về Callback của Backend (vd: `GET /api/me/integrations/github/callback`).
-   - Lỗi Backend: Backend đang xử lý Callback và trả về trực tiếp chuỗi JSON (`IdentityConnectionResponse`) với status 200 OK ngay trên trình duyệt (như hình sinh viên gửi).
-   - Yêu cầu Backend sửa: Backend PHẢI redirect (Mã HTTP 302 Found) người dùng trở lại đường dẫn của Frontend (ví dụ: `http://localhost:3000/student/settings?status=success`) sau khi lưu xong mapping, chứ không được in JSON thô ra màn hình.
-   - Note thêm về Jira: App Jira do Backend tạo trên Atlassian Developer đang ở chế độ "Development", chưa được cấp quyền Public hoặc chưa add email sinh viên vào danh sách tester. Dẫn đến lỗi "You don't have access to this app". Backend cần vào Atlassian để mở quyền.
+5. **Các API Backend ĐÃ CÓ nhưng Frontend CHƯA GỌI:**
+   - Sprints API:
+     - `GET /api/v1/projects/{projectId}/sprints`
+   - Peer Review API:
+     - `GET /api/v1/teams/{teamId}/peer-review-rubric`
+     - `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews/candidates`
+     - `POST /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`
 
 ### 2.2. Phía Frontend (Các hạng mục cần hoàn thiện tiếp)
 > **Những tính năng này có thể tự làm hoặc đợi BE làm xong (2.1) rồi mới ráp nối.**
@@ -199,7 +221,7 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 
 4. **Biểu đồ (Dashboards) & Đánh giá Năng lực (Evaluations):**
    - Radar Chart và Timeline trong trang chi tiết Sinh viên đang dùng Mock Data.
-   - Các trang Interaction Graph, Heatmap, Metrics (dành cho Admin và Lecturer) chưa được triển khai giao diện.
+   - Các trang Interaction Graph, Heatmap, Metrics (dành cho Admin và Lecturer) đã được BE cung cấp API nhưng FE chưa triển khai đầy đủ giao diện.
 
 ---
 **Kết luận:** 

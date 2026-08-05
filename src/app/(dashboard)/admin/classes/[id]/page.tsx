@@ -17,31 +17,10 @@ import { ClassStudentsTab } from "@/features/admin/components/class-details/clas
 import { ClassGroupsTab } from "@/features/admin/components/class-details/class-groups-tab";
 import { ClassProjectsTab } from "@/features/admin/components/class-details/class-projects-tab";
 import { ClassStudentModal } from "@/features/admin/components/class-details/class-student-modal";
-// Custom SVG Icons
-
+import { useCourse } from "@/features/courses/hooks/useCourses";
+import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 
 // Mock Data
-const mockClassDetails = {
-  id: "1",
-  className: "SE102.M21",
-  subject: "Công nghệ phần mềm",
-  lecturer: "Dr. Nguyen Van A",
-  semester: "Học kỳ 1 - 2023-2024",
-  status: "Đang diễn ra",
-  totalStudents: 45,
-  totalGroups: 9,
-  totalProjects: 9,
-};
-
-const mockStudents = Array.from({ length: 15 }).map((_, i) => ({
-  id: `sv${i + 1}`,
-  studentId: `SE180${i.toString().padStart(3, '0')}`,
-  name: `Sinh viên ${i + 1}`,
-  email: `sv${i + 1}@student.edu.vn`,
-  status: i % 5 === 0 ? "Vắng nhiều" : "Bình thường",
-  avatar: `https://i.pravatar.cc/150?u=sv${i}`
-}));
-
 const mockGroups = Array.from({ length: 9 }).map((_, i) => ({
   id: `g${i + 1}`,
   name: `Nhóm ${i + 1}`,
@@ -63,13 +42,41 @@ const mockProjects = Array.from({ length: 9 }).map((_, i) => ({
   jiraBoard: `Jira Board Nhóm ${i + 1}`
 }));
 
-export default function ClassDetailsPage() {
+export default function ClassDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const { id: courseId } = React.use(params);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: course, isLoading: isLoadingCourse } = useCourse(courseId);
+
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: studentsResponse, isLoading: isLoadingStudents } = useCourseStudents(courseId, {
+    keyword: searchQuery,
+    page: 0,
+    size: 50
+  });
 
-  const [students, setStudents] = useState(mockStudents);
+  const students = React.useMemo(() => {
+    if (!studentsResponse) return [];
+    const withTeam = studentsResponse.studentsWithTeam.content.map(s => ({
+      id: s.studentId,
+      studentId: s.studentCode,
+      name: s.fullName,
+      email: s.email,
+      status: "Bình thường",
+      avatar: `https://i.pravatar.cc/150?u=${s.studentId}`,
+      teamName: s.team?.teamName
+    }));
+    const withoutTeam = studentsResponse.studentsWithoutTeam.content.map(s => ({
+      id: s.studentId,
+      studentId: s.studentCode,
+      name: s.fullName,
+      email: s.email,
+      status: "Bình thường",
+      avatar: `https://i.pravatar.cc/150?u=${s.studentId}`,
+      teamName: undefined
+    }));
+    return [...withTeam, ...withoutTeam];
+  }, [studentsResponse]);
 
   // Modals state
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
@@ -89,23 +96,12 @@ export default function ClassDetailsPage() {
   };
 
   const handleSaveStudent = () => {
-    if (!studentFormData.name || !studentFormData.studentId) {
-      toast.error("Vui lòng nhập đủ thông tin!");
-      return;
-    }
-    if (editingStudentId) {
-      setStudents(students.map(s => s.id === editingStudentId ? { ...s, ...studentFormData } : s));
-      toast.success("Cập nhật sinh viên thành công!");
-    } else {
-      setStudents([...students, { id: Date.now().toString(), avatar: "https://i.pravatar.cc/150", ...studentFormData }]);
-      toast.success("Thêm sinh viên thành công!");
-    }
+    toast.info("Chức năng thêm/sửa sinh viên qua form đang được phát triển.");
     setIsStudentModalOpen(false);
   };
 
   const handleDeleteStudent = (id: string) => {
-    setStudents(students.filter(s => s.id !== id));
-    toast.success("Đã xóa sinh viên khỏi lớp!");
+    toast.info("Chức năng xóa sinh viên đang được phát triển.");
   };
 
   const handleSimulateAction = (message: string) => {
@@ -119,12 +115,7 @@ export default function ClassDetailsPage() {
     );
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+  const isLoading = isLoadingCourse || isLoadingStudents;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -147,7 +138,7 @@ export default function ClassDetailsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        {isLoading ? (
+        {isLoadingCourse ? (
           <div className="space-y-2">
             <Skeleton className="h-10 w-48 rounded-xl" />
             <Skeleton className="h-5 w-64 rounded-md" />
@@ -155,14 +146,14 @@ export default function ClassDetailsPage() {
         ) : (
           <div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
-              Lớp {mockClassDetails.className}
+              Lớp {course?.clazz?.classCode || course?.name}
               <span className="text-xs px-2.5 py-1 bg-success/10 text-success dark:bg-emerald-950/40 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
-                {mockClassDetails.status}
+                ĐANG DIỄN RA
               </span>
             </h1>
             <p className="text-muted-foreground mt-2 flex items-center gap-2 font-medium">
               <GraduationCap className="w-4 h-4" />
-              {mockClassDetails.subject} • Giảng viên: {mockClassDetails.lecturer} • {mockClassDetails.semester}
+              {course?.subject?.name} • Giảng viên: {course?.instructor?.name} • {course?.semester?.name}
             </p>
           </div>
         )}
@@ -178,14 +169,14 @@ export default function ClassDetailsPage() {
       {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
-          { label: "Tổng sinh viên", value: mockClassDetails.totalStudents, icon: <Users className="w-4 h-4" /> },
-          { label: "Số lượng nhóm", value: mockClassDetails.totalGroups, icon: <UsersRound className="w-4 h-4" /> },
-          { label: "Số lượng dự án", value: mockClassDetails.totalProjects, icon: <FolderKanban className="w-4 h-4" /> }
+          { label: "Tổng sinh viên", value: students.length, icon: <Users className="w-4 h-4" /> },
+          { label: "Số lượng nhóm", value: mockGroups.length, icon: <UsersRound className="w-4 h-4" /> },
+          { label: "Số lượng dự án", value: mockProjects.length, icon: <FolderKanban className="w-4 h-4" /> }
         ].map((stat, i) => (
           <MetricCard
             key={i}
             title={stat.label}
-            value={isLoading ? "-" : stat.value.toString()}
+            value={isLoadingCourse ? "-" : stat.value.toString()}
             icon={stat.icon}
           />
         ))}
@@ -216,7 +207,11 @@ export default function ClassDetailsPage() {
         ) : (
           <>
             <TabsContent value="settings" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassSettingsTab classDetails={mockClassDetails} />
+              <ClassSettingsTab classDetails={{
+                className: course?.clazz?.classCode || "",
+                subject: course?.subject?.name || "",
+                semester: course?.semester?.name || "",
+              }} />
             </TabsContent>
 
             <TabsContent value="students" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
@@ -227,15 +222,17 @@ export default function ClassDetailsPage() {
                 onAddStudent={openAddStudent}
                 onEditStudent={openEditStudent}
                 onDeleteStudent={handleDeleteStudent}
+                courseId={courseId}
+                courseName={course?.clazz?.classCode || course?.name || ""}
               />
             </TabsContent>
 
             <TabsContent value="groups" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassGroupsTab groups={mockGroups} />
+              <ClassGroupsTab groups={mockGroups} courseId={courseId} />
             </TabsContent>
 
             <TabsContent value="projects" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassProjectsTab projects={mockProjects} />
+              <ClassProjectsTab projects={mockProjects} courseId={courseId} />
             </TabsContent>
           </>
         )}

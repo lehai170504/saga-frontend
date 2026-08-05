@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export interface Group {
@@ -11,9 +13,10 @@ export interface Group {
 
 interface ClassGroupsTabProps {
   groups: Group[];
+  courseId: string;
 }
 
-export function ClassGroupsTab({ groups }: ClassGroupsTabProps) {
+export function ClassGroupsTab({ groups, courseId }: ClassGroupsTabProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -57,6 +60,14 @@ export function ClassGroupsTab({ groups }: ClassGroupsTabProps) {
               <span className="text-xs font-bold px-2 py-1 bg-primary/10 text-primary rounded-md">
                 Trưởng nhóm: {group.leader}
               </span>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <Link href={`/admin/classes/${courseId}/teams/${group.id}`}>
+                <Button variant="outline" className="w-full rounded-xl border-border bg-card hover:bg-muted font-bold text-primary">
+                  Xem chi tiết Analytics & Đánh giá
+                </Button>
+              </Link>
             </div>
           </div>
         ))}

@@ -5,7 +5,6 @@ import { CheckCircle2, XCircle, Clock, ShieldAlert, AlertTriangle, BookOpen } fr
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetWeightRequests, useDecideWeightRequest } from "../../hooks/useContributionWeight";
-import { ContributionWeightRequest } from "../../api/contributionWeightApi";
 import { toast } from "sonner";
 
 export function OverrideRequests() {
