@@ -59,7 +59,7 @@ export const useDeleteProjectJiraIntegration = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
       toast.success("Ngắt kết nối Jira thành công!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Jira.");
     },
   });
@@ -83,7 +83,7 @@ export const useDeleteGithubRepository = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
       toast.success("Ngắt kết nối Repository thành công!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Repository.");
     },
   });

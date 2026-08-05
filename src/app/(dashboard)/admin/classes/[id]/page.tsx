@@ -4,43 +4,14 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft, Search, Plus, Download, MoreHorizontal,
-  Edit, Trash2, Users, UsersRound, FolderKanban, Mail,
-  GraduationCap, Sparkles, Save
+  ArrowLeft, Download,
+  Users, UsersRound, FolderKanban,
+  GraduationCap, Sparkles,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/shared/Skeleton";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { MetricCard } from "@/components/shared/MetricCard";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClassSettingsTab } from "@/features/admin/components/class-details/class-settings-tab";
 import { ClassStudentsTab } from "@/features/admin/components/class-details/class-students-tab";
 import { ClassGroupsTab } from "@/features/admin/components/class-details/class-groups-tab";

@@ -43,7 +43,7 @@ export function StudentProjectCreate() {
     ? (myTeamData ? {
       teamId: myTeamData.teamId,
       teamName: myTeamData.teamName,
-      projectId: myTeamData.project?.projectId || (myTeamData.project as any)?.id,
+      projectId: myTeamData.project?.projectId || (myTeamData.project as { id?: string })?.id,
       projectName: myTeamData.project?.name || "",
     } : null)
     : myStudentRecord?.team;
@@ -80,7 +80,7 @@ export function StudentProjectCreate() {
         toast.success("Khởi tạo dự án thành công!");
         refetch();
       },
-      onError: (err: any) => {
+      onError: (err: Error) => {
         toast.error(err.message || "Có lỗi xảy ra khi tạo dự án");
       }
     });

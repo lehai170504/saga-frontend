@@ -45,7 +45,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     if (typeof window !== "undefined") {
       const shouldOpenModal = sessionStorage.getItem("open_profile_modal");
       if (shouldOpenModal === "true") {
-        setIsProfileOpen(true);
+        requestAnimationFrame(() => setIsProfileOpen(true));
         sessionStorage.removeItem("open_profile_modal");
       }
     }

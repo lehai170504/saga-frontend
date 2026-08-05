@@ -17,7 +17,7 @@ export const useDeleteJiraIntegration = () => {
       queryClient.invalidateQueries({ queryKey: ["personal-integrations"] });
       toast.success("Ngắt kết nối Jira thành công!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Jira.");
     },
   });
@@ -31,7 +31,7 @@ export const useDeleteGithubIntegration = () => {
       queryClient.invalidateQueries({ queryKey: ["personal-integrations"] });
       toast.success("Ngắt kết nối GitHub thành công!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối GitHub.");
     },
   });

@@ -42,9 +42,10 @@ export function CreateClassDialog() {
       await createClass(data);
       reset();
       setOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+
       console.error("Failed to create class", error);
-      toast.error(error.message || "Có lỗi xảy ra khi tạo lớp học.");
+      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi tạo lớp học.");
     }
   };
 

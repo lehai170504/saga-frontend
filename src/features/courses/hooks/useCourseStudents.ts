@@ -9,8 +9,8 @@ export const useImportStudents = () => {
     onSuccess: () => {
       toast.success("Import danh sách sinh viên thành công!");
     },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || "Đã có lỗi xảy ra khi import sinh viên.";
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Đã có lỗi xảy ra khi import sinh viên.";
       toast.error(errorMessage);
     }
   });

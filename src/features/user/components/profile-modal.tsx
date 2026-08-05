@@ -43,12 +43,14 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     if (isOpen) {
       if (typeof window !== "undefined") {
         const savedTab = sessionStorage.getItem("profile_modal_tab");
-        if (savedTab) {
-          setActiveTab(savedTab);
-          sessionStorage.removeItem("profile_modal_tab");
-        } else {
-          setActiveTab("profile");
-        }
+        requestAnimationFrame(() => {
+          if (savedTab) {
+            setActiveTab(savedTab);
+            sessionStorage.removeItem("profile_modal_tab");
+          } else {
+            setActiveTab("profile");
+          }
+        });
       }
     }
   }, [isOpen]);

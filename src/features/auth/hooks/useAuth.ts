@@ -1,10 +1,10 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { authApi } from '../api/authApi';
 import { useAuthStore } from '@/stores/authStore';
 import { useEffect } from 'react';
 
 export function useAuth() {
-  const queryClient = useQueryClient();
+
   const setUser = useAuthStore((state) => state.setUser);
   const setCsrf = useAuthStore((state) => state.setCsrf);
   const setInitializing = useAuthStore((state) => state.setInitializing);
@@ -19,8 +19,9 @@ export function useAuth() {
           csrf = await authApi.getCsrf();
         }
         return { user, csrf };
-      } catch (err: any) {
-        if (err?.status === 401) {
+      } catch (err: unknown) {
+
+        if ((err as { status?: number })?.status === 401) {
           return { user: null, csrf: null }; // Return gracefully if 401
         }
         throw err;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Loader2, BookOpen, Clock, Activity } from "lucide-react";
@@ -14,11 +14,11 @@ export default function StudentSelectionPage() {
   const [selectedSemester, setSelectedSemester] = useState<string>("");
 
   const { data: semestersPage, isLoading: isLoadingSemesters } = useSemesters({ size: 50 });
-  const semesters = semestersPage?.content || [];
+  const semesters = useMemo(() => semestersPage?.content || [], [semestersPage?.content]);
 
   useEffect(() => {
     if (semesters.length > 0 && !selectedSemester) {
-      setSelectedSemester(semesters[0].id);
+      requestAnimationFrame(() => setSelectedSemester(semesters[0].id));
     }
   }, [semesters, selectedSemester]);
 

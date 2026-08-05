@@ -63,7 +63,8 @@ export function CreateCourseDialog() {
       await createCourse(data);
       reset();
       setOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      
       console.error("Failed to create course", error);
     }
   };

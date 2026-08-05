@@ -51,9 +51,9 @@ export default function GitHubSelectRepositoriesPage() {
         try {
           const parsed = JSON.parse(stored) as GitHubInstallationData;
           if (parsed.repositories && parsed.projectId && parsed.installationId) {
-            setData(parsed);
+            requestAnimationFrame(() => setData(parsed));
             // Default select all
-            setSelectedRepoIds(parsed.repositories.map(r => r.repositoryId));
+            requestAnimationFrame(() => setSelectedRepoIds(parsed.repositories.map(r => r.repositoryId)));
             return;
           }
         } catch (e) {
@@ -111,9 +111,10 @@ export default function GitHubSelectRepositoriesPage() {
 
       const redirectBack = sessionStorage.getItem("integration_redirect_back");
       router.replace(redirectBack || "/student");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const _err = err as Error;
       console.error(err);
-      toast.error(err.message || "Có lỗi xảy ra khi liên kết Repositories.");
+      toast.error(_err.message || "Có lỗi xảy ra khi liên kết Repositories.");
     } finally {
       setIsSubmitting(false);
     }

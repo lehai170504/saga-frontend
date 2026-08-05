@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 
 // Mock data generation for heatmap for a specific project
-const generateHeatmapData = (projectId: string) => {
+const generateHeatmapData = () => {
   const students = ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C"];
   const days = Array.from({ length: 30 }, (_, i) => i + 1); // 30 days
 
@@ -40,9 +40,9 @@ const getColorClass = (count: number) => {
   return "bg-primary border-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]";
 };
 
-export function ProjectHeatmap({ projectId }: { projectId: string }) {
+export function ProjectHeatmap() {
   const [filterType, setFilterType] = useState("all");
-  const heatmapData = React.useMemo(() => generateHeatmapData(projectId), [projectId]);
+  const heatmapData = React.useMemo(() => generateHeatmapData(), []);
 
   return (
     <div className="space-y-6">

@@ -57,10 +57,10 @@ axiosInstance.interceptors.response.use(
   },
   (error: AxiosError) => {
     const status = error.response?.status || 500;
-    const body: any = error.response?.data;
+    const body = error.response?.data as Record<string, unknown> | undefined;
 
-    const errorName = body?.error || "Unknown Error";
-    const message = body?.message || error.message || `HTTP ${status}`;
+    const errorName = (body?.error as string) || "Unknown Error";
+    const message = (body?.message as string) || error.message || `HTTP ${status}`;
 
     // Handle unauthorized globally
     if (status === 401) {

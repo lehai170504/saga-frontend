@@ -60,14 +60,14 @@ export default function LecturerContributionPage() {
   // Update selectedTeamId when realTeams are loaded
   useEffect(() => {
     if (realTeams.length > 0 && !selectedTeamId) {
-      setSelectedTeamId(realTeams[0].id);
+      requestAnimationFrame(() => setSelectedTeamId(realTeams[0].id));
     } else if (realTeams.length > 0 && !realTeams.find(t => t.id === selectedTeamId)) {
-      setSelectedTeamId(realTeams[0].id);
+      requestAnimationFrame(() => setSelectedTeamId(realTeams[0].id));
     }
   }, [realTeams, selectedTeamId]);
 
   // Hooks gọi API (Không cần sprintId nữa theo Swagger mới)
-  const { data: apiData, isLoading, isError } = useContributionEvaluation(selectedTeamId);
+  const { data: apiData, isLoading } = useContributionEvaluation(selectedTeamId);
   const overrideMutation = useOverrideContribution();
 
   // State local để quản lý Override (vì API chưa có, ta dùng state giả lập UI)
@@ -78,10 +78,10 @@ export default function LecturerContributionPage() {
     if (!studentsData?.studentsWithTeam?.content) return undefined;
     const teamStudents = studentsData.studentsWithTeam.content.filter(s => s.team?.teamId === selectedTeamId);
     if (teamStudents.length === 0) return undefined;
-    
+
     // NẾU NHÓM CHƯA KẾT NỐI PROJECT -> Không render mock data, để cho rơi vào Empty State!
     if (!teamStudents[0].team?.projectId) return undefined;
-    
+
     return {
       teamId: selectedTeamId,
       projectId: teamStudents[0].team.projectId,
@@ -116,7 +116,7 @@ export default function LecturerContributionPage() {
   // Lọc sinh viên theo tên
   const filteredMembers = useMemo(() => {
     if (!teamData || !teamData.members) return [];
-    return teamData.members.filter(m => 
+    return teamData.members.filter(m =>
       m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       m.studentCode.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -125,7 +125,7 @@ export default function LecturerContributionPage() {
   // Xử lý khi Giảng viên nhập % Override
   const handleOverrideChange = (studentId: string, value: string, originalPercentage: number) => {
     const newFinalPercentage = parseFloat(value);
-    
+
     // Nếu rỗng hoặc NaN, xóa bỏ override của sinh viên này
     if (isNaN(newFinalPercentage) || value === "") {
       setLocalAdjustments(prev => {
@@ -137,7 +137,7 @@ export default function LecturerContributionPage() {
     }
 
     const adjustmentPercentage = newFinalPercentage - originalPercentage;
-    
+
     setLocalAdjustments(prev => ({
       ...prev,
       [studentId]: {
@@ -240,7 +240,7 @@ export default function LecturerContributionPage() {
                       <SelectValue placeholder={isLoadingTeams ? "Đang tải nhóm..." : (realTeams.length === 0 ? "Chưa có nhóm nào" : "Chọn nhóm")} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl">
-                      {realTeams.map((team: any) => (
+                      {realTeams.map((team: { id: string; name: string }) => (
                         <SelectItem key={team.id} value={team.id} className="rounded-lg">{team.name}</SelectItem>
                       ))}
                     </SelectContent>
@@ -274,8 +274,8 @@ export default function LecturerContributionPage() {
                   </div>
                   <div className="flex-1 space-y-2">
                     <label className="text-sm font-bold text-foreground">Lý do chung cho quyết định ghi đè của Nhóm này <span className="text-destructive">*</span></label>
-                    <Input 
-                      placeholder="Ví dụ: Nhóm có thành viên nghỉ ốm dài hạn..." 
+                    <Input
+                      placeholder="Ví dụ: Nhóm có thành viên nghỉ ốm dài hạn..."
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
                       className="bg-background rounded-xl border-primary/20 focus-visible:ring-primary"
@@ -301,7 +301,7 @@ export default function LecturerContributionPage() {
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">Chưa có kết quả đánh giá đóng góp</h3>
                 <p className="text-muted-foreground max-w-sm mb-6">
-                  Nhóm này hiện tại <b>chưa kết nối với bất kỳ Dự án nào</b>, 
+                  Nhóm này hiện tại <b>chưa kết nối với bất kỳ Dự án nào</b>,
                   hoặc chưa có dữ liệu chấm điểm Slices từ hệ thống.
                 </p>
                 <Button variant="outline" className="border-border/50 text-foreground hover:bg-muted" onClick={() => window.location.href = `/lecturer/${courseId}/projects`}>
@@ -310,116 +310,115 @@ export default function LecturerContributionPage() {
                 </Button>
               </div>
             ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-muted/30">
-                  <TableRow>
-                    <TableHead className="w-[100px] font-bold text-muted-foreground">Mã SV</TableHead>
-                    <TableHead className="font-bold text-muted-foreground min-w-[150px]">Họ và Tên</TableHead>
-                    <TableHead className="font-bold text-muted-foreground text-center">Vai trò</TableHead>
-                    <TableHead className="font-bold text-muted-foreground text-center" title="Điểm Peer Review (Max 20)">Peer Review</TableHead>
-                    <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
-                    <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
-                    <TableHead className="text-center font-bold text-muted-foreground">% Design</TableHead>
-                    <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
-                    <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
-                    <TableHead className="text-center bg-primary/5 font-bold text-primary border-r border-primary/10 min-w-[140px]">% GV Chốt</TableHead>
-                    <TableHead className="font-bold text-muted-foreground min-w-[200px]">Ghi chú cá nhân</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredMembers.length === 0 ? (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-muted/30">
                     <TableRow>
-                      <TableCell colSpan={11} className="h-32 text-center text-muted-foreground">
-                        {isLoading ? "Đang tải dữ liệu..." : "Không tìm thấy dữ liệu nhóm này"}
-                      </TableCell>
+                      <TableHead className="w-[100px] font-bold text-muted-foreground">Mã SV</TableHead>
+                      <TableHead className="font-bold text-muted-foreground min-w-[150px]">Họ và Tên</TableHead>
+                      <TableHead className="font-bold text-muted-foreground text-center">Vai trò</TableHead>
+                      <TableHead className="font-bold text-muted-foreground text-center" title="Điểm Peer Review (Max 20)">Peer Review</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Design</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
+                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
+                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-r border-primary/10 min-w-[140px]">% GV Chốt</TableHead>
+                      <TableHead className="font-bold text-muted-foreground min-w-[200px]">Ghi chú cá nhân</TableHead>
                     </TableRow>
-                  ) : (
-                    filteredMembers.map((student) => {
-                      const adjustment = localAdjustments[student.studentId];
-                      const isOverridden = !!adjustment;
-                      const finalDisplayValue = isOverridden 
-                        ? (student.finalContributionPercentage + adjustment.adjustmentPercentage).toFixed(1)
-                        : student.finalContributionPercentage.toFixed(1);
+                  </TableHeader>
+                  <TableBody>
+                    {filteredMembers.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={11} className="h-32 text-center text-muted-foreground">
+                          {isLoading ? "Đang tải dữ liệu..." : "Không tìm thấy dữ liệu nhóm này"}
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredMembers.map((student) => {
+                        const adjustment = localAdjustments[student.studentId];
+                        const isOverridden = !!adjustment;
+                        const finalDisplayValue = isOverridden
+                          ? (student.finalContributionPercentage + adjustment.adjustmentPercentage).toFixed(1)
+                          : student.finalContributionPercentage.toFixed(1);
 
-                      return (
-                        <TableRow key={student.studentId} className="hover:bg-muted/20 transition-colors">
-                          <TableCell className="font-medium text-muted-foreground">{student.studentCode}</TableCell>
-                          <TableCell className="font-bold text-foreground">{student.fullName}</TableCell>
-                          <TableCell className="text-center">
-                            <Badge variant="secondary" className="bg-muted/50 hover:bg-muted font-semibold">
-                              {student.role || "MEMBER"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-center font-medium text-muted-foreground">{student.peerReviewScore}/20</TableCell>
-                          
-                          {/* Slices Breakdown */}
-                          <TableCell className="text-center font-medium">{student.codeContributionPercentage}%</TableCell>
-                          <TableCell className="text-center font-medium">{student.documentContributionPercentage}%</TableCell>
-                          <TableCell className="text-center font-medium">{student.designContributionPercentage}%</TableCell>
-                          
-                          <TableCell className="text-center">
-                            {student.warnings && student.warnings.length > 0 ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-bold whitespace-nowrap" title={student.warnings.map(w => w.message).join(", ")}>
-                                <AlertTriangle size={12} /> Cờ đỏ
-                              </div>
-                            ) : (
-                              <div className="inline-flex items-center gap-1 px-2 py-1 bg-success/10 text-success rounded-md text-xs font-bold whitespace-nowrap">
-                                <CheckCircle2 size={12} /> Hợp lệ
-                              </div>
-                            )}
-                          </TableCell>
+                        return (
+                          <TableRow key={student.studentId} className="hover:bg-muted/20 transition-colors">
+                            <TableCell className="font-medium text-muted-foreground">{student.studentCode}</TableCell>
+                            <TableCell className="font-bold text-foreground">{student.fullName}</TableCell>
+                            <TableCell className="text-center">
+                              <Badge variant="secondary" className="bg-muted/50 hover:bg-muted font-semibold">
+                                {student.role || "MEMBER"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-center font-medium text-muted-foreground">{student.peerReviewScore}/20</TableCell>
 
-                          {/* System Score */}
-                          <TableCell className="text-center bg-primary/5 border-x border-primary/20">
-                            <span className="font-bold text-primary text-lg">{student.finalContributionPercentage.toFixed(1)}%</span>
-                          </TableCell>
+                            {/* Slices Breakdown */}
+                            <TableCell className="text-center font-medium">{student.codeContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.documentContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.designContributionPercentage}%</TableCell>
 
-                          {/* Manual Override Score */}
-                          <TableCell className="text-center bg-primary/5 border-r border-primary/10 relative px-2">
-                            <div className="relative">
-                              <Input
-                                type="number"
-                                step="0.5"
-                                min="0"
-                                max="100"
-                                className={`w-[80px] mx-auto text-center font-bold text-lg border-2 pr-4 ${
-                                  isOverridden 
-                                    ? 'border-primary text-primary focus-visible:ring-primary shadow-sm bg-background' 
-                                    : 'border-transparent text-primary bg-transparent focus-visible:ring-primary hover:border-primary/30'
-                                }`}
-                                defaultValue={finalDisplayValue}
-                                onBlur={(e) => handleOverrideChange(student.studentId, e.target.value, student.finalContributionPercentage)}
-                              />
-                              <span className="absolute right-[calc(50%-32px)] top-1/2 -translate-y-1/2 text-primary font-bold text-sm select-none pointer-events-none">%</span>
-                              {isOverridden && (
-                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-primary ring-2 ring-background animate-pulse" title="Đã thay đổi" />
+                            <TableCell className="text-center">
+                              {student.warnings && student.warnings.length > 0 ? (
+                                <div className="inline-flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive rounded-md text-xs font-bold whitespace-nowrap" title={student.warnings.map(w => w.message).join(", ")}>
+                                  <AlertTriangle size={12} /> Cờ đỏ
+                                </div>
+                              ) : (
+                                <div className="inline-flex items-center gap-1 px-2 py-1 bg-success/10 text-success rounded-md text-xs font-bold whitespace-nowrap">
+                                  <CheckCircle2 size={12} /> Hợp lệ
+                                </div>
                               )}
-                            </div>
-                            {isOverridden && (
-                              <div className="text-[10px] text-muted-foreground mt-1 font-medium">
-                                Chênh lệch: {adjustment.adjustmentPercentage > 0 ? '+' : ''}{adjustment.adjustmentPercentage.toFixed(1)}%
-                              </div>
-                            )}
-                          </TableCell>
+                            </TableCell>
 
-                          {/* Notes */}
-                          <TableCell className="p-2">
-                            <Input
-                              placeholder="Lý do cá nhân (bắt buộc nếu sửa)..."
-                              value={adjustment?.note || ""}
-                              onChange={(e) => handleNoteChange(student.studentId, e.target.value)}
-                              disabled={!isOverridden}
-                              className={`bg-transparent ${isOverridden ? 'border-primary/30 bg-background focus-visible:ring-primary' : 'border-transparent opacity-50'}`}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                            {/* System Score */}
+                            <TableCell className="text-center bg-primary/5 border-x border-primary/20">
+                              <span className="font-bold text-primary text-lg">{student.finalContributionPercentage.toFixed(1)}%</span>
+                            </TableCell>
+
+                            {/* Manual Override Score */}
+                            <TableCell className="text-center bg-primary/5 border-r border-primary/10 relative px-2">
+                              <div className="relative">
+                                <Input
+                                  type="number"
+                                  step="0.5"
+                                  min="0"
+                                  max="100"
+                                  className={`w-[80px] mx-auto text-center font-bold text-lg border-2 pr-4 ${isOverridden
+                                    ? 'border-primary text-primary focus-visible:ring-primary shadow-sm bg-background'
+                                    : 'border-transparent text-primary bg-transparent focus-visible:ring-primary hover:border-primary/30'
+                                    }`}
+                                  defaultValue={finalDisplayValue}
+                                  onBlur={(e) => handleOverrideChange(student.studentId, e.target.value, student.finalContributionPercentage)}
+                                />
+                                <span className="absolute right-[calc(50%-32px)] top-1/2 -translate-y-1/2 text-primary font-bold text-sm select-none pointer-events-none">%</span>
+                                {isOverridden && (
+                                  <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-primary ring-2 ring-background animate-pulse" title="Đã thay đổi" />
+                                )}
+                              </div>
+                              {isOverridden && (
+                                <div className="text-[10px] text-muted-foreground mt-1 font-medium">
+                                  Chênh lệch: {adjustment.adjustmentPercentage > 0 ? '+' : ''}{adjustment.adjustmentPercentage.toFixed(1)}%
+                                </div>
+                              )}
+                            </TableCell>
+
+                            {/* Notes */}
+                            <TableCell className="p-2">
+                              <Input
+                                placeholder="Lý do cá nhân (bắt buộc nếu sửa)..."
+                                value={adjustment?.note || ""}
+                                onChange={(e) => handleNoteChange(student.studentId, e.target.value)}
+                                disabled={!isOverridden}
+                                className={`bg-transparent ${isOverridden ? 'border-primary/30 bg-background focus-visible:ring-primary' : 'border-transparent opacity-50'}`}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>

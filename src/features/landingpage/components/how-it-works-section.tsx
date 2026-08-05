@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { GitMerge, Users, PieChart, ShieldCheck, CheckCircle2, FileText, Check, GripHorizontal, Terminal, Activity, ChevronRight, BarChart3 } from "lucide-react";
-import { fadeUp, staggerContainer, scaleUp } from "./animations";
+import { motion } from "framer-motion";
+import { GitMerge, CheckCircle2, Terminal, ChevronRight, BarChart3 } from "lucide-react";
+import { fadeUp, scaleUp } from "./animations";
 
 export function HowItWorksSection() {
   return (

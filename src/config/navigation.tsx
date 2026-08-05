@@ -2,23 +2,14 @@ import React from "react";
 import {
   BarChart3,
   Network,
-  Activity,
   Calendar,
   Users,
   ArrowLeft,
   BookOpen,
   GraduationCap,
-  Share2,
   Logs,
   Link2,
-  Inbox,
-  UserCheck,
-  CalendarX,
   Settings2,
-  Database,
-  FolderKanban,
-  GitBranch,
-  ClipboardList,
 } from "lucide-react";
 
 export type NavItemType = {

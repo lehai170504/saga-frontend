@@ -4,7 +4,7 @@ import { useProjectIntegrations, useDeleteProjectJiraIntegration, useDeleteGithu
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
+import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle } from "lucide-react";
 import { API_BASE_URL } from "@/lib/axios";
 
 const getStatusBadgeClass = (status: string) => {

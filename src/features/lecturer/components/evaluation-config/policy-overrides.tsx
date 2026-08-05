@@ -45,7 +45,7 @@ export function PolicyOverrides() {
               <Label className="font-bold text-sm flex items-center gap-2">
                 <Activity className="w-4 h-4 text-primary" /> Cảnh báo Lười biếng (Ghosting Warning)
               </Label>
-              <p className="text-xs text-muted-foreground">Phát hiện "Zero Contribution". Cảnh báo đỏ nếu sinh viên không phát sinh Slices mới trong 5 ngày (vi phạm Daily Scrum).</p>
+              <p className="text-xs text-muted-foreground">Phát hiện &quot;Zero Contribution&quot;. Cảnh báo đỏ nếu sinh viên không phát sinh Slices mới trong 5 ngày (vi phạm Daily Scrum).</p>
             </div>
             <Switch checked={overrideGhosting} onCheckedChange={setOverrideGhosting} />
           </div>
@@ -112,7 +112,7 @@ export function PolicyOverrides() {
               <Label className="font-bold text-sm flex items-center gap-2">
                 <Users className="w-4 h-4 text-primary" /> Mất cân bằng Slices (Bus Factor Risk)
               </Label>
-              <p className="text-xs text-muted-foreground">Phát hiện "Gánh team". Cảnh báo khi 1-2 cá nhân chiếm trên 60% tổng Slices của toàn bộ Sprint. Trợ lý AI sẽ yêu cầu Scrum Master can thiệp.</p>
+              <p className="text-xs text-muted-foreground">Phát hiện &quot;Gánh team&quot;. Cảnh báo khi 1-2 cá nhân chiếm trên 60% tổng Slices của toàn bộ Sprint. Trợ lý AI sẽ yêu cầu Scrum Master can thiệp.</p>
             </div>
             <Switch checked={overrideBusFactor} onCheckedChange={setOverrideBusFactor} />
           </div>

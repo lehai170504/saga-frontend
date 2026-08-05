@@ -138,6 +138,10 @@ Toàn bộ luồng nhận ủy quyền từ các nhà cung cấp bên thứ ba (
     - Path Param: `resultId`
     - Response: `UnifiedCallbackResponse` (Chứa trạng thái `success`, `flow` ("PERSONAL" | "PROJECT"), và kết quả tương ứng lồng bên trong như `identityConnection` (Personal), `jiraAuthorization` (Project Jira), hoặc `gitHubInstallation` (Project GitHub)).
 
+### 1.9. Đánh giá Đóng góp (Contribution Flow)
+- `POST /api/v1/teams/{teamId}/contribution-override`: Giảng viên/Admin áp dụng override % đóng góp cho cả lớp ngay lập tức.
+- `GET /api/v1/teams/{teamId}/contribution-evaluation`: Lấy kết quả % đóng góp của từng thành viên trong nhóm (Đã gọi nhưng hiện đang thiếu truyền parameter `?sprintId={sprintId}`).
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)
@@ -179,7 +183,13 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 
 4. **Biểu đồ (Dashboards) & Đánh giá Năng lực (Evaluations):**
    - Radar Chart và Timeline trong trang chi tiết Sinh viên đang dùng Mock Data.
-   - Các trang Interaction Graph, Heatmap, Metrics (dành cho Admin và Lecturer) chưa được triển khai giao diện.
+   - Các trang Interaction Graph, Heatmap, Metrics (dành cho Admin và Lecturer) chưa được triển khai giao diện hoặc chưa nối API thực.
+
+5. **Luồng Đánh giá đóng góp (Contribution Flow) & Peer Review:**
+   - Cần bổ sung tham số `sprintId` vào API `getContributionEvaluation` (Trang xem Bảng điểm).
+   - Chưa tích hợp API Xem kết quả Peer Review chi tiết (`GET /api/v1/peer-review/team/{teamId}/detail?sprintId={sprintId}`).
+   - Chưa tích hợp cụm API Cấu hình & Yêu cầu thay đổi trọng số Slices (`GET /api/v1/courses/{courseId}/contribution-weights`, `POST .../contribution-weight-request`).
+   - Chưa tích hợp luồng/UI cho Admin duyệt/từ chối Yêu cầu thay đổi trọng số (`PUT .../decision`).
 
 ---
 **Kết luận:** 

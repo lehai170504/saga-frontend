@@ -40,9 +40,10 @@ export function formatSyncTimestamp(value: string | null | undefined): string {
 export function SyncStatusMonitor({ projectId }: { projectId: string }) {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: syncData, isLoading, error, refetch, isFetching } = useSyncStatus(projectId, {
-    refetchInterval: (query) => {
-      const jobs = (query.state.data as any)?.recentJobs || [];
-      const hasInProgress = jobs.some((job: any) => job.status === "IN_PROGRESS" || job.status === "PENDING");
+    refetchInterval: (query: unknown) => {
+      const data = (query as { state?: { data?: unknown } })?.state?.data as { recentJobs?: { status?: string }[] } | undefined;
+      const jobs = data?.recentJobs || [];
+      const hasInProgress = jobs.some((job) => job.status === "IN_PROGRESS" || job.status === "PENDING");
       return hasInProgress ? 5000 : false;
     }
   });

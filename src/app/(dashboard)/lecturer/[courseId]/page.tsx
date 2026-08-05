@@ -15,7 +15,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from "recharts";
 
 // Mock data: Slices and Velocity (Story Points) accumulation over sprints/days
