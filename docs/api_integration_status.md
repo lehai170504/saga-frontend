@@ -138,9 +138,15 @@ Toàn bộ luồng nhận ủy quyền từ các nhà cung cấp bên thứ ba (
     - Path Param: `resultId`
     - Response: `UnifiedCallbackResponse` (Chứa trạng thái `success`, `flow` ("PERSONAL" | "PROJECT"), và kết quả tương ứng lồng bên trong như `identityConnection` (Personal), `jiraAuthorization` (Project Jira), hoặc `gitHubInstallation` (Project GitHub)).
 
-### 1.9. Đánh giá Đóng góp (Contribution Flow)
-- `POST /api/v1/teams/{teamId}/contribution-override`: Giảng viên/Admin áp dụng override % đóng góp cho cả lớp ngay lập tức.
-- `GET /api/v1/teams/{teamId}/contribution-evaluation`: Lấy kết quả % đóng góp của từng thành viên trong nhóm (Đã gọi nhưng hiện đang thiếu truyền parameter `?sprintId={sprintId}`).
+### 1.9. Đánh giá % Đóng góp (Lecturer Contribution)
+Dành cho giảng viên xem và ghi đè phần trăm đóng góp của sinh viên trong nhóm.
+- `GET /api/v1/teams/{teamId}/contribution-evaluation`: Xem chi tiết phần trăm đóng góp của từng thành viên trong nhóm dựa trên điểm Task và Peer Review.
+  - Path Param: `teamId`
+  - Response: `ContributionEvaluationResponse` (có chứa breakdown cho Code, Doc, Design, Cảnh báo AI, v.v.)
+- `POST /api/v1/teams/{teamId}/contribution-override`: Ghi đè phần trăm đóng góp cuối cùng cho nhóm.
+  - Path Param: `teamId`
+  - Request Body: `ContributionOverrideRequest`
+  - Response: Kết quả cập nhật phần trăm.
 
 ---
 
@@ -167,10 +173,20 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 4. **Tìm kiếm Course/Class bằng Keyword:**
    - Các API List (như `GET /api/v1/courses`) cần bổ sung param `?keyword=...` để thanh Search của Frontend có thể hoạt động.
 
+6. **LỖI NGHIÊM TRỌNG: Luồng OAuth Callback (GitHub/Jira):**
+   - Hiện trạng: Khi sinh viên bấm "Liên kết GitHub" hoặc "Jira", Frontend gọi đến API `GET /api/me/integrations/github/connect`. Trình duyệt chuyển sang trang ủy quyền của GitHub/Jira. Sau khi user đồng ý, GitHub/Jira redirect về Callback của Backend (vd: `GET /api/me/integrations/github/callback`).
+   - Lỗi Backend: Backend đang xử lý Callback và trả về trực tiếp chuỗi JSON (`IdentityConnectionResponse`) với status 200 OK ngay trên trình duyệt (như hình sinh viên gửi).
+   - Yêu cầu Backend sửa: Backend PHẢI redirect (Mã HTTP 302 Found) người dùng trở lại đường dẫn của Frontend (ví dụ: `http://localhost:3000/student/settings?status=success`) sau khi lưu xong mapping, chứ không được in JSON thô ra màn hình.
+   - Note thêm về Jira: App Jira do Backend tạo trên Atlassian Developer đang ở chế độ "Development", chưa được cấp quyền Public hoặc chưa add email sinh viên vào danh sách tester. Dẫn đến lỗi "You don't have access to this app". Backend cần vào Atlassian để mở quyền.
+
 ### 2.2. Phía Frontend (Các hạng mục cần hoàn thiện tiếp)
 > **Những tính năng này có thể tự làm hoặc đợi BE làm xong (2.1) rồi mới ráp nối.**
 
-1. **Giao diện Chọn Nhóm / Danh sách Lớp của Sinh viên:**
+1. **Giao diện Quản lý Cá nhân (Personal Integrations):**
+   - Mới có API (`personalIntegrationApi.ts`), chưa có giao diện cho sinh viên tự thao tác (Các nút bấm gọi `window.location.assign` đến `GET /api/me/integrations/jira/connect`).
+   - Cần dựng trang: `/student/settings/integrations`.
+
+2. **Giao diện Chọn Nhóm / Danh sách Lớp của Sinh viên:**
    - Trang `/student/page.tsx` hiện tại chỉ đang render tĩnh các Course lưới card. Chưa có luồng Sinh viên chọn lớp -> vào xem mình thuộc nhóm nào -> xem điểm cá nhân.
 
 3. **Cập nhật Thông tin Cá nhân (User Profile):**
@@ -183,13 +199,7 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 
 4. **Biểu đồ (Dashboards) & Đánh giá Năng lực (Evaluations):**
    - Radar Chart và Timeline trong trang chi tiết Sinh viên đang dùng Mock Data.
-   - Các trang Interaction Graph, Heatmap, Metrics (dành cho Admin và Lecturer) chưa được triển khai giao diện hoặc chưa nối API thực.
-
-5. **Luồng Đánh giá đóng góp (Contribution Flow) & Peer Review:**
-   - Cần bổ sung tham số `sprintId` vào API `getContributionEvaluation` (Trang xem Bảng điểm).
-   - Chưa tích hợp API Xem kết quả Peer Review chi tiết (`GET /api/v1/peer-review/team/{teamId}/detail?sprintId={sprintId}`).
-   - Chưa tích hợp cụm API Cấu hình & Yêu cầu thay đổi trọng số Slices (`GET /api/v1/courses/{courseId}/contribution-weights`, `POST .../contribution-weight-request`).
-   - Chưa tích hợp luồng/UI cho Admin duyệt/từ chối Yêu cầu thay đổi trọng số (`PUT .../decision`).
+   - Các trang Interaction Graph, Heatmap, Metrics (dành cho Admin và Lecturer) chưa được triển khai giao diện.
 
 ---
 **Kết luận:** 
