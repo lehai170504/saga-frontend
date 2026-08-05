@@ -138,6 +138,16 @@ Toàn bộ luồng nhận ủy quyền từ các nhà cung cấp bên thứ ba (
     - Path Param: `resultId`
     - Response: `UnifiedCallbackResponse` (Chứa trạng thái `success`, `flow` ("PERSONAL" | "PROJECT"), và kết quả tương ứng lồng bên trong như `identityConnection` (Personal), `jiraAuthorization` (Project Jira), hoặc `gitHubInstallation` (Project GitHub)).
 
+### 1.9. Đánh giá % Đóng góp (Lecturer Contribution)
+Dành cho giảng viên xem và ghi đè phần trăm đóng góp của sinh viên trong nhóm.
+- `GET /api/v1/teams/{teamId}/contribution-evaluation`: Xem chi tiết phần trăm đóng góp của từng thành viên trong nhóm dựa trên điểm Task và Peer Review.
+  - Path Param: `teamId`
+  - Response: `ContributionEvaluationResponse` (có chứa breakdown cho Code, Doc, Design, Cảnh báo AI, v.v.)
+- `POST /api/v1/teams/{teamId}/contribution-override`: Ghi đè phần trăm đóng góp cuối cùng cho nhóm.
+  - Path Param: `teamId`
+  - Request Body: `ContributionOverrideRequest`
+  - Response: Kết quả cập nhật phần trăm.
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)
