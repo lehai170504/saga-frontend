@@ -141,6 +141,8 @@ Toàn bộ luồng nhận ủy quyền từ các nhà cung cấp bên thứ ba (
 ### 1.9. Đánh giá Đóng góp (Contribution Flow)
 - `POST /api/v1/teams/{teamId}/contribution-override`: Giảng viên/Admin áp dụng override % đóng góp cho cả lớp ngay lập tức.
 - `GET /api/v1/teams/{teamId}/contribution-evaluation`: Lấy kết quả % đóng góp của từng thành viên trong nhóm (Đã gọi nhưng hiện đang thiếu truyền parameter `?sprintId={sprintId}`).
+- `GET /api/v1/courses/contribution-slice-weight-requests`: Admin xem toàn bộ danh sách yêu cầu thay đổi trọng số Slices trên toàn hệ thống (Đã tích hợp).
+- `PUT /api/v1/courses/contribution-slice-weight-requests/{requestId}/decision`: Admin Duyệt hoặc Từ chối yêu cầu thay đổi trọng số (Đã tích hợp).
 
 ---
 
@@ -188,8 +190,8 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
 5. **Luồng Đánh giá đóng góp (Contribution Flow) & Peer Review:**
    - Cần bổ sung tham số `sprintId` vào API `getContributionEvaluation` (Trang xem Bảng điểm).
    - Chưa tích hợp API Xem kết quả Peer Review chi tiết (`GET /api/v1/peer-review/team/{teamId}/detail?sprintId={sprintId}`).
-   - Chưa tích hợp cụm API Cấu hình & Yêu cầu thay đổi trọng số Slices (`GET /api/v1/courses/{courseId}/contribution-weights`, `POST .../contribution-weight-request`).
-   - Chưa tích hợp luồng/UI cho Admin duyệt/từ chối Yêu cầu thay đổi trọng số (`PUT .../decision`).
+   - Chưa tích hợp API cho Giảng viên Yêu cầu thay đổi trọng số (`POST /api/v1/courses/{courseId}/contribution-slice-weight-requests`).
+   - Chưa gọi API lấy cấu hình trọng số của khóa học (`GET /api/v1/courses/{courseId}/contribution-slice-weights`).
 
 ---
 **Kết luận:** 
