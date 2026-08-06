@@ -33,7 +33,13 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   const isLoading = isLoadingCourse || isLoadingMyTeam;
 
   useEffect(() => {
-    setMounted(true);
+    let isMounted = true;
+    requestAnimationFrame(() => {
+      if (isMounted) setMounted(true);
+    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleCreateProject = (e: React.FormEvent) => {
@@ -63,7 +69,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     return <div className="p-6 min-h-screen bg-background" />;
   }
 
-  const projectId = myTeamData?.project?.projectId || (myTeamData?.project as any)?.id;
+  const projectId = myTeamData?.project?.projectId || (myTeamData?.project as { id?: string })?.id;
   const members = myTeamData?.members?.content || [];
 
   // Sắp xếp Trưởng nhóm lên đầu
@@ -206,7 +212,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                 Thành viên trong nhóm ({sortedMembers.length})
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {sortedMembers.map((member) => {
                   const isLeader = member.roleInTeam === "LEADER";
                   return (
@@ -245,6 +251,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                 })}
               </div>
             </div>
+
           </div>
         )}
 

@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { useIdentityMappings, useReviewIdentityMapping } from "../hooks/useIdentityMappings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -90,7 +89,7 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
                           variant="outline"
                           size="sm"
                           className="rounded-xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600"
-                          onClick={() => handleApprove(mapping.id || "unknown")}
+                          onClick={() => handleApprove((mapping as { id?: string }).id || "unknown")}
                           disabled={isPending}
                         >
                           <CheckCircle2 className="mr-1.5 h-4 w-4" /> Duyệt
@@ -99,7 +98,7 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
                           variant="outline"
                           size="sm"
                           className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => handleReject(mapping.id || "unknown")}
+                          onClick={() => handleReject((mapping as { id?: string }).id || "unknown")}
                           disabled={isPending}
                         >
                           <XCircle className="mr-1.5 h-4 w-4" /> Từ chối

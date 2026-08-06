@@ -1,5 +1,8 @@
 import React from "react";
 
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
 export interface Project {
   id: string;
   name: string;
@@ -12,6 +15,7 @@ export interface Project {
 
 interface ClassProjectsTabProps {
   projects: Project[];
+  courseId: string;
 }
 
 const GithubIcon = ({ className }: { className?: string }) => (
@@ -26,7 +30,7 @@ const JiraIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export function ClassProjectsTab({ projects }: ClassProjectsTabProps) {
+export function ClassProjectsTab({ projects, courseId }: ClassProjectsTabProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
@@ -47,11 +51,10 @@ export function ClassProjectsTab({ projects }: ClassProjectsTabProps) {
                 </p>
               </div>
               <span
-                className={`px-2.5 py-1 rounded-md font-bold text-xs whitespace-nowrap shrink-0 ${
-                  project.status === "Hoàn thành"
-                    ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
-                    : "bg-primary/10 text-primary dark:bg-blue-950/40 text-primary"
-                }`}
+                className={`px-2.5 py-1 rounded-md font-bold text-xs whitespace-nowrap shrink-0 ${project.status === "Hoàn thành"
+                  ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
+                  : "bg-primary/10 text-primary dark:bg-blue-950/40 text-primary"
+                  }`}
               >
                 {project.status}
               </span>
@@ -99,12 +102,19 @@ export function ClassProjectsTab({ projects }: ClassProjectsTabProps) {
               </div>
               <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-1000 ease-in-out ${
-                    project.progress === 100 ? "bg-success" : "bg-primary"
-                  }`}
+                  className={`h-full rounded-full transition-all duration-1000 ease-in-out ${project.progress === 100 ? "bg-success" : "bg-primary"
+                    }`}
                   style={{ width: `${project.progress}%` }}
                 />
               </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-border/30">
+              <Link href={`/admin/classes/${courseId}/teams/${project.id.replace('p', 'g')}`}>
+                <Button variant="outline" className="w-full rounded-xl border-border bg-card hover:bg-muted font-bold text-primary">
+                  Xem chi tiết Analytics & Đánh giá
+                </Button>
+              </Link>
             </div>
           </div>
         ))}

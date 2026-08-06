@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { projectIntegrationApi } from "../api/projectIntegrationApi";
 
-import { SyncStatusResponse } from "../types";
-
-export const useSyncStatus = (projectId: string, options?: { refetchInterval?: number | false | ((query: any) => number | false) }) => {
+export const useSyncStatus = (projectId: string, options?: { refetchInterval?: number | false | ((query: unknown) => number | false) }) => {
   return useQuery({
     queryKey: ["sync-status", projectId],
     queryFn: async () => {

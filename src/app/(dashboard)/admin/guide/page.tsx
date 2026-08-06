@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
 import {
   BookOpen, FileText, Users, Calendar, HelpCircle,
   Network, ShieldCheck, ArrowRight, Settings, CheckCircle2,
-  AlertTriangle, Server
+  Server
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

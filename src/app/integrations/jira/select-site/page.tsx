@@ -37,9 +37,9 @@ export default function JiraSelectSitePage() {
         try {
           const parsed = JSON.parse(stored) as JiraAuthorizationData;
           if (parsed.sites && parsed.projectId) {
-            setData(parsed);
+            requestAnimationFrame(() => setData(parsed));
             if (parsed.sites.length > 0) {
-              setSelectedCloudId(parsed.sites[0].cloudId);
+              requestAnimationFrame(() => setSelectedCloudId(parsed.sites[0].cloudId));
             }
             return;
           }
@@ -82,9 +82,10 @@ export default function JiraSelectSitePage() {
 
       const redirectBack = sessionStorage.getItem("integration_redirect_back");
       router.replace(redirectBack || "/student");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const _err = err as Error;
       console.error(err);
-      toast.error(err.message || "Có lỗi xảy ra khi liên kết Jira.");
+      toast.error(_err.message || "Có lỗi xảy ra khi liên kết Jira.");
     } finally {
       setIsSubmitting(false);
     }

@@ -9,7 +9,7 @@ export const contributionApi = {
   },
 
   overrideContribution: async (teamId: string, data: ContributionOverrideRequest) => {
-    return axiosInstance.post<never, any>(
+    return axiosInstance.post<never, void>(
       `/api/v1/teams/${teamId}/contribution-override`,
       data
     );

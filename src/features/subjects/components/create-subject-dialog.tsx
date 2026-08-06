@@ -42,9 +42,10 @@ export function CreateSubjectDialog() {
       await createSubject(data);
       reset();
       setOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      
       console.error("Failed to create subject", error);
-      toast.error(error.message || "Có lỗi xảy ra khi tạo môn học.");
+      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi tạo môn học.");
     }
   };
 

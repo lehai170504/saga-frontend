@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2, KanbanSquare } from "lucide-react";
+import { ArrowLeft, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

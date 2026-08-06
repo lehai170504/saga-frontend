@@ -70,7 +70,7 @@ export function FeaturesSection() {
                   <h3 className="font-bold text-foreground text-sm">Gánh team (Bus Factor)</h3>
                   <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded font-bold">Phổ biến</span>
                 </div>
-                <p className="text-xs text-muted-foreground">1-2 cá nhân ôm 90% lượng code, trong khi các thành viên khác lại "free-ride".</p>
+                <p className="text-xs text-muted-foreground">1-2 cá nhân ôm 90% lượng code, trong khi các thành viên khác lại &quot;free-ride&quot;.</p>
               </div>
             </motion.div>
 
@@ -84,7 +84,7 @@ export function FeaturesSection() {
                   <h3 className="font-bold text-foreground text-sm">Trễ tiến độ ngầm</h3>
                   <span className="text-[10px] text-warning bg-warning/10 px-2 py-0.5 rounded font-bold">Rủi ro</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Blockers không được báo cáo kịp thời, tạo "nợ kỹ thuật" tích tụ cuối Sprint.</p>
+                <p className="text-xs text-muted-foreground">Blockers không được báo cáo kịp thời, tạo &quot;nợ kỹ thuật&quot; tích tụ cuối Sprint.</p>
               </div>
             </motion.div>
           </motion.div>
@@ -186,13 +186,13 @@ export function FeaturesSection() {
                   </div>
                   <span className="text-sm font-bold text-destructive">Cảnh báo rủi ro</span>
                 </div>
-                <div className="text-xs text-muted-foreground">Phát hiện tình trạng "Bus Factor" cao trong Sprint 3.</div>
+                <div className="text-xs text-muted-foreground">Phát hiện tình trạng &quot;Bus Factor&quot; cao trong Sprint 3.</div>
               </div>
             </div>
             <div className="p-8 flex-1 flex flex-col justify-center">
               <h3 className="text-xl font-bold text-foreground mb-2">Hệ thống Cảnh báo sớm</h3>
               <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                Phát hiện "gánh team" và cảnh báo rủi ro dự án ngay lập tức.
+                Phát hiện &quot;gánh team&quot; và cảnh báo rủi ro dự án ngay lập tức.
               </p>
             </div>
           </motion.div>

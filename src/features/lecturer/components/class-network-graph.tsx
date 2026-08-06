@@ -23,7 +23,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Network, Code2, PenTool, FileText, User, Star, PieChart, AlertTriangle, UserCheck, Search, Save } from "lucide-react";
+import { Network, Code2, PenTool, FileText, User, PieChart, AlertTriangle, UserCheck, Search, Save } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TaskDrilldownDrawer } from "./project-detail/task-drilldown-drawer";
 
@@ -40,7 +40,7 @@ const DrilldownEdge = ({
   style,
   data,
   markerEnd,
-}: any) => {
+}: { id: string; sourceX: number; sourceY: number; targetX: number; targetY: number; sourcePosition: Position; targetPosition: Position; style?: React.CSSProperties; data?: { label?: string; clickable?: boolean; onLabelClick?: (id: string) => void }; markerEnd?: string }) => {
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
     sourceY,
@@ -85,7 +85,7 @@ const DrilldownEdge = ({
 
 // --- CUSTOM NODES ---
 
-const MultiplierNode = ({ data }: any) => {
+const MultiplierNode = ({ data }: { data: { iconType?: string; label?: string; value?: string; inactive?: boolean } }) => {
   const Icon = data.iconType === 'code' ? Code2 : data.iconType === 'design' ? PenTool : FileText;
   return (
     <div className={`min-w-[180px] px-4 py-3 shadow-lg rounded-2xl bg-background bg-card border border-border border-border flex items-center gap-3 transition-opacity ${data.inactive ? 'opacity-40 grayscale' : 'opacity-100'}`}>
@@ -101,7 +101,7 @@ const MultiplierNode = ({ data }: any) => {
   );
 };
 
-const SprintNode = ({ data }: any) => {
+const SprintNode = ({ data }: { data: { label?: string; slices?: number } }) => {
   return (
     <div className="min-w-[120px] px-3 py-2 shadow-md rounded-xl bg-primary/10 border border-primary/20 flex flex-col gap-1 items-center justify-center text-center">
       <Handle type="target" position={Position.Top} className="w-2 h-2 bg-slate-400 border-none" />
@@ -112,7 +112,7 @@ const SprintNode = ({ data }: any) => {
   );
 };
 
-const StudentNode = ({ data }: any) => {
+const StudentNode = ({ data }: { data: { role?: string; name?: string; roleLabel?: string; baseSlices?: number } }) => {
   const isGhost = data.role === 'ghost';
   const isCore = data.role === 'core';
   const Icon = isGhost ? AlertTriangle : isCore ? UserCheck : User;
@@ -149,7 +149,7 @@ const StudentNode = ({ data }: any) => {
   );
 };
 
-const RetroNode = ({ data }: any) => {
+const RetroNode = ({ data }: { data: { isPenalty?: boolean; label?: string; modifier?: string } }) => {
   const isPenalty = data.isPenalty;
   return (
     <div className={`min-w-[160px] px-4 py-3 shadow-lg rounded-2xl bg-background bg-card border ${isPenalty ? 'border-destructive/20 border-destructive/20' : 'border-primary/20 border-primary/20'} flex flex-col gap-1 items-center justify-center text-center`}>
@@ -161,7 +161,7 @@ const RetroNode = ({ data }: any) => {
   );
 };
 
-const SliceNode = ({ data }: any) => {
+const SliceNode = ({ data }: { data: { label?: string; slices?: number; percentage?: number } }) => {
   return (
     <div className="min-w-[180px] px-4 py-4 shadow-xl rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 text-primary-foreground flex items-center gap-3 relative overflow-hidden">
       <Handle type="target" position={Position.Top} className="w-3 h-3 bg-background border-2 border-primary/20" />
@@ -186,7 +186,7 @@ const generateGraphData = (phase: string) => {
   let edges: Edge[] = [];
 
   // Drilldown data dictionary mapping Edge ID to Detailed Tasks
-  const drilldownDetails: Record<string, any> = {
+  const drilldownDetails: Record<string, unknown> = {
     'e-design-sa': { title: 'Design Tasks - Nguyễn Văn A', tasks: [{ id: 'SAGA-UI-01', name: 'Thiết kế Landing Page', sp: 3, proofText: 'Figma Prototype', proofType: 'link', proofLink: 'https://figma.com' }, { id: 'SAGA-UI-02', name: 'Component System', sp: 2, proofText: 'Figma Library', proofType: 'link', proofLink: 'https://figma.com' }] },
     'e-design-sb': { title: 'Design Tasks - Trần Thị B', tasks: [{ id: 'SAGA-UI-03', name: 'Thiết kế Dashboard Admin', sp: 5, proofText: 'Admin UI Figma', proofType: 'link', proofLink: 'https://figma.com' }] },
     'e-code-s1a': { title: 'Code Tasks - Sprint 1 - Nguyễn Văn A', tasks: [{ id: 'SAGA-API-01', name: 'Auth Module', sp: 7.5, proofText: 'fb2a19', proofType: 'commit', proofLink: 'https://github.com' }] },
@@ -372,7 +372,7 @@ export function ClassNetworkGraph() {
 
   // Drilldown State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedEdgeData, setSelectedEdgeData] = useState<any>(null);
+  const [selectedEdgeData, setSelectedEdgeData] = useState<unknown>(null);
 
   useEffect(() => {
     const { nodes: newNodes, edges: newEdges } = generateGraphData(selectedPhase);
@@ -490,7 +490,7 @@ export function ClassNetworkGraph() {
       <TaskDrilldownDrawer
         isOpen={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
-        data={selectedEdgeData}
+        data={selectedEdgeData as React.ComponentProps<typeof TaskDrilldownDrawer>["data"]}
       />
     </>
   );

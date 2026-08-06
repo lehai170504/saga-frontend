@@ -19,8 +19,8 @@ function IntegrationCallbackContent() {
     const resultId = searchParams.get("resultId");
 
     if (!resultId) {
-      setMessage("Thiếu mã kết quả callback (resultId).");
-      setErrorDetails("Yêu cầu không hợp lệ hoặc đã bị lỗi.");
+      requestAnimationFrame(() => setMessage("Thiếu mã kết quả callback (resultId)."));
+      requestAnimationFrame(() => setErrorDetails("Yêu cầu không hợp lệ hoặc đã bị lỗi."));
       return;
     }
 
@@ -32,7 +32,7 @@ function IntegrationCallbackContent() {
     }
 
     consumeIntegrationCallback(resultId)
-      .then((result: any) => {
+      .then((result: { success?: boolean; flow?: string; message?: string; jiraAuthorization?: unknown; gitHubInstallation?: unknown; identityConnection?: unknown; }) => {
         if (!result || typeof result !== "object") {
           throw new Error("Dữ liệu trả về không đúng định dạng.");
         }
@@ -81,7 +81,7 @@ function IntegrationCallbackContent() {
           throw new Error("Phản hồi không xác định từ máy chủ.");
         }
       })
-      .catch((error: any) => {
+      .catch((error: { status?: number; message?: string }) => {
         console.error("Callback error", error);
         if (error?.status === 401) {
           toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");

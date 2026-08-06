@@ -14,4 +14,12 @@ export const subjectApi = {
   createSubject: async (data: SubjectRequest) => {
     return axiosInstance.post<never, Subject>("/api/v1/subjects", data);
   },
+
+  updateSubject: async (id: string, data: SubjectRequest) => {
+    return axiosInstance.put<never, Subject>(`/api/v1/subjects/${id}`, data);
+  },
+
+  deleteSubject: async (id: string) => {
+    return axiosInstance.delete(`/api/v1/subjects/${id}`);
+  },
 };

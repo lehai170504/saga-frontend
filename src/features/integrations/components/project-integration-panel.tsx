@@ -4,8 +4,23 @@ import { useProjectIntegrations, useDeleteProjectJiraIntegration, useDeleteGithu
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
+import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle } from "lucide-react";
 import { API_BASE_URL } from "@/lib/axios";
+
+const getStatusBadgeClass = (status: string) => {
+  switch (status) {
+    case "ACTIVE":
+      return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/10";
+    case "CONNECTING":
+    case "BACKFILLING":
+      return "bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/10";
+    case "DEGRADED":
+    case "DISCONNECTED":
+      return "bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/10";
+    default:
+      return "bg-muted text-muted-foreground hover:bg-muted";
+  }
+};
 
 export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
   const { data: projectIntegration, isLoading, error } = useProjectIntegrations(projectId);
@@ -29,6 +44,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
   }
 
   const jira = projectIntegration?.jira;
+  const isJiraConnected = !!jira && jira.status !== "DISCONNECTED";
   const githubRepositories = projectIntegration?.githubRepositories || [];
 
   const handleConnectJira = () => {
@@ -46,7 +62,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
       {/* Jira Card */}
       <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden flex flex-col">
         <CardHeader className="bg-muted/30 pb-4">
@@ -54,11 +70,11 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
             <div>
               <CardTitle className="text-xl font-bold flex items-center gap-2">
                 Jira Project
-                {jira?.status === "ACTIVE" && <ShieldCheck size={18} className="text-emerald-500" />}
+                {isJiraConnected && jira?.status === "ACTIVE" && <ShieldCheck size={18} className="text-emerald-500" />}
               </CardTitle>
               <CardDescription className="mt-1.5">Kết nối với Jira Project để đồng bộ Issue.</CardDescription>
             </div>
-            {jira ? (
+            {isJiraConnected ? (
               <Badge variant="outline" className={`${jira.status === "ACTIVE" ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"} font-bold px-3 py-1`}>
                 {jira.status}
               </Badge>
@@ -68,7 +84,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
           </div>
         </CardHeader>
         <CardContent className="pt-6 flex-1 flex flex-col justify-between">
-          {jira ? (
+          {isJiraConnected ? (
             <div className="space-y-4">
               <div className="text-sm">
                 <p className="text-muted-foreground">URL Site</p>
@@ -127,7 +143,9 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                     <div className="min-w-0">
                       <p className="font-semibold text-sm truncate" title={repo.fullName}>{repo.fullName}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="secondary" className="text-[10px] uppercase">{repo.status}</Badge>
+                        <Badge variant="outline" className={`text-[10px] uppercase font-extrabold px-2 py-0.5 ${getStatusBadgeClass(repo.status)}`}>
+                          {repo.status}
+                        </Badge>
                         <span className="text-[10px] text-muted-foreground">Branch: {repo.defaultBranch}</span>
                       </div>
                     </div>

@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
+import { ImportStudentsDialog } from "@/features/courses/components/import-students-dialog";
+
 export interface Student {
   id: string;
   studentId: string;
@@ -14,6 +16,7 @@ export interface Student {
   email: string;
   status: string;
   avatar: string;
+  teamName?: string;
 }
 
 interface ClassStudentsTabProps {
@@ -23,6 +26,9 @@ interface ClassStudentsTabProps {
   onAddStudent: () => void;
   onEditStudent: (student: Student) => void;
   onDeleteStudent: (id: string) => void;
+  courseId: string;
+  courseName: string;
+  onImportSuccess?: () => void;
 }
 
 export function ClassStudentsTab({
@@ -32,6 +38,9 @@ export function ClassStudentsTab({
   onAddStudent,
   onEditStudent,
   onDeleteStudent,
+  courseId,
+  courseName,
+  onImportSuccess,
 }: ClassStudentsTabProps) {
   const filteredStudents = students.filter(
     (s) => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.studentId.toLowerCase().includes(searchQuery.toLowerCase())
@@ -50,6 +59,13 @@ export function ClassStudentsTab({
           />
         </div>
         <div className="flex gap-2">
+          {courseId && (
+            <ImportStudentsDialog
+              courseId={courseId}
+              className={courseName}
+              onSuccess={onImportSuccess || (() => { })}
+            />
+          )}
           <Button className="rounded-xl font-bold shadow-sm" onClick={onAddStudent}>
             <Plus className="w-4 h-4 mr-2" />
             Thêm sinh viên
@@ -65,6 +81,7 @@ export function ClassStudentsTab({
               <TableHead>Mã SV</TableHead>
               <TableHead>Họ và tên</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Nhóm</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
@@ -84,12 +101,18 @@ export function ClassStudentsTab({
                 <TableCell className="font-bold text-foreground">{student.name}</TableCell>
                 <TableCell className="text-muted-foreground">{student.email}</TableCell>
                 <TableCell>
+                  {student.teamName ? (
+                    <span className="px-2.5 py-1 text-xs font-bold rounded-md bg-primary/10 text-primary dark:bg-blue-950/40">{student.teamName}</span>
+                  ) : (
+                    <span className="text-muted-foreground italic text-xs">Chưa có nhóm</span>
+                  )}
+                </TableCell>
+                <TableCell>
                   <span
-                    className={`px-2.5 py-1 text-xs font-bold rounded-md ${
-                      student.status === "Bình thường"
-                        ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
-                        : "bg-destructive/10 text-destructive dark:bg-rose-950/40 text-destructive"
-                    }`}
+                    className={`px-2.5 py-1 text-xs font-bold rounded-md ${student.status === "Bình thường"
+                      ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
+                      : "bg-destructive/10 text-destructive dark:bg-rose-950/40 text-destructive"
+                      }`}
                   >
                     {student.status}
                   </span>

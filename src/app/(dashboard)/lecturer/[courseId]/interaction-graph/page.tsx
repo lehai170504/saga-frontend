@@ -35,7 +35,7 @@ const edges = [
 ];
 
 export default function InteractionGraphPage({ params }: { params: Promise<{ courseId: string }> }) {
-  const { courseId } = React.use(params);
+  React.use(params);
   const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number, x: number, y: number, color: string, interactions: number } | null>(nodes[2]); // Default select An Lê
 
   return (

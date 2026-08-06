@@ -2,23 +2,15 @@ import React from "react";
 import {
   BarChart3,
   Network,
-  Activity,
   Calendar,
   Users,
   ArrowLeft,
   BookOpen,
   GraduationCap,
-  Share2,
   Logs,
   Link2,
-  Inbox,
-  UserCheck,
-  CalendarX,
   Settings2,
-  Database,
-  FolderKanban,
-  GitBranch,
-  ClipboardList,
+  UserCheck,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -28,6 +20,7 @@ export type NavItemType = {
   action?: (e: React.MouseEvent) => void;
   hideChevron?: boolean;
   exact?: boolean;
+  matchPaths?: string[];
 };
 
 export type NavGroupType = {
@@ -53,17 +46,15 @@ export const getNavigationConfig = (
           title: "Quản lý Cốt lõi",
           items: [
             { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
-            { href: "/admin/academic-data", icon: <Database size={18} />, label: "Dữ liệu Học vụ" },
-            { href: "/admin/classes", icon: <Network size={18} />, label: "Lớp PBL" },
           ],
         },
         {
           title: "Dữ liệu Danh mục",
           items: [
             { href: "/master-data/subjects", icon: <BookOpen size={18} />, label: "Môn học" },
-            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học" },
+            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học", matchPaths: ["/admin/classes"] },
             { href: "/master-data/semesters", icon: <Calendar size={18} />, label: "Học kỳ" },
-            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học" },
+            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học (Lớp PBL)" },
           ],
         },
         {
@@ -125,6 +116,7 @@ export const getNavigationConfig = (
             items: [
               { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
               { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
+              { href: `/student/${courseId}/sprints`, icon: <UserCheck size={18} />, label: "Đánh giá chéo", exact: true },
             ],
           },
         ];

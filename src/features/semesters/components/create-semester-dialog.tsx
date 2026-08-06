@@ -51,9 +51,10 @@ export function CreateSemesterDialog() {
       await createSemester(payload);
       reset();
       setOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+
       console.error("Failed to create semester", error);
-      toast.error(error.message || "Có lỗi xảy ra khi tạo học kỳ.");
+      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi tạo học kỳ.");
     }
   };
 

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectIntegrationApi } from "../api/projectIntegrationApi";
 import { JiraProjectLinkRequest, GitHubRepositoriesLinkRequest, ProjectIntegrationsResponse } from "../types";
+import { toast } from "sonner";
 
 export const useProjectIntegrations = (projectId: string) => {
   return useQuery({
@@ -56,6 +57,10 @@ export const useDeleteProjectJiraIntegration = (projectId: string) => {
     mutationFn: () => projectIntegrationApi.deleteJiraIntegration(projectId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
+      toast.success("Ngắt kết nối Jira thành công!");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Jira.");
     },
   });
 };
@@ -76,6 +81,10 @@ export const useDeleteGithubRepository = (projectId: string) => {
     mutationFn: (repositoryId: number) => projectIntegrationApi.deleteGithubRepository(projectId, repositoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
+      toast.success("Ngắt kết nối Repository thành công!");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Repository.");
     },
   });
 };

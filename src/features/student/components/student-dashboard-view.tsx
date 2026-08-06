@@ -16,7 +16,13 @@ export function StudentDashboardView({ courseId }: StudentDashboardViewProps) {
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
 
   useEffect(() => {
-    setMounted(true);
+    let isMounted = true;
+    requestAnimationFrame(() => {
+      if (isMounted) setMounted(true);
+    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const isLoading = isLoadingCourse || !mounted;
@@ -60,7 +66,7 @@ export function StudentDashboardView({ courseId }: StudentDashboardViewProps) {
                   </div>
                 </div>
                 <h3 className="text-xl font-extrabold text-foreground mb-1">
-                  {(courseData?.instructor as any)?.name || "Giảng viên"}
+                  {(courseData?.instructor as Record<string, unknown>)?.name as string || "Giảng viên"}
                 </h3>
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   Giảng viên hướng dẫn

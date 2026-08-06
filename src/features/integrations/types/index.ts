@@ -1,4 +1,5 @@
 export type IdentityConnectionResponse = {
+  mappingId?: string;
   provider: "JIRA" | "GITHUB";
   status: "ACTIVE" | "DISCONNECTED" | "PENDING_REVIEW" | "REJECTED";
   displayName: string;

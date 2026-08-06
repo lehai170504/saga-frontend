@@ -36,8 +36,8 @@ export function ImportStudentsDialog({ courseId, className = courseId, onSuccess
         if (fileInputRef.current) fileInputRef.current.value = "";
         if (onSuccess) onSuccess();
       },
-      onError: (error: any) => {
-        toast.error(error.message || "Có lỗi xảy ra khi import sinh viên.");
+      onError: (error: unknown) => {
+        toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi import sinh viên.");
       }
     });
   };

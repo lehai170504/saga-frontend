@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star, Info, Lock, Calculator } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useDefaultRubric } from "../../hooks/useRubric";
+import { Skeleton } from "@/components/shared/Skeleton";
 
 export function PeerReviewRules() {
-  const [requireLowScoreComment, setRequireLowScoreComment] = useState(true);
-  const [requireHighScoreComment, setRequireHighScoreComment] = useState(true);
+  const { data: defaultRubric, isLoading, isError } = useDefaultRubric();
 
   return (
     <div className="space-y-6">
@@ -26,59 +27,77 @@ export function PeerReviewRules() {
                 <div className="flex items-center gap-2 text-primary bg-primary/10 p-3 rounded-lg border border-primary/20 text-sm font-medium mb-4">
                   <Lock className="w-4 h-4" /> Hệ số điều chỉnh đã được khóa cứng theo Quy chế Đào tạo.
                 </div>
-                {[
-                  { star: 1, label: "Rất Tệ (1 Sao)", desc: "Không làm gì, thái độ thiếu hợp tác.", defaultVal: 0.5, color: "text-destructive" },
-                  { star: 2, label: "Kém (2 Sao)", desc: "Trễ hạn nhiều, cần người khác gánh.", defaultVal: 0.8, color: "text-primary" },
-                  { star: 3, label: "Đạt (3 Sao)", desc: "Mốc chuẩn (Baseline): Hoàn thành mức cơ bản, đúng hạn.", defaultVal: 1.0, color: "text-success", isBaseline: true },
-                  { star: 4, label: "Khá Tốt (4 Sao)", desc: "Hoàn thành tốt nhiệm vụ được giao.", defaultVal: 1.05, color: "text-primary" },
-                  { star: 5, label: "Xuất sắc (5 Sao)", desc: "Làm vượt kỳ vọng, hỗ trợ tốt đồng đội.", defaultVal: 1.1, color: "text-primary" },
-                ].map((item) => (
-                  <div
-                    key={item.star}
-                    className={`flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border transition-all ${item.isBaseline
-                      ? 'bg-success/10 border-success/20 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
-                      : 'border-border/50 bg-background/50 opacity-90'
-                      }`}
-                  >
-                    <div className="flex items-center gap-2 w-44 shrink-0">
-                      <Star className={`w-5 h-5 fill-current ${item.color}`} />
-                      <span className={`font-bold ${item.isBaseline ? 'text-success text-success' : ''}`}>{item.label}</span>
-                    </div>
-                    <div className="flex-1 text-sm text-muted-foreground flex flex-col justify-center">
-                      {item.isBaseline ? (
-                        <span className="font-semibold text-success dark:text-emerald-300">
-                          {item.desc}
-                        </span>
-                      ) : (
-                        item.desc
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <Label className="text-xs font-bold text-muted-foreground uppercase">Hệ số nhân</Label>
-                      <Input
-                        type="number"
-                        disabled
-                        value={item.defaultVal}
-                        className={`w-24 text-center font-bold h-10 rounded-xl bg-muted border-border/50 ${item.defaultVal < 1 ? 'text-destructive' : item.defaultVal > 1 ? 'text-primary text-primary' : 'text-success text-success'}`}
-                      />
-                    </div>
+                {isLoading ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-20 w-full rounded-xl" />
+                    <Skeleton className="h-20 w-full rounded-xl" />
+                    <Skeleton className="h-20 w-full rounded-xl" />
+                    <Skeleton className="h-20 w-full rounded-xl" />
+                    <Skeleton className="h-20 w-full rounded-xl" />
                   </div>
-                ))}
+                ) : isError ? (
+                  <div className="p-4 text-center text-destructive bg-destructive/10 rounded-xl">
+                    Lỗi khi tải cấu hình đánh giá chéo.
+                  </div>
+                ) : defaultRubric?.items && defaultRubric.items.length > 0 ? (
+                  defaultRubric.items.map((item) => (
+                    <div
+                      key={item.star}
+                      className={`flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border transition-all ${item.adjustmentFactor === 1.0
+                        ? 'bg-success/10 border-success/20 shadow-sm shadow-emerald-500/5 ring-1 ring-emerald-500/20'
+                        : 'border-border/50 bg-background/50 opacity-90'
+                        }`}
+                    >
+                      <div className="flex items-center gap-2 w-44 shrink-0">
+                        <Star className={`w-5 h-5 fill-current ${item.adjustmentFactor < 1 ? 'text-destructive' : item.adjustmentFactor > 1 ? 'text-primary' : 'text-success'}`} />
+                        <span className={`font-bold ${item.adjustmentFactor === 1.0 ? 'text-success' : ''}`}>{item.label}</span>
+                      </div>
+                      <div className="flex-1 text-sm text-muted-foreground flex flex-col justify-center">
+                        {item.adjustmentFactor === 1.0 ? (
+                          <span className="font-semibold text-success dark:text-emerald-300">
+                            {item.description}
+                          </span>
+                        ) : (
+                          item.description
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Hệ số nhân</Label>
+                        <Input
+                          type="number"
+                          disabled
+                          value={item.adjustmentFactor}
+                          className={`w-24 text-center font-bold h-10 rounded-xl bg-muted border-border/50 ${item.adjustmentFactor < 1 ? 'text-destructive' : item.adjustmentFactor > 1 ? 'text-primary text-primary' : 'text-success text-success'}`}
+                        />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-muted-foreground bg-muted/50 rounded-xl">
+                    Chưa có cấu hình đánh giá chéo.
+                  </div>
+                )}
               </div>
 
-              {/* REQUIREMENT SETTINGS */}
               <div className="p-5 rounded-xl border border-border/50 bg-muted/30 space-y-4">
                 <h4 className="font-bold text-sm">Chính sách Phản hồi Hệ thống</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50">
-                    <Label htmlFor="req-low" className="font-medium cursor-pointer">Bắt buộc Comment khi vote {"<="} 2 sao</Label>
-                    <Switch id="req-low" checked={requireLowScoreComment} onCheckedChange={setRequireLowScoreComment} />
+                {isLoading ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Skeleton className="h-14 w-full rounded-lg" />
+                    <Skeleton className="h-14 w-full rounded-lg" />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50">
-                    <Label htmlFor="req-high" className="font-medium cursor-pointer">Bắt buộc Comment khi vote 5 sao</Label>
-                    <Switch id="req-high" checked={requireHighScoreComment} onCheckedChange={setRequireHighScoreComment} />
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50">
+                      <Label htmlFor="req-low" className="font-medium cursor-pointer">Bắt buộc Comment khi vote {"<="} 2 sao</Label>
+                      <Switch id="req-low" checked={defaultRubric?.requireLowScoreComment ?? true} disabled />
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/50">
+                      <Label htmlFor="req-high" className="font-medium cursor-pointer">Bắt buộc Comment khi vote 5 sao</Label>
+                      <Switch id="req-high" checked={defaultRubric?.requireHighScoreComment ?? true} disabled />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 

@@ -77,13 +77,13 @@ export function AboutContent() {
             <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center mb-8 shrink-0">
               <AlertTriangle className="w-6 h-6 text-destructive" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Thực trạng "Hộp Đen"</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Thực trạng &quot;Hộp Đen&quot;</h2>
             <div className="space-y-4">
               <p className="text-muted-foreground leading-relaxed">
                 Trong hầu hết các đồ án đại học, giảng viên chỉ nhìn thấy <strong>kết quả cuối cùng (sản phẩm)</strong> mà không thể theo dõi <strong>quá trình (ai làm gì, làm bao nhiêu)</strong>. Việc đánh giá phụ thuộc hoàn toàn vào những buổi trình bày chớp nhoáng hoặc các phiếu đánh giá chéo (peer-review) đầy cảm tính, cả nể.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Hệ lụy là: Sinh viên chăm chỉ bị vắt kiệt sức (Bus Factor = 1), còn những thành viên "free-rider" vẫn ung dung nhận điểm cao. Một môi trường thiếu minh bạch sẽ bào mòn động lực sáng tạo.
+                Hệ lụy là: Sinh viên chăm chỉ bị vắt kiệt sức (Bus Factor = 1), còn những thành viên &quot;free-rider&quot; vẫn ung dung nhận điểm cao. Một môi trường thiếu minh bạch sẽ bào mòn động lực sáng tạo.
               </p>
             </div>
           </motion.div>
@@ -101,7 +101,7 @@ export function AboutContent() {
                   Thay vì dựa vào lời khai báo, SAGA dựa vào <strong>Dữ liệu mã nguồn mở (Open Source Data)</strong>. Bằng cách tích hợp sâu vào GitHub và Jira, hệ thống âm thầm ghi nhận từng dòng code, từng thẻ công việc được hoàn thành.
                 </p>
                 <p className="leading-relaxed">
-                  Kết hợp với thuật toán <strong>Slicing Pie</strong>, mọi nỗ lực đều được lượng hóa thành "Cổ phần đóng góp". Giảng viên có một Dashboard rõ ràng như ban ngày, sinh viên có một môi trường làm việc công bằng tuyệt đối.
+                  Kết hợp với thuật toán <strong>Slicing Pie</strong>, mọi nỗ lực đều được lượng hóa thành &quot;Cổ phần đóng góp&quot;. Giảng viên có một Dashboard rõ ràng như ban ngày, sinh viên có một môi trường làm việc công bằng tuyệt đối.
                 </p>
               </div>
             </div>

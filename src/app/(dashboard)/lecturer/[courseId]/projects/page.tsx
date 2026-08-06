@@ -21,7 +21,7 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
     id: string;
     name: string;
     project: string;
-    members: any[];
+    members: (typeof studentsWithTeam)[0][];
     leader: string;
   }>();
 
@@ -103,7 +103,7 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
                       <span className="text-sm">{project.members.length} thành viên</span>
                     </div>
                     <div className="flex -space-x-3 overflow-hidden mb-6">
-                      {project.members.slice(0, 5).map((member, i) => (
+                      {project.members.slice(0, 5).map((member) => (
                         <Avatar key={member.studentId} className="inline-block border-2 border-background w-9 h-9 transition-transform duration-300 group-hover:translate-x-1">
                           <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">
                             {member.fullName.charAt(0)}
