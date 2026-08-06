@@ -9,6 +9,14 @@ export const useTeamDetail = (courseId: string, teamId: string, page = 0, size =
   });
 };
 
+export const useStudentBasicInfo = (courseId: string, studentId: string) => {
+  return useQuery({
+    queryKey: ["studentBasicInfo", courseId, studentId],
+    queryFn: () => analyticsApi.getStudentBasicInfo(courseId, studentId),
+    enabled: !!courseId && !!studentId,
+  });
+};
+
 export const useStudentProgress = (courseId: string, studentId: string) => {
   return useQuery({
     queryKey: ["studentProgress", courseId, studentId],

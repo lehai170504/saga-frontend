@@ -40,9 +40,9 @@ const getColorClass = (count: number) => {
   return "bg-primary border-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]";
 };
 
-export function ProjectHeatmap({ projectId }: { projectId: string }) {
+export function ProjectHeatmap({ courseId, teamId }: { courseId: string; teamId: string }) {
   const [filterType, setFilterType] = useState("all");
-  const heatmapData = React.useMemo(() => generateHeatmapData(projectId), [projectId]);
+  const heatmapData = React.useMemo(() => generateHeatmapData(teamId), [teamId]);
 
   return (
     <div className="space-y-6">

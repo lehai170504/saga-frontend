@@ -17,7 +17,7 @@ const projectEdges = [
   { source: "1", target: "3", width: 1, type: "ghost" }, // Giao tiếp 1 chiều (Ghosting)
 ];
 
-export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
+export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string; teamId: string }) {
   const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number, x: number, y: number, color: string, interactions: number } | null>(projectNodes[0]);
 
   return (
@@ -151,7 +151,7 @@ export function ProjectInteractionGraph({ projectId }: { projectId: string }) {
                     {selectedNode.name.charAt(0)}
                   </div>
                   <h2 className="text-xl font-bold text-foreground">{selectedNode.name}</h2>
-                  <p className="text-sm text-muted-foreground font-medium">Nhóm {projectId}</p>
+                  <p className="text-sm text-muted-foreground font-medium">Nhóm {teamId}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

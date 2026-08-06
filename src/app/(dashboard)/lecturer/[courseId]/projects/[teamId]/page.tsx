@@ -13,7 +13,7 @@ import { ProjectHeatmap } from "@/features/lecturer/components/project-detail/pr
 import { ProjectInteractionGraph } from "@/features/lecturer/components/project-detail/project-interaction-graph";
 import { EarlyWarningAlerts } from "@/features/lecturer/components/project-detail/charts/early-warning-alerts";
 import { SprintVelocityBar } from "@/features/lecturer/components/project-detail/charts/sprint-velocity-bar";
-import { useCourseStudents, useTeamMembers } from "@/features/courses/hooks/useCourseStudents";
+import { useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ courseId: string, teamId: string }> }) {
@@ -21,30 +21,19 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
   const [activeTab, setActiveTab] = useState("overview");
 
   // Fetch real data
-  const { data: studentsData } = useCourseStudents(courseId);
-  const { data: membersData, isLoading: isLoadingMembers } = useTeamMembers(courseId, teamId);
+  const { data: teamDetail, isLoading: isLoadingMembers } = useTeamDetail(courseId, teamId);
 
-  // Extract team context
-  const studentsWithTeam = studentsData?.studentsWithTeam.content || [];
-  const teamContext = studentsWithTeam.find(s => s.team?.teamId === teamId)?.team;
-
-  const teamName = teamContext?.teamName || `Nhóm ${teamId.slice(0, 8)}...`;
-  const projectName = teamContext?.projectName || "Chưa có dự án";
-
-  // Dùng dữ liệu từ useCourseStudents để đảm bảo có thông tin sinh viên đầy đủ
-  const membersList = studentsWithTeam.filter(s => s.team?.teamId === teamId);
+  const teamName = teamDetail?.teamName || `Nhóm ${teamId.slice(0, 8)}...`;
+  const projectName = teamDetail?.project?.name || "Chưa có dự án";
 
   const projectDetail = {
     id: teamId,
     name: teamName,
     project: projectName,
-    members: membersList.map(s => {
-      const roleInTeam = s.team?.teamMembers?.find(m => m.studentId === s.studentId)?.roleInTeam;
-      return {
-        name: s.fullName,
-        role: roleInTeam === "LEADER" ? "Leader" : "Thành viên",
-      };
-    }),
+    members: teamDetail?.members.content.map(s => ({
+      name: s.fullName,
+      role: s.roleInTeam === "LEADER" ? "Leader" : "Thành viên",
+    })) || [],
   };
 
   return (
@@ -59,34 +48,38 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             title={`${projectDetail.name}: ${projectDetail.project}`}
             description="Chi tiết dự án, tiến độ Agile và đánh giá cổ phần Slices của từng thành viên."
           />
-          <div className="flex gap-3">
-            <Button variant="outline" className="gap-2 rounded-xl border-border/50 bg-muted dark:hover:bg-accent/50 shadow-sm">
-              <FileText size={16} />
-              Báo cáo Sprint
-            </Button>
-            <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90">
-              <GitMerge size={16} />
-              Lịch sử Commit
-            </Button>
-          </div>
+          {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
+            <div className="flex gap-3">
+              <Button variant="outline" className="gap-2 rounded-xl border-border/50 bg-muted dark:hover:bg-accent/50 shadow-sm">
+                <FileText size={16} />
+                Báo cáo Sprint
+              </Button>
+              <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90">
+                <GitMerge size={16} />
+                Lịch sử Commit
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex flex-wrap w-full md:w-auto h-auto rounded-xl bg-muted/50 p-1 mb-6 gap-1">
-          <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
-            <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
-          </TabsTrigger>
-          <TabsTrigger value="slicing-pie" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
-            <PieChartIcon className="w-4 h-4 mr-2" /> Đánh giá Đóng góp & AI
-          </TabsTrigger>
-          <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
-            <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
-          </TabsTrigger>
-          <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
-            <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
-          </TabsTrigger>
-        </TabsList>
+        {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
+          <TabsList className="flex flex-wrap w-full md:w-auto h-auto rounded-xl bg-muted/50 p-1 mb-6 gap-1">
+            <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
+            </TabsTrigger>
+            <TabsTrigger value="slicing-pie" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <PieChartIcon className="w-4 h-4 mr-2" /> Đánh giá Đóng góp & AI
+            </TabsTrigger>
+            <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
+            </TabsTrigger>
+            <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
+            </TabsTrigger>
+          </TabsList>
+        )}
 
         <TabsContent value="overview" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -158,23 +151,40 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
 
             {/* Right Column: AI Warning & Velocity */}
             <div className="xl:col-span-2 space-y-6">
-              <EarlyWarningAlerts />
-              <SprintVelocityBar />
+              {projectDetail.project && projectDetail.project !== "Chưa có dự án" ? (
+                <>
+                  <EarlyWarningAlerts courseId={courseId} teamId={teamId} />
+                  <SprintVelocityBar courseId={courseId} teamId={teamId} />
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center border border-dashed rounded-[2rem] bg-muted/30 p-12">
+                  <Activity size={48} className="text-muted-foreground/50 mb-4" />
+                  <h3 className="text-lg font-bold text-foreground">Chưa có dự án</h3>
+                  <p className="text-muted-foreground mt-1 max-w-sm">
+                    Nhóm này hiện tại chưa kết nối với bất kỳ Dự án nào.
+                    Vui lòng yêu cầu nhóm tạo hoặc liên kết không gian làm việc để xem phân tích cảnh báo.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="slicing-pie" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <TeamEvaluation />
-        </TabsContent>
+        {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
+          <>
+            <TabsContent value="slicing-pie" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <TeamEvaluation courseId={courseId} teamId={teamId} />
+            </TabsContent>
 
-        <TabsContent value="heatmap" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <ProjectHeatmap projectId={projectDetail.id} />
-        </TabsContent>
+            <TabsContent value="heatmap" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <ProjectHeatmap courseId={courseId} teamId={projectDetail.id} />
+            </TabsContent>
 
-        <TabsContent value="interaction" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <ProjectInteractionGraph projectId={projectDetail.id} />
-        </TabsContent>
+            <TabsContent value="interaction" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <ProjectInteractionGraph courseId={courseId} teamId={projectDetail.id} />
+            </TabsContent>
+          </>
+        )}
       </Tabs>
     </div>
   );

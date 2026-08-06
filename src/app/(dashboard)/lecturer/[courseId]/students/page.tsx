@@ -81,7 +81,7 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
         </TableCell>
         <TableCell className="text-right">
           <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 font-semibold" asChild>
-            <Link href={`/lecturer/${courseId}/students/${student.studentCode}`}>Chi tiết</Link>
+            <Link href={`/lecturer/${courseId}/students/${student.studentId}`}>Chi tiết</Link>
           </Button>
         </TableCell>
       </TableRow>
@@ -96,13 +96,13 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
           title={`Quản lý sinh viên - Lớp ${className}`}
           description="Danh sách sinh viên, thêm mới hoặc import từ file Excel."
         />
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <ImportStudentsDialog courseId={courseId} className={className} onSuccess={refetch} />
           <Button className="gap-2 shadow-sm">
             <UserPlus size={16} />
             Thêm sinh viên
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <Card className="rounded-2xl shadow-sm border-border">

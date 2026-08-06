@@ -2,8 +2,9 @@ import axiosInstance from "@/lib/axios";
 import {
   TeamDetail,
   StudentProgress,
-  StudentActivity,
-  StudentContributionDetail,
+  StudentActivitiesResponse,
+  StudentContributionDetailResponse,
+  StudentBasicInfo,
   EarlyWarning,
   TeamInteraction,
   HeatmapData,
@@ -19,6 +20,12 @@ export const analyticsApi = {
     );
   },
 
+  getStudentBasicInfo: async (courseId: string, studentId: string) => {
+    return axiosInstance.get<never, StudentBasicInfo>(
+      `/api/v1/courses/${courseId}/students/${studentId}`
+    );
+  },
+
   getStudentProgress: async (courseId: string, studentId: string) => {
     return axiosInstance.get<never, StudentProgress>(
       `/api/v1/courses/${courseId}/students/${studentId}/progress`
@@ -26,14 +33,14 @@ export const analyticsApi = {
   },
 
   getStudentActivities: async (courseId: string, studentId: string, page = 0, size = 10) => {
-    return axiosInstance.get<never, Page<StudentActivity>>(
+    return axiosInstance.get<never, StudentActivitiesResponse>(
       `/api/v1/courses/${courseId}/students/${studentId}/activities`,
       { params: { page, size } }
     );
   },
 
   getStudentContributionDetail: async (courseId: string, studentId: string) => {
-    return axiosInstance.get<never, StudentContributionDetail>(
+    return axiosInstance.get<never, StudentContributionDetailResponse>(
       `/api/v1/courses/${courseId}/students/${studentId}/contribution-detail`
     );
   },

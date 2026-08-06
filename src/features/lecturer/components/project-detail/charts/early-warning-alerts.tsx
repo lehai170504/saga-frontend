@@ -5,14 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertTriangle, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
 
-const aiAlerts = [
-  { id: 1, type: "warning", message: "Trần Thị B không có phát sinh Story Points mới trong 5 ngày qua (Ghosting). Nguy cơ vi phạm tiến độ Sprint.", student: "Trần Thị B", actionReq: "Phạt PIP (x0.5 Retro)", date: "2 ngày trước" },
-  { id: 2, type: "danger", message: "Nguyễn Văn A chiếm tới 65% tổng Slices Sprint 2. Nguy cơ Bus Factor cao (Gánh team). Cần điều phối lại Task.", student: "Nguyễn Văn A", actionReq: "Điều phối Task", date: "1 ngày trước" },
-  { id: 3, type: "warning", message: "Mật độ Bug do Lê Văn C tạo ra ở Sprint 2 lên tới 35% (Vượt ngưỡng 30% cấu hình - Nợ kỹ thuật).", student: "Lê Văn C", actionReq: "Trừ Slices", date: "12 giờ trước" }
-];
+interface EarlyWarningAlertsProps {
+  courseId: string;
+  teamId: string;
+}
 
-export function EarlyWarningAlerts() {
+export function EarlyWarningAlerts({ courseId, teamId }: EarlyWarningAlertsProps) {
+  const { data: warnings, isLoading } = useEarlyWarnings(courseId);
+  const teamWarnings = warnings?.filter(w => w.teamId === teamId) || [];
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden">
       <CardHeader className="border-b border-border/50 bg-destructive/5 pb-4">
@@ -25,39 +27,43 @@ export function EarlyWarningAlerts() {
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
-        {aiAlerts.map((alert) => (
-          <div key={alert.id} className="flex gap-4 p-4 rounded-2xl border border-destructive/20 bg-destructive/5 items-start">
-            <div className="p-2 bg-destructive/10 rounded-full text-destructive shrink-0 mt-1">
-              <AlertCircle size={20} />
-            </div>
-            <div className="flex-1 space-y-2">
-              <div className="flex justify-between items-start">
-                <h4 className="font-bold text-foreground text-sm">{alert.message}</h4>
-                <span className="text-xs font-bold text-muted-foreground whitespace-nowrap ml-4">{alert.date}</span>
-              </div>
-              <div className="flex items-center gap-3 mt-2">
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/50 text-xs font-bold">
-                  <Avatar className="w-4 h-4">
-                    <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{alert.student.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  {alert.student}
+        {isLoading ? (
+          <div className="flex justify-center p-8 text-muted-foreground">Đang tải cảnh báo...</div>
+        ) : (
+          <>
+            {teamWarnings.map((alert, idx) => (
+              <div key={idx} className="flex gap-4 p-4 rounded-2xl border border-destructive/20 bg-destructive/5 items-start">
+                <div className="p-2 bg-destructive/10 rounded-full text-destructive shrink-0 mt-1">
+                  <AlertCircle size={20} />
                 </div>
-                <Button variant="outline" size="sm" className="h-7 text-xs font-bold border-destructive/30 text-destructive hover:bg-destructive hover:text-white">
-                  Thực thi: {alert.actionReq}
-                </Button>
-                <Button variant="ghost" size="sm" className="h-7 text-xs font-bold text-muted-foreground hover:text-foreground">
-                  Bỏ qua (Ghi đè)
-                </Button>
+                <div className="flex-1 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-bold text-foreground text-sm">{alert.message}</h4>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/50 text-xs font-bold">
+                      <Avatar className="w-4 h-4">
+                        <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{alert.studentId.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      SV {alert.studentId.substring(0, 8)}
+                    </div>
+                    {alert.signalType === "OVERDUE_TASK" && (
+                      <Button variant="outline" size="sm" className="h-7 text-xs font-bold border-destructive/30 text-destructive hover:bg-destructive hover:text-white">
+                        Thực thi: Xử lý Task quá hạn
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))}
 
-        {aiAlerts.length === 0 && (
-          <div className="flex flex-col items-center justify-center p-8 text-success">
-            <CheckCircle2 size={40} className="mb-2 opacity-50" />
-            <p className="font-bold">Nhóm hoạt động hoàn hảo, không phát hiện rủi ro (Bus Factor/Ghosting)!</p>
-          </div>
+            {teamWarnings.length === 0 && (
+              <div className="flex flex-col items-center justify-center p-8 text-success">
+                <CheckCircle2 size={40} className="mb-2 opacity-50" />
+                <p className="font-bold">Nhóm hoạt động hoàn hảo, không phát hiện rủi ro!</p>
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

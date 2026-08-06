@@ -8,7 +8,12 @@ import { ClassNetworkGraph } from "@/features/lecturer/components/class-network-
 import { SlicingPieChart } from "./charts/slicing-pie-chart";
 import { RetroSkillRadar } from "./charts/retro-skill-radar";
 
-export function TeamEvaluation() {
+interface TeamEvaluationProps {
+  courseId: string;
+  teamId: string;
+}
+
+export function TeamEvaluation({ courseId, teamId }: TeamEvaluationProps) {
 
   const handleApprove = () => {
     toast.success("Đã phê duyệt kết quả Đóng góp (Slices) cho Sprint này!");

@@ -14,6 +14,46 @@ import {
 import { useAuthStore } from "@/stores/authStore";
 import { useSemesters } from "@/features/semesters/hooks/useSemesters";
 import { useCourses } from "@/features/courses/hooks/useCourses";
+import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
+import { useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function CourseStats({ courseId }: { courseId: string }) {
+  const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
+  const { data: warningsData, isLoading: isLoadingWarnings } = useEarlyWarnings(courseId);
+
+  const teamsMap = new Set<string>();
+  if (studentsData?.studentsWithTeam?.content) {
+    studentsData.studentsWithTeam.content.forEach(student => {
+      if (student.team?.teamId) {
+        teamsMap.add(student.team.teamId);
+      }
+    });
+  }
+  const teamCount = teamsMap.size;
+  const warningCount = warningsData?.length || 0;
+
+  return (
+    <div className="grid grid-cols-2 gap-3 mt-6">
+      <div className="flex flex-col p-3.5 rounded-2xl bg-secondary/40 border border-border/50 group-hover:bg-secondary/60 transition-colors">
+        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
+          <Users size={14} className="text-primary/70" /> Nhóm
+        </span>
+        <span className="text-lg font-black text-foreground">
+          {isLoadingStudents ? <Skeleton className="h-5 w-8 mt-1" /> : teamCount}
+        </span>
+      </div>
+      <div className="flex flex-col p-3.5 rounded-2xl bg-secondary/40 border border-border/50 group-hover:bg-secondary/60 transition-colors">
+        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
+          <Network size={14} className="text-warning/70" /> Cảnh báo
+        </span>
+        <span className="text-lg font-black text-foreground">
+          {isLoadingWarnings ? <Skeleton className="h-5 w-8 mt-1" /> : warningCount}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function ClassSelectionPage() {
   const { user } = useAuthStore();
@@ -154,20 +194,7 @@ export default function ClassSelectionPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      <div className="flex flex-col p-3.5 rounded-2xl bg-secondary/40 border border-border/50 group-hover:bg-secondary/60 transition-colors">
-                        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                          <Users size={14} className="text-primary/70" /> Nhóm
-                        </span>
-                        <span className="text-lg font-black text-foreground">--</span>
-                      </div>
-                      <div className="flex flex-col p-3.5 rounded-2xl bg-secondary/40 border border-border/50 group-hover:bg-secondary/60 transition-colors">
-                        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                          <Network size={14} className="text-warning/70" /> Cảnh báo
-                        </span>
-                        <span className="text-lg font-black text-foreground">--</span>
-                      </div>
-                    </div>
+                    <CourseStats courseId={course.id} />
                   </div>
 
                   <div className="p-6 pt-0 mt-auto relative z-10">
