@@ -20,5 +20,17 @@ export const sprintApi = {
 
   submitPeerReview: async (teamId: string, sprintId: string, data: { revieweeId: string; starRating?: number; criteriaRatings?: { rubricId: string; starRating: number }[]; comment: string }) => {
     return axiosInstance.post<never, unknown>(`/api/v1/teams/${teamId}/sprints/${sprintId}/peer-reviews`, data);
+  },
+
+  getProjectSprints: async (projectId: string) => {
+    return axiosInstance.get<never, TeamSprintsResponse>(`/api/v1/projects/${projectId}/sprints`);
+  },
+
+  createSprint: async (projectId: string, data: { name: string; goal: string; startDate: string | null; endDate: string | null }, idempotencyKey: string) => {
+    return axiosInstance.post<never, any>(`/api/v1/projects/${projectId}/sprints`, data, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
   }
 };

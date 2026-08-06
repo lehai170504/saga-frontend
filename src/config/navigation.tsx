@@ -71,7 +71,7 @@ export const getNavigationConfig = (
       if (courseId) {
         return [
           {
-            title: className ? `Đang xem: Khóa học ${className}` : `Đang xem: KHÓA HỌC ${courseId.toUpperCase()}`,
+            title: className ? `Đang xem: Khóa học ${className}` : "Đang xem: Khóa học...",
             items: [
               { href: "/lecturer", icon: <ArrowLeft size={18} />, label: "Chọn khóa học khác", hideChevron: true, exact: true },
             ],
@@ -106,7 +106,7 @@ export const getNavigationConfig = (
       if (courseId) {
         return [
           {
-            title: className ? `Đang xem: Khóa học ${className}` : `Đang xem: KHÓA HỌC ${courseId.toUpperCase()}`,
+            title: className ? `Đang xem: Khóa học ${className}` : "Đang xem: Khóa học...",
             items: [
               { href: "/student", icon: <ArrowLeft size={18} />, label: "Chọn khóa học khác", hideChevron: true, exact: true },
             ],
@@ -117,6 +117,7 @@ export const getNavigationConfig = (
               { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
               { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
               { href: `/student/${courseId}/sprints`, icon: <UserCheck size={18} />, label: "Đánh giá chéo", exact: true },
+              { href: `/student/${courseId}/timeline`, icon: <Calendar size={18} />, label: "Timeline", exact: true },
             ],
           },
         ];

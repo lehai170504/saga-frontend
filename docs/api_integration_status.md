@@ -175,10 +175,15 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 - `GET /api/v1/courses/{courseId}/teams/{teamId}/heatmap`: Dữ liệu cho biểu đồ nhiệt (Heatmap).
 - `GET /api/v1/courses/{courseId}/teams/{teamId}/sprints/velocity`: Vận tốc làm việc theo Sprint.
 
-### 1.11. Admin & Team Analytics (Sprints & Peer Review)
+### 1.11. Quản lý Sprints & Đánh giá chéo (Sprints & Peer Review)
+- `GET /api/v1/projects/{projectId}/sprints`: Lấy danh sách Sprint của dự án phục vụ hiển thị Timeline.
+- `POST /api/v1/projects/{projectId}/sprints`: Tạo Sprint mới và đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
 - `GET /api/v1/teams/{teamId}/sprints`: Lấy danh sách Sprint của một nhóm.
 - `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Đọc kết quả Peer Review của nhóm trong một Sprint cụ thể.
-- `GET /api/v1/peer-review-rubrics/default`: Lấy cấu hình Rubric đánh giá chéo chuẩn của toàn trường (Admin sử dụng).
+- `GET /api/v1/teams/{teamId}/peer-review-rubric`: Lấy Rubric đánh giá chéo được thiết lập riêng cho nhóm.
+- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews/candidates`: Lấy danh sách ứng viên (các thành viên cùng nhóm) để đánh giá chéo.
+- `POST /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Gửi đánh giá chéo cho một thành viên trong nhóm.
+- `GET /api/v1/peer-review-rubrics/default`: Lấy cấu hình Rubric đánh giá chéo chuẩn của toàn trường.
 - `GET /api/v1/courses/contribution-slice-weights`: Lấy trọng số đóng góp của một khóa học.
 - `POST /api/v1/courses/{courseId}/contribution-slice-weight-requests`: Gửi yêu cầu thay đổi trọng số (Lecturer).
 

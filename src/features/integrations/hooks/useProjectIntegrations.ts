@@ -56,6 +56,10 @@ export const useDeleteProjectJiraIntegration = (projectId: string) => {
   return useMutation({
     mutationFn: () => projectIntegrationApi.deleteJiraIntegration(projectId),
     onSuccess: () => {
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("integration_callback_result");
+        sessionStorage.removeItem("integration_redirect_back");
+      }
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
       toast.success("Ngắt kết nối Jira thành công!");
     },

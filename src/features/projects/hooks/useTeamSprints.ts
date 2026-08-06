@@ -50,3 +50,40 @@ export const useSubmitPeerReview = (teamId: string, sprintId: string) => {
     }
   });
 };
+
+export const useProjectSprints = (projectId: string) => {
+  return useQuery({
+    queryKey: ["project-sprints", projectId],
+    queryFn: () => sprintApi.getProjectSprints(projectId),
+    enabled: !!projectId,
+  });
+};
+
+export const useCreateSprint = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { name: string; goal: string; startDate: string | null; endDate: string | null; idempotencyKey: string }) => {
+      const { idempotencyKey, ...payload } = data;
+      return sprintApi.createSprint(projectId, payload, idempotencyKey);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-sprints", projectId] });
+      toast.success("Tạo Sprint thành công!");
+    },
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
+      const errCode = axiosErr?.response?.data?.error;
+      const originalMsg = axiosErr?.response?.data?.message;
+
+      let errMsg = "Có lỗi xảy ra khi tạo Sprint.";
+      if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
+        errMsg = "Tích hợp Jira của dự án chưa được kích hoạt hoặc chưa được cấu hình.";
+      } else if (errCode === "JIRA_IDENTIFIER_INVALID") {
+        errMsg = "Mã định danh dự án Jira không hợp lệ.";
+      } else if (originalMsg) {
+        errMsg = originalMsg;
+      }
+      toast.error(errMsg);
+    }
+  });
+};
