@@ -22,11 +22,21 @@ interface StudentSprintDetailsViewProps {
   sprintId?: string;
 }
 
+interface EvaluatingCandidate {
+  studentId: string;
+  fullName: string;
+  studentCode: string;
+  alreadyReviewed?: boolean;
+  existingTotalStarRating?: number | null;
+  existingComment?: string | null;
+  [key: string]: unknown;
+}
+
 export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDetailsViewProps) {
   const [mounted, setMounted] = useState(false);
 
   // Form states for peer review dialog
-  const [evaluatingCandidate, setEvaluatingCandidate] = useState<any | null>(null);
+  const [evaluatingCandidate, setEvaluatingCandidate] = useState<EvaluatingCandidate | null>(null);
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [comment, setComment] = useState("");
 
@@ -42,7 +52,8 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -141,7 +152,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         {/* Navigation / Back Button */}
         <div className="flex items-center justify-between">
           <Link
@@ -212,22 +223,19 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
                     return (
                       <Card
                         key={candidate.studentId}
-                        className={`rounded-3xl border transition-all duration-300 overflow-hidden ${
-                          isReviewed 
-                            ? 'border-emerald-500/20 bg-emerald-500/[0.02] hover:shadow-lg' 
-                            : 'border-border/50 bg-card/60 backdrop-blur-md hover:shadow-xl hover:border-border'
-                        }`}
+                        className={`rounded-3xl border transition-all duration-300 overflow-hidden ${isReviewed
+                          ? 'border-emerald-500/20 bg-emerald-500/[0.02] hover:shadow-lg'
+                          : 'border-border/50 bg-card/60 backdrop-blur-md hover:shadow-xl hover:border-border'
+                          }`}
                       >
                         <CardContent className="p-6 flex items-center justify-between gap-4">
                           <div className="flex items-center gap-4 min-w-0">
-                            <Avatar className={`h-14 w-14 border-2 shrink-0 ${
-                              isReviewed ? 'border-emerald-500/30' : 'border-background shadow-md'
-                            }`}>
-                              <AvatarFallback className={`font-bold text-base ${
-                                isReviewed 
-                                  ? 'bg-emerald-500/10 text-emerald-500' 
-                                  : 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary'
+                            <Avatar className={`h-14 w-14 border-2 shrink-0 ${isReviewed ? 'border-emerald-500/30' : 'border-background shadow-md'
                               }`}>
+                              <AvatarFallback className={`font-bold text-base ${isReviewed
+                                ? 'bg-emerald-500/10 text-emerald-500'
+                                : 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary'
+                                }`}>
                                 {candidate.fullName.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
@@ -272,8 +280,8 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
             </div>
 
             {/* Peer Review Form Dialog */}
-            <Dialog 
-              open={!!evaluatingCandidate} 
+            <Dialog
+              open={!!evaluatingCandidate}
               onOpenChange={(open) => {
                 if (!open) {
                   setEvaluatingCandidate(null);

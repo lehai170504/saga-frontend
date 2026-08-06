@@ -5,14 +5,12 @@ import { CreateClassDialog } from "./create-class-dialog";
 import { ClassActions } from "./class-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Loader2, Network, Clock, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function ClassCards() {
   const { data: page, isLoading, error } = useClasses();
   const { user } = useAuth();
-  const router = useRouter();
 
   const isAdmin = user?.applicationRole === "ADMIN";
 

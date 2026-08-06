@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useTeamSprints } from "@/features/projects/hooks/useTeamSprints";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface StudentSprintsViewProps {
   courseId?: string;
@@ -26,7 +26,8 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingSprints);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -118,13 +119,13 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                       >
                         <Card className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:border-border transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer hover:bg-muted/10">
                           <div className="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-primary to-orange-500 opacity-80" />
-                          
+
                           <CardHeader className="pb-4 pt-6">
                             <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                               {sprint.sprintName}
                             </CardTitle>
                           </CardHeader>
-                          
+
                           <CardContent className="space-y-4 pt-2 pb-6 flex-1 flex flex-col justify-between">
                             <div className="space-y-3.5">
                               {/* Start & End Dates */}

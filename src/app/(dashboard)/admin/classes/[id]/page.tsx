@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -100,7 +100,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
     setIsStudentModalOpen(false);
   };
 
-  const handleDeleteStudent = (id: string) => {
+  const handleDeleteStudent = () => {
     toast.info("Chức năng xóa sinh viên đang được phát triển.");
   };
 

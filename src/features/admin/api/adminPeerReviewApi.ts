@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axios";
 export interface SprintPeerReviewResponse {
   sprintId: string;
   teamId: string;
-  reviews: any[]; // Depending on the actual DTO, simplifying here for Admin view
+  reviews: unknown[]; // Depending on the actual DTO, simplifying here for Admin view
 }
 
 export const adminPeerReviewApi = {

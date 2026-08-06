@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { sprintApi } from "../api/sprintApi";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 export const useTeamSprints = (teamId: string) => {
   return useQuery({
@@ -42,8 +43,9 @@ export const useSubmitPeerReview = (teamId: string, sprintId: string) => {
       queryClient.invalidateQueries({ queryKey: ["team-sprint-candidates", teamId, sprintId] });
       toast.success("Đăng tải đánh giá chéo thành công!");
     },
-    onError: (err: any) => {
-      const errMsg = err?.response?.data?.message || "Có lỗi xảy ra khi gửi đánh giá chéo.";
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ message: string }>;
+      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi gửi đánh giá chéo.";
       toast.error(errMsg);
     }
   });
