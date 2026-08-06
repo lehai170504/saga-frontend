@@ -14,4 +14,12 @@ export const classApi = {
   createClass: async (data: ClassRequest) => {
     return axiosInstance.post<never, Class>("/api/v1/classes", data);
   },
+
+  updateClass: async (id: string, data: ClassRequest) => {
+    return axiosInstance.put<never, Class>(`/api/v1/classes/${id}`, data);
+  },
+
+  deleteClass: async (id: string) => {
+    return axiosInstance.delete(`/api/v1/classes/${id}`);
+  },
 };

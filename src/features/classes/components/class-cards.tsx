@@ -2,6 +2,7 @@
 
 import { useClasses } from "../hooks/useClasses";
 import { CreateClassDialog } from "./create-class-dialog";
+import { ClassActions } from "./class-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Loader2, Network, Clock, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -46,18 +47,12 @@ export function ClassCards() {
           {page.content.map((clazz) => (
             <Card
               key={clazz.id}
-              className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm hover:shadow-md hover:border-primary/50 transition-all duration-300 group overflow-hidden relative cursor-pointer h-full flex flex-col"
-              onClick={() => {
-                if (user?.applicationRole === "ADMIN") {
-                  router.push(`/admin/classes/${clazz.id}`);
-                } else if (user?.applicationRole === "LECTURER") {
-                  router.push(`/lecturer/${clazz.id}`);
-                }
-              }}
+              className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm hover:shadow-md hover:border-border transition-all duration-300 group overflow-hidden relative h-full flex flex-col"
             >
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Network size={64} className="text-primary transform rotate-12 group-hover:scale-110 transition-transform duration-500" />
               </div>
+              {isAdmin && <ClassActions clazz={clazz} />}
               <CardContent className="p-6 relative z-10 flex flex-col flex-grow gap-0">
                 <div className="min-h-[4.5rem] flex flex-col justify-start mb-4">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80 mb-1">Mã lớp</p>

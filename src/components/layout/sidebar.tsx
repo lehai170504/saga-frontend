@@ -108,7 +108,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
                   const isActive = item.href !== "#" && (
                     item.exact
                       ? pathname === item.href
-                      : (pathname === item.href || pathname.startsWith(`${item.href}/`))
+                      : (pathname === item.href || pathname.startsWith(`${item.href}/`) || (item.matchPaths && item.matchPaths.some(p => pathname.startsWith(p))))
                   );
 
                   return (

@@ -27,6 +27,13 @@ Các trang Quản trị Master Data đã hoàn thiện cả tính năng Xem danh
 - `POST /api/v1/subjects`
   - Request Body: `SubjectRequest`
   - Response: `Subject`
+- `PUT /api/v1/subjects/{id}`
+  - Path Param: `id`
+  - Request Body: `SubjectRequest`
+  - Response: `Subject`
+- `DELETE /api/v1/subjects/{id}`
+  - Path Param: `id`
+  - Response: `void`
 
 **Khóa học (Courses):**
 - `GET /api/v1/courses`
@@ -49,6 +56,13 @@ Các trang Quản trị Master Data đã hoàn thiện cả tính năng Xem danh
 - `POST /api/v1/classes`
   - Request Body: `ClassRequest`
   - Response: `Class`
+- `PUT /api/v1/classes/{id}`
+  - Path Param: `id`
+  - Request Body: `ClassRequest`
+  - Response: `Class`
+- `DELETE /api/v1/classes/{id}`
+  - Path Param: `id`
+  - Response: `void`
 
 **Học kỳ (Semesters):**
 - `GET /api/v1/semesters`
@@ -186,9 +200,8 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
    - *Hiện trạng:* Đã có API lấy `members` của 1 team cụ thể (`GET /api/v1/courses/{courseId}/teams/{teamId}/members`), nhưng chưa có API để lấy ra danh sách các `teamId` thuộc về `courseId` đó. Do vậy giao diện Tích hợp Dự án phải mock cứng ID là `"project-123"`.
 
 3. **Master Data - Cập nhật và Xóa (PUT / DELETE):**
-   - Hiện tại Master Data (Subject, Course, Class, Semester) mới chỉ có API Tạo mới (`POST`) và Xem chi tiết (`GET`).
-   - Thiếu: `PUT /api/v1/{resource}/{id}` (Cập nhật thông tin).
-   - Thiếu: `DELETE /api/v1/{resource}/{id}` (Xóa, hoặc đổi status sang vô hiệu hóa).
+   - Đã tích hợp thành công Cập nhật (`PUT`) và Xóa (`DELETE`) cho **Môn học (Subject)** và **Lớp học (Class)**.
+   - Vẫn còn thiếu API PUT/DELETE cho **Khóa học (Course)** và **Học kỳ (Semester)** từ phía Backend.
 
 4. **Tìm kiếm Course/Class bằng Keyword:**
    - Các API List (như `GET /api/v1/courses`) cần bổ sung param `?keyword=...` để thanh Search của Frontend có thể hoạt động.
