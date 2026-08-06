@@ -13,7 +13,8 @@ interface TeamEvaluationProps {
   teamId: string;
 }
 
-export function TeamEvaluation({ courseId, teamId }: TeamEvaluationProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function TeamEvaluation({ courseId: _courseId, teamId: _teamId }: TeamEvaluationProps) {
 
   const handleApprove = () => {
     toast.success("Đã phê duyệt kết quả Đóng góp (Slices) cho Sprint này!");

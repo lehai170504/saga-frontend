@@ -8,8 +8,7 @@ import {
   EarlyWarning,
   TeamInteraction,
   HeatmapData,
-  SprintVelocity,
-  Page
+  SprintVelocity
 } from "../types/analytics";
 
 export const analyticsApi = {

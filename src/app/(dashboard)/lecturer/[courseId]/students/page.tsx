@@ -13,19 +13,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Crown, Search, UserPlus } from "lucide-react";
+import { Crown, Search } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { CourseStudent } from "@/features/courses/types";
-import { ImportStudentsDialog } from "@/features/courses/components/import-students-dialog";
 
 export default function StudentsManagementPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = React.use(params);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: studentsData, isLoading: isLoadingStudents, refetch } = useCourseStudents(courseId);
+  const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
   const { data: courseData } = useCourse(courseId);
   const className = courseData?.clazz?.name || courseData?.courseCode || courseId;
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, GitCommit, GitPullRequest, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, ArrowUpRight, FileText } from "lucide-react";
+import { User, GitCommit, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -21,9 +21,9 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
   ]);
 
   const { data: basicInfoData, isLoading: isLoadingBasicInfo } = useStudentBasicInfo(courseId, studentId);
-  const { data: progressData, isLoading: isLoadingProgress } = useStudentProgress(courseId, studentId);
+  const { data: progressData } = useStudentProgress(courseId, studentId);
   const { data: activitiesData, isLoading: isLoadingActivities } = useStudentActivities(courseId, studentId);
-  const { data: contributionData, isLoading: isLoadingContribution } = useStudentContributionDetail(courseId, studentId);
+  const { data: contributionData } = useStudentContributionDetail(courseId, studentId);
 
   const aggregate = contributionData?.currentAggregate;
   const warnings = aggregate?.warnings || [];
