@@ -2,6 +2,7 @@
 
 import { useSubjects } from "../hooks/useSubjects";
 import { CreateSubjectDialog } from "./create-subject-dialog";
+import { SubjectActions } from "./subject-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Loader2, BookOpen, Clock, Layers } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -46,6 +47,7 @@ export function SubjectCards() {
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <BookOpen size={64} className="text-primary transform rotate-12" />
               </div>
+              {isAdmin && <SubjectActions subject={subject} />}
               <CardContent className="p-6 relative z-10 flex flex-col flex-grow gap-0">
                 <div className="min-h-[4.5rem] flex flex-col justify-start mb-4">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80 mb-1">Mã môn học</p>
