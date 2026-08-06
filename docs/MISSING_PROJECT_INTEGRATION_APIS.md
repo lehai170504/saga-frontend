@@ -18,6 +18,9 @@ Hiện tại, Frontend mới chỉ có API tạo dự án thông qua Team (`POST
 * **Xóa/Hủy bỏ Dự án:**
   * `DELETE /api/projects/{projectId}` (Xóa vĩnh viễn dự án hoặc hủy kích hoạt).
   * *Lý do:* Cho phép nhóm sinh viên reset hoặc đổi đề tài khác để cấu hình tích hợp lại từ đầu.
+* **Tổng quan Tiến độ & Thống kê Dự án (Project Progress Dashboard):**
+  * `GET /api/projects/{projectId}/dashboard-stats`
+  * *Lý do:* Cung cấp số liệu tổng quan về tiến độ dự án của nhóm (tổng số task, số task hoàn thành/chưa hoàn thành từ Jira; tổng số commit, pull request từ GitHub; tỷ lệ hoàn thành chung). Phục vụ hiển thị chỉ số đo lường KPI và vẽ biểu đồ tiến độ trên Dashboard của nhóm sinh viên và giảng viên.
 
 ---
 

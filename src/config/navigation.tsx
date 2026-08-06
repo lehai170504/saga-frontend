@@ -10,6 +10,7 @@ import {
   Logs,
   Link2,
   Settings2,
+  UserCheck,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -114,6 +115,7 @@ export const getNavigationConfig = (
             items: [
               { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
               { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
+              { href: `/student/${courseId}/sprints`, icon: <UserCheck size={18} />, label: "Đánh giá chéo", exact: true },
             ],
           },
         ];
