@@ -36,10 +36,10 @@ export function CourseStudentModal({
       <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-foreground">
-            Thêm sinh viên
+            {editingStudentId ? "Sửa thông tin sinh viên" : "Thêm sinh viên"}
           </DialogTitle>
           <DialogDescription className="text-sm font-medium mt-1">
-            Điền đầy đủ thông tin để thêm sinh viên vào lớp học.
+            {editingStudentId ? "Cập nhật thông tin của sinh viên trong lớp học." : "Điền đầy đủ thông tin để thêm sinh viên vào lớp học."}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-5 py-4">

@@ -15,7 +15,7 @@ import {
   Handle,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { TeamInteraction } from "@/features/lecturer/types/analytics";
+import { TeamInteraction, InteractionNode } from "@/features/lecturer/types/analytics";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { AlertCircle } from "lucide-react";
 
@@ -55,15 +55,16 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
     const centerX = 300;
     const centerY = 200;
 
-    const nodes: Node[] = data.nodes.map((node: any, i: number) => {
+    const nodes: Node[] = data.nodes.map((node: InteractionNode, i: number) => {
       const angle = (i / data.nodes.length) * 2 * Math.PI - Math.PI / 2; // Start from top
       const x = centerX + radius * Math.cos(angle);
       const y = centerY + radius * Math.sin(angle);
 
       // Handle both standard graph format and specific SAGA API format
-      const nodeId = node.studentId || node.id || `n-${i}`;
-      const nodeLabel = node.fullName || node.name || node.label || "Unknown";
-      const nodeGroup = node.studentCode || node.group;
+      const rawNode = node as unknown as Record<string, string | undefined>;
+      const nodeId = rawNode.studentId || node.id || `n-${i}`;
+      const nodeLabel = rawNode.fullName || rawNode.name || node.label || "Unknown";
+      const nodeGroup = rawNode.studentCode || node.group;
 
       return {
         id: String(nodeId),

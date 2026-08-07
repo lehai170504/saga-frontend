@@ -39,11 +39,8 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
   const students = React.useMemo(() => {
     if (!studentsResponse) return [];
 
-    const getSafeId = (s: any, fallbackStr: string) =>
-      s.studentId || s.id || s.userId || `${fallbackStr}-${Math.random().toString(36).substring(2, 9)}`;
-
-    const withTeam = studentsResponse.studentsWithTeam.content.map(s => ({
-      id: getSafeId(s, 'with'),
+    const withTeam = studentsResponse.studentsWithTeam.content.map((s, index) => ({
+      id: s.studentId || (s as { id?: string }).id || `with-${index}`,
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -52,8 +49,8 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
       teamName: s.team?.teamName
     }));
 
-    const withoutTeam = studentsResponse.studentsWithoutTeam.content.map(s => ({
-      id: getSafeId(s, 'without'),
+    const withoutTeam = studentsResponse.studentsWithoutTeam.content.map((s, index) => ({
+      id: s.studentId || (s as { id?: string }).id || `without-${index}`,
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
