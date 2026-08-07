@@ -12,15 +12,14 @@ import { GitHubRepositoryResponse } from "@/features/integrations/types";
 import { useGithubBranches, useGithubCommits } from "@/features/projects/hooks/useProjects";
 import { GithubBranchInfo, GithubCommitInfo } from "@/features/projects/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GitCommit, GitBranch, Calendar, ExternalLink, ChevronLeft, ChevronRight, AlertTriangle, ArrowLeft, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { GitCommit, GitBranch, Calendar, ExternalLink, ChevronLeft, ChevronRight, AlertTriangle, Loader2 } from "lucide-react";
 
 interface StudentCommitsViewProps {
   courseId?: string;
 }
 
 export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
-  const router = useRouter();
+
   const [mounted, setMounted] = useState(false);
   const [selectedRepoId, setSelectedRepoId] = useState<string>("");
   const [selectedBranch, setSelectedBranch] = useState<string>("");
@@ -130,18 +129,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
       <div className="p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
 
-        {/* Nút quay lại */}
-        <div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="rounded-xl font-bold text-muted-foreground hover:text-foreground flex items-center gap-2 hover:bg-muted/50 -mb-2"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft size={16} />
-            Quay lại
-          </Button>
-        </div>
+
 
         {/* Page Header */}
         <PageHeader
