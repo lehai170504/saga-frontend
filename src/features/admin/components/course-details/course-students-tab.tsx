@@ -121,35 +121,37 @@ export function CourseStudentsTab({
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0 rounded-xl">
+                      <Button variant="ghost" className="h-8 w-8 p-0 rounded-xl hover:bg-muted/50 data-[state=open]:bg-muted/50">
                         <span className="sr-only">Mở menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="rounded-xl border-border bg-card">
-                      <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-                      <DropdownMenuSeparator className="bg-border" />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/courses/${courseId}/students/${student.id}`} className="cursor-pointer">
-                          <BarChart className="mr-2 h-4 w-4" />
+                    <DropdownMenuContent align="end" className="w-56 p-1.5 rounded-2xl border-border/50 bg-card shadow-lg">
+                      <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2 py-1.5">
+                        Thao tác
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator className="bg-border/50 -mx-1.5 my-1" />
+                      <DropdownMenuItem asChild className="px-2 py-2 rounded-xl cursor-pointer hover:bg-muted focus:bg-muted font-semibold transition-colors">
+                        <Link href={`/admin/courses/${courseId}/students/${student.id}`}>
+                          <BarChart className="mr-2 h-4 w-4 text-primary" />
                           <span>Xem chi tiết Analytics</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        className="cursor-pointer rounded-md flex items-center hover:bg-muted focus:bg-muted"
+                        className="px-2 py-2 rounded-xl cursor-pointer flex items-center hover:bg-muted focus:bg-muted font-semibold transition-colors"
                         onClick={() => toast.success(`Đã gửi email đến ${student.name}`)}
                       >
-                        <Mail className="mr-2 h-4 w-4" /> Gửi email
+                        <Mail className="mr-2 h-4 w-4 text-primary" /> Gửi email
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        className="cursor-pointer rounded-md flex items-center hover:bg-muted focus:bg-muted"
+                        className="px-2 py-2 rounded-xl cursor-pointer flex items-center hover:bg-muted focus:bg-muted font-semibold transition-colors"
                         onClick={() => onEditStudent(student)}
                       >
-                        <Edit className="mr-2 h-4 w-4" /> Sửa thông tin
+                        <Edit className="mr-2 h-4 w-4 text-primary" /> Sửa thông tin
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="bg-border" />
+                      <DropdownMenuSeparator className="bg-border/50 -mx-1.5 my-1" />
                       <DropdownMenuItem
-                        className="cursor-pointer rounded-md text-destructive focus:bg-destructive/10 focus:text-destructive flex items-center"
+                        className="px-2 py-2 rounded-xl cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive flex items-center font-semibold transition-colors"
                         onClick={() => onDeleteStudent(student.id)}
                       >
                         <Trash2 className="mr-2 h-4 w-4" /> Xóa khỏi lớp

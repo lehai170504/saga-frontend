@@ -43,25 +43,22 @@ export function SubjectCards() {
       {page?.content && page.content.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
           {page.content.map((subject) => (
-            <Card key={subject.id} className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm hover:shadow-md hover:border-border transition-all duration-300 group overflow-hidden relative h-full flex flex-col">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <BookOpen size={64} className="text-primary transform rotate-12" />
-              </div>
+            <Card key={subject.id} className="rounded-2xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col h-full group relative">
               {isAdmin && <SubjectActions subject={subject} />}
-              <CardContent className="p-6 relative z-10 flex flex-col flex-grow gap-0">
-                <div className="min-h-[4.5rem] flex flex-col justify-start mb-4">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80 mb-1">Mã môn học</p>
-                  <h3 className="text-2xl font-black tracking-tight text-foreground leading-tight">{subject.subjectCode}</h3>
+              <CardContent className="p-5 flex-grow flex flex-col">
+                <div className="mb-4 pr-6">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Mã môn học</p>
+                  <h3 className="text-xl font-bold text-foreground leading-tight">{subject.subjectCode}</h3>
                 </div>
 
-                <div className="space-y-3 mt-auto pt-3 border-t border-border/40">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Layers size={16} className="text-primary/70 shrink-0" />
-                    <span className="font-medium line-clamp-1">{subject.name}</span>
+                <div className="flex flex-col gap-2.5 mt-auto pt-4 border-t border-border/50">
+                  <div className="flex items-center gap-2 text-[13px] text-foreground font-semibold">
+                    <Layers size={14} className="text-muted-foreground shrink-0" />
+                    <span className="line-clamp-1">{subject.name}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
                     <Clock size={14} className="shrink-0" />
-                    <span>Tạo ngày: {new Date(subject.createdAt).toLocaleDateString("vi-VN")}</span>
+                    <span>Ngày tạo: {new Date(subject.createdAt).toLocaleDateString("vi-VN")}</span>
                   </div>
                 </div>
               </CardContent>

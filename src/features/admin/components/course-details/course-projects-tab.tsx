@@ -7,6 +7,7 @@ export interface Project {
   id: string;
   name: string;
   group: string;
+  teamId: string;
   status: string;
   progress: number;
   githubRepos: string[];
@@ -42,27 +43,29 @@ export function CourseProjectsTab({ projects, courseId }: CourseProjectsTabProps
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {projects.map((project) => (
-          <div key={project.id} className="p-6 rounded-2xl border border-border bg-card shadow-sm flex flex-col gap-4">
-            <div className="flex justify-between items-start gap-4">
-              <div className="space-y-1">
-                <h3 className="font-extrabold text-primary text-xl leading-tight">{project.name}</h3>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Thực hiện bởi: <span className="text-foreground font-bold">{project.group}</span>
+          <div key={project.id} className="p-5 rounded-2xl border border-border/50 bg-card shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 flex flex-col gap-4 group">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-bold text-lg text-foreground leading-tight">{project.name}</h3>
+                <p className="text-xs font-medium text-muted-foreground mt-1">
+                  Nhóm: <span className="text-foreground font-semibold">{project.group}</span>
                 </p>
               </div>
               <span
-                className={`px-2.5 py-1 rounded-md font-bold text-xs whitespace-nowrap shrink-0 ${project.status === "Hoàn thành"
-                  ? "bg-success/10 text-success dark:bg-emerald-950/40 text-success"
-                  : "bg-primary/10 text-primary dark:bg-blue-950/40 text-primary"
+                className={`inline-flex items-center text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider shrink-0 border ${project.status === "Hoàn thành"
+                  ? "bg-success/10 text-success border-success/20"
+                  : "bg-primary/10 text-primary border-primary/20"
                   }`}
               >
                 {project.status}
               </span>
             </div>
 
-            <div className="mt-2 space-y-4">
+            {/* Repos & Jira */}
+            <div className="space-y-4">
               <div className="space-y-2">
-                <div className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1.5">
+                <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1.5">
                   <GithubIcon className="w-3.5 h-3.5" /> Repositories
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -70,7 +73,7 @@ export function CourseProjectsTab({ projects, courseId }: CourseProjectsTabProps
                     <a
                       key={idx}
                       href="#"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted/40 hover:bg-muted text-xs font-semibold text-foreground transition-all border border-border/50 hover:border-border"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted/40 hover:bg-muted text-[11px] font-semibold text-foreground transition-all border border-border/50 hover:border-border"
                     >
                       <GithubIcon className="w-3.5 h-3.5 text-muted-foreground" />
                       {repo}
@@ -80,13 +83,13 @@ export function CourseProjectsTab({ projects, courseId }: CourseProjectsTabProps
               </div>
 
               <div className="space-y-2">
-                <div className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1.5">
+                <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1.5">
                   <JiraIcon className="w-3.5 h-3.5" /> Workspace Jira
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <a
                     href="#"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#0052CC]/10 hover:bg-[#0052CC]/15 text-[#0052CC] dark:text-[#579DFF] text-xs font-semibold transition-all border border-[#0052CC]/20 hover:border-[#0052CC]/30"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0052CC]/10 hover:bg-[#0052CC]/15 text-[#0052CC] dark:text-[#579DFF] text-[11px] font-semibold transition-all border border-[#0052CC]/20 hover:border-[#0052CC]/30"
                   >
                     <JiraIcon className="w-3.5 h-3.5" />
                     {project.jiraBoard}
@@ -95,24 +98,25 @@ export function CourseProjectsTab({ projects, courseId }: CourseProjectsTabProps
               </div>
             </div>
 
-            <div className="space-y-2 mt-auto pt-4 border-t border-border/30">
-              <div className="flex justify-between text-xs font-bold text-muted-foreground">
-                <span>Tiến độ hoàn thành</span>
-                <span className="text-foreground">{project.progress}%</span>
+            {/* Footer with Progress & Action */}
+            <div className="flex flex-col gap-4 mt-auto pt-4 border-t border-border/50">
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+                  <span>Tiến độ</span>
+                  <span className="text-foreground">{project.progress}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-1000 ease-in-out ${project.progress === 100 ? "bg-success" : "bg-primary"
+                      }`}
+                    style={{ width: `${project.progress}%` }}
+                  />
+                </div>
               </div>
-              <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-1000 ease-in-out ${project.progress === 100 ? "bg-success" : "bg-primary"
-                    }`}
-                  style={{ width: `${project.progress}%` }}
-                />
-              </div>
-            </div>
 
-            <div className="mt-4 pt-4 border-t border-border/30">
-              <Link href={`/admin/courses/${courseId}/teams/${project.id.replace('p', 'g')}`}>
-                <Button variant="outline" className="w-full rounded-xl border-border bg-card hover:bg-muted font-bold text-primary">
-                  Xem chi tiết Analytics & Đánh giá
+              <Link href={`/admin/courses/${courseId}/teams/${project.teamId}`} className="w-full">
+                <Button variant="ghost" size="sm" className="w-full rounded-xl bg-muted/40 hover:bg-primary hover:text-primary-foreground font-semibold transition-all h-9 text-sm text-foreground">
+                  Chi tiết & Đánh giá
                 </Button>
               </Link>
             </div>

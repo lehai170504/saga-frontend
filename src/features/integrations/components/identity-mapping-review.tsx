@@ -49,6 +49,8 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
     reviewMapping({ mappingId, data: { action: "REJECT" } });
   };
 
+  const hasPendingReview = mappings?.some(m => m.status === "PENDING_REVIEW") || false;
+
   return (
     <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden">
       <CardHeader className="bg-muted/30 pb-4">
@@ -66,7 +68,7 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
               <TableHead className="font-bold">Nền tảng</TableHead>
               <TableHead className="font-bold">Tài khoản (Email)</TableHead>
               <TableHead className="font-bold">Trạng thái</TableHead>
-              <TableHead className="font-bold">Hành động</TableHead>
+              {hasPendingReview && <TableHead className="font-bold">Hành động</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -82,35 +84,37 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
                       {mapping.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {mapping.status === "PENDING_REVIEW" && (
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="rounded-xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600"
-                          onClick={() => handleApprove((mapping as { id?: string }).id || "unknown")}
-                          disabled={isPending}
-                        >
-                          <CheckCircle2 className="mr-1.5 h-4 w-4" /> Duyệt
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => handleReject((mapping as { id?: string }).id || "unknown")}
-                          disabled={isPending}
-                        >
-                          <XCircle className="mr-1.5 h-4 w-4" /> Từ chối
-                        </Button>
-                      </div>
-                    )}
-                  </TableCell>
+                  {hasPendingReview && (
+                    <TableCell>
+                      {mapping.status === "PENDING_REVIEW" && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600"
+                            onClick={() => handleApprove((mapping as { id?: string }).id || "unknown")}
+                            disabled={isPending}
+                          >
+                            <CheckCircle2 className="mr-1.5 h-4 w-4" /> Duyệt
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            onClick={() => handleReject((mapping as { id?: string }).id || "unknown")}
+                            disabled={isPending}
+                          >
+                            <XCircle className="mr-1.5 h-4 w-4" /> Từ chối
+                          </Button>
+                        </div>
+                      )}
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                <TableCell colSpan={hasPendingReview ? 4 : 3} className="text-center h-24 text-muted-foreground">
                   Sinh viên chưa liên kết tài khoản nào.
                 </TableCell>
               </TableRow>

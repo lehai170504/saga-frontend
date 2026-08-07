@@ -7,7 +7,7 @@ import { ArrowLeft, Users, UserCheck, ShieldAlert, Star, Loader2 } from "lucide-
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
-import { useTeamSprintCandidates, useTeamRubric, useDefaultRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
+import { useTeamSprintCandidates, useTeamRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
 import { RubricCriterion } from "@/features/projects/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const activeTeamId = myTeamData?.teamId || "";
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(activeTeamId, sprintId || "");
   const { data: teamRubricData, isLoading: isLoadingTeamRubric } = useTeamRubric(activeTeamId);
-  const { data: defaultRubricData, isLoading: isLoadingDefaultRubric } = useDefaultRubric();
   const submitReviewMutation = useSubmitPeerReview(activeTeamId, sprintId || "");
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
@@ -67,9 +66,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const getRubricCriteria = (): RubricCriterion[] => {
     if (teamRubricData?.criteria && teamRubricData.criteria.length > 0) {
       return teamRubricData.criteria;
-    }
-    if ((defaultRubricData as any)?.criteria && (defaultRubricData as any).criteria.length > 0) {
-      return (defaultRubricData as any).criteria;
     }
     return [
       {
@@ -313,7 +309,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
                 <form onSubmit={handleSubmitReview} className="space-y-6 pt-4">
                   {/* Rubric Criteria star ratings */}
                   <div className="space-y-4">
-                    {isLoadingTeamRubric || isLoadingDefaultRubric ? (
+                    {isLoadingTeamRubric ? (
                       <div className="flex flex-col items-center justify-center py-6 gap-2">
                         <Loader2 className="animate-spin text-primary h-6 w-6" />
                         <span className="text-xs text-muted-foreground">Đang tải các tiêu chí đánh giá...</span>

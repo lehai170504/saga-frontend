@@ -41,14 +41,14 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && isLoadingSprints);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (isCreateOpen) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIdempotencyKey(crypto.randomUUID());
+      const timer = setTimeout(() => setIdempotencyKey(crypto.randomUUID()), 0);
+      return () => clearTimeout(timer);
     }
   }, [isCreateOpen]);
 
@@ -170,7 +170,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1200px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-600">
-        
+
         <PageHeader
           title="Timeline Tiến Độ"
           description={
@@ -253,11 +253,10 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
 
               return (
                 <div key={sprint.sprintId} className="relative group transition-all duration-300">
-                  
+
                   {/* Timeline Bullet Node */}
-                  <div className={`absolute -left-[41px] md:-left-[57px] top-6 w-5 h-5 rounded-full border-4 border-background transition-transform duration-300 group-hover:scale-125 z-10 flex items-center justify-center ${
-                    status.timelineNodeStyle
-                  }`}>
+                  <div className={`absolute -left-[41px] md:-left-[57px] top-6 w-5 h-5 rounded-full border-4 border-background transition-transform duration-300 group-hover:scale-125 z-10 flex items-center justify-center ${status.timelineNodeStyle
+                    }`}>
                     {status.label === "Đã hoàn thành" && (
                       <div className="w-1.5 h-1.5 rounded-full bg-background" />
                     )}
@@ -266,7 +265,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
                   {/* Timeline Card */}
                   <Card className={`rounded-[2rem] border transition-all duration-300 hover:shadow-xl ${status.cardStyle}`}>
                     <CardContent className="p-6 md:p-8 space-y-6">
-                      
+
                       {/* Card Header with Status Badge */}
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-4">
                         <div className="space-y-1">

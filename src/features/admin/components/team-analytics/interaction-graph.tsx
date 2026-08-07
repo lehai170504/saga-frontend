@@ -55,16 +55,21 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
     const centerX = 300;
     const centerY = 200;
 
-    const nodes: Node[] = data.nodes.map((node, i) => {
+    const nodes: Node[] = data.nodes.map((node: any, i: number) => {
       const angle = (i / data.nodes.length) * 2 * Math.PI - Math.PI / 2; // Start from top
       const x = centerX + radius * Math.cos(angle);
       const y = centerY + radius * Math.sin(angle);
 
+      // Handle both standard graph format and specific SAGA API format
+      const nodeId = node.studentId || node.id || `n-${i}`;
+      const nodeLabel = node.fullName || node.name || node.label || "Unknown";
+      const nodeGroup = node.studentCode || node.group;
+
       return {
-        id: node.id ? String(node.id) : `n-${i}`,
+        id: String(nodeId),
         type: 'custom',
         position: { x, y },
-        data: { label: node.label, group: node.group },
+        data: { label: nodeLabel, group: nodeGroup },
       };
     });
 
@@ -119,7 +124,7 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
   }
 
   return (
-    <div className="w-full h-[450px] bg-background/50 rounded-2xl overflow-hidden border border-border">
+    <div className="w-full h-[450px] overflow-hidden">
       <ReactFlow
         nodes={nodes}
         edges={edges}

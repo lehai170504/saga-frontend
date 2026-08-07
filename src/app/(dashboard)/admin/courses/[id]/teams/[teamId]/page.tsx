@@ -15,7 +15,7 @@ import { useTeamSprints } from "@/features/admin/hooks/useTeamSprints";
 import { InteractionGraph } from "@/features/admin/components/team-analytics/interaction-graph";
 import { TeamHeatmap } from "@/features/admin/components/team-analytics/team-heatmap";
 import { SprintVelocityChart } from "@/features/admin/components/team-analytics/sprint-velocity-chart";
-import { toast } from "sonner";
+import { PeerReviewModal } from "@/features/admin/components/team-analytics/peer-review-modal";
 import { subWeeks, format } from "date-fns";
 
 export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ id: string; teamId: string }> }) {
@@ -23,6 +23,11 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
   const { id: courseId, teamId } = React.use(params);
 
   const [activeTab, setActiveTab] = useState("overview");
+  const [peerReviewModal, setPeerReviewModal] = useState<{ isOpen: boolean; sprintId: string | null; sprintName: string }>({
+    isOpen: false,
+    sprintId: null,
+    sprintName: "",
+  });
 
   // Fetch Course details
   const { data: course, isLoading: isLoadingCourse } = useCourse(courseId);
@@ -114,18 +119,12 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full sm:w-[600px] grid-cols-4 mb-8 bg-muted/50 p-1 rounded-xl">
+        <TabsList className="grid w-full sm:w-[400px] grid-cols-2 mb-8 bg-muted/50 p-1 rounded-xl">
           <TabsTrigger value="overview" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Tổng quan
           </TabsTrigger>
           <TabsTrigger value="sprints" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
             Sprints & Đánh giá
-          </TabsTrigger>
-          <TabsTrigger value="graph" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
-            Interaction Graph
-          </TabsTrigger>
-          <TabsTrigger value="heatmap" className="font-bold rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
-            Heatmap
           </TabsTrigger>
         </TabsList>
 
@@ -138,27 +137,31 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               {isLoadingMembers ? (
                 <Skeleton className="h-32 w-full rounded-xl" />
               ) : teamMembersPage?.content && teamMembersPage.content.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {teamMembersPage.content.map((member) => (
-                    <div key={member.studentId} className="flex items-center p-4 border border-border/50 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-                      <Avatar className="h-10 w-10 border-2 border-background shadow-sm mr-4">
-                        <AvatarImage src={`https://i.pravatar.cc/150?u=${member.studentId}`} />
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                          {(member.student?.name || "U").charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm truncate">{member.student?.name || "Chưa rõ"}</p>
-                        <p className="text-xs text-muted-foreground truncate">{member.student?.studentCode || "Chưa có mã"}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {[...teamMembersPage.content]
+                    .sort((a, b) => (a.roleInTeam === "LEADER" ? -1 : b.roleInTeam === "LEADER" ? 1 : 0))
+                    .map((member) => (
+                      <div key={member.studentId} className="flex items-center justify-between p-4 rounded-2xl border border-border/50 bg-muted/20 hover:bg-muted/50 group transition-colors">
+                        <div className="flex items-center gap-4">
+                          <Avatar className="h-11 w-11 border border-border shadow-sm group-hover:scale-105 transition-transform duration-300">
+                            <AvatarImage src={`https://i.pravatar.cc/150?u=${member.studentId}`} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                              {(member.fullName || "U").charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col gap-0.5">
+                            <p className="font-bold text-[14px] text-foreground leading-none">{member.fullName}</p>
+                            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{member.studentCode}</p>
+                          </div>
+                        </div>
+                        <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1.5 rounded-full whitespace-nowrap tracking-widest ${member.roleInTeam === "LEADER"
+                          ? "bg-primary/10 text-primary border border-primary/20"
+                          : "bg-background text-muted-foreground border border-border/50 shadow-sm"
+                          }`}>
+                          {member.roleInTeam === "LEADER" ? "Trưởng nhóm" : "Thành viên"}
+                        </span>
                       </div>
-                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md ml-2 whitespace-nowrap ${member.roleInTeam === "LEADER"
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground"
-                        }`}>
-                        {member.roleInTeam === "LEADER" ? "Trưởng nhóm" : "Thành viên"}
-                      </span>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -167,6 +170,28 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               )}
             </CardContent>
           </Card>
+
+          <div className="flex flex-col gap-6">
+            <Card className="rounded-2xl border-border bg-card shadow-sm">
+              <CardHeader>
+                <CardTitle>Biểu đồ nhiệt Hoạt động</CardTitle>
+                <CardDescription>Tần suất Commit và Hoạt động nhóm.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TeamHeatmap data={heatmapData} isLoading={isLoadingHeatmap} />
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-border bg-card shadow-sm">
+              <CardHeader>
+                <CardTitle>Mạng tương tác</CardTitle>
+                <CardDescription>Mạng tương tác Peer Review giữa các thành viên.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InteractionGraph data={interactionsData} isLoading={isLoadingInteractions} />
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="sprints" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
@@ -179,25 +204,32 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               {isLoadingSprints ? (
                 <Skeleton className="h-32 w-full rounded-xl" />
               ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {sprintsData?.sprints?.map((sprint) => (
-                    <div key={sprint.sprintId} className="p-4 border border-border rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                      <div>
-                        <h3 className="font-bold text-lg">{sprint.sprintName}</h3>
-                        <p className="text-sm text-muted-foreground">Mục tiêu: {sprint.goal || "Không có"}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {sprint.startDate ? new Date(sprint.startDate).toLocaleDateString() : "TBD"} - {sprint.endDate ? new Date(sprint.endDate).toLocaleDateString() : "TBD"}
-                        </p>
+                    <div key={sprint.sprintId} className="p-5 border border-border/50 bg-muted/20 hover:bg-muted/40 transition-all rounded-2xl flex flex-col gap-4 group hover:shadow-sm">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-[15px] leading-tight mb-1.5 group-hover:text-primary transition-colors">{sprint.sprintName}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2" title={sprint.goal || "Không có mục tiêu"}>{sprint.goal || "Không có mục tiêu"}</p>
                       </div>
-                      <Button variant="outline" className="rounded-xl font-bold bg-primary/5 text-primary border-primary/20 hover:bg-primary/10" onClick={() => {
-                        toast.info("Đang tải dữ liệu Peer Review cho Sprint này...");
-                      }}>
-                        Xem Peer Review
-                      </Button>
+
+                      <div className="flex flex-col gap-3 mt-auto">
+                        <div className="flex items-center justify-center text-[11px] font-medium text-muted-foreground bg-background/80 py-1.5 px-2.5 rounded-lg border border-border/50 shadow-sm">
+                          <span>{sprint.startDate ? new Date(sprint.startDate).toLocaleDateString() : "TBD"} - {sprint.endDate ? new Date(sprint.endDate).toLocaleDateString() : "TBD"}</span>
+                        </div>
+                        <Button variant="outline" size="sm" className="w-full rounded-xl font-bold bg-primary/5 text-primary border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all h-9" onClick={() => {
+                          setPeerReviewModal({
+                            isOpen: true,
+                            sprintId: sprint.sprintId,
+                            sprintName: sprint.sprintName
+                          });
+                        }}>
+                          Xem Peer Review
+                        </Button>
+                      </div>
                     </div>
                   ))}
                   {(!sprintsData?.sprints || sprintsData.sprints.length === 0) && (
-                    <div className="text-center py-8 text-muted-foreground font-medium">
+                    <div className="col-span-full text-center py-12 text-muted-foreground font-medium border border-dashed border-border/50 rounded-2xl bg-muted/10">
                       Chưa có Sprint nào được tạo.
                     </div>
                   )}
@@ -216,32 +248,16 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="graph" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-          <Card className="rounded-2xl border-border bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle>Interaction Graph (Node-Edge)</CardTitle>
-              <CardDescription>Mạng tương tác Peer Review giữa các thành viên.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0 border-0">
-              <InteractionGraph data={interactionsData} isLoading={isLoadingInteractions} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="heatmap" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-          <Card className="rounded-2xl border-border bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle>Heatmap Hoạt động</CardTitle>
-              <CardDescription>Tần suất Commit và Hoạt động nhóm.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0 border-0">
-              <TeamHeatmap data={heatmapData} isLoading={isLoadingHeatmap} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
       </Tabs>
+
+      {/* Modals */}
+      <PeerReviewModal
+        teamId={teamId}
+        sprintId={peerReviewModal.sprintId}
+        sprintName={peerReviewModal.sprintName}
+        isOpen={peerReviewModal.isOpen}
+        onClose={() => setPeerReviewModal(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }

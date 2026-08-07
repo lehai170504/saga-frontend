@@ -33,7 +33,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
   const { data: integrations, isLoading: isLoadingIntegrations } = useProjectIntegrations(projectId);
   const repos = React.useMemo<GitHubRepositoryResponse[]>(
     () => integrations?.githubRepositories || [],
-    [integrations]
+    [integrations?.githubRepositories]
   );
   const selectedRepo = repos.find((r) => String(r.repositoryId) === selectedRepoId);
 
@@ -41,8 +41,8 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
   useEffect(() => {
     if (repos.length > 0 && !selectedRepoId) {
       const activeRepo = repos.find((r) => r.status === "ACTIVE") || repos[0];
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedRepoId(String(activeRepo.repositoryId));
+      const timer = setTimeout(() => setSelectedRepoId(String(activeRepo.repositoryId)), 0);
+      return () => clearTimeout(timer);
     }
   }, [repos, selectedRepoId]);
 
@@ -71,11 +71,12 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
     if (branchesList.length > 0) {
       if (!selectedBranch || !branchesList.includes(selectedBranch)) {
         const defaultBranch = branchesList.find((b) => b === "main" || b === "master") || branchesList[0];
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setSelectedBranch(defaultBranch);
+        const timer = setTimeout(() => setSelectedBranch(defaultBranch), 0);
+        return () => clearTimeout(timer);
       }
     } else {
-      setSelectedBranch("");
+      const timer = setTimeout(() => setSelectedBranch(""), 0);
+      return () => clearTimeout(timer);
     }
   }, [branchesList, selectedBranch]);
 
@@ -89,8 +90,8 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
   );
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -159,7 +160,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
               <AlertTriangle size={32} />
             </div>
             <h2 className="text-xl font-bold text-destructive">Nhóm chưa đăng ký đề tài</h2>
-             <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            <p className="text-muted-foreground text-sm max-w-md mx-auto">
               Dự án của nhóm bạn chưa được khởi tạo. Vui lòng đăng ký đề tài tại mục &quot;Thông tin Nhóm&quot; trước khi xem lịch sử Commit.
             </p>
           </Card>

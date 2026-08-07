@@ -29,20 +29,35 @@ export function TeamHeatmap({ data, isLoading }: TeamHeatmapProps) {
     return weeksArray;
   }, []);
 
-  const maxCommits = useMemo(() => {
-    if (!data || data.length === 0) return 1;
-    return Math.max(...data.map(d => d.commits));
+  // Ensure data is an array. Backend might return a map/object {"YYYY-MM-DD": count} or wrapped array.
+  const actualData: HeatmapData[] = useMemo(() => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if ((data as unknown as Record<string, unknown>).content && Array.isArray((data as unknown as Record<string, unknown>).content)) return (data as unknown as Record<string, unknown>).content as HeatmapData[];
+    if ((data as unknown as Record<string, unknown>).heatmapData && Array.isArray((data as unknown as Record<string, unknown>).heatmapData)) return (data as unknown as Record<string, unknown>).heatmapData as HeatmapData[];
+    if (typeof data === "object") {
+      // Handle map/dictionary format
+      return Object.entries(data).map(([date, commits]) => ({
+        date,
+        commits: Number(commits) || 0
+      }));
+    }
+    return [];
   }, [data]);
 
+  const maxCommits = useMemo(() => {
+    if (actualData.length === 0) return 1;
+    return Math.max(...actualData.map(d => d.commits));
+  }, [actualData]);
+
   const getDayData = (date: Date) => {
-    if (!data) return null;
-    return data.find(d => isSameDay(parseISO(d.date), date));
+    return actualData.find(d => isSameDay(parseISO(d.date), date));
   };
 
   const getIntensityClass = (commits: number) => {
-    if (commits === 0) return "bg-muted/30"; // Level 0
+    if (commits === 0) return "bg-muted"; // Level 0
     const ratio = commits / maxCommits;
-    if (ratio <= 0.25) return "bg-primary/30"; // Level 1
+    if (ratio <= 0.25) return "bg-primary/40"; // Level 1
     if (ratio <= 0.5) return "bg-primary/60"; // Level 2
     if (ratio <= 0.75) return "bg-primary/80"; // Level 3
     return "bg-primary"; // Level 4
@@ -68,50 +83,67 @@ export function TeamHeatmap({ data, isLoading }: TeamHeatmapProps) {
   const daysOfWeek = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
   return (
-    <div className="w-full overflow-x-auto p-6 bg-card rounded-2xl border border-border">
-      <div className="flex gap-2 min-w-max">
+    <div className="w-full overflow-x-auto">
+      <div className="flex gap-3 min-w-max">
         {/* Y Axis Labels (Days) */}
-        <div className="flex flex-col gap-1.5 mt-6 pr-2 text-xs text-muted-foreground font-medium justify-between">
+        <div className="flex flex-col gap-1 mt-[26px] pr-1 text-[11px] text-muted-foreground font-medium">
           {daysOfWeek.map((day, i) => (
-            <div key={day} className="h-4 flex items-center">{i % 2 === 0 ? day : ""}</div>
+            <div key={day} className="h-3 flex items-center leading-none">{i % 2 === 0 ? day : ""}</div>
           ))}
         </div>
 
-        {/* Grid */}
-        <div className="flex gap-1.5">
-          {weeks.map((week, weekIdx) => (
-            <div key={weekIdx} className="flex flex-col gap-1.5">
-              {/* Month Label (only show if it's the first week of the month, approximated) */}
-              <div className="h-5 text-xs text-muted-foreground font-medium flex items-end mb-1">
-                {week[0].getDate() <= 7 ? format(week[0], "MMM", { locale: vi }) : ""}
-              </div>
-
-              {week.map((day, dayIdx) => {
-                const dayData = getDayData(day);
-                const commits = dayData?.commits || 0;
-
+        {/* Heatmap Area */}
+        <div className="flex flex-col">
+          {/* Month Labels Row */}
+          <div className="relative h-[22px] mb-1 text-[11px] text-muted-foreground font-medium w-full">
+            {weeks.map((week, weekIdx) => {
+              const isFirstWeekOfMonth = week[0].getDate() <= 7;
+              if (isFirstWeekOfMonth) {
                 return (
                   <div
-                    key={dayIdx}
-                    title={`${format(day, "dd/MM/yyyy")}: ${commits} hoạt động`}
-                    className={`w-4 h-4 rounded-sm ${getIntensityClass(commits)} hover:ring-2 hover:ring-foreground transition-all cursor-pointer`}
-                  />
+                    key={weekIdx}
+                    className="absolute bottom-0 whitespace-nowrap"
+                    style={{ left: `${weekIdx * 16}px` }} // 12px width + 4px gap = 16px per column
+                  >
+                    {format(week[0], "MMM", { locale: vi })}
+                  </div>
                 );
-              })}
-            </div>
-          ))}
+              }
+              return null;
+            })}
+          </div>
+
+          {/* Grid of Weeks */}
+          <div className="flex gap-1">
+            {weeks.map((week, weekIdx) => (
+              <div key={weekIdx} className="flex flex-col gap-1">
+                {week.map((day, dayIdx) => {
+                  const dayData = getDayData(day);
+                  const commits = dayData?.commits || 0;
+
+                  return (
+                    <div
+                      key={dayIdx}
+                      title={`${format(day, "dd/MM/yyyy")}: ${commits} hoạt động`}
+                      className={`w-3 h-3 rounded-[3px] ${getIntensityClass(commits)} hover:ring-2 hover:ring-foreground transition-all cursor-pointer`}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="mt-6 flex items-center justify-end gap-2 text-xs text-muted-foreground font-medium">
+      <div className="mt-6 flex items-center justify-end gap-2 text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
         <span>Ít</span>
         <div className="flex gap-1">
-          <div className="w-3 h-3 rounded-sm bg-muted/30" />
-          <div className="w-3 h-3 rounded-sm bg-primary/30" />
-          <div className="w-3 h-3 rounded-sm bg-primary/60" />
-          <div className="w-3 h-3 rounded-sm bg-primary/80" />
-          <div className="w-3 h-3 rounded-sm bg-primary" />
+          <div className="w-3 h-3 rounded-[3px] bg-muted" />
+          <div className="w-3 h-3 rounded-[3px] bg-primary/40" />
+          <div className="w-3 h-3 rounded-[3px] bg-primary/60" />
+          <div className="w-3 h-3 rounded-[3px] bg-primary/80" />
+          <div className="w-3 h-3 rounded-[3px] bg-primary" />
         </div>
         <span>Nhiều</span>
       </div>
