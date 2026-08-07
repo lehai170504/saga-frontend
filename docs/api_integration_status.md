@@ -80,6 +80,14 @@ Các trang Quản trị Master Data đã hoàn thiện cả tính năng Xem danh
   - Path Param: `teamId`
   - Request Body: `CreateTeamProjectRequest`
   - Response: `ProjectResponse`
+- `GET /api/projects/{projectId}`: Lấy chi tiết thông tin dự án (tên đề tài, mô tả, ngày tạo).
+  - Path Param: `projectId`
+  - Response: Chi tiết dự án (`name`, `description`, v.v.)
+- `PUT /api/projects/{projectId}`: Cập nhật thông tin đề tài dự án (tên đề tài, mô tả).
+  - Path Param: `projectId`
+  - Request Body: `{ name: string; description: string | null }`
+  - Response: `ProjectResponse`
+
 
 ### 1.4. Tích hợp Dự án (Project Integrations - Jira/GitHub)
 Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Settings) và Call API đã được thực hiện bằng React Query.
@@ -89,6 +97,11 @@ Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Setti
 - `POST /api/projects/{projectId}/github/repositories`: Thêm repository GitHub vào dự án (Body: `GitHubRepositoriesLinkRequest`).
 - `DELETE /api/projects/{projectId}/github/repositories/{repoId}`: Xóa repo GitHub khỏi dự án.
 - `GET /api/projects/{projectId}/sync-status`: Polling (5s/lần) trạng thái đồng bộ dữ liệu.
+- `GET /api/projects/{projectId}/github/repositories/{repositoryId}/branches`: Lấy danh sách nhánh GitHub của một repository.
+  - Path Params: `projectId`, `repositoryId`
+- `GET /api/projects/{projectId}/github/repositories/{repositoryId}/commits`: Lấy lịch sử commit theo nhánh GitHub (hỗ trợ phân trang và filter branch).
+  - Path Params: `projectId`, `repositoryId`
+  - Query Params: `branch` (URL-encoded), `page`, `size`
 
 *Lưu ý luồng OAuth Connect (Redirect bằng trình duyệt, Backend xử lý Callback):*
 - `GET /api/projects/{projectId}/jira/connect`: Redirect sang Jira để ủy quyền (Project OAuth).
