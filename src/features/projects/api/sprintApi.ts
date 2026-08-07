@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { TeamSprintsResponse, SprintCandidatesResponse, TeamRubricResponse, DefaultRubricResponse } from "../types";
+import { TeamSprintsResponse, SprintCandidatesResponse, TeamRubricResponse } from "../types";
 
 export const sprintApi = {
   getTeamSprints: async (teamId: string) => {
@@ -25,7 +25,7 @@ export const sprintApi = {
   },
 
   createSprint: async (projectId: string, data: { name: string; goal: string; startDate: string | null; endDate: string | null }, idempotencyKey: string) => {
-    return axiosInstance.post<never, any>(`/api/v1/projects/${projectId}/sprints`, data, {
+    return axiosInstance.post<never, unknown>(`/api/v1/projects/${projectId}/sprints`, data, {
       headers: {
         "Idempotency-Key": idempotencyKey
       }

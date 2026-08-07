@@ -42,15 +42,10 @@ export interface CourseRequest {
 }
 
 export interface TeamMemberResponse {
-  id: string;
-  teamId: string;
   studentId: string;
+  fullName: string;
+  studentCode: string;
   roleInTeam: string;
-  student: {
-    id: string;
-    studentCode: string;
-    name: string;
-  };
 }
 
 export interface CourseStudent {

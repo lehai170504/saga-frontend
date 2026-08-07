@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, Download,
   Users, UsersRound, FolderKanban,
-  GraduationCap, Sparkles,
+  Sparkles,
+  BookOpen, Calendar
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -37,8 +38,12 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
 
   const students = React.useMemo(() => {
     if (!studentsResponse) return [];
+
+    const getSafeId = (s: any, fallbackStr: string) =>
+      s.studentId || s.id || s.userId || `${fallbackStr}-${Math.random().toString(36).substring(2, 9)}`;
+
     const withTeam = studentsResponse.studentsWithTeam.content.map(s => ({
-      id: s.studentId || (s as any).id || (s as any).userId || crypto.randomUUID(),
+      id: getSafeId(s, 'with'),
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -46,8 +51,9 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
       avatar: `https://i.pravatar.cc/150?u=${s.studentId}`,
       teamName: s.team?.teamName
     }));
+
     const withoutTeam = studentsResponse.studentsWithoutTeam.content.map(s => ({
-      id: s.studentId || (s as any).id || (s as any).userId || crypto.randomUUID(),
+      id: getSafeId(s, 'without'),
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -55,7 +61,18 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
       avatar: `https://i.pravatar.cc/150?u=${s.studentId}`,
       teamName: undefined
     }));
-    return [...withTeam, ...withoutTeam];
+
+    const allStudents = [...withTeam, ...withoutTeam];
+
+    // Loại bỏ các phần tử trùng lặp id (do backend trả về trùng trong withTeam/withoutTeam)
+    const uniqueStudentsMap = new Map();
+    allStudents.forEach(student => {
+      if (!uniqueStudentsMap.has(student.id)) {
+        uniqueStudentsMap.set(student.id, student);
+      }
+    });
+
+    return Array.from(uniqueStudentsMap.values());
   }, [studentsResponse]);
 
   const dynamicGroups = React.useMemo(() => {
@@ -91,8 +108,9 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
           id: s.team.projectId,
           name: s.team.projectName,
           group: s.team.teamName,
+          teamId: s.team.teamId,
           status: "Đang thực hiện",
-          progress: Math.floor(Math.random() * 60) + 40,
+          progress: 50,
           githubRepos: [`saga-frontend-${s.team.teamId}`, `saga-backend-${s.team.teamId}`],
           jiraBoard: `Jira Board ${s.team.teamName}`
         });
@@ -168,17 +186,30 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
             <Skeleton className="h-5 w-64 rounded-md" />
           </div>
         ) : (
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60 flex items-center gap-3">
-              Lớp {course?.clazz?.classCode || course?.name}
-              <span className="text-xs px-2.5 py-1 bg-success/10 text-success dark:bg-emerald-950/40 rounded-md font-bold align-middle uppercase tracking-wider shadow-sm">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
+                Lớp {course?.clazz?.classCode || course?.name}
+              </h1>
+              <span className="inline-flex items-center text-[11px] px-3 py-1 bg-success/15 text-success border border-success/20 rounded-full font-bold uppercase tracking-wider shadow-sm">
                 ĐANG DIỄN RA
               </span>
-            </h1>
-            <p className="text-muted-foreground mt-2 flex items-center gap-2 font-medium">
-              <GraduationCap className="w-4 h-4" />
-              {course?.subject?.name} • Giảng viên: {course?.instructor?.fullName} • {course?.semester?.name}
-            </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-sm font-medium text-muted-foreground mt-1">
+              <span className="flex items-center gap-1.5 text-foreground">
+                <BookOpen size={15} className="opacity-70" />
+                {course?.subject?.name}
+              </span>
+              <span className="w-1 h-1 rounded-full bg-border shrink-0" />
+              <span className="flex items-center gap-1.5">
+                Giảng viên: <strong className="text-foreground">{course?.instructor?.fullName}</strong>
+              </span>
+              <span className="w-1 h-1 rounded-full bg-border shrink-0" />
+              <span className="flex items-center gap-1.5">
+                <Calendar size={15} className="opacity-70" />
+                {course?.semester?.name}
+              </span>
+            </div>
           </div>
         )}
 

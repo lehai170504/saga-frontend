@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, GitCommit, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, FileText } from "lucide-react";
+import { User, GitCommit, AlertTriangle, CheckCircle2, ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
-import { Textarea } from "@/components/ui/textarea";
 import { IdentityMappingReview } from "@/features/integrations/components/identity-mapping-review";
 
 import { useStudentProgress, useStudentActivities, useStudentContributionDetail, useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
@@ -16,8 +15,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminStudentProfilePage({ params }: { params: Promise<{ id: string, studentId: string }> }) {
   const { id: courseId, studentId } = React.use(params);
-  const [note, setNote] = useState("");
-  const [savedNotes, setSavedNotes] = useState<{ id: number, text: string, time: string, author: string }[]>([]);
 
   const { data: studentsResponse, isLoading: isLoadingBasicInfo } = useCourseStudents(courseId);
   const studentInfo = React.useMemo(() => {
@@ -62,15 +59,6 @@ export default function AdminStudentProfilePage({ params }: { params: Promise<{ 
     time: new Date(activity.occurredAt).toLocaleString('vi-VN'),
     link: "#"
   })) || [];
-
-  const handleSaveNote = () => {
-    if (!note.trim()) return;
-    setSavedNotes([
-      { id: Date.now(), text: note, time: new Date().toLocaleDateString('vi-VN'), author: "Admin" },
-      ...savedNotes
-    ]);
-    setNote("");
-  };
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full bg-background overflow-hidden">
@@ -121,26 +109,18 @@ export default function AdminStudentProfilePage({ params }: { params: Promise<{ 
                   <span>•</span>
                   <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/50 border border-border/50">
                     <User size={12} />
-                    Nhóm {STUDENT.group}
+                    {STUDENT.group}
                   </span>
                 </div>
               </div>
             </div>
           )}
-
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button variant="outline" className="rounded-xl border-border/50 font-bold w-full md:w-auto">
-              <MessageSquare size={16} className="mr-2" />
-              Gửi tin nhắn
-            </Button>
-
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4 items-stretch">
 
           {/* Left Column: Stats & Radar Chart */}
-          <div className="space-y-6">
+          <div className="lg:col-span-5 flex flex-col gap-6">
             <Card className="rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden">
               <CardContent className="p-6">
                 <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6">Năng lực Đa chiều</h3>
@@ -220,8 +200,8 @@ export default function AdminStudentProfilePage({ params }: { params: Promise<{ 
             )}
           </div>
 
-          {/* Center Column: Timeline */}
-          <Card className="lg:col-span-1 rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
+          {/* Right Column: Timeline */}
+          <Card className="lg:col-span-7 rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6">Dấu vết Hoạt động (Evidence)</h3>
 
@@ -264,45 +244,6 @@ export default function AdminStudentProfilePage({ params }: { params: Promise<{ 
             </CardContent>
           </Card>
 
-          {/* Right Column: Instructor Notes */}
-          <Card className="lg:col-span-1 rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
-            <CardContent className="p-6 flex-1 flex flex-col">
-              <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6 flex items-center gap-2">
-                <Edit3 size={16} /> Ghi chú Giảng viên (Thủ công)
-              </h3>
-
-              <div className="flex-1 flex flex-col justify-end space-y-6">
-
-                {/* Note Feed */}
-                <div className="space-y-4 flex-1 max-h-[300px] overflow-y-auto pr-2">
-                  {savedNotes.map((n) => (
-                    <div key={n.id} className="bg-muted/30 p-4 rounded-xl border border-border/50 space-y-2">
-                      <p className="text-sm text-foreground font-medium">{n.text}</p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span className="font-bold">{n.author}</span>
-                        <span>{n.time}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Input Area */}
-                <div className="space-y-3 pt-4 border-t border-border/50">
-                  <Textarea
-                    placeholder="Nhập ghi chú cho sinh viên này (vd: Bạn này thuyết trình tốt, điểm mềm cao...)"
-                    className="min-h-[100px] rounded-xl bg-background border-border/50 resize-none"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                  />
-                  <Button className="w-full rounded-xl font-bold" onClick={handleSaveNote}>
-                    <Send size={16} className="mr-2" /> Lưu Ghi Chú
-                  </Button>
-                  <p className="text-xs text-center text-muted-foreground">Ghi chú này chỉ hiển thị với Giảng viên và trợ giảng.</p>
-                </div>
-
-              </div>
-            </CardContent>
-          </Card>
 
         </div>
 

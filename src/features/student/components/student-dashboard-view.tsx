@@ -68,7 +68,7 @@ export function StudentDashboardView({ courseId }: StudentDashboardViewProps) {
                   </div>
                 </div>
                 <h3 className="text-xl font-extrabold text-foreground mb-1">
-                  {(courseData?.instructor as Record<string, unknown>)?.fullName as string || "Giảng viên"}
+                  {(courseData?.instructor as unknown as Record<string, unknown>)?.fullName as string || "Giảng viên"}
                 </h3>
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   Giảng viên hướng dẫn
@@ -129,8 +129,8 @@ export function StudentDashboardView({ courseId }: StudentDashboardViewProps) {
                     <p className="text-xs text-muted-foreground truncate">{member.studentCode}</p>
                   </div>
                   <span className={`text-[10px] font-bold px-2 py-1 rounded-md ml-2 whitespace-nowrap ${member.roleInTeam === "LEADER"
-                      ? "bg-primary/10 text-primary"
-                      : "bg-muted text-muted-foreground"
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted text-muted-foreground"
                     }`}>
                     {member.roleInTeam === "LEADER" ? "Trưởng nhóm" : "Thành viên"}
                   </span>

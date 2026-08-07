@@ -20,8 +20,8 @@ import { useCourse } from "@/features/courses/hooks/useCourses";
 import { CourseStudent } from "@/features/courses/types";
 import { ImportStudentsDialog } from "@/features/courses/components/import-students-dialog";
 
-export default function AdminStudentsManagementPage({ params }: { params: Promise<{ courseId: string }> }) {
-  const { courseId } = React.use(params);
+export default function AdminStudentsManagementPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: courseId } = React.use(params);
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: studentsData, isLoading: isLoadingStudents, refetch } = useCourseStudents(courseId);

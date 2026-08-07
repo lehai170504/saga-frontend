@@ -27,7 +27,8 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingSprints);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -149,13 +150,11 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                         href={`/student/${courseId}/sprints/${sprint.sprintId}`}
                         className="block group"
                       >
-                        <Card className={`rounded-3xl border bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer ${
-                          status ? status.cardStyle : 'border-border/50 hover:border-border hover:bg-muted/10'
-                        }`}>
-                          <div className={`absolute top-0 left-0 w-full h-[4px] opacity-80 ${
-                            status ? status.topLineStyle : 'bg-gradient-to-r from-primary to-orange-500'
-                          }`} />
-                          
+                        <Card className={`rounded-3xl border bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer ${status ? status.cardStyle : 'border-border/50 hover:border-border hover:bg-muted/10'
+                          }`}>
+                          <div className={`absolute top-0 left-0 w-full h-[4px] opacity-80 ${status ? status.topLineStyle : 'bg-gradient-to-r from-primary to-orange-500'
+                            }`} />
+
                           <CardHeader className="pb-4 pt-6 flex flex-row items-center justify-between gap-4">
                             <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                               {sprint.sprintName}
@@ -166,7 +165,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                               </Badge>
                             )}
                           </CardHeader>
-                          
+
                           <CardContent className="space-y-4 pt-2 pb-6 flex-1 flex flex-col justify-between">
                             <div className="space-y-3.5">
                               {/* Start & End Dates */}

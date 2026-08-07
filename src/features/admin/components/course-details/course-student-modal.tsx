@@ -36,41 +36,45 @@ export function CourseStudentModal({
       <DialogContent className="sm:max-w-[425px] rounded-2xl border-border bg-card">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-foreground">
-            {editingStudentId ? "Sửa thông tin sinh viên" : "Thêm sinh viên thủ công"}
+            Thêm sinh viên
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            Chỉ dùng chức năng này khi FAP bị lỗi hoặc không thể tự động đồng bộ.
+          <DialogDescription className="text-sm font-medium mt-1">
+            Điền đầy đủ thông tin để thêm sinh viên vào lớp học.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Mã SV</Label>
+        <div className="grid gap-5 py-4">
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mã Sinh Viên</Label>
             <Input
-              className="col-span-3 rounded-xl focus-visible:ring-primary bg-background border-input"
+              className="rounded-xl h-10 focus-visible:ring-primary bg-background border-border/50 font-medium"
               value={studentFormData.studentId}
               onChange={(e) => setStudentFormData({ ...studentFormData, studentId: e.target.value })}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Họ và tên</Label>
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Họ và tên</Label>
             <Input
-              className="col-span-3 rounded-xl focus-visible:ring-primary bg-background border-input"
+              className="rounded-xl h-10 focus-visible:ring-primary bg-background border-border/50 font-medium"
               value={studentFormData.name}
               onChange={(e) => setStudentFormData({ ...studentFormData, name: e.target.value })}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Email</Label>
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email</Label>
             <Input
-              className="col-span-3 rounded-xl focus-visible:ring-primary bg-background border-input"
+              className="rounded-xl h-10 focus-visible:ring-primary bg-background border-border/50 font-medium"
+              type="email"
               value={studentFormData.email}
               onChange={(e) => setStudentFormData({ ...studentFormData, email: e.target.value })}
             />
           </div>
         </div>
-        <DialogFooter>
-          <Button onClick={onSave} className="rounded-xl font-bold">
-            Lưu thay đổi
+        <DialogFooter className="pt-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl font-bold h-10 px-6">
+            Hủy
+          </Button>
+          <Button onClick={onSave} className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground h-10 px-6 shadow-sm">
+            Lưu
           </Button>
         </DialogFooter>
       </DialogContent>

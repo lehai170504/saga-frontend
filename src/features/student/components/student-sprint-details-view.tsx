@@ -7,7 +7,7 @@ import { ArrowLeft, Users, UserCheck, ShieldAlert, Star, Loader2 } from "lucide-
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
-import { useTeamSprintCandidates, useTeamRubric, useDefaultRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
+import { useTeamSprintCandidates, useTeamRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -46,7 +46,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const activeTeamId = myTeamData?.teamId || "";
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(activeTeamId, sprintId || "");
   const { data: teamRubricData, isLoading: isLoadingTeamRubric } = useTeamRubric(activeTeamId);
-  const { data: defaultRubricData, isLoading: isLoadingDefaultRubric } = useDefaultRubric();
   const submitReviewMutation = useSubmitPeerReview(activeTeamId, sprintId || "");
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
@@ -66,10 +65,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const getRubricCriteria = () => {
     if (teamRubricData?.criteria && teamRubricData.criteria.length > 0) {
       return teamRubricData.criteria;
-    }
-    if (defaultRubricData?.criteria && defaultRubricData.criteria.length > 0) {
-      return defaultRubricData.criteria;
-    }
     return [
       {
         rubricId: "11111111-1111-1111-1111-111111111111",

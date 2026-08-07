@@ -69,7 +69,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     return <div className="p-6 min-h-screen bg-background" />;
   }
 
-  const projectId = myTeamData?.project?.projectId || (myTeamData?.project as { id?: string })?.id;
+  const projectId = myTeamData?.project?.id;
   const members = myTeamData?.members?.content || [];
 
   // Sắp xếp Trưởng nhóm lên đầu
