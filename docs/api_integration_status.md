@@ -80,6 +80,14 @@ Các trang Quản trị Master Data đã hoàn thiện cả tính năng Xem danh
   - Path Param: `teamId`
   - Request Body: `CreateTeamProjectRequest`
   - Response: `ProjectResponse`
+- `GET /api/projects/{projectId}`: Lấy chi tiết thông tin dự án (tên đề tài, mô tả, ngày tạo).
+  - Path Param: `projectId`
+  - Response: Chi tiết dự án (`name`, `description`, v.v.)
+- `PUT /api/projects/{projectId}`: Cập nhật thông tin đề tài dự án (tên đề tài, mô tả).
+  - Path Param: `projectId`
+  - Request Body: `{ name: string; description: string | null }`
+  - Response: `ProjectResponse`
+
 
 ### 1.4. Tích hợp Dự án (Project Integrations - Jira/GitHub)
 Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Settings) và Call API đã được thực hiện bằng React Query.
@@ -89,6 +97,11 @@ Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Setti
 - `POST /api/projects/{projectId}/github/repositories`: Thêm repository GitHub vào dự án (Body: `GitHubRepositoriesLinkRequest`).
 - `DELETE /api/projects/{projectId}/github/repositories/{repoId}`: Xóa repo GitHub khỏi dự án.
 - `GET /api/projects/{projectId}/sync-status`: Polling (5s/lần) trạng thái đồng bộ dữ liệu.
+- `GET /api/projects/{projectId}/github/repositories/{repositoryId}/branches`: Lấy danh sách nhánh GitHub của một repository.
+  - Path Params: `projectId`, `repositoryId`
+- `GET /api/projects/{projectId}/github/repositories/{repositoryId}/commits`: Lấy lịch sử commit theo nhánh GitHub (hỗ trợ phân trang và filter branch).
+  - Path Params: `projectId`, `repositoryId`
+  - Query Params: `branch` (URL-encoded), `page`, `size`
 
 *Lưu ý luồng OAuth Connect (Redirect bằng trình duyệt, Backend xử lý Callback):*
 - `GET /api/projects/{projectId}/jira/connect`: Redirect sang Jira để ủy quyền (Project OAuth).
@@ -175,10 +188,15 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 - `GET /api/v1/courses/{courseId}/teams/{teamId}/heatmap`: Dữ liệu cho biểu đồ nhiệt (Heatmap).
 - `GET /api/v1/courses/{courseId}/teams/{teamId}/sprints/velocity`: Vận tốc làm việc theo Sprint.
 
-### 1.11. Admin & Team Analytics (Sprints & Peer Review)
+### 1.11. Quản lý Sprints & Đánh giá chéo (Sprints & Peer Review)
+- `GET /api/v1/projects/{projectId}/sprints`: Lấy danh sách Sprint của dự án phục vụ hiển thị Timeline.
+- `POST /api/v1/projects/{projectId}/sprints`: Tạo Sprint mới và đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
 - `GET /api/v1/teams/{teamId}/sprints`: Lấy danh sách Sprint của một nhóm.
 - `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Đọc kết quả Peer Review của nhóm trong một Sprint cụ thể.
-- `GET /api/v1/peer-review-rubrics/default`: Lấy cấu hình Rubric đánh giá chéo chuẩn của toàn trường (Admin sử dụng).
+- `GET /api/v1/teams/{teamId}/peer-review-rubric`: Lấy Rubric đánh giá chéo được thiết lập riêng cho nhóm.
+- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews/candidates`: Lấy danh sách ứng viên (các thành viên cùng nhóm) để đánh giá chéo.
+- `POST /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Gửi đánh giá chéo cho một thành viên trong nhóm.
+- `GET /api/v1/peer-review-rubrics/default`: Lấy cấu hình Rubric đánh giá chéo chuẩn của toàn trường.
 - `GET /api/v1/courses/contribution-slice-weights`: Lấy trọng số đóng góp của một khóa học.
 - `POST /api/v1/courses/{courseId}/contribution-slice-weight-requests`: Gửi yêu cầu thay đổi trọng số (Lecturer).
 
