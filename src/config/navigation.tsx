@@ -53,9 +53,9 @@ export const getNavigationConfig = (
           title: "Dữ liệu Danh mục",
           items: [
             { href: "/master-data/subjects", icon: <BookOpen size={18} />, label: "Môn học" },
-            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học", matchPaths: ["/admin/classes"] },
+            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học" },
             { href: "/master-data/semesters", icon: <Calendar size={18} />, label: "Học kỳ" },
-            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học (Lớp PBL)" },
+            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học (Lớp PBL)", matchPaths: ["/admin/courses"] },
           ],
         },
         {

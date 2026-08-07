@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { sprintApi } from "../api/sprintApi";
+import { rubricApi } from "@/features/admin/api/rubricApi";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
@@ -30,7 +31,7 @@ export const useTeamRubric = (teamId: string) => {
 export const useDefaultRubric = () => {
   return useQuery({
     queryKey: ["default-rubric"],
-    queryFn: () => sprintApi.getDefaultRubric(),
+    queryFn: () => rubricApi.getDefaultRubric(),
   });
 };
 

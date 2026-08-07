@@ -21,10 +21,15 @@ export interface Course {
   };
   instructor: {
     id: string;
-    name: string;
+    cognitoSub?: string;
+    email?: string;
+    fullName: string;
   };
   createdAt: string;
   updatedAt: string;
+  codeContributionWeight?: number;
+  documentContributionWeight?: number;
+  designContributionWeight?: number;
 }
 
 export interface CourseRequest {
@@ -78,7 +83,7 @@ export interface MyTeamMembersResponse {
   teamName: string;
   roleInTeam: string;
   project: {
-    projectId: string;
+    id: string;
     name: string;
   } | null;
   members: Page<{

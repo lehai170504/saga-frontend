@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Command } from "cmdk";
@@ -74,7 +74,7 @@ export function GlobalCommandPalette() {
                   </Command.Item>
 
                   <Command.Item
-                    onSelect={() => runCommand(() => router.push("/admin/classes"))}
+                    onSelect={() => runCommand(() => router.push("/admin/courses"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
                     <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
@@ -270,3 +270,4 @@ export function GlobalCommandPalette() {
     </Dialog>
   );
 }
+

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { adminSprintApi } from "../api/adminSprintApi";
+import { sprintApi } from "@/features/projects/api/sprintApi";
 
 export const useTeamSprints = (teamId: string) => {
   return useQuery({
-    queryKey: ["admin-team-sprints", teamId],
-    queryFn: () => adminSprintApi.getTeamSprints(teamId),
+    queryKey: ["teamSprints", teamId],
+    queryFn: () => sprintApi.getTeamSprints(teamId),
     enabled: !!teamId,
   });
 };
