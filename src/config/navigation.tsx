@@ -88,6 +88,7 @@ export const getNavigationConfig = (
             title: "Đánh giá & Điểm số",
             items: [
               { href: `/lecturer/${courseId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
+              { href: `/lecturer/${courseId}/peer-reviews`, icon: <UserCheck size={18} />, label: "Đánh giá chéo" },
               { href: `/lecturer/${courseId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
             ],
           },

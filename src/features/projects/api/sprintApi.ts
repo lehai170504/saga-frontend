@@ -6,6 +6,10 @@ export const sprintApi = {
     return axiosInstance.get<never, TeamSprintsResponse>(`/api/v1/teams/${teamId}/sprints`);
   },
 
+  getProjectSprints: async (projectId: string) => {
+    return axiosInstance.get<never, TeamSprintsResponse>(`/api/v1/projects/${projectId}/sprints`);
+  },
+
   getTeamSprintCandidates: async (teamId: string, sprintId: string) => {
     return axiosInstance.get<never, SprintCandidatesResponse>(`/api/v1/teams/${teamId}/sprints/${sprintId}/peer-reviews/candidates`);
   },

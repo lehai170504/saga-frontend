@@ -9,28 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Mock data generation for heatmap for a specific project
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const generateHeatmapData = (_projectId: string) => {
-  const students = ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C"];
-  const days = Array.from({ length: 30 }, (_, i) => i + 1); // 30 days
-
-  return students.map(student => ({
-    name: student,
-    data: days.map(day => {
-      // Randomly generate activity count favoring low numbers but occasionally high
-      const isWeekend = day % 7 === 0 || day % 7 === 6;
-      let count = 0;
-      if (!isWeekend) {
-        count = Math.random() > 0.3 ? Math.floor(Math.random() * 5) : 0;
-        if (Math.random() > 0.9) count += Math.floor(Math.random() * 8) + 5; // Occasional spike
-      } else {
-        count = Math.random() > 0.8 ? Math.floor(Math.random() * 3) : 0;
-      }
-      return { day, count };
-    })
-  }));
-};
+import { useTeamHeatmap } from "@/features/lecturer/hooks/useAnalytics";
+import { format, subDays } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Helper to determine color based on count
 const getColorClass = (count: number) => {
@@ -41,10 +22,18 @@ const getColorClass = (count: number) => {
   return "bg-primary border-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]";
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ProjectHeatmap({ courseId: _courseId, teamId }: { courseId: string; teamId: string }) {
+export function ProjectHeatmap({ courseId, teamId }: { courseId: string; teamId: string }) {
   const [filterType, setFilterType] = useState("all");
-  const heatmapData = React.useMemo(() => generateHeatmapData(teamId), [teamId]);
+  
+  // Lấy dữ liệu 30 ngày gần nhất
+  const endDate = format(new Date(), "yyyy-MM-dd");
+  const startDate = format(subDays(new Date(), 29), "yyyy-MM-dd");
+  
+  const { data: heatmapData, isLoading } = useTeamHeatmap(courseId, teamId, startDate, endDate);
+  
+  // Dữ liệu mảng 30 ngày
+  const days = Array.from({ length: 30 }, (_, i) => i + 1);
+  const teamHeatmap = Array.isArray(heatmapData) ? heatmapData : [];
 
   return (
     <div className="space-y-6">
@@ -126,30 +115,41 @@ export function ProjectHeatmap({ courseId: _courseId, teamId }: { courseId: stri
 
             {/* Grid Rows */}
             <div className="space-y-3">
-              {heatmapData.map((student, idx) => (
-                <div key={idx} className="flex items-center gap-4 group">
+              {isLoading ? (
+                <div className="flex items-center gap-4">
+                  <Skeleton className="w-[140px] h-6" />
+                  <div className="flex-1 flex gap-1.5">
+                    {days.map(d => <Skeleton key={d} className="flex-1 aspect-square rounded-[4px]" />)}
+                  </div>
+                </div>
+              ) : teamHeatmap.length === 0 ? (
+                <div className="text-center p-8 text-muted-foreground border border-dashed rounded-xl">
+                  Chưa có dữ liệu Commit trong khoảng thời gian này
+                </div>
+              ) : (
+                <div className="flex items-center gap-4 group">
                   <div className="w-[140px] shrink-0 flex flex-col items-end">
-                    <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors cursor-pointer truncate w-full text-right">{student.name}</span>
+                    <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors cursor-pointer truncate w-full text-right">Tổng Team</span>
                   </div>
 
                   <div className="flex-1 flex gap-1.5">
-                    {student.data.map((dayData, dayIdx) => (
+                    {teamHeatmap.map((dayData, dayIdx) => (
                       <div
                         key={dayIdx}
                         className="relative flex-1 group/cell"
                       >
                         <div
-                          className={`w-full aspect-square rounded-[4px] border transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer ${getColorClass(dayData.count)}`}
+                          className={`w-full aspect-square rounded-[4px] border transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer ${getColorClass(dayData.commits)}`}
                         />
                         {/* Custom Tooltip on Hover */}
                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-3 py-1.5 bg-foreground text-background text-xs font-bold rounded-xl opacity-0 invisible group-hover/cell:opacity-100 group-hover/cell:visible transition-all z-20 shadow-xl pointer-events-none after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground">
-                          {dayData.count === 0 ? 'Không có hoạt động' : `${dayData.count} Story Points / Thao tác`} vào Ngày {dayData.day}
+                          {dayData.commits === 0 ? 'Không có hoạt động' : `${dayData.commits} Commits`} vào Ngày {dayData.date}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </CardContent>

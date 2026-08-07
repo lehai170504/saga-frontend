@@ -122,9 +122,9 @@ export interface EarlyWarning {
 }
 
 export interface InteractionNode {
-  id: string;
-  label: string;
-  group?: string;
+  studentId: string;
+  studentCode: string;
+  fullName: string;
 }
 
 export interface InteractionEdge {

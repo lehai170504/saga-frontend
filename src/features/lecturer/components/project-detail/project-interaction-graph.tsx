@@ -4,22 +4,56 @@ import { Share2, Users, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-// Mock data cho Mạng tương tác & Phân tích NLP (SAGA Early Warning) cho một nhóm cụ thể
-const projectNodes = [
-  { id: "1", name: "Nguyễn Văn A", size: 60, x: 50, y: 30, color: "bg-primary", interactions: 45, role: "Core Member" },
-  { id: "2", name: "Trần Thị B", size: 45, x: 25, y: 60, color: "bg-success", interactions: 28, role: "Member" },
-  { id: "3", name: "Lê Văn C", size: 40, x: 75, y: 55, color: "bg-warning", interactions: 15, role: "Ghosting Warning" },
-];
+import { useTeamInteractions } from "@/features/lecturer/hooks/useAnalytics";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const projectEdges = [
-  { source: "1", target: "2", width: 4, type: "collab" }, // Hỗ trợ chéo
-  { source: "2", target: "1", width: 3, type: "review" }, // Code Review
-  { source: "1", target: "3", width: 1, type: "ghost" }, // Giao tiếp 1 chiều (Ghosting)
-];
+export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string; teamId: string }) {
+  const { data: interactionData, isLoading } = useTeamInteractions(courseId, teamId);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ProjectInteractionGraph({ courseId: _courseId, teamId: _teamId }: { courseId: string; teamId: string }) {
-  const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number, x: number, y: number, color: string, interactions: number } | null>(projectNodes[0]);
+  // Generate dynamic nodes based on interactionData
+  const projectNodes = React.useMemo(() => {
+    if (!interactionData?.nodes) return [];
+    const total = interactionData.nodes.length;
+    return interactionData.nodes.map((n, i) => {
+      // Circular layout
+      const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+      const radius = 30; // 30% from center
+      const x = 50 + radius * Math.cos(angle);
+      const y = 50 + radius * Math.sin(angle);
+      
+      const interactions = interactionData.edges?.filter(e => e.from === n.studentId || e.to === n.studentId).length || 0;
+      
+      return {
+        id: n.studentId,
+        name: n.fullName || n.studentCode || "Unknown",
+        size: Math.max(30, interactions * 5 + 20),
+        x,
+        y,
+        color: "bg-primary",
+        interactions,
+        role: n.studentCode || "Member"
+      };
+    });
+  }, [interactionData]);
+
+  const projectEdges = React.useMemo(() => {
+    if (!interactionData?.edges) return [];
+    return interactionData.edges.map(e => ({
+      source: e.from,
+      target: e.to,
+      width: Math.max(1, e.weight),
+      type: "collab"
+    }));
+  }, [interactionData]);
+
+  const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number,role:string, x: number, y: number, color: string, interactions: number } | null>(null);
+  
+  // Set default selected node
+  React.useEffect(() => {
+    if (projectNodes.length > 0 && !selectedNode) {
+      setSelectedNode(projectNodes[0]);
+    }
+  }, [projectNodes, selectedNode]);
 
   return (
     <div className="space-y-6">
@@ -122,23 +156,33 @@ export function ProjectInteractionGraph({ courseId: _courseId, teamId: _teamId }
               })}
             </svg>
 
-            {projectNodes.map(node => (
-              <div
-                key={node.id}
-                className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-bold shadow-lg ${node.color} ${selectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background z-20' : 'opacity-90 z-10'}`}
-                style={{
-                  left: `${node.x}%`,
-                  top: `${node.y}%`,
-                  width: `${node.size}px`,
-                  height: `${node.size}px`,
-                }}
-                onClick={() => setSelectedNode(node)}
-              >
-                <span className="truncate w-full text-center text-xs px-1" style={{ fontSize: `${Math.max(10, node.size / 5)}px` }}>
-                  {node.name.split(' ').pop()}
-                </span>
+            {isLoading ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Skeleton className="w-64 h-64 rounded-full" />
               </div>
-            ))}
+            ) : projectNodes.length === 0 ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-muted-foreground font-medium">Chưa có dữ liệu mạng lưới tương tác</p>
+              </div>
+            ) : (
+              projectNodes.map(node => (
+                <div
+                  key={node.id}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-bold shadow-lg ${node.color} ${selectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background z-20' : 'opacity-90 z-10'}`}
+                  style={{
+                    left: `${node.x}%`,
+                    top: `${node.y}%`,
+                    width: `${node.size}px`,
+                    height: `${node.size}px`,
+                  }}
+                  onClick={() => setSelectedNode(node)}
+                >
+                  <span className="truncate w-full text-center text-xs px-1" style={{ fontSize: `${Math.max(10, node.size / 5)}px` }}>
+                    {node.name.split(' ').pop()}
+                  </span>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
 
@@ -152,7 +196,7 @@ export function ProjectInteractionGraph({ courseId: _courseId, teamId: _teamId }
                     {selectedNode.name.charAt(0)}
                   </div>
                   <h2 className="text-xl font-bold text-foreground">{selectedNode.name}</h2>
-                  <p className="text-sm text-muted-foreground font-medium">Nhóm {_teamId}</p>
+                  <p className="text-sm text-muted-foreground font-medium">{selectedNode.role}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

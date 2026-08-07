@@ -14,7 +14,7 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
   const { courseId } = React.use(params);
   const { data: studentsData, isLoading } = useCourseStudents(courseId);
 
-  const studentsWithTeam = studentsData?.studentsWithTeam.content || [];
+  const studentsWithTeam = studentsData?.studentsWithTeam?.content || [];
 
   // Bóc tách danh sách team từ students
   const teamsMap = new Map<string, {

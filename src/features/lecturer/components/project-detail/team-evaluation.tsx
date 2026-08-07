@@ -14,7 +14,7 @@ interface TeamEvaluationProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function TeamEvaluation({ courseId: _courseId, teamId: _teamId }: TeamEvaluationProps) {
+export function TeamEvaluation({ courseId, teamId }: TeamEvaluationProps) {
 
   const handleApprove = () => {
     toast.success("Đã phê duyệt kết quả Đóng góp (Slices) cho Sprint này!");
@@ -27,7 +27,7 @@ export function TeamEvaluation({ courseId: _courseId, teamId: _teamId }: TeamEva
 
       {/* Layer 2 & 3: Retro Evaluation & Final Slices */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SlicingPieChart />
+        <SlicingPieChart teamId={teamId} />
         <RetroSkillRadar />
       </div>
 

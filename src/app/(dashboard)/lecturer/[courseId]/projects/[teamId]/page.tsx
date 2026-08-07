@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2 } from "lucide-react";
+import { ArrowLeft, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2, ListTodo } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,6 +15,7 @@ import { EarlyWarningAlerts } from "@/features/lecturer/components/project-detai
 import { SprintVelocityBar } from "@/features/lecturer/components/project-detail/charts/sprint-velocity-bar";
 import { useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ProjectTaskList } from "@/features/projects/components/project-task-list";
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ courseId: string, teamId: string }> }) {
   const { courseId, teamId } = React.use(params);
@@ -30,7 +31,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
     id: teamId,
     name: teamName,
     project: projectName,
-    members: teamDetail?.members.content.map(s => ({
+    projectId: teamDetail?.project?.id,
+    members: teamDetail?.members?.content?.map(s => ({
       name: s.fullName,
       role: s.roleInTeam === "LEADER" ? "Leader" : "Thành viên",
     })) || [],
@@ -68,6 +70,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
           <TabsList className="flex flex-wrap w-full md:w-auto h-auto rounded-xl bg-muted/50 p-1 mb-6 gap-1">
             <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
               <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
+            </TabsTrigger>
+            <TabsTrigger value="tasks" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <ListTodo className="w-4 h-4 mr-2" /> Công việc (Tasks)
             </TabsTrigger>
             <TabsTrigger value="slicing-pie" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
               <PieChartIcon className="w-4 h-4 mr-2" /> Đánh giá Đóng góp & AI
@@ -183,6 +188,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             <TabsContent value="interaction" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ProjectInteractionGraph courseId={courseId} teamId={projectDetail.id} />
             </TabsContent>
+
+            {projectDetail.projectId && (
+              <TabsContent value="tasks" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <ProjectTaskList projectId={projectDetail.projectId} />
+              </TabsContent>
+            )}
           </>
         )}
       </Tabs>

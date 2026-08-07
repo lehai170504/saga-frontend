@@ -13,6 +13,8 @@ interface SprintVelocityBarProps {
 
 export function SprintVelocityBar({ courseId, teamId }: SprintVelocityBarProps) {
   const { data: velocityData, isLoading } = useSprintVelocity(courseId, teamId);
+  const chartData = Array.isArray(velocityData) ? velocityData : (velocityData as any)?.content || [];
+
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
       <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
@@ -28,11 +30,11 @@ export function SprintVelocityBar({ courseId, teamId }: SprintVelocityBarProps) 
         <div className="h-[300px] w-full">
           {isLoading ? (
             <div className="flex h-full items-center justify-center text-muted-foreground">Đang tải vận tốc Sprint...</div>
-          ) : !velocityData || velocityData.length === 0 ? (
+          ) : chartData.length === 0 ? (
             <div className="flex h-full items-center justify-center text-muted-foreground">Chưa có dữ liệu vận tốc</div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={velocityData}>
+              <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis dataKey="sprintName" tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
