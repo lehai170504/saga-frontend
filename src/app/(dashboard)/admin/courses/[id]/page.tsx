@@ -38,7 +38,7 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
   const students = React.useMemo(() => {
     if (!studentsResponse) return [];
     const withTeam = studentsResponse.studentsWithTeam.content.map(s => ({
-      id: s.studentId || (s as any).id || (s as any).userId || crypto.randomUUID(),
+      id: s.studentId || (s as { id?: string; userId?: string }).id || (s as { id?: string; userId?: string }).userId || crypto.randomUUID(),
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -47,7 +47,7 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
       teamName: s.team?.teamName
     }));
     const withoutTeam = studentsResponse.studentsWithoutTeam.content.map(s => ({
-      id: s.studentId || (s as any).id || (s as any).userId || crypto.randomUUID(),
+      id: s.studentId || (s as { id?: string; userId?: string }).id || (s as { id?: string; userId?: string }).userId || crypto.randomUUID(),
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -92,7 +92,7 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
           name: s.team.projectName,
           group: s.team.teamName,
           status: "Đang thực hiện",
-          progress: Math.floor(Math.random() * 60) + 40,
+          progress: ((s.team.projectId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 60) + 40,
           githubRepos: [`saga-frontend-${s.team.teamId}`, `saga-backend-${s.team.teamId}`],
           jiraBoard: `Jira Board ${s.team.teamName}`
         });

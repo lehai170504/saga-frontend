@@ -30,7 +30,7 @@ export const useUpdateProjectDetail = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-detail", projectId] });
       toast.success("Cập nhật thông tin dự án thành công!");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Có lỗi xảy ra khi cập nhật thông tin dự án.");
     }
   });

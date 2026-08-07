@@ -34,18 +34,20 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
 
-  const projectId = myTeamData?.project?.projectId || (myTeamData?.project as any)?.id || "";
+  const projectId = myTeamData?.project?.id || "";
   const { data: sprintsData, isLoading: isLoadingSprints } = useProjectSprints(projectId);
   const createSprintMutation = useCreateSprint(projectId);
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && isLoadingSprints);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (isCreateOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIdempotencyKey(crypto.randomUUID());
     }
   }, [isCreateOpen]);

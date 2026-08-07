@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useTeamSprintCandidates, useTeamRubric, useDefaultRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
+import { RubricCriterion } from "@/features/projects/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -63,12 +64,12 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const candidates = candidatesData?.candidates || [];
 
   // Determine criteria with fallbacks (Team -> Default -> Hardcoded standard)
-  const getRubricCriteria = () => {
+  const getRubricCriteria = (): RubricCriterion[] => {
     if (teamRubricData?.criteria && teamRubricData.criteria.length > 0) {
       return teamRubricData.criteria;
     }
-    if (defaultRubricData?.criteria && defaultRubricData.criteria.length > 0) {
-      return defaultRubricData.criteria;
+    if ((defaultRubricData as any)?.criteria && (defaultRubricData as any).criteria.length > 0) {
+      return (defaultRubricData as any).criteria;
     }
     return [
       {
@@ -112,7 +113,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
     if (!evaluatingCandidate) return;
 
     // Validate that all criteria are rated
-    const unrated = criteria.filter(c => !ratings[c.rubricId]);
+    const unrated = criteria.filter((c: RubricCriterion) => !ratings[c.rubricId]);
     if (unrated.length > 0) {
       toast.error(`Vui lòng đánh giá điểm sao cho tiêu chí: "${unrated[0].criteriaName}"`);
       return;
@@ -123,11 +124,11 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
       return;
     }
 
-    const criteriaRatings = criteria.map(c => ({
+    const criteriaRatings = criteria.map((c: RubricCriterion) => ({
       rubricId: c.rubricId,
-      starRating: ratings[c.rubricId]
+      starRating: ratings[c.rubricId] || 0
     }));
-    const totalStarRating = criteriaRatings.reduce((sum, item) => sum + item.starRating, 0);
+    const totalStarRating = criteriaRatings.reduce((sum: number, item: { rubricId: string; starRating: number }) => sum + item.starRating, 0);
 
     const payload = {
       revieweeId: evaluatingCandidate.studentId,

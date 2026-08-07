@@ -8,10 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectIntegrations } from "@/features/integrations/hooks/useProjectIntegrations";
+import { GitHubRepositoryResponse } from "@/features/integrations/types";
 import { useGithubBranches, useGithubCommits } from "@/features/projects/hooks/useProjects";
 import { GithubBranchInfo, GithubCommitInfo } from "@/features/projects/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GitCommit, GitBranch, Calendar, User, ExternalLink, ChevronLeft, ChevronRight, AlertTriangle, ArrowLeft, Loader2 } from "lucide-react";
+import { GitCommit, GitBranch, Calendar, ExternalLink, ChevronLeft, ChevronRight, AlertTriangle, ArrowLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface StudentCommitsViewProps {
@@ -27,16 +28,20 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
   const size = 10; // Page size of 10 commits per page
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
-  const projectId = myTeamData?.project?.projectId || (myTeamData?.project as any)?.id || "";
+  const projectId = myTeamData?.project?.id || "";
 
   const { data: integrations, isLoading: isLoadingIntegrations } = useProjectIntegrations(projectId);
-  const repos = integrations?.githubRepositories || [];
-  const selectedRepo = repos.find((r: any) => String(r.repositoryId) === selectedRepoId);
+  const repos = React.useMemo<GitHubRepositoryResponse[]>(
+    () => integrations?.githubRepositories || [],
+    [integrations]
+  );
+  const selectedRepo = repos.find((r) => String(r.repositoryId) === selectedRepoId);
 
   // Automatically select first repository when loaded
   useEffect(() => {
     if (repos.length > 0 && !selectedRepoId) {
-      const activeRepo = repos.find((r: any) => r.status === "ACTIVE") || repos[0];
+      const activeRepo = repos.find((r) => r.status === "ACTIVE") || repos[0];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedRepoId(String(activeRepo.repositoryId));
     }
   }, [repos, selectedRepoId]);
@@ -55,7 +60,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
     return rawContent
       .map((item: GithubBranchInfo | string) => {
         if (typeof item === "string") return item;
-        if (item && typeof item === "object") return (item as any).name || (item as any).sha || "";
+        if (item && typeof item === "object") return (item as GithubBranchInfo).name || "";
         return "";
       })
       .filter(Boolean);
@@ -66,6 +71,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
     if (branchesList.length > 0) {
       if (!selectedBranch || !branchesList.includes(selectedBranch)) {
         const defaultBranch = branchesList.find((b) => b === "main" || b === "master") || branchesList[0];
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedBranch(defaultBranch);
       }
     } else {
@@ -83,6 +89,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -152,8 +159,8 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
               <AlertTriangle size={32} />
             </div>
             <h2 className="text-xl font-bold text-destructive">Nhóm chưa đăng ký đề tài</h2>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              Dự án của nhóm bạn chưa được khởi tạo. Vui lòng đăng ký đề tài tại mục "Thông tin Nhóm" trước khi xem lịch sử Commit.
+             <p className="text-muted-foreground text-sm max-w-md mx-auto">
+              Dự án của nhóm bạn chưa được khởi tạo. Vui lòng đăng ký đề tài tại mục &quot;Thông tin Nhóm&quot; trước khi xem lịch sử Commit.
             </p>
           </Card>
         ) : repos.length === 0 ? (
@@ -163,7 +170,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
             </div>
             <h2 className="text-xl font-bold text-amber-600">Chưa liên kết GitHub Repository</h2>
             <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              Dự án chưa liên kết với kho lưu trữ GitHub nào. Leader của nhóm cần cấu hình liên kết GitHub trong mục "Thông tin Nhóm" để đồng bộ dữ liệu.
+              Dự án chưa liên kết với kho lưu trữ GitHub nào. Leader của nhóm cần cấu hình liên kết GitHub trong mục &quot;Thông tin Nhóm&quot; để đồng bộ dữ liệu.
             </p>
           </Card>
         ) : (
@@ -195,7 +202,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
                       <SelectValue placeholder="Chọn repository..." />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border bg-background">
-                      {repos.map((repo: any) => (
+                      {repos.map((repo: GitHubRepositoryResponse) => (
                         <SelectItem
                           key={repo.repositoryId}
                           value={String(repo.repositoryId)}

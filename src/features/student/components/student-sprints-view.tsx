@@ -27,6 +27,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingSprints);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

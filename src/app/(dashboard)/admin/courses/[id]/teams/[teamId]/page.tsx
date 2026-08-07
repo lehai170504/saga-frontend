@@ -144,12 +144,12 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
                       <Avatar className="h-10 w-10 border-2 border-background shadow-sm mr-4">
                         <AvatarImage src={`https://i.pravatar.cc/150?u=${member.studentId}`} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                          {member.fullName.charAt(0)}
+                          {(member.student?.name || "U").charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm truncate">{member.fullName}</p>
-                        <p className="text-xs text-muted-foreground truncate">{member.studentCode}</p>
+                        <p className="font-bold text-sm truncate">{member.student?.name || "Chưa rõ"}</p>
+                        <p className="text-xs text-muted-foreground truncate">{member.student?.studentCode || "Chưa có mã"}</p>
                       </div>
                       <span className={`text-[10px] font-bold px-2 py-1 rounded-md ml-2 whitespace-nowrap ${member.roleInTeam === "LEADER"
                           ? "bg-primary/10 text-primary"

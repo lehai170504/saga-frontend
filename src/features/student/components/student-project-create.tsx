@@ -45,7 +45,7 @@ export function StudentProjectCreate() {
     ? (myTeamData ? {
       teamId: myTeamData.teamId,
       teamName: myTeamData.teamName,
-      projectId: myTeamData.project?.projectId || (myTeamData.project as { id?: string })?.id,
+      projectId: myTeamData.project?.id,
       projectName: myTeamData.project?.name || "",
     } : null)
     : myStudentRecord?.team;
