@@ -30,5 +30,37 @@ export const sprintApi = {
         "Idempotency-Key": idempotencyKey
       }
     });
+  },
+
+  startSprint: async (projectId: string, sprintId: string, idempotencyKey: string) => {
+    return axiosInstance.post<never, Sprint>(`/api/v1/projects/${projectId}/sprints/${sprintId}/start`, {}, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
+  },
+
+  closeSprint: async (projectId: string, sprintId: string, idempotencyKey: string) => {
+    return axiosInstance.post<never, Sprint>(`/api/v1/projects/${projectId}/sprints/${sprintId}/close`, {}, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
+  },
+
+  updateSprint: async (projectId: string, sprintId: string, data: { name: string; goal: string; startDate: string | null; endDate: string | null }, idempotencyKey: string) => {
+    return axiosInstance.put<never, Sprint>(`/api/v1/projects/${projectId}/sprints/${sprintId}`, data, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
+  },
+
+  deleteSprint: async (projectId: string, sprintId: string, idempotencyKey: string) => {
+    return axiosInstance.delete(`/api/v1/projects/${projectId}/sprints/${sprintId}`, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
   }
 };

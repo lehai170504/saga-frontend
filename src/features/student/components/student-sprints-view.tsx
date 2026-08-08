@@ -112,7 +112,17 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                   {sprints.map((sprint) => {
                     const hasDates = sprint.startDate && sprint.endDate;
 
-                    const getSprintStatus = () => {
+                     const getSprintStatus = () => {
+                      if (sprint.state === "CLOSED" || sprint.state === "closed") {
+                        return {
+                          label: "Đã hoàn thành",
+                          style: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_2px_10px_rgba(16,185,129,0.1)]",
+                          cardStyle: "border-emerald-500/30 hover:border-emerald-500/50 hover:shadow-emerald-500/5",
+                          topLineStyle: "bg-emerald-500",
+                          dateStyle: "text-muted-foreground"
+                        };
+                      }
+
                       if (!sprint.endDate) return null;
                       const now = new Date();
                       const end = new Date(sprint.endDate);
@@ -136,6 +146,16 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                           cardStyle: "border-amber-500/30 hover:border-amber-500/50 hover:shadow-amber-500/5",
                           topLineStyle: "bg-gradient-to-r from-amber-500 to-orange-500",
                           dateStyle: "text-amber-600 font-bold"
+                        };
+                      }
+
+                      if (sprint.state === "ACTIVE" || sprint.state === "active") {
+                        return {
+                          label: "Đang hoạt động",
+                          style: "bg-primary/10 text-primary border-primary/20 shadow-[0_2px_10px_rgba(234,88,12,0.1)]",
+                          cardStyle: "border-primary/30 hover:border-primary/50 hover:shadow-primary/5",
+                          topLineStyle: "bg-gradient-to-r from-primary to-orange-500",
+                          dateStyle: "text-primary font-semibold"
                         };
                       }
 

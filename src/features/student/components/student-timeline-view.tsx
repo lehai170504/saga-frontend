@@ -2,15 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Calendar, Users, Flag, Clock, ArrowRight, ShieldAlert, FolderKanban, Loader2 } from "lucide-react";
+import { Calendar, Users, Flag, Clock, ArrowRight, ShieldAlert, FolderKanban, Loader2, MoreVertical } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
-import { useProjectSprints, useCreateSprint } from "@/features/projects/hooks/useTeamSprints";
+import { useProjectSprints, useCreateSprint, useStartSprint, useCloseSprint, useUpdateSprint, useDeleteSprint } from "@/features/projects/hooks/useTeamSprints";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +36,22 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [idempotencyKey, setIdempotencyKey] = useState("");
+  const [startingSprintId, setStartingSprintId] = useState<string | null>(null);
+  const [closingSprintId, setClosingSprintId] = useState<string | null>(null);
+
+  // Edit sprint modal states
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editSprintId, setEditSprintId] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editGoal, setEditGoal] = useState("");
+  const [editStartDate, setEditStartDate] = useState("");
+  const [editEndDate, setEditEndDate] = useState("");
+  const [editIdempotencyKey, setEditIdempotencyKey] = useState("");
+
+  // Delete sprint modal states
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [sprintToDelete, setSprintToDelete] = useState<typeof sprints[0] | null>(null);
+  const [deleteIdempotencyKey, setDeleteIdempotencyKey] = useState("");
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
@@ -37,6 +59,10 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const projectId = myTeamData?.project?.id || "";
   const { data: sprintsData, isLoading: isLoadingSprints } = useProjectSprints(projectId);
   const createSprintMutation = useCreateSprint(projectId);
+  const startSprintMutation = useStartSprint(projectId);
+  const closeSprintMutation = useCloseSprint(projectId);
+  const updateSprintMutation = useUpdateSprint(projectId);
+  const deleteSprintMutation = useDeleteSprint(projectId);
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && isLoadingSprints);
 
@@ -52,6 +78,20 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
     }
   }, [isCreateOpen]);
 
+  useEffect(() => {
+    if (isEditOpen) {
+      const timer = setTimeout(() => setEditIdempotencyKey(crypto.randomUUID()), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isEditOpen]);
+
+  useEffect(() => {
+    if (isDeleteOpen) {
+      const timer = setTimeout(() => setDeleteIdempotencyKey(crypto.randomUUID()), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isDeleteOpen]);
+
   if (!mounted) {
     return <div className="p-6 min-h-screen bg-background" />;
   }
@@ -66,6 +106,18 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   });
 
   const getSprintStatus = (sprint: typeof sprints[0]) => {
+    if (sprint.state === "CLOSED" || sprint.state === "closed") {
+      return {
+        label: "Đã hoàn thành",
+        style: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+        colorClass: "text-emerald-500",
+        timelineNodeStyle: "bg-emerald-500 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]",
+        cardStyle: "border-emerald-500/20 bg-emerald-500/[0.01] opacity-90",
+        topLineStyle: "bg-emerald-500",
+        dateStyle: "text-muted-foreground"
+      };
+    }
+
     if (!sprint.startDate || !sprint.endDate) {
       return {
         label: "Chưa thiết lập",
@@ -108,7 +160,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
       };
     }
 
-    if (now >= start && now <= end) {
+    if (sprint.state === "ACTIVE" || sprint.state === "active" || (now >= start && now <= end)) {
       return {
         label: "Đang hoạt động",
         style: "bg-primary/10 text-primary border-primary/20 animate-pulse",
@@ -121,7 +173,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
     }
 
     return {
-      label: "Tương lai",
+      label: "Sắp tới",
       style: "bg-blue-500/10 text-blue-500 border-blue-500/20",
       colorClass: "text-blue-500",
       timelineNodeStyle: "bg-blue-500 border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]",
@@ -158,6 +210,95 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
           setGoal("");
           setStartDate("");
           setEndDate("");
+        }
+      }
+    );
+  };
+
+  const handleStartSprint = (sprintId: string) => {
+    setStartingSprintId(sprintId);
+    const key = crypto.randomUUID();
+    startSprintMutation.mutate(
+      { sprintId, idempotencyKey: key },
+      {
+        onSettled: () => setStartingSprintId(null)
+      }
+    );
+  };
+
+  const handleCloseSprint = (sprintId: string) => {
+    setClosingSprintId(sprintId);
+    const key = crypto.randomUUID();
+    closeSprintMutation.mutate(
+      { sprintId, idempotencyKey: key },
+      {
+        onSettled: () => setClosingSprintId(null)
+      }
+    );
+  };
+
+  const handleOpenEdit = (sprint: typeof sprints[0]) => {
+    setEditSprintId(sprint.sprintId);
+    setEditName(sprint.sprintName);
+    setEditGoal(sprint.goal || "");
+
+    const formatForInput = (dateStr: string | null) => {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      const pad = (n: number) => n.toString().padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    };
+
+    setEditStartDate(formatForInput(sprint.startDate));
+    setEditEndDate(formatForInput(sprint.endDate));
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateSprint = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editName.trim()) {
+      toast.error("Vui lòng nhập tên Sprint.");
+      return;
+    }
+
+    if (editStartDate && editEndDate && new Date(editEndDate) <= new Date(editStartDate)) {
+      toast.error("Ngày kết thúc phải diễn ra sau ngày bắt đầu.");
+      return;
+    }
+
+    updateSprintMutation.mutate(
+      {
+        sprintId: editSprintId,
+        name: editName.trim(),
+        goal: editGoal.trim(),
+        startDate: editStartDate ? new Date(editStartDate).toISOString() : null,
+        endDate: editEndDate ? new Date(editEndDate).toISOString() : null,
+        idempotencyKey: editIdempotencyKey
+      },
+      {
+        onSuccess: () => {
+          setIsEditOpen(false);
+          setEditName("");
+          setEditGoal("");
+          setEditStartDate("");
+          setEditEndDate("");
+          setEditSprintId("");
+        }
+      }
+    );
+  };
+
+  const handleDeleteSprint = () => {
+    if (!sprintToDelete) return;
+    deleteSprintMutation.mutate(
+      {
+        sprintId: sprintToDelete.sprintId,
+        idempotencyKey: deleteIdempotencyKey
+      },
+      {
+        onSuccess: () => {
+          setIsDeleteOpen(false);
+          setSprintToDelete(null);
         }
       }
     );
@@ -247,7 +388,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
             {/* Ambient Line highlight */}
             <div className="absolute top-0 bottom-0 left-[-1px] w-[2px] bg-gradient-to-b from-primary via-blue-500 to-emerald-500 pointer-events-none opacity-60" />
 
-            {sortedSprints.map((sprint, index) => {
+            {sortedSprints.map((sprint) => {
               const status = getSprintStatus(sprint);
               const hasDates = sprint.startDate && sprint.endDate;
 
@@ -268,17 +409,78 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
 
                       {/* Card Header with Status Badge */}
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-4">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/60">
-                            Sprint #{sprint.externalSprintId || index + 1}
-                          </span>
-                          <h3 className="text-xl font-bold text-foreground">
-                            {sprint.sprintName}
-                          </h3>
+                        <h3 className="text-xl font-bold text-foreground">
+                          {sprint.sprintName}
+                        </h3>
+                        <div className="flex items-center gap-3 self-start sm:self-auto">
+                          <Badge variant="outline" className={`${status.style} rounded-full font-bold px-4 py-1.5 text-xs`}>
+                            {status.label}
+                          </Badge>
+                          {status.label === "Sắp tới" && myTeamData?.roleInTeam === "LEADER" && (
+                            <Button
+                              onClick={() => handleStartSprint(sprint.sprintId)}
+                              disabled={startSprintMutation.isPending || closeSprintMutation.isPending}
+                              size="sm"
+                              className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg h-8 px-4 text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                            >
+                              {startingSprintId === sprint.sprintId ? (
+                                <>
+                                  <Loader2 size={12} className="animate-spin" />
+                                  Đang bắt đầu...
+                                </>
+                              ) : (
+                                "Bắt đầu"
+                              )}
+                            </Button>
+                          )}
+                          {(status.label === "Đang hoạt động" || status.label === "Sắp kết thúc" || status.label === "Quá hạn") && myTeamData?.roleInTeam === "LEADER" && (
+                            <Button
+                              onClick={() => handleCloseSprint(sprint.sprintId)}
+                              disabled={startSprintMutation.isPending || closeSprintMutation.isPending}
+                              size="sm"
+                              className="rounded-xl font-bold bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg h-8 px-4 text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                            >
+                              {closingSprintId === sprint.sprintId ? (
+                                <>
+                                  <Loader2 size={12} className="animate-spin" />
+                                  Đang đóng...
+                                </>
+                              ) : (
+                                "Đóng Sprint"
+                              )}
+                            </Button>
+                          )}
+                          {status.label !== "Đã hoàn thành" && myTeamData?.roleInTeam === "LEADER" && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 rounded-full border border-border/50 bg-background/50 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer flex items-center justify-center transition-all"
+                                >
+                                  <MoreVertical size={16} />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[120px] p-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                                <DropdownMenuItem
+                                  onClick={() => handleOpenEdit(sprint)}
+                                  className="rounded-xl px-3 py-2 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+                                >
+                                  Chỉnh sửa
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setSprintToDelete(sprint);
+                                    setIsDeleteOpen(true);
+                                  }}
+                                  className="rounded-xl px-3 py-2 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
+                                >
+                                  Xóa Sprint
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
                         </div>
-                        <Badge variant="outline" className={`${status.style} rounded-full font-bold px-4 py-1.5 text-xs self-start sm:self-auto`}>
-                          {status.label}
-                        </Badge>
                       </div>
 
                       {/* Content Grid */}
@@ -428,6 +630,154 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Sprint Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-[480px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40">
+            <DialogTitle className="text-lg font-bold text-foreground">Chỉnh sửa Sprint</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Cấu hình thông tin Sprint và đồng bộ trực tiếp với dự án Jira của nhóm.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleUpdateSprint} className="space-y-5 pt-4">
+            {/* Sprint Name */}
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-sprint-name" className="text-sm font-bold text-foreground">
+                Tên Sprint <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="edit-sprint-name"
+                required
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Ví dụ: Sprint 1"
+                className="rounded-xl border-border/50 bg-background/80 h-11"
+              />
+            </div>
+
+            {/* Sprint Goal */}
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-sprint-goal" className="text-sm font-bold text-foreground">
+                Mục tiêu Sprint
+              </Label>
+              <Textarea
+                id="edit-sprint-goal"
+                value={editGoal}
+                onChange={(e) => setEditGoal(e.target.value)}
+                placeholder="Mô tả mục tiêu của Sprint này..."
+                className="rounded-xl resize-none border-border/50 bg-background/80 min-h-[80px]"
+              />
+            </div>
+
+            {/* Dates Container */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-start-date" className="text-sm font-bold text-foreground">
+                  Ngày bắt đầu
+                </Label>
+                <Input
+                  id="edit-start-date"
+                  type="datetime-local"
+                  value={editStartDate}
+                  onChange={(e) => setEditStartDate(e.target.value)}
+                  className="rounded-xl border-border/50 bg-background/80 h-11 cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-end-date" className="text-sm font-bold text-foreground">
+                  Ngày kết thúc
+                </Label>
+                <Input
+                  id="edit-end-date"
+                  type="datetime-local"
+                  value={editEndDate}
+                  onChange={(e) => setEditEndDate(e.target.value)}
+                  className="rounded-xl border-border/50 bg-background/80 h-11 cursor-pointer"
+                />
+              </div>
+            </div>
+
+            {/* Dialog Footer Actions */}
+            <div className="flex justify-end gap-3 border-t border-border/40 pt-4 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl font-bold cursor-pointer h-11 px-5"
+                onClick={() => setIsEditOpen(false)}
+                disabled={updateSprintMutation.isPending}
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                type="submit"
+                className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg cursor-pointer h-11 px-5"
+                disabled={updateSprintMutation.isPending}
+              >
+                {updateSprintMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang lưu...
+                  </>
+                ) : (
+                  "Cập nhật"
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Sprint Dialog */}
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent className="sm:max-w-[440px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40">
+            <DialogTitle className="text-lg font-bold text-foreground">Xóa Sprint</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Hành động này không thể hoàn tác. Sprint sẽ bị xóa vĩnh viễn khỏi SAGA và Jira.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 pt-4">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Bạn có chắc chắn muốn xóa Sprint <strong className="text-foreground">{sprintToDelete?.sprintName}</strong> không?
+            </p>
+
+            {/* Dialog Footer Actions */}
+            <div className="flex justify-end gap-3 border-t border-border/40 pt-4 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl font-bold cursor-pointer h-11 px-5"
+                onClick={() => {
+                  setIsDeleteOpen(false);
+                  setSprintToDelete(null);
+                }}
+                disabled={deleteSprintMutation.isPending}
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                type="button"
+                onClick={handleDeleteSprint}
+                className="rounded-xl font-bold bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg cursor-pointer h-11 px-5"
+                disabled={deleteSprintMutation.isPending}
+              >
+                {deleteSprintMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang xóa...
+                  </>
+                ) : (
+                  "Xác nhận xóa"
+                )}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

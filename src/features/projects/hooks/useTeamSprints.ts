@@ -88,3 +88,117 @@ export const useCreateSprint = (projectId: string) => {
     }
   });
 };
+
+export const useStartSprint = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { sprintId: string; idempotencyKey: string }) =>
+      sprintApi.startSprint(projectId, data.sprintId, data.idempotencyKey),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-sprints", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["team-sprints"] });
+      toast.success("Bắt đầu Sprint thành công!");
+    },
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
+      const errCode = axiosErr?.response?.data?.error;
+      const originalMsg = axiosErr?.response?.data?.message;
+
+      let errMsg = "Có lỗi xảy ra khi bắt đầu Sprint.";
+      if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
+        errMsg = "Tích hợp Jira của dự án chưa được kích hoạt hoặc chưa được cấu hình.";
+      } else if (errCode === "JIRA_ACCESS_REVOKED") {
+        errMsg = "Quyền truy cập Jira của bạn đã hết hạn hoặc bị hủy bỏ. Vui lòng kết nối lại Jira.";
+      } else if (originalMsg) {
+        errMsg = originalMsg;
+      }
+      toast.error(errMsg);
+    }
+  });
+};
+
+export const useCloseSprint = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { sprintId: string; idempotencyKey: string }) =>
+      sprintApi.closeSprint(projectId, data.sprintId, data.idempotencyKey),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-sprints", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["team-sprints"] });
+      toast.success("Đóng Sprint thành công!");
+    },
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
+      const errCode = axiosErr?.response?.data?.error;
+      const originalMsg = axiosErr?.response?.data?.message;
+
+      let errMsg = "Có lỗi xảy ra khi đóng Sprint.";
+      if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
+        errMsg = "Tích hợp Jira của dự án chưa được kích hoạt hoặc chưa được cấu hình.";
+      } else if (errCode === "JIRA_ACCESS_REVOKED") {
+        errMsg = "Quyền truy cập Jira của bạn đã hết hạn hoặc bị hủy bỏ. Vui lòng kết nối lại Jira.";
+      } else if (originalMsg) {
+        errMsg = originalMsg;
+      }
+      toast.error(errMsg);
+    }
+  });
+};
+
+export const useUpdateSprint = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { sprintId: string; name: string; goal: string; startDate: string | null; endDate: string | null; idempotencyKey: string }) => {
+      const { sprintId, idempotencyKey, ...body } = data;
+      return sprintApi.updateSprint(projectId, sprintId, body, idempotencyKey);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-sprints", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["team-sprints"] });
+      toast.success("Cập nhật Sprint thành công!");
+    },
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
+      const errCode = axiosErr?.response?.data?.error;
+      const originalMsg = axiosErr?.response?.data?.message;
+
+      let errMsg = "Có lỗi xảy ra khi cập nhật Sprint.";
+      if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
+        errMsg = "Tích hợp Jira của dự án chưa được kích hoạt hoặc chưa được cấu hình.";
+      } else if (errCode === "JIRA_ACCESS_REVOKED") {
+        errMsg = "Quyền truy cập Jira của bạn đã hết hạn hoặc bị hủy bỏ. Vui lòng kết nối lại Jira.";
+      } else if (originalMsg) {
+        errMsg = originalMsg;
+      }
+      toast.error(errMsg);
+    }
+  });
+};
+
+export const useDeleteSprint = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { sprintId: string; idempotencyKey: string }) =>
+      sprintApi.deleteSprint(projectId, data.sprintId, data.idempotencyKey),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-sprints", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["team-sprints"] });
+      toast.success("Xóa Sprint thành công!");
+    },
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
+      const errCode = axiosErr?.response?.data?.error;
+      const originalMsg = axiosErr?.response?.data?.message;
+
+      let errMsg = "Có lỗi xảy ra khi xóa Sprint.";
+      if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
+        errMsg = "Tích hợp Jira của dự án chưa được kích hoạt hoặc chưa được cấu hình.";
+      } else if (errCode === "JIRA_ACCESS_REVOKED") {
+        errMsg = "Quyền truy cập Jira của bạn đã hết hạn hoặc bị hủy bỏ. Vui lòng kết nối lại Jira.";
+      } else if (originalMsg) {
+        errMsg = originalMsg;
+      }
+      toast.error(errMsg);
+    }
+  });
+};

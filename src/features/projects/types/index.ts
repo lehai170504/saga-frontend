@@ -11,10 +11,10 @@ export type ProjectResponse = {
 export type Sprint = {
   sprintId: string;
   sprintName: string;
-  externalSprintId: string | null;
   startDate: string | null;
   endDate: string | null;
   goal: string | null;
+  state?: string;
 };
 
 export type TeamSprintsResponse = {
