@@ -71,7 +71,7 @@ export function PeerReviewRules() {
                   <div className="p-10 text-center flex flex-col items-center justify-center border border-dashed border-border rounded-2xl bg-muted/30">
                     <Star className="w-10 h-10 text-muted-foreground/30 mb-4" />
                     <p className="text-muted-foreground font-medium text-lg">Chưa có tiêu chí đánh giá nào.</p>
-                    <p className="text-muted-foreground/60 text-sm mt-1">Bấm "Thêm Tiêu chí" để tạo luật đánh giá mới.</p>
+                    <p className="text-muted-foreground/60 text-sm mt-1">Bấm &quot;Thêm Tiêu chí&quot; để tạo luật đánh giá mới.</p>
                   </div>
                 )}
               </div>

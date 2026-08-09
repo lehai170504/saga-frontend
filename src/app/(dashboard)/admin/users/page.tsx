@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Users, GraduationCap, UserCircle2, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { UsersTable } from "@/features/admin/components/users-table";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,7 +31,7 @@ export default function UsersManagementPage() {
     try {
       await toggleStatus({ id: userId, status: newStatus });
       toast.success(`Đã cập nhật trạng thái người dùng thành công.`);
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi cập nhật trạng thái.");
     }
   };

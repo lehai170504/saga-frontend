@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { userApi, UserFilterParams } from "../api/userApi";
+import { userApi, UserFilterParams, PageResponse, UserProfileResponse } from "../api/userApi";
 
 export const useUsers = (params: UserFilterParams) => {
   return useQuery({
@@ -21,12 +21,12 @@ export const useToggleUserStatus = () => {
       const previousUsers = queryClient.getQueriesData({ queryKey: ["admin", "users"] });
 
       // Cập nhật giao diện lập tức (Optimistic Update)
-      queryClient.setQueriesData({ queryKey: ["admin", "users"] }, (old: any) => {
+      queryClient.setQueriesData({ queryKey: ["admin", "users"] }, (old: PageResponse<UserProfileResponse> | undefined) => {
         if (!old || !old.content) return old;
         return {
           ...old,
-          content: old.content.map((user: any) =>
-            user.localProfileId === id ? { ...user, accountStatus: status } : user
+          content: old.content.map((user: UserProfileResponse) =>
+            user.localProfileId === id ? { ...user, accountStatus: status as UserProfileResponse["accountStatus"] } : user
           ),
         };
       });

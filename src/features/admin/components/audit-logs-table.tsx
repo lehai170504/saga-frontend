@@ -43,7 +43,7 @@ export const columns: ColumnDef<AuditLogResponse>[] = [
           second: '2-digit'
         });
       } catch (e) {
-        // ignore
+        console.error(e);
       }
 
       return (
@@ -106,6 +106,7 @@ export function AuditLogsTable({
   totalElements,
   onPageChange,
 }: AuditLogsTableProps) {
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
