@@ -27,3 +27,26 @@ export const useCreateSemester = () => {
     },
   });
 };
+
+export const useUpdateSemester = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: SemesterRequest }) => semesterApi.updateSemester(id, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["semesters"] });
+      queryClient.invalidateQueries({ queryKey: ["semesters", variables.id] });
+    },
+  });
+};
+
+export const useDeleteSemester = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => semesterApi.deleteSemester(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["semesters"] });
+    },
+  });
+};

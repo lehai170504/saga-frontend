@@ -2,6 +2,7 @@
 
 import { useSemesters } from "../hooks/useSemesters";
 import { CreateSemesterDialog } from "./create-semester-dialog";
+import { SemesterActions } from "./semester-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Loader2, Calendar, CalendarClock, CalendarDays } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -43,8 +44,14 @@ export function SemesterCards() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
           {page.content.map((semester) => (
             <Card key={semester.id} className="rounded-2xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col h-full group relative">
-              <CardContent className="p-5 flex-grow flex flex-col">
-                <div className="mb-4 pr-6">
+              <CardContent className="p-5 flex-grow flex flex-col relative">
+                {isAdmin && (
+                  <div className="absolute top-4 right-4 flex items-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                    <SemesterActions semester={semester} />
+                  </div>
+                )}
+
+                <div className="mb-4 pr-12">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Mã học kỳ</p>
                   <h3 className="text-xl font-bold text-foreground leading-tight">{semester.code}</h3>
                 </div>

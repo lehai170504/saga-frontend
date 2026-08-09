@@ -3,9 +3,6 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getFilteredRowModel,
-  ColumnFilter,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -25,66 +22,70 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
 import { Search, GraduationCap, UserCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/shared/DataState";
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: "student" | "lecturer";
-  status: "active" | "inactive";
-};
+import { UserProfileResponse } from "../api/userApi";
 
 interface UsersTableProps {
-  data: User[];
-  onToggleStatus?: (id: string, currentStatus: "active" | "inactive") => void;
+  data: UserProfileResponse[];
+  pageIndex: number;
+  totalPages: number;
+  totalElements: number;
+  keyword: string;
+  role: string;
+  accountStatus: string;
+  onPageChange: (page: number) => void;
+  onKeywordChange: (keyword: string) => void;
+  onRoleChange: (role: string) => void;
+  onStatusChange: (status: string) => void;
+  onToggleStatus?: (id: string, currentStatus: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING") => void;
 }
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<UserProfileResponse>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "fullName",
     header: "Họ và tên",
-    cell: ({ row }) => <span className="font-semibold text-foreground">{row.getValue("name")}</span>,
+    cell: ({ row }) => <span className="font-semibold text-foreground">{row.original.fullName}</span>,
   },
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <span className="text-muted-foreground">{row.getValue("email")}</span>,
+    cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,
   },
   {
     accessorKey: "role",
     header: "Vai trò",
     cell: ({ row }) => {
-      const role = row.getValue("role") as string;
+      const role = row.original.role;
       return (
         <div className="flex items-center gap-2">
-          {role === "student" ? (
+          {role === "STUDENT" ? (
             <GraduationCap className="w-4 h-4 text-primary" />
           ) : (
             <UserCircle2 className="w-4 h-4 text-secondary" />
           )}
           <span className="capitalize font-medium text-foreground">
-            {role === "student" ? "Sinh viên" : "Giảng viên"}
+            {role === "STUDENT" ? "Sinh viên" : role === "LECTURER" ? "Giảng viên" : "Admin"}
           </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "accountStatus",
     header: "Trạng thái",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.original.accountStatus;
       return (
         <span
-          className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${status === "active"
+          className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${status === "ACTIVE"
             ? "bg-success/10 text-success"
-            : "bg-muted text-muted-foreground"
+            : status === "PENDING"
+              ? "bg-warning/10 text-warning"
+              : "bg-muted text-muted-foreground"
             }`}
         >
-          {status === "active" ? "Hoạt động" : "Vô hiệu hóa"}
+          {status === "ACTIVE" ? "Hoạt động" : status === "PENDING" ? "Chờ duyệt" : status === "SUSPENDED" ? "Bị đình chỉ" : "Vô hiệu hóa"}
         </span>
       );
     },
@@ -94,13 +95,13 @@ export const columns: ColumnDef<User>[] = [
     header: "Truy cập",
     cell: ({ row, table }) => {
       const user = row.original;
-      const meta = table.options.meta as { onToggleStatus?: (id: string, currentStatus: "active" | "inactive") => void };
+      const meta = table.options.meta as { onToggleStatus?: (id: string, currentStatus: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING") => void };
 
       return (
         <div className="flex items-center gap-2">
           <Switch
-            checked={user.status === "active"}
-            onCheckedChange={() => meta?.onToggleStatus?.(user.id, user.status)}
+            checked={user.accountStatus === "ACTIVE"}
+            onCheckedChange={() => meta?.onToggleStatus?.(user.localProfileId, user.accountStatus)}
           />
         </div>
       );
@@ -108,18 +109,26 @@ export const columns: ColumnDef<User>[] = [
   },
 ];
 
-export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([]);
+export function UsersTable({
+  data,
+  pageIndex,
+  totalPages,
+  totalElements,
+  keyword,
+  role,
+  accountStatus,
+  onPageChange,
+  onKeywordChange,
+  onRoleChange,
+  onStatusChange,
+  onToggleStatus
+}: UsersTableProps) {
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    state: { columnFilters },
     meta: {
       onToggleStatus,
     },
@@ -131,39 +140,40 @@ export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
         <div className="relative w-full sm:max-w-sm">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Tìm kiếm theo tên..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
+            placeholder="Tìm kiếm theo tên hoặc email..."
+            value={keyword}
+            onChange={(event) => onKeywordChange(event.target.value)}
             className="pl-9 rounded-xl focus-visible:ring-ring bg-background"
           />
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select
-            value={(table.getColumn("role")?.getFilterValue() as string) ?? "all"}
-            onValueChange={(val) => table.getColumn("role")?.setFilterValue(val === "all" ? "" : val)}
+            value={role}
+            onValueChange={onRoleChange}
           >
             <SelectTrigger className="w-full sm:w-[150px] rounded-xl bg-background border-border">
               <SelectValue placeholder="Tất cả vai trò" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả vai trò</SelectItem>
-              <SelectItem value="student">Sinh viên</SelectItem>
-              <SelectItem value="lecturer">Giảng viên</SelectItem>
+              <SelectItem value="STUDENT">Sinh viên</SelectItem>
+              <SelectItem value="LECTURER">Giảng viên</SelectItem>
+              <SelectItem value="ADMIN">Quản trị viên</SelectItem>
             </SelectContent>
           </Select>
           <Select
-            value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
-            onValueChange={(val) => table.getColumn("status")?.setFilterValue(val === "all" ? "" : val)}
+            value={accountStatus}
+            onValueChange={onStatusChange}
           >
             <SelectTrigger className="w-full sm:w-[160px] rounded-xl bg-background border-border">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả trạng thái</SelectItem>
-              <SelectItem value="active">Hoạt động</SelectItem>
-              <SelectItem value="inactive">Vô hiệu hóa</SelectItem>
+              <SelectItem value="ACTIVE">Hoạt động</SelectItem>
+              <SelectItem value="INACTIVE">Vô hiệu hóa</SelectItem>
+              <SelectItem value="SUSPENDED">Đình chỉ</SelectItem>
+              <SelectItem value="PENDING">Chờ duyệt</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -212,28 +222,31 @@ export function UsersTable({ data, onToggleStatus }: UsersTableProps) {
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-muted-foreground font-medium">
-          Trang {table.getState().pagination.pageIndex + 1} /{" "}
-          {table.getPageCount() || 1}
+        <div className="text-sm text-muted-foreground font-medium flex items-center gap-4">
+          <span>Trang {pageIndex + 1} / {totalPages || 1}</span>
+          <span className="w-1 h-1 rounded-full bg-border"></span>
+          <span className="text-foreground">Tổng: {totalElements} người dùng</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="rounded-xl h-8 px-2"
+            onClick={() => onPageChange(pageIndex - 1)}
+            disabled={pageIndex <= 0}
+            className="rounded-xl h-9 px-3 border-border/50 hover:bg-muted/50"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Trước
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="rounded-xl h-8 px-2"
+            onClick={() => onPageChange(pageIndex + 1)}
+            disabled={pageIndex >= totalPages - 1}
+            className="rounded-xl h-9 px-3 border-border/50 hover:bg-muted/50"
           >
-            <ChevronRight className="h-4 w-4" />
+            Sau
+            <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </div>
       </div>
