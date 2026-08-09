@@ -200,6 +200,14 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 - `GET /api/v1/courses/contribution-slice-weights`: Lấy trọng số đóng góp của một khóa học.
 - `POST /api/v1/courses/{courseId}/contribution-slice-weight-requests`: Gửi yêu cầu thay đổi trọng số (Lecturer).
 
+### 1.12. Quản lý công việc (Jira Tasks)
+Toàn bộ luồng quản lý công việc và hiển thị Kanban Board của nhóm sinh viên đã được tích hợp đầy đủ:
+- `GET /api/v1/projects/{projectId}/tasks`: Lấy danh sách nhiệm vụ của dự án (hỗ trợ filter `keyword`, `sprintId`, `assigneeId`, `status`, phân trang, và giới hạn size tối đa 100).
+- `POST /api/v1/projects/{projectId}/tasks`: Tạo công việc mới đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Giao diện hỗ trợ cấu hình nâng cao truyền trực tiếp `issueTypeId` và `priorityId` nếu xảy ra lỗi ambiguous phân giải thông tin từ Jira.
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}`: Cập nhật thông tin chi tiết của công việc đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+- `DELETE /api/v1/projects/{projectId}/tasks/{taskId}`: Xóa/Ngắt kết nối công việc đồng bộ trực tiếp trên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}/sprint`: Gán công việc vào Sprint (Body: `{ sprintId }`) hoặc chuyển về Backlog (Body: `{ backlog: true }`). Có cơ chế ổn định `Idempotency-Key` xuyên suốt khi retry mutation.
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)
