@@ -6,12 +6,6 @@ Tài liệu này tổng hợp lại những API mà Backend hiện tại **chưa
 Các resource cốt lõi (Subject, Class, Semester, Course) hiện tại mới chỉ hỗ trợ `POST` (Tạo mới) và `GET` (Đọc danh sách/Chi tiết).
 
 **Danh sách API cần bổ sung:**
-- **Subject:** 
-  - `PUT /api/v1/subjects/{id}` (Sửa môn học)
-  - `DELETE /api/v1/subjects/{id}` (Xóa môn học)
-- **Class:**
-  - `PUT /api/v1/classes/{id}` (Sửa lớp)
-  - `DELETE /api/v1/classes/{id}` (Xóa lớp)
 - **Semester:**
   - `PUT /api/v1/semesters/{id}` (Sửa học kỳ)
   - `DELETE /api/v1/semesters/{id}` (Xóa học kỳ)
@@ -74,10 +68,7 @@ Admin cần công cụ để tinh chỉnh hệ thống mà không cần Dev can 
 - `POST /api/admin/notifications/broadcast`: Gửi thông báo đến toàn bộ người dùng hoặc một role cụ thể (Ví dụ: thông báo bảo trì, nhắc nhở đầu kỳ học).
 
 ## 9. Khắc phục sự cố & Hỗ trợ Người dùng (Support & Diagnostics)
-- **Impersonate (Đăng nhập giả lập):** Admin "toàn quyền" cần login vào góc nhìn của một giảng viên/sinh viên để kiểm tra lỗi hoặc hỗ trợ thao tác mà không cần mật khẩu.
-  - `POST /api/admin/impersonate/{userId}`: Sinh ra token tạm thời để đăng nhập dưới quyền user khác.
-- **Theo dõi thao tác chi tiết 1 User (Activity Logs):** 
-  - `GET /api/admin/users/{id}/audit-logs`: Xem lịch sử thao tác của riêng 1 user cụ thể trên hệ thống (để truy vết xem user đó đã sửa/xóa những gì).
+
 - **Giám sát Tích hợp (Integration Health):**
   - `GET /api/admin/integrations/health`: Kiểm tra trạng thái webhook và kết nối của GitHub/Jira App toàn hệ thống xem có lỗi hay không.
 
