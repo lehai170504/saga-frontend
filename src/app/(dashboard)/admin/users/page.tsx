@@ -1,41 +1,55 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Users, GraduationCap, UserCircle2, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { UsersTable, User } from "@/features/admin/components/users-table";
+import { UsersTable } from "@/features/admin/components/users-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
-
-// Mock data - sau này sẽ gọi từ API
-const initialUsers: User[] = [
-  { id: "1", name: "Nguyễn Văn A", email: "a@fpt.edu.vn", role: "student", status: "active" },
-  { id: "2", name: "Trần Thị B", email: "b@fpt.edu.vn", role: "lecturer", status: "active" },
-  { id: "3", name: "Lê Minh C", email: "c@fpt.edu.vn", role: "student", status: "inactive" },
-  { id: "4", name: "Phạm Hữu D", email: "d@fpt.edu.vn", role: "lecturer", status: "inactive" },
-  { id: "5", name: "Hoàng Thanh E", email: "e@fpt.edu.vn", role: "student", status: "active" },
-];
+import { useUsers, useToggleUserStatus } from "@/features/admin/hooks/useUsers";
+import { useDebounce } from "use-debounce";
+import { toast } from "sonner";
 
 export default function UsersManagementPage() {
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [isLoading, setIsLoading] = useState(true);
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword] = useDebounce(keyword, 500);
+  const [role, setRole] = useState("all");
+  const [accountStatus, setAccountStatus] = useState("all");
+  const [page, setPage] = useState(0);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: usersData, isLoading } = useUsers({
+    keyword: debouncedKeyword || undefined,
+    role: role !== "all" ? role : undefined,
+    accountStatus: accountStatus !== "all" ? accountStatus : undefined,
+    page: page,
+    size: 20,
+  });
 
-  const handleToggleStatus = (userId: string, currentStatus: "active" | "inactive") => {
-    const newStatus = currentStatus === "active" ? "inactive" : "active";
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === userId ? { ...user, status: newStatus } : user
-      )
-    );
-    toast.success(`Đã cập nhật quyền truy cập người dùng thành ${newStatus === "active" ? "Cho phép" : "Vô hiệu hóa"}`);
+  const { mutateAsync: toggleStatus } = useToggleUserStatus();
+
+  const handleToggleStatus = async (userId: string, currentStatus: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING") => {
+    const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    try {
+      await toggleStatus({ id: userId, status: newStatus });
+      toast.success(`Đã cập nhật trạng thái người dùng thành công.`);
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi cập nhật trạng thái.");
+    }
+  };
+
+  const handleKeywordChange = (value: string) => {
+    setKeyword(value);
+    setPage(0);
+  };
+
+  const handleRoleChange = (value: string) => {
+    setRole(value);
+    setPage(0);
+  };
+
+  const handleStatusChange = (value: string) => {
+    setAccountStatus(value);
+    setPage(0);
   };
 
   return (
@@ -46,69 +60,7 @@ export default function UsersManagementPage() {
         workspace="Workspace Quản trị"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Tổng Người Dùng</p>
-                <p className="text-3xl font-bold text-foreground">{users.length}</p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <Users className="text-primary" size={20} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-success uppercase tracking-wider">Sinh viên Active</p>
-                <p className="text-3xl font-bold text-foreground">
-                  {users.filter(u => u.role === 'student' && u.status === 'active').length}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-                <GraduationCap className="text-success" size={20} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-primary uppercase tracking-wider">Giảng viên Active</p>
-                <p className="text-3xl font-bold text-foreground">
-                  {users.filter(u => u.role === 'lecturer' && u.status === 'active').length}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <UserCircle2 className="text-primary" size={20} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border-border/50 bg-card shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-destructive uppercase tracking-wider">Tài khoản bị Khóa</p>
-                <p className="text-3xl font-bold text-foreground">
-                  {users.filter(u => u.status === 'inactive').length}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                <ShieldAlert className="text-destructive" size={20} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden">
         <CardContent className="p-6">
@@ -125,7 +77,20 @@ export default function UsersManagementPage() {
               </div>
             </div>
           ) : (
-            <UsersTable data={users} onToggleStatus={handleToggleStatus} />
+            <UsersTable
+              data={usersData?.content || []}
+              pageIndex={usersData?.number || 0}
+              totalPages={usersData?.totalPages || 0}
+              totalElements={usersData?.totalElements || 0}
+              keyword={keyword}
+              role={role}
+              accountStatus={accountStatus}
+              onPageChange={setPage}
+              onKeywordChange={handleKeywordChange}
+              onRoleChange={handleRoleChange}
+              onStatusChange={handleStatusChange}
+              onToggleStatus={handleToggleStatus}
+            />
           )}
         </CardContent>
       </Card>

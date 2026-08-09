@@ -12,6 +12,7 @@ import {
   Settings2,
   UserCheck,
   GitCommit,
+  Activity,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -41,12 +42,14 @@ export const getNavigationConfig = (
           title: "Tổng quan",
           items: [
             { href: "/admin", icon: <BarChart3 size={18} />, label: "Dashboard", exact: true },
+            { href: "/admin/course-progress", icon: <Activity size={18} />, label: "Tiến độ Khóa học" },
           ],
         },
         {
           title: "Quản lý Cốt lõi",
           items: [
             { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
+            { href: "/admin/teams", icon: <Network size={18} />, label: "Nhóm & Dự án" },
           ],
         },
         {

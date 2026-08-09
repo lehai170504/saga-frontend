@@ -14,4 +14,12 @@ export const semesterApi = {
   createSemester: async (data: SemesterRequest) => {
     return axiosInstance.post<never, Semester>("/api/v1/semesters", data);
   },
+
+  updateSemester: async (id: string, data: SemesterRequest) => {
+    return axiosInstance.put<never, Semester>(`/api/v1/semesters/${id}`, data);
+  },
+
+  deleteSemester: async (id: string) => {
+    return axiosInstance.delete<never, void>(`/api/v1/semesters/${id}`);
+  },
 };
