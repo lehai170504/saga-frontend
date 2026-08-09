@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useProjectSprints, useCreateSprint, useStartSprint, useCloseSprint, useUpdateSprint, useDeleteSprint } from "@/features/projects/hooks/useTeamSprints";
+import { StudentSprintTasksPanel } from "./student-sprint-tasks-panel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,10 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [sprintToDelete, setSprintToDelete] = useState<typeof sprints[0] | null>(null);
   const [deleteIdempotencyKey, setDeleteIdempotencyKey] = useState("");
+
+  // Tasks list side sheet states
+  const [selectedSprintForTasks, setSelectedSprintForTasks] = useState<typeof sprints[0] | null>(null);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
@@ -404,7 +409,13 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
                   </div>
 
                   {/* Timeline Card */}
-                  <Card className={`rounded-[2rem] border transition-all duration-300 hover:shadow-xl ${status.cardStyle}`}>
+                  <Card
+                    onClick={() => {
+                      setSelectedSprintForTasks(sprint);
+                      setIsTasksOpen(true);
+                    }}
+                    className={`rounded-[2rem] border transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.99] hover:border-primary/40 cursor-pointer ${status.cardStyle}`}
+                  >
                     <CardContent className="p-6 md:p-8 space-y-6">
 
                       {/* Card Header with Status Badge */}
@@ -418,7 +429,10 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
                           </Badge>
                           {status.label === "Sắp tới" && myTeamData?.roleInTeam === "LEADER" && (
                             <Button
-                              onClick={() => handleStartSprint(sprint.sprintId)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStartSprint(sprint.sprintId);
+                              }}
                               disabled={startSprintMutation.isPending || closeSprintMutation.isPending}
                               size="sm"
                               className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg h-8 px-4 text-xs transition-all flex items-center gap-1.5 cursor-pointer"
@@ -435,7 +449,10 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
                           )}
                           {(status.label === "Đang hoạt động" || status.label === "Sắp kết thúc" || status.label === "Quá hạn") && myTeamData?.roleInTeam === "LEADER" && (
                             <Button
-                              onClick={() => handleCloseSprint(sprint.sprintId)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCloseSprint(sprint.sprintId);
+                              }}
                               disabled={startSprintMutation.isPending || closeSprintMutation.isPending}
                               size="sm"
                               className="rounded-xl font-bold bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg h-8 px-4 text-xs transition-all flex items-center gap-1.5 cursor-pointer"
@@ -452,7 +469,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
                           )}
                           {status.label !== "Đã hoàn thành" && myTeamData?.roleInTeam === "LEADER" && (
                             <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
+                              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -780,6 +797,20 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {selectedSprintForTasks && (
+        <StudentSprintTasksPanel
+          isOpen={isTasksOpen}
+          onClose={() => {
+            setIsTasksOpen(false);
+            setSelectedSprintForTasks(null);
+          }}
+          projectId={projectId}
+          sprintId={selectedSprintForTasks.sprintId}
+          sprintName={selectedSprintForTasks.sprintName}
+          sprintGoal={selectedSprintForTasks.goal}
+        />
+      )}
     </div>
   );
 }

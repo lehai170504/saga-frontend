@@ -12,6 +12,7 @@ import {
   Settings2,
   UserCheck,
   GitCommit,
+  LayoutGrid,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -119,6 +120,7 @@ export const getNavigationConfig = (
               { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
               { href: `/student/${courseId}/sprints`, icon: <UserCheck size={18} />, label: "Đánh giá chéo", exact: true },
               { href: `/student/${courseId}/timeline`, icon: <Calendar size={18} />, label: "Timeline", exact: true },
+              { href: `/student/${courseId}/board`, icon: <LayoutGrid size={18} />, label: "Board công việc", exact: true },
               { href: `/student/${courseId}/commits`, icon: <GitCommit size={18} />, label: "Commit", exact: true },
             ],
           },
