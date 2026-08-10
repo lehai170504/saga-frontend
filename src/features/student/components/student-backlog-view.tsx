@@ -29,7 +29,7 @@ import {
   useUpdateSprint, 
   useDeleteSprint 
 } from "@/features/projects/hooks/useTeamSprints";
-import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask } from "@/features/projects/hooks/useProjectTasks";
+import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask, useTaskTransitions, useTransitionTask } from "@/features/projects/hooks/useProjectTasks";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +48,91 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { JiraTask, Sprint } from "@/features/projects/types";
-import { UpdateTaskRequest } from "@/features/projects/api/taskApi";
+import { UpdateTaskRequest, TaskTransition } from "@/features/projects/api/taskApi";
+
+function TaskStatusDropdown({ 
+  projectId, 
+  task 
+}: { 
+  projectId: string; 
+  task: JiraTask; 
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const { data: transitionsData, isLoading } = useTaskTransitions(projectId, task.id, isOpen);
+  const transitionMutation = useTransitionTask(projectId);
+
+  const handleSelectTransition = (transitionId: string) => {
+    const key = crypto.randomUUID();
+    transitionMutation.mutate({
+      taskId: task.id,
+      transitionId,
+      idempotencyKey: key
+    });
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case "DONE":
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+      case "IN_PROGRESS":
+        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case "IN_REVIEW":
+        return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+      default:
+        return "bg-muted text-muted-foreground border-muted-foreground/20";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case "DONE":
+        return "Đã hoàn thành";
+      case "IN_PROGRESS":
+        return "Đang làm";
+      case "IN_REVIEW":
+        return "Đang đánh giá";
+      default:
+        return "Cần làm";
+    }
+  };
+
+  return (
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className={`h-7 rounded-lg text-[10px] font-bold px-2.5 py-0.5 flex items-center gap-1 cursor-pointer border shadow-sm transition-all hover:opacity-90 ${getStatusStyle(task.status)}`}
+        >
+          {getStatusLabel(task.status)}
+          <ChevronDown size={10} className="opacity-60 shrink-0" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="rounded-xl border border-border/40 bg-background/95 backdrop-blur-xl shadow-xl min-w-[140px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
+        {isLoading ? (
+          <div className="flex items-center justify-center p-3">
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+          </div>
+        ) : !transitionsData || transitionsData.length === 0 ? (
+          <div className="text-[10px] text-muted-foreground/60 p-2 italic text-center">
+            Không có bước chuyển
+          </div>
+        ) : (
+          transitionsData.map((t: TaskTransition) => (
+            <DropdownMenuItem
+              key={t.transitionId}
+              onClick={() => handleSelectTransition(t.transitionId)}
+              className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+            >
+              {t.name}
+            </DropdownMenuItem>
+          ))
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 interface StudentBacklogViewProps {
   courseId?: string;
@@ -325,18 +409,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status?.toUpperCase()) {
-      case "DONE":
-        return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Đã hoàn thành</Badge>;
-      case "IN_PROGRESS":
-        return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Đang làm</Badge>;
-      case "IN_REVIEW":
-        return <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Đang đánh giá</Badge>;
-      default:
-        return <Badge variant="outline" className="bg-muted text-muted-foreground border-muted-foreground/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Cần làm</Badge>;
-    }
-  };
+
 
   // Move task handler
   const handleMoveTaskSprint = (taskId: string, sprintId: string | null) => {
@@ -754,9 +827,9 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-4 shrink-0">
+                          <div className="flex items-center gap-4 shrink-0" onClick={(e) => e.stopPropagation()}>
                             {/* Status */}
-                            {getStatusBadge(task.status)}
+                            <TaskStatusDropdown projectId={projectId} task={task} />
 
                             {/* Due Date */}
                             {task.dueDate ? (
@@ -940,9 +1013,9 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-4 shrink-0">
+                      <div className="flex items-center gap-4 shrink-0" onClick={(e) => e.stopPropagation()}>
                         {/* Status */}
-                        {getStatusBadge(task.status)}
+                        <TaskStatusDropdown projectId={projectId} task={task} />
 
                         {/* Due Date */}
                         {task.dueDate ? (

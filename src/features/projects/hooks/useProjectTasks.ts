@@ -99,3 +99,28 @@ export const useDeleteTask = (projectId: string) => {
     }
   });
 };
+
+export const useTaskTransitions = (projectId: string, taskId: string, enabled = true) => {
+  return useQuery({
+    queryKey: ["task-transitions", projectId, taskId],
+    queryFn: () => taskApi.getTaskTransitions(projectId, taskId),
+    enabled: !!projectId && !!taskId && enabled
+  });
+};
+
+export const useTransitionTask = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ taskId, transitionId, idempotencyKey }: { taskId: string; transitionId: string; idempotencyKey: string }) =>
+      taskApi.transitionTask(projectId, taskId, transitionId, idempotencyKey),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+      toast.success("Cập nhật trạng thái công việc thành công!");
+    },
+    onError: (err: unknown) => {
+      const axiosErr = err as AxiosError<{ message: string }>;
+      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi cập nhật trạng thái.";
+      toast.error(errMsg);
+    }
+  });
+};

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
-import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask } from "@/features/projects/hooks/useProjectTasks";
+import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask, useTaskTransitions, useTransitionTask } from "@/features/projects/hooks/useProjectTasks";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,11 +46,107 @@ import {
   Bug,
   Plus,
   MoreVertical,
+  ChevronDown,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { CreateTaskRequest, UpdateTaskRequest } from "@/features/projects/api/taskApi";
+import { CreateTaskRequest, UpdateTaskRequest, TaskTransition } from "@/features/projects/api/taskApi";
 import { JiraTask } from "@/features/projects/types";
+
+function TaskStatusDropdown({ 
+  projectId, 
+  task,
+  onTransitionSuccess
+}: { 
+  projectId: string; 
+  task: JiraTask; 
+  onTransitionSuccess?: (updatedTask: JiraTask) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const { data: transitionsData, isLoading } = useTaskTransitions(projectId, task.id, isOpen);
+  const transitionMutation = useTransitionTask(projectId);
+
+  const handleSelectTransition = (transitionId: string) => {
+    const key = crypto.randomUUID();
+    transitionMutation.mutate({
+      taskId: task.id,
+      transitionId,
+      idempotencyKey: key
+    }, {
+      onSuccess: () => {
+        if (onTransitionSuccess) {
+          // Optimistically update status using targetStatusName from transitions list
+          const matched = transitionsData?.find(t => t.transitionId === transitionId);
+          const nextStatus = matched?.targetStatusName || task.status;
+          onTransitionSuccess({ ...task, status: nextStatus });
+        }
+      }
+    });
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case "DONE":
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+      case "IN_PROGRESS":
+        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case "IN_REVIEW":
+        return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+      default:
+        return "bg-muted text-muted-foreground border-muted-foreground/20";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case "DONE":
+        return "Đã hoàn thành";
+      case "IN_PROGRESS":
+        return "Đang làm";
+      case "IN_REVIEW":
+        return "Đang đánh giá";
+      default:
+        return "Cần làm";
+    }
+  };
+
+  return (
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className={`h-7 rounded-lg text-[10px] font-bold px-2.5 py-0.5 flex items-center gap-1 cursor-pointer border shadow-sm transition-all hover:opacity-90 ${getStatusStyle(task.status)}`}
+        >
+          {getStatusLabel(task.status)}
+          <ChevronDown size={10} className="opacity-60 shrink-0" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="rounded-xl border border-border/40 bg-background/95 backdrop-blur-xl shadow-xl min-w-[140px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
+        {isLoading ? (
+          <div className="flex items-center justify-center p-3">
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+          </div>
+        ) : !transitionsData || transitionsData.length === 0 ? (
+          <div className="text-[10px] text-muted-foreground/60 p-2 italic text-center">
+            Không có bước chuyển
+          </div>
+        ) : (
+          transitionsData.map((t: TaskTransition) => (
+            <DropdownMenuItem
+              key={t.transitionId}
+              onClick={() => handleSelectTransition(t.transitionId)}
+              className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+            >
+              {t.name}
+            </DropdownMenuItem>
+          ))
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 interface StudentBoardViewProps {
   courseId: string;
@@ -585,6 +681,11 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                       {selectedTask.storyPoint} SP
                     </Badge>
                   )}
+                  <TaskStatusDropdown 
+                    projectId={projectId} 
+                    task={selectedTask} 
+                    onTransitionSuccess={(updatedTask) => setSelectedTask(updatedTask)} 
+                  />
                 </div>
                 <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
                   {selectedTask.title}

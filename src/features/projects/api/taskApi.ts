@@ -36,6 +36,13 @@ export type UpdateTaskRequest = {
   priorityId?: string;
 };
 
+export type TaskTransition = {
+  transitionId: string;
+  name: string;
+  targetStatusId: string;
+  targetStatusName: string;
+};
+
 export const taskApi = {
   getProjectTasks: async (projectId: string, params?: GetTasksParams) => {
     return axiosInstance.get<never, ProjectTasksResponse>(`/api/v1/projects/${projectId}/tasks`, {
@@ -91,6 +98,10 @@ export const taskApi = {
         "Idempotency-Key": idempotencyKey
       }
     });
+  },
+
+  getTaskTransitions: async (projectId: string, taskId: string) => {
+    return axiosInstance.get<never, TaskTransition[]>(`/api/v1/projects/${projectId}/tasks/${taskId}/transitions`);
   },
 
   transitionTask: async (projectId: string, taskId: string, transitionId: string, idempotencyKey: string) => {
