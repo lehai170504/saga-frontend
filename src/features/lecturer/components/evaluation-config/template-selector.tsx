@@ -62,7 +62,7 @@ export function TemplateSelector() {
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-foreground dark:text-zinc-200 font-bold mb-2">
                   <Settings2 className="w-5 h-5 text-primary" />
-                  <h3>Tinh chỉnh Hệ số Công việc của Lớp</h3>
+                  <h3>Tinh chỉnh Hệ số Công việc (Weight) của Lớp</h3>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">

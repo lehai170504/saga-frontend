@@ -33,6 +33,23 @@ export type DecideWeightRequestPayload = {
   feedbackMessage?: string;
 };
 
+export type CourseWeightsResponse = {
+  courseId: string;
+  courseCode: string;
+  courseName: string;
+  codeWeight: number;
+  documentWeight: number;
+  designWeight: number;
+};
+
+export type RequestCourseWeightPayload = {
+  codeWeight: number;
+  documentWeight: number;
+  designWeight: number;
+  reason: string;
+  lecturerId: string;
+};
+
 export const contributionWeightApi = {
   getWeightRequests: async (status?: string) => {
     return axiosInstance.get<never, Page<ContributionWeightRequest>>(
@@ -46,6 +63,19 @@ export const contributionWeightApi = {
   decideWeightRequest: async (requestId: string | number, data: DecideWeightRequestPayload) => {
     return axiosInstance.put<never, void>(
       `/api/v1/courses/contribution-slice-weight-requests/${requestId}/decision`,
+      data
+    );
+  },
+
+  getCourseWeights: async (courseId: string) => {
+    return axiosInstance.get<never, CourseWeightsResponse>(
+      `/api/v1/courses/${courseId}/contribution-slice-weights`
+    );
+  },
+
+  requestCourseWeightChange: async (courseId: string, data: RequestCourseWeightPayload) => {
+    return axiosInstance.post<never, void>(
+      `/api/v1/courses/${courseId}/contribution-slice-weight-requests`,
       data
     );
   }
