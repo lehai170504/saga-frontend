@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
-import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask } from "@/features/projects/hooks/useProjectTasks";
+import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask, useTaskTransitions, useTransitionTask, useUpdateTaskEstimation, useUpdateTaskAssignee, useUpdateTaskPriority } from "@/features/projects/hooks/useProjectTasks";
+import { useAuthStore } from "@/stores/authStore";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +29,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -46,17 +49,419 @@ import {
   Bug,
   Plus,
   MoreVertical,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Check,
+  X,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { CreateTaskRequest, UpdateTaskRequest } from "@/features/projects/api/taskApi";
+import { CreateTaskRequest, UpdateTaskRequest, TaskTransition } from "@/features/projects/api/taskApi";
 import { JiraTask } from "@/features/projects/types";
+
+function TaskStatusDropdown({ 
+  projectId, 
+  task,
+  onTransitionSuccess
+}: { 
+  projectId: string; 
+  task: JiraTask; 
+  onTransitionSuccess?: (updatedTask: JiraTask) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const { data: transitionsData, isLoading } = useTaskTransitions(projectId, task.id, isOpen);
+  const transitionMutation = useTransitionTask(projectId);
+
+  const handleSelectTransition = (transitionId: string) => {
+    const key = crypto.randomUUID();
+    transitionMutation.mutate({
+      taskId: task.id,
+      transitionId,
+      idempotencyKey: key
+    }, {
+      onSuccess: () => {
+        if (onTransitionSuccess) {
+          // Optimistically update status using targetStatusName from transitions list
+          const matched = transitionsData?.find(t => t.transitionId === transitionId);
+          const nextStatus = matched?.targetStatusName || task.status;
+          onTransitionSuccess({ ...task, status: nextStatus });
+        }
+      }
+    });
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case "DONE":
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+      case "IN_PROGRESS":
+        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case "IN_REVIEW":
+        return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+      default:
+        return "bg-muted text-muted-foreground border-muted-foreground/20";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case "DONE":
+        return "Đã hoàn thành";
+      case "IN_PROGRESS":
+        return "Đang làm";
+      case "IN_REVIEW":
+        return "Đang đánh giá";
+      default:
+        return "Cần làm";
+    }
+  };
+
+  const translateTransitionName = (name: string) => {
+    const map: Record<string, string> = {
+      "To Do": "Cần làm",
+      "In Progress": "Đang làm",
+      "In Review": "Đang đánh giá",
+      "Done": "Đã hoàn thành",
+      "In Development": "Đang phát triển",
+      "Blocked": "Bị chặn",
+      "Open": "Mở",
+      "Closed": "Đã đóng",
+      "Reopened": "Mở lại",
+      "Resolved": "Đã giải quyết",
+      "Selected for Development": "Chọn để phát triển",
+    };
+    return map[name] ?? name;
+  };
+
+  return (
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className={`h-7 rounded-lg text-[10px] font-bold px-2.5 py-0.5 flex items-center gap-1 cursor-pointer border shadow-sm transition-all hover:opacity-90 ${getStatusStyle(task.status)}`}
+        >
+          {getStatusLabel(task.status)}
+          <ChevronDown size={10} className="opacity-60 shrink-0" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="rounded-xl border border-border/40 bg-background/95 backdrop-blur-xl shadow-xl min-w-[140px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
+        {isLoading ? (
+          <div className="flex items-center justify-center p-3">
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+          </div>
+        ) : !transitionsData || transitionsData.length === 0 ? (
+          <div className="text-[10px] text-muted-foreground/60 p-2 italic text-center">
+            Không có bước chuyển
+          </div>
+        ) : (
+          transitionsData.map((t: TaskTransition) => (
+            <DropdownMenuItem
+              key={t.transitionId}
+              onClick={() => handleSelectTransition(t.transitionId)}
+              className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+            >
+              {translateTransitionName(t.name)}
+            </DropdownMenuItem>
+          ))
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function CardStoryPointPicker({
+  projectId,
+  task,
+}: {
+  projectId: string;
+  task: JiraTask;
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [val, setVal] = useState<string>("");
+
+  const updateEstimationMutation = useUpdateTaskEstimation(projectId);
+
+  const hasPoint = task.storyPoint !== undefined && task.storyPoint !== null && Number(task.storyPoint) > 0;
+  const initialVal = hasPoint ? String(task.storyPoint) : "";
+
+  const handleStartEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setVal(initialVal);
+    setIsEditing(true);
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    if (!projectId) {
+      toast.error("Không tìm thấy ID dự án.");
+      setIsEditing(false);
+      return;
+    }
+    const point = val.trim() !== "" ? Number(val) : 0;
+    setIsEditing(false);
+    updateEstimationMutation.mutate({
+      taskId: task.id,
+      storyPoint: point,
+      idempotencyKey: crypto.randomUUID(),
+    });
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(false);
+    setVal(initialVal);
+  };
+
+  const displayValue = hasPoint ? String(task.storyPoint) : "-";
+
+  if (!isEditing) {
+    return (
+      <button
+        type="button"
+        onClick={handleStartEdit}
+        title="Click để cập nhật Story Point (Điểm SP)"
+        className="h-6 px-2 min-w-[24px] rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground font-black text-[11px] flex items-center justify-center border border-border/50 transition-all cursor-pointer hover:border-primary/50 shrink-0 shadow-xs"
+      >
+        {displayValue}
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className="relative shrink-0 z-30"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex flex-col items-center">
+        <Input
+          type="number"
+          min={0}
+          autoFocus
+          value={val}
+          onChange={(e) => setVal(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSave();
+            if (e.key === "Escape") setIsEditing(false);
+          }}
+          className="w-14 h-7 text-xs text-center font-extrabold rounded-md bg-background border-primary focus:ring-1 focus:ring-primary shadow-md px-1"
+        />
+        <div className="absolute top-8 right-0 flex items-center gap-1 p-1 bg-card/95 backdrop-blur-xl border border-border/60 rounded-xl shadow-2xl z-40 animate-in fade-in zoom-in-95 duration-150">
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            onClick={handleSave}
+            disabled={updateEstimationMutation.isPending}
+            className="h-6 w-6 rounded-md hover:bg-emerald-500/10 hover:text-emerald-500 text-foreground cursor-pointer"
+            title="Lưu"
+          >
+            {updateEstimationMutation.isPending ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <Check size={12} />
+            )}
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            onClick={handleCancel}
+            disabled={updateEstimationMutation.isPending}
+            className="h-6 w-6 rounded-md hover:bg-destructive/10 hover:text-destructive text-foreground cursor-pointer"
+            title="Hủy"
+          >
+            <X size={12} />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TaskAssigneeDropdown({
+  projectId,
+  task,
+  teamMembers,
+}: {
+  projectId: string;
+  task: JiraTask;
+  teamMembers: Array<{ studentId: string; fullName: string }>;
+}) {
+  const updateAssigneeMutation = useUpdateTaskAssignee(projectId);
+
+  const handleSelectAssignee = (studentId: string | null, fullName?: string) => {
+    if (!projectId) {
+      toast.error("Không tìm thấy ID dự án.");
+      return;
+    }
+    updateAssigneeMutation.mutate({
+      taskId: task.id,
+      assigneeId: studentId,
+      assigneeName: studentId ? fullName : undefined,
+      idempotencyKey: crypto.randomUUID(),
+    });
+  };
+
+  const getAssigneeInitials = (name: string) => {
+    if (!name) return "??";
+    const words = name.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return "??";
+    if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+    const firstLetter = words[0].charAt(0);
+    const lastLetter = words[words.length - 1].charAt(0);
+    return (firstLetter + lastLetter).toUpperCase();
+  };
+
+  const currentAssigneeId = task.assignee?.id;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          className="h-6 w-6 rounded-full bg-cyan-500 text-black flex items-center justify-center font-extrabold text-[10px] shrink-0 border border-background shadow-sm cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all outline-none"
+          title={task.assignee?.fullName ? `Người thực hiện: ${task.assignee.fullName}` : "Chưa phân công"}
+        >
+          {task.assignee?.fullName ? (
+            getAssigneeInitials(task.assignee.fullName)
+          ) : (
+            <User size={10} />
+          )}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side="bottom"
+        align="start"
+        sideOffset={6}
+        className="rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl min-w-[220px] p-2 animate-in fade-in zoom-in-95 duration-150 z-50"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/60 px-2.5 py-1">
+          Người thực hiện
+        </div>
+
+        {teamMembers.map((m) => {
+          const isSelected = currentAssigneeId === m.studentId;
+          return (
+            <DropdownMenuItem
+              key={m.studentId}
+              onClick={() => handleSelectAssignee(m.studentId, m.fullName)}
+              className={`rounded-xl px-2.5 py-2 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${
+                isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
+              }`}
+            >
+              <div className="h-6 w-6 rounded-full bg-cyan-500 text-black flex items-center justify-center font-extrabold text-[10px] shrink-0">
+                {getAssigneeInitials(m.fullName)}
+              </div>
+              <span className="truncate flex-1">{m.fullName}</span>
+              {isSelected && <Check size={14} className="text-primary shrink-0" />}
+            </DropdownMenuItem>
+          );
+        })}
+
+        <DropdownMenuSeparator className="my-1 bg-border/40" />
+
+        <DropdownMenuItem
+          onClick={() => handleSelectAssignee(null)}
+          className={`rounded-xl px-2.5 py-2 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${
+            !task.assignee ? "bg-muted text-foreground font-black" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          }`}
+        >
+          <div className="h-6 w-6 rounded-full bg-muted/80 text-muted-foreground flex items-center justify-center font-bold text-[10px] shrink-0 border border-border/30">
+            <User size={12} />
+          </div>
+          <span className="truncate flex-1">Unassigned (Chưa phân công)</span>
+          {!task.assignee && <Check size={14} className="text-foreground shrink-0" />}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+const PRIORITIES = [
+  { id: "HIGHEST", label: "Highest", icon: <ChevronsUp size={14} className="text-red-500 shrink-0" /> },
+  { id: "HIGH", label: "High", icon: <ChevronUp size={14} className="text-red-400 shrink-0" /> },
+  { id: "MEDIUM", label: "Medium", icon: <Equal size={14} className="text-amber-500 shrink-0" /> },
+  { id: "LOW", label: "Low", icon: <ChevronDown size={14} className="text-blue-400 shrink-0" /> },
+  { id: "LOWEST", label: "Lowest", icon: <ChevronsDown size={14} className="text-blue-500 shrink-0" /> },
+];
+
+function TaskPriorityDropdown({
+  projectId,
+  task,
+}: {
+  projectId: string;
+  task: JiraTask;
+}) {
+  const updatePriorityMutation = useUpdateTaskPriority(projectId);
+
+  const handleSelectPriority = (priorityId: string) => {
+    if (!projectId) {
+      toast.error("Không tìm thấy ID dự án.");
+      return;
+    }
+    updatePriorityMutation.mutate({
+      taskId: task.id,
+      priority: priorityId,
+      idempotencyKey: crypto.randomUUID(),
+    });
+  };
+
+  const currentPriority = task.priority?.toUpperCase() || "MEDIUM";
+  const matched = PRIORITIES.find((p) => p.id === currentPriority) || PRIORITIES[2];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          className="p-1 rounded-lg hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-all cursor-pointer outline-none flex items-center justify-center"
+          title={`Độ ưu tiên: ${matched.label}`}
+        >
+          {matched.icon}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side="bottom"
+        align="start"
+        sideOffset={6}
+        className="rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl min-w-[160px] p-1.5 animate-in fade-in zoom-in-95 duration-150 z-50"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/60 px-2 py-1">
+          Độ ưu tiên
+        </div>
+        {PRIORITIES.map((p) => {
+          const isSelected = currentPriority === p.id;
+          return (
+            <DropdownMenuItem
+              key={p.id}
+              onClick={() => handleSelectPriority(p.id)}
+              className={`rounded-xl px-2.5 py-1.5 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${
+                isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
+              }`}
+            >
+              {p.icon}
+              <span className="truncate flex-1">{p.label}</span>
+              {isSelected && <Check size={14} className="text-primary shrink-0" />}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 interface StudentBoardViewProps {
   courseId: string;
 }
 
 export function StudentBoardView({ courseId }: StudentBoardViewProps) {
+  const queryClient = useQueryClient();
   const [selectedSprintId, setSelectedSprintId] = useState<string>("ACTIVE_DEFAULT");
   const [selectedAssigneeId, setSelectedAssigneeId] = useState<string>("ALL");
   const [keyword, setKeyword] = useState("");
@@ -76,6 +481,13 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   // Load team data
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
+
+  // Auth & Role
+  const currentUser = useAuthStore((s) => s.user);
+  const isLeader = myTeamData?.roleInTeam === "LEADER";
+  // Kiểm tra xem task có phải của mình không (so localProfileId với assignee.id)
+  const canActOnTask = (task: JiraTask) =>
+    isLeader || task.assignee?.id === currentUser?.localProfileId;
 
   // Load sprints
   const { data: sprintsData, isLoading: isLoadingSprints } = useProjectSprints(projectId);
@@ -99,12 +511,103 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const [editIssueType, setEditIssueType] = useState("TASK");
   const [editPriority, setEditPriority] = useState("DEFAULT");
   const [editDueDate, setEditDueDate] = useState("");
-  const [editAssignee, setEditAssignee] = useState("UNASSIGNED");
   const [editLabels, setEditLabels] = useState("");
   const [editComponentIds, setEditComponentIds] = useState("");
 
+
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<JiraTask | null>(null);
+
+  // ── Drag & Drop state ──────────────────────────────────────────────────────
+  const [draggedTask, setDraggedTask] = useState<JiraTask | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+  const [pendingTransitions, setPendingTransitions] = useState<Record<string, string>>({});
+  const transitionMutationBoard = useTransitionTask(projectId);
+
+  // Map column IDs to the Jira status name variants we might receive
+  const columnStatusNameMap: Record<string, string[]> = {
+    TODO:        ["To Do", "Backlog", "Open", "Reopened"],
+    IN_PROGRESS: ["In Progress", "In Development", "Selected for Development"],
+    IN_REVIEW:   ["In Review", "Review", "Code Review"],
+    DONE:        ["Done", "Closed", "Resolved"],
+  };
+
+  const handleDragStart = (e: React.DragEvent, task: JiraTask) => {
+    e.dataTransfer.effectAllowed = "move";
+    setDraggedTask(task);
+  };
+
+  const handleDragOver = (e: React.DragEvent, columnId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverColumn(columnId);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverColumn(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetColumnId: string) => {
+    e.preventDefault();
+    setDragOverColumn(null);
+    if (!draggedTask || !projectId) { setDraggedTask(null); return; }
+
+    const targetTask = draggedTask;
+    setDraggedTask(null);
+
+    // Ignore drop if already in target column or currently pending transition
+    const currentStatus = pendingTransitions[targetTask.id] || targetTask.status?.toUpperCase() || "TODO";
+    if (currentStatus === targetColumnId) return;
+
+    try {
+      const { taskApi } = await import("@/features/projects/api/taskApi");
+      const transitions = await taskApi.getTaskTransitions(projectId, targetTask.id);
+      const candidates = columnStatusNameMap[targetColumnId] || [];
+      const matched = transitions.find(t =>
+        candidates.some(c => t.targetStatusName?.toLowerCase() === c.toLowerCase())
+      );
+      if (!matched) {
+        toast.error("Không tìm thấy bước chuyển hợp lệ sang trạng thái này.");
+        return;
+      }
+
+      // Optimistically move task to target column with loading/opaque state
+      const taskId = targetTask.id;
+      setPendingTransitions((prev) => ({ ...prev, [taskId]: targetColumnId }));
+
+      transitionMutationBoard.mutate(
+        {
+          taskId,
+          transitionId: matched.transitionId,
+          idempotencyKey: crypto.randomUUID(),
+        },
+        {
+          onSuccess: () => {
+            // Optimistically update cache so task stays in targetColumnId permanently without jumping back
+            queryClient.setQueriesData({ queryKey: ["project-tasks", projectId] }, (oldData: unknown) => {
+              const data = oldData as { content?: JiraTask[] };
+              if (!data || !data.content) return oldData;
+              return {
+                ...data,
+                content: data.content.map((t: JiraTask) =>
+                  t.id === taskId ? { ...t, status: targetColumnId } : t
+                ),
+              };
+            });
+          },
+          onSettled: () => {
+            setPendingTransitions((prev) => {
+              const next = { ...prev };
+              delete next[taskId];
+              return next;
+            });
+          },
+        }
+      );
+    } catch {
+      toast.error("Không thể kiểm tra các bước chuyển khả dụng.");
+    }
+  };
 
   const handleOpenEdit = (task: JiraTask) => {
     setTaskToEdit(task);
@@ -113,11 +616,11 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     setEditIssueType(task.type || "TASK");
     setEditPriority(task.priority || "DEFAULT");
     setEditDueDate(task.dueDate ? task.dueDate.split("T")[0] : "");
-    setEditAssignee(task.assignee?.id || "UNASSIGNED");
     setEditLabels(task.labels ? task.labels.join(", ") : "");
     setEditComponentIds(task.components ? task.components.map(c => c.name).join(", ") : "");
     setIsEditOpen(true);
   };
+
 
   const handleEditTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,27 +630,56 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
       return;
     }
 
-    const payload: UpdateTaskRequest = {
-      title: editTitle.trim(),
-      type: editIssueType,
+    // 1. Check dirty main fields
+    const isTitleChanged = editTitle.trim() !== (taskToEdit.title || "").trim();
+    const isDescriptionChanged = editDescription.trim() !== (taskToEdit.description || "").trim();
+    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
+    const isDueDateChanged = editDueDate !== origDueDate;
+    const isPriorityChanged = editPriority !== (taskToEdit.priority || "DEFAULT");
+
+    const newLabels = editLabels ? editLabels.split(",").map(s => s.trim()).filter(Boolean) : [];
+    const origLabels = taskToEdit.labels || [];
+    const isLabelsChanged = newLabels.length !== origLabels.length || newLabels.some((l, idx) => l !== origLabels[idx]);
+
+    const newComponents = editComponentIds ? editComponentIds.split(",").map(s => s.trim()).filter(Boolean) : [];
+    const origComponents = taskToEdit.components ? taskToEdit.components.map(c => c.name) : [];
+    const isComponentsChanged = newComponents.length !== origComponents.length || newComponents.some((c, idx) => c !== origComponents[idx]);
+
+    const mainPayload: UpdateTaskRequest = {};
+    if (isTitleChanged) mainPayload.title = editTitle.trim();
+    if (isDescriptionChanged) mainPayload.description = editDescription.trim();
+    if (isDueDateChanged) mainPayload.dueDate = editDueDate || null;
+    if (isPriorityChanged) {
+      const pVal = editPriority === "DEFAULT" ? undefined : editPriority;
+      mainPayload.priority = pVal;
+      mainPayload.priorityId = pVal;
+      mainPayload.priorityName = pVal;
+    }
+    if (isLabelsChanged) mainPayload.labels = newLabels;
+    if (isComponentsChanged) mainPayload.componentIds = newComponents;
+
+    // 2. If nothing changed, just close
+    if (Object.keys(mainPayload).length === 0) {
+      setIsEditOpen(false);
+      setTaskToEdit(null);
+      return;
+    }
+
+    const mutationArgs: {
+      taskId: string;
+      data?: UpdateTaskRequest;
+      mainIdempotencyKey?: string;
+    } = {
+      taskId: taskToEdit.id
     };
 
-    if (editPriority !== "DEFAULT") {
-      payload.priority = editPriority;
-    } else {
-      payload.priority = undefined;
+    if (Object.keys(mainPayload).length > 0) {
+      mutationArgs.data = mainPayload;
+      mutationArgs.mainIdempotencyKey = crypto.randomUUID();
     }
-    if (editDescription.trim()) {
-      payload.description = editDescription.trim();
-    }
-    payload.dueDate = editDueDate || null;
-    payload.labels = editLabels ? editLabels.split(",").map(s => s.trim()).filter(Boolean) : [];
-    payload.componentIds = editComponentIds ? editComponentIds.split(",").map(s => s.trim()).filter(Boolean) : [];
-    payload.assigneeId = editAssignee === "UNASSIGNED" ? undefined : editAssignee;
 
-    const idempotencyKey = crypto.randomUUID();
     updateTaskMutation.mutate(
-      { taskId: taskToEdit.id, data: payload, idempotencyKey },
+      mutationArgs,
       {
         onSuccess: () => {
           setIsEditOpen(false);
@@ -244,7 +776,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const columns = [
     { id: "TODO", title: "Cần làm", color: "border-slate-500/30 bg-slate-500/5", dotColor: "bg-slate-500" },
     { id: "IN_PROGRESS", title: "Đang làm", color: "border-amber-500/30 bg-amber-500/5", dotColor: "bg-amber-500" },
-    { id: "IN_REVIEW", title: "Review", color: "border-purple-500/30 bg-purple-500/5", dotColor: "bg-purple-500" },
+    { id: "IN_REVIEW", title: "Đang đánh giá", color: "border-purple-500/30 bg-purple-500/5", dotColor: "bg-purple-500" },
     { id: "DONE", title: "Hoàn thành", color: "border-emerald-500/30 bg-emerald-500/5", dotColor: "bg-emerald-500" },
   ];
 
@@ -257,7 +789,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   };
 
   tasks.forEach((task) => {
-    const status = task.status?.toUpperCase() || "TODO";
+    const status = pendingTransitions[task.id] || task.status?.toUpperCase() || "TODO";
     if (status === "CANCELLED") return; // Ignore cancelled tasks
     if (tasksByColumn[status]) {
       tasksByColumn[status].push(task);
@@ -277,16 +809,6 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     }
   };
 
-  const getPriorityIcon = (priority: string) => {
-    const p = priority?.toUpperCase();
-    if (p === "HIGH" || p === "HIGHEST") {
-      return <ChevronsUp size={16} className="text-destructive shrink-0" />;
-    }
-    if (p === "MEDIUM") {
-      return <Equal size={16} className="text-amber-500 shrink-0" />;
-    }
-    return <ChevronsDown size={16} className="text-blue-500 shrink-0" />;
-  };
 
   const getTypeIcon = (type: string) => {
     switch (type?.toUpperCase()) {
@@ -299,14 +821,6 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     }
   };
 
-  const getAssigneeInitials = (fullName: string | null | undefined) => {
-    if (!fullName) return "??";
-    const parts = fullName.trim().split(" ");
-    if (parts.length >= 2) {
-      return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase();
-    }
-    return fullName.substring(0, 2).toUpperCase();
-  };
 
   const getTypeBadge = (type: string) => {
     switch (type?.toUpperCase()) {
@@ -422,9 +936,16 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                 const columnTasks = tasksByColumn[column.id] || [];
 
                 return (
-                  <div
+                <div
                     key={column.id}
-                    className={`flex flex-col gap-4 p-4 rounded-3xl border border-border/30 ${column.color} min-w-[250px]`}
+                    onDragOver={(e) => handleDragOver(e, column.id)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, column.id)}
+                    className={`flex flex-col gap-4 p-4 rounded-3xl border transition-all duration-200 min-w-[250px] ${
+                      dragOverColumn === column.id
+                        ? `border-primary/60 ${column.color} ring-2 ring-primary/30 scale-[1.01] shadow-lg`
+                        : `border-border/30 ${column.color}`
+                    }`}
                   >
                     {/* Column Header */}
                     <div className="flex items-center justify-between border-b border-border/20 pb-2">
@@ -445,49 +966,72 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                           <span className="text-[10px] font-bold uppercase tracking-wider">Trống</span>
                         </div>
                       ) : (
-                        columnTasks.map((task) => (
-                          <Card
-                            key={task.id}
-                            onClick={() => {
-                              setSelectedTask(task);
-                              setIsDetailOpen(true);
-                            }}
-                            className="rounded-2xl border border-border/40 bg-card hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-pointer p-4 flex flex-col justify-between min-h-[140px]"
-                          >
-                            <div>
-                              <div className="flex items-start justify-between gap-2">
-                                <h5 className="text-[13px] font-bold text-foreground leading-snug line-clamp-2 flex-1">
-                                  {task.title}
-                                </h5>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 cursor-pointer shrink-0 flex items-center justify-center"
-                                    >
-                                      <MoreVertical size={14} />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className="rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[100px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
-                                    <DropdownMenuItem
-                                      onClick={() => handleOpenEdit(task)}
-                                      className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
-                                    >
-                                      Sửa
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleOpenDelete(task)}
-                                      className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
-                                    >
-                                      Xóa
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </div>
+                        columnTasks.map((task) => {
+                          const isPendingMove = !!pendingTransitions[task.id];
+                          const isDraggingThis = draggedTask?.id === task.id;
+
+                          return (
+                            <Card
+                              key={task.id}
+                              draggable={!isPendingMove && canActOnTask(task)}
+                              onDragStart={(e) => canActOnTask(task) && handleDragStart(e, task)}
+                              onDragEnd={() => setDraggedTask(null)}
+                              onClick={() => {
+                                if (isPendingMove) return;
+                                setSelectedTask(task);
+                                setIsDetailOpen(true);
+                              }}
+                              className={`rounded-2xl border border-border/40 bg-card transition-all duration-300 p-4 flex flex-col justify-between min-h-[140px] ${
+                                isPendingMove
+                                  ? "opacity-60 bg-muted/40 border-dashed border-primary/50 cursor-wait animate-pulse"
+                                  : isDraggingThis
+                                  ? "opacity-50 scale-95 ring-2 ring-primary/40 cursor-grabbing"
+                                  : canActOnTask(task)
+                                  ? "hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] cursor-grab active:cursor-grabbing"
+                                  : "hover:border-border/60 hover:shadow-md cursor-pointer"
+                              }`}
+                            >
+                              <div>
+                                <div className="flex items-start justify-between gap-2">
+                                  <h5 className="text-[13px] font-bold text-foreground leading-snug line-clamp-2 flex-1">
+                                    {task.title}
+                                  </h5>
+                                  {isPendingMove ? (
+                                    <div className="flex items-center gap-1.5 text-primary text-[10px] font-bold shrink-0 bg-primary/10 px-2 py-1 rounded-lg border border-primary/20 animate-pulse">
+                                      <Loader2 size={12} className="animate-spin" />
+                                      <span>Đang chuyển...</span>
+                                    </div>
+                                  ) : canActOnTask(task) ? (
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-7 w-7 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 cursor-pointer shrink-0 flex items-center justify-center"
+                                        >
+                                          <MoreVertical size={14} />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end" className="rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[100px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
+                                        <DropdownMenuItem
+                                          onClick={() => handleOpenEdit(task)}
+                                          className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+                                        >
+                                          Sửa
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                          onClick={() => handleOpenDelete(task)}
+                                          className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
+                                        >
+                                          Xóa
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  ) : null}
+                                </div>
 
                               <div className="space-y-0.5 mt-2.5">
-                                <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Due date</span>
+                                <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Hạn hoàn thành</span>
                                 <p className="text-xs text-foreground font-semibold">
                                   {formatDueDate(task.dueDate)}
                                 </p>
@@ -503,27 +1047,32 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                                 </span>
                               </div>
 
-                              {/* Right: Priority Icon + Assignee Avatar */}
+                              {/* Right: Story Point Picker + Priority Dropdown + Assignee Avatar Dropdown */}
                               <div className="flex items-center gap-2 shrink-0">
-                                {getPriorityIcon(task.priority)}
-                                <div
-                                  className="h-6 w-6 rounded-full bg-cyan-500 text-black flex items-center justify-center font-extrabold text-[10px] shrink-0 border border-background shadow-sm"
-                                  title={task.assignee?.fullName || "Chưa giao"}
-                                >
-                                  {task.assignee?.fullName ? getAssigneeInitials(task.assignee.fullName) : <User size={10} />}
-                                </div>
+                                <CardStoryPointPicker projectId={projectId} task={task} />
+                                <TaskPriorityDropdown projectId={projectId} task={task} />
+                                <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} />
                               </div>
                             </div>
                           </Card>
-                        ))
-                      )}
+                        );
+                      })
+                    )}
 
                       <button
-                        onClick={() => setIsCreateOpen(true)}
+                        onClick={() => {
+                          // Nếu là MEMBER, mặc định assignee vào bản thân
+                          if (!isLeader && currentUser?.localProfileId) {
+                            setCreateAssignee(currentUser.localProfileId);
+                          } else {
+                            setCreateAssignee("UNASSIGNED");
+                          }
+                          setIsCreateOpen(true);
+                        }}
                         className="flex items-center gap-1.5 justify-start py-2.5 px-4 rounded-xl border border-dashed border-border/30 text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 hover:border-border transition-all duration-300 text-xs font-bold w-full cursor-pointer mt-2"
                       >
                         <Plus size={14} />
-                        Create
+                        Thêm công việc
                       </button>
                     </div>
                   </div>
@@ -550,6 +1099,11 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                       {selectedTask.storyPoint} SP
                     </Badge>
                   )}
+                  <TaskStatusDropdown 
+                    projectId={projectId} 
+                    task={selectedTask} 
+                    onTransitionSuccess={(updatedTask) => setSelectedTask(updatedTask)} 
+                  />
                 </div>
                 <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
                   {selectedTask.title}
@@ -633,6 +1187,17 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                       </p>
                     </div>
                   </div>
+                </div>
+
+                {/* Estimation / Story Point Display */}
+                <div className="flex items-center justify-between p-3 bg-muted/20 border border-border/30 rounded-2xl mt-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={14} className="text-primary shrink-0" />
+                    <span className="text-xs font-bold text-foreground">Điểm SP (Story Point)</span>
+                  </div>
+                  <span className="text-xs font-extrabold text-foreground px-3 py-1 bg-muted/40 border border-border/30 rounded-xl">
+                    {selectedTask.storyPoint ?? 0}
+                  </span>
                 </div>
 
                 {/* Dates footer */}
@@ -722,9 +1287,16 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
             {/* Assignee & Due Date */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Người thực hiện</label>
-                <Select value={createAssignee} onValueChange={setCreateAssignee}>
-                  <SelectTrigger className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                  Người thực hiện
+                  {!isLeader && <span className="ml-1 text-primary/70 normal-case tracking-normal font-normal">(bản thân)</span>}
+                </label>
+                <Select
+                  value={createAssignee}
+                  onValueChange={setCreateAssignee}
+                  disabled={!isLeader}
+                >
+                  <SelectTrigger className={`h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 ${!isLeader ? "opacity-70 cursor-not-allowed" : ""}`}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-border/40">
@@ -852,35 +1424,17 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
               </div>
             </div>
 
-            {/* Assignee & Due Date */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Người thực hiện</label>
-                <Select value={editAssignee} onValueChange={setEditAssignee}>
-                  <SelectTrigger className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl border-border/40">
-                    <SelectItem value="UNASSIGNED" className="text-xs">Chưa phân công</SelectItem>
-                    {teamMembers.map((m) => (
-                      <SelectItem key={m.studentId} value={m.studentId} className="text-xs">
-                        {m.fullName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Hạn hoàn thành</label>
-                <Input
-                  type="date"
-                  value={editDueDate}
-                  onChange={(e) => setEditDueDate(e.target.value)}
-                  className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
-                />
-              </div>
+            {/* Due Date */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Hạn hoàn thành</label>
+              <Input
+                type="date"
+                value={editDueDate}
+                onChange={(e) => setEditDueDate(e.target.value)}
+                className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
+              />
             </div>
+
 
             {/* Description */}
             <div className="space-y-1.5">

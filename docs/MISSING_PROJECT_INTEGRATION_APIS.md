@@ -3,16 +3,7 @@
 Tài liệu này tổng hợp lại các API liên quan đến quản lý dự án (Project Management) và tích hợp công cụ (Jira / GitHub) hiện tại **hoàn toàn chưa có đặc tả kỹ thuật** (chưa định nghĩa trong tài liệu tích hợp chung lẫn mã nguồn Frontend) từ phía Backend, cần yêu cầu Backend thiết lập và bổ sung.
 
 ---
-
-## 1. Quản lý Dự án Nhóm (Group Project Management)
-
-* **Xóa/Hủy bỏ Dự án:**
-  * `DELETE /api/projects/{projectId}`
-  * *Lý do:* Cho phép nhóm sinh viên reset hoặc đổi đề tài khác để cấu hình tích hợp lại từ đầu.
-
----
-
-## 2. Đồng bộ & Quản lý Task/Sprint Jira
+## 1. Đồng bộ & Quản lý Task/Sprint Jira
 
 * **Kích hoạt đồng bộ Jira thủ công:**
   * `POST /api/projects/{projectId}/jira/sync`
@@ -20,7 +11,7 @@ Tài liệu này tổng hợp lại các API liên quan đến quản lý dự �
 
 ---
 
-## 3. Đồng bộ & Quản lý Code/Branch GitHub
+## 2. Đồng bộ & Quản lý Code/Branch GitHub
 
 * **Kích hoạt đồng bộ GitHub thủ công:**
   * `POST /api/projects/{projectId}/github/sync`
@@ -28,11 +19,13 @@ Tài liệu này tổng hợp lại các API liên quan đến quản lý dự �
 
 ---
 
-## 4. Tùy chọn Hợp nhất API Đồng bộ (Alternative Unified Sync API)
+## 3. Xem Lịch sử & Kết nối lại Repository
 
-> [!TIP]
-> Để tinh gọn tài nguyên và số lượng endpoint, Backend có thể hợp nhất luồng đồng bộ thủ công của cả Jira và GitHub thành một endpoint duy nhất:
+* **Xem lịch sử đồng bộ dự án:**
+  * `GET /api/projects/{projectId}/sync-history`
+  * *Lý do:* Cho phép sinh viên/giảng viên xem danh sách các lượt đồng bộ gần đây (thời gian, số lượng task/commit pull về, kết quả thành công/lỗi).
 
-* **Endpoint:** `POST /api/projects/{projectId}/sync`
-* **Query Parameter:** `?provider=JIRA` hoặc `?provider=GITHUB` (Nếu để trống thì sẽ đồng bộ đồng thời cả hai).
-* **Nghiệp vụ:** Kích hoạt tiến trình quét dữ liệu thủ công cho dự án.
+* **Kết nối lại Repository GitHub:**
+  * `POST /api/projects/{projectId}/github/repositories/{repositoryId}/connect`
+  * *Lý do:* Cho phép sinh viên kết nối lại hoặc cấp quyền lại cho 1 repository cụ thể khi bị mất kết nối hoặc đổi token.
+

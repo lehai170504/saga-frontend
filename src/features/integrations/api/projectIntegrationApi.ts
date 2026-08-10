@@ -4,7 +4,9 @@ import {
   JiraProjectLinkRequest,
   GitHubRepositoriesLinkRequest,
   SyncStatusResponse,
+  TriggerSyncResponse,
 } from "../types";
+
 
 export const projectIntegrationApi = {
   getProjectIntegrations: async (projectId: string) => {
@@ -27,7 +29,20 @@ export const projectIntegrationApi = {
     return axiosInstance.delete(`/api/projects/${projectId}/github/repositories/${repositoryId}`);
   },
 
+  reconnectGithubRepository: async (projectId: string, repositoryId: number) => {
+    return axiosInstance.post<never, ProjectIntegrationsResponse>(`/api/projects/${projectId}/github/repositories/${repositoryId}/connect`);
+  },
+
   getSyncStatus: async (projectId: string) => {
+
     return axiosInstance.get<never, SyncStatusResponse>(`/api/projects/${projectId}/sync-status`);
   },
+
+  triggerSync: async (projectId: string, provider?: string) => {
+    const query = provider ? `?provider=${provider}` : "";
+    return axiosInstance.post<never, TriggerSyncResponse>(`/api/projects/${projectId}/sync${query}`);
+  },
 };
+
+
+

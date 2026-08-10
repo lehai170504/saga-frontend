@@ -120,6 +120,9 @@ export type JiraTask = {
   status: string;
   priority: string;
   storyPoint: number;
+  storyPoints?: number;
+  story_point?: number;
+  estimation?: number;
   dueDate: string | null;
   externalUpdatedAt: string | null;
   resolvedAt: string | null;
