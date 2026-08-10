@@ -482,11 +482,11 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                       </span>
                     </div>
 
-                    {sprint.state === "ACTIVE" ? (
+                    {sprint.state?.toUpperCase() === "ACTIVE" ? (
                       <Badge className="bg-primary/10 text-primary border border-primary/20 rounded-lg text-[10px] font-bold px-2.5 py-1">
                         Active
                       </Badge>
-                    ) : sprint.state === "CLOSED" ? (
+                    ) : sprint.state?.toUpperCase() === "CLOSED" ? (
                       <Badge className="bg-muted text-muted-foreground border border-border/20 rounded-lg text-[10px] font-bold px-2.5 py-1">
                         Closed
                       </Badge>
