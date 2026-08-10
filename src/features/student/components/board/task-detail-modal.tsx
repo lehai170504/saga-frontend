@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { User, Flag, Calendar, Sparkles, Clock } from "lucide-react";
+import { User, Flag, Calendar, Sparkles, Clock, Tag } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { getTypeBadge } from "./board-helpers";
@@ -122,6 +122,29 @@ export function TaskDetailModal({
                 </p>
               </div>
             </div>
+
+            {/* Labels */}
+            {selectedTask.labels && selectedTask.labels.length > 0 && (
+              <div className="flex items-start gap-2.5">
+                <div className="p-2 bg-muted/40 text-muted-foreground rounded-xl shrink-0 border border-border/10">
+                  <Tag size={14} />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/60">Nhãn (Labels)</span>
+                  <div className="flex flex-wrap gap-1">
+                    {selectedTask.labels.map((label) => (
+                      <Badge
+                        key={label}
+                        variant="outline"
+                        className="rounded-lg text-[10px] py-0.5 px-2 font-bold border-primary/20 bg-primary/5 text-primary/80"
+                      >
+                        {label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Due Date */}
             {selectedTask.dueDate ? (() => {

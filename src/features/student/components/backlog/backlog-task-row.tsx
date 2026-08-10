@@ -62,6 +62,21 @@ export function BacklogTaskRow({
             {task.storyPoint} SP
           </Badge>
         )}
+
+        {/* Labels */}
+        {task.labels && task.labels.length > 0 && (
+          <div className="flex items-center gap-1 flex-wrap">
+            {task.labels.map((label) => (
+              <Badge
+                key={label}
+                variant="outline"
+                className="rounded-lg text-[9px] py-0 px-1.5 font-bold border-primary/20 bg-primary/5 text-primary/80 truncate max-w-[72px] shrink-0"
+              >
+                {label}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Right Controls: Due Date Badge + Status Dropdown + Priority Dropdown + Assignee Dropdown + Actions */}

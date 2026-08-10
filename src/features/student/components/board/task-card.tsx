@@ -124,6 +124,21 @@ export function TaskCard({
         </div>
       </div>
 
+      {/* Labels */}
+      {task.labels && task.labels.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-2">
+          {task.labels.map((label) => (
+            <Badge
+              key={label}
+              variant="outline"
+              className="rounded-lg text-[9px] py-0 px-1.5 font-bold border-primary/20 bg-primary/5 text-primary/80 truncate max-w-[80px]"
+            >
+              {label}
+            </Badge>
+          ))}
+        </div>
+      )}
+
       <div className="flex items-center justify-between gap-2 mt-4 pt-2 border-t border-border/10">
         {/* Left: Type Icon + Key */}
         <div className="flex items-center gap-1.5 min-w-0">
