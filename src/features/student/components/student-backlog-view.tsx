@@ -101,9 +101,11 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
 
   // Filter tasks based on search & filter fields
   const filteredTasks = tasks.filter((task) => {
+    const title = task.title || "";
+    const key = task.externalKey || "";
     const matchesKeyword = 
-      task.title?.toLowerCase().includes(keyword.toLowerCase()) ||
-      task.externalKey?.toLowerCase().includes(keyword.toLowerCase());
+      title.toLowerCase().includes(keyword.toLowerCase()) ||
+      key.toLowerCase().includes(keyword.toLowerCase());
     
     const matchesAssignee = 
       assigneeFilter === "ALL" ||
@@ -112,7 +114,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
       
     const matchesPriority =
       priorityFilter === "ALL" ||
-      (task.priority?.toUpperCase() === priorityFilter.toUpperCase());
+      (task.priority || "").toUpperCase() === priorityFilter.toUpperCase();
 
     return matchesKeyword && matchesAssignee && matchesPriority;
   });
