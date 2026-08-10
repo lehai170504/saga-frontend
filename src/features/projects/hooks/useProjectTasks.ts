@@ -304,7 +304,7 @@ export const useTransitionTask = (projectId: string) => {
       toast.error(errMsg);
     },
     onSuccess: () => {
-      toast.success("Cập nhật trạng thái công việc thành công!");
+      toast.success(TASK_MESSAGES.TRANSITION.SUCCESS);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });

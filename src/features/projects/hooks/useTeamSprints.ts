@@ -40,7 +40,7 @@ export const useSubmitPeerReview = (teamId: string, sprintId: string) => {
       toast.success(SPRINT_MESSAGES.PEER_REVIEW.SUCCESS);
     },
     onError: (err) => {
-      const errMsg = err?.response?.data?.message || "Có lỗi xảy ra khi gửi đánh giá chéo.";
+      const errMsg = err?.response?.data?.message || SPRINT_MESSAGES.PEER_REVIEW.ERROR;
       toast.error(errMsg);
     }
   });
