@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -42,13 +42,6 @@ export function ProjectDetailsModal({ projectId, trigger }: ProjectDetailsModalP
   const { data: project, isLoading: isLoadingProject } = useProjectDetail(open ? projectId : null);
   const { data: stats, isLoading: isLoadingStats } = useProjectStats(open ? projectId : null);
   const updateProject = useUpdateProject();
-
-  useEffect(() => {
-    if (project) {
-      setName(project.name);
-      setDescription(project.description || "");
-    }
-  }, [project, isEditing]);
 
   const handleUpdate = () => {
     if (!name.trim()) {
@@ -97,7 +90,11 @@ export function ProjectDetailsModal({ projectId, trigger }: ProjectDetailsModalP
                 variant="ghost"
                 size="sm"
                 className="rounded-xl hover:bg-muted/50"
-                onClick={() => setIsEditing(true)}
+                onClick={() => {
+                  setName(project.name);
+                  setDescription(project.description || "");
+                  setIsEditing(true);
+                }}
               >
                 <Edit2 className="w-4 h-4 mr-2" />
                 Sửa thông tin

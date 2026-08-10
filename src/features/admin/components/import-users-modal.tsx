@@ -50,7 +50,7 @@ export function ImportUsersModal() {
       );
       setOpen(false);
       setFile(null); // Reset after success
-    } catch (error) {
+    } catch {
       toast.error("Đã xảy ra lỗi trong quá trình import.");
     }
   };

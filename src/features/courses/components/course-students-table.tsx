@@ -55,7 +55,7 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
       const response = await courseApi.exportCourseReport(courseId);
 
       // Create a blob from the response data
-      const blob = new Blob([response.data as any], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const blob = new Blob([response.data as BlobPart], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
 
       // Create a temporary anchor element to trigger download

@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft, BookOpen, Users, Calendar, GraduationCap, Percent, Code,
-  FileText, Layout, User, Mail, ShieldCheck, Clock, Edit2, Trash2, Loader2
+  FileText, Layout, User, Mail, ShieldCheck, Clock, Trash2, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -15,7 +15,6 @@ import { EditCourseDialog } from "@/features/courses/components/edit-course-dial
 import { CourseStudentsTable } from "@/features/courses/components/course-students-table";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
