@@ -200,7 +200,8 @@ export const useUpdateTaskPriority = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ taskId, priority, idempotencyKey }: { taskId: string; priority: string; idempotencyKey: string }) =>
-      taskApi.updateTask(projectId, taskId, { priority, priorityId: priority, priorityName: priority }, idempotencyKey),
+      taskApi.updateTask(projectId, taskId, { priority }, idempotencyKey),
+
     onMutate: async ({ taskId, priority }) => {
       await queryClient.cancelQueries({ queryKey: ["project-tasks", projectId] });
       const previousData = queryClient.getQueriesData({ queryKey: ["project-tasks", projectId] });
@@ -269,16 +270,45 @@ export const useTaskTransitions = (projectId: string, taskId: string, enabled = 
 export const useTransitionTask = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ taskId, transitionId, idempotencyKey }: { taskId: string; transitionId: string; idempotencyKey: string }) =>
+    mutationFn: ({ taskId, transitionId, idempotencyKey }: { taskId: string; transitionId: string; idempotencyKey: string; targetStatus?: string }) =>
       taskApi.transitionTask(projectId, taskId, transitionId, idempotencyKey),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
-      toast.success(TASK_MESSAGES.TRANSITION.SUCCESS);
+    onMutate: async ({ taskId, targetStatus }) => {
+      if (!targetStatus) return;
+      await queryClient.cancelQueries({ queryKey: ["project-tasks", projectId] });
+      const previousQueries = queryClient.getQueriesData({ queryKey: ["project-tasks", projectId] });
+
+      queryClient.setQueriesData({ queryKey: ["project-tasks", projectId] }, (oldData: unknown) => {
+        if (!oldData) return oldData;
+        const data = oldData as { content?: JiraTask[] };
+        if (Array.isArray(data.content)) {
+          return {
+            ...data,
+            content: data.content.map((t: JiraTask) =>
+              t.id === taskId ? { ...t, status: targetStatus } : t
+            )
+          };
+        }
+        return oldData;
+      });
+
+      return { previousQueries };
     },
-    onError: (err: unknown) => {
+    onError: (err: unknown, _variables, context) => {
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
       const axiosErr = err as AxiosError<{ message: string }>;
       const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.TRANSITION.ERROR;
       toast.error(errMsg);
+    },
+    onSuccess: () => {
+      toast.success("Cập nhật trạng thái công việc thành công!");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     }
   });
 };
+
