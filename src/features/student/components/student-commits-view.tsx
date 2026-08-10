@@ -31,16 +31,15 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
 
   const { data: integrations, isLoading: isLoadingIntegrations } = useProjectIntegrations(projectId);
   const repos = React.useMemo<GitHubRepositoryResponse[]>(
-    () => integrations?.githubRepositories || [],
+    () => (integrations?.githubRepositories || []).filter((r) => r.status === "ACTIVE"),
     [integrations?.githubRepositories]
   );
   const selectedRepo = repos.find((r) => String(r.repositoryId) === selectedRepoId);
 
-  // Automatically select first repository when loaded
+  // Automatically select first ACTIVE repository when loaded
   useEffect(() => {
     if (repos.length > 0 && !selectedRepoId) {
-      const activeRepo = repos.find((r) => r.status === "ACTIVE") || repos[0];
-      const timer = setTimeout(() => setSelectedRepoId(String(activeRepo.repositoryId)), 0);
+      const timer = setTimeout(() => setSelectedRepoId(String(repos[0].repositoryId)), 0);
       return () => clearTimeout(timer);
     }
   }, [repos, selectedRepoId]);
@@ -103,13 +102,13 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
     if (!dateStr) return "";
     try {
       const d = new Date(dateStr);
-      return d.toLocaleString("vi-VN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      if (isNaN(d.getTime())) return dateStr;
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      const hh = String(d.getHours()).padStart(2, "0");
+      const min = String(d.getMinutes()).padStart(2, "0");
+      return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
     } catch {
       return dateStr;
     }

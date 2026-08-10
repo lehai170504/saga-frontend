@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import Link from "next/link";
-import { Calendar, FolderKanban, Users, Flag, Clock } from "lucide-react";
+import { Calendar, FolderKanban, Users, Flag, Clock, UserCheck } from "lucide-react";
+
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
@@ -160,13 +161,15 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                     };
 
                     const status = getSprintStatus();
+                    const sprintTargetId = sprint.sprintId || (sprint as unknown as { id?: string }).id || (sprint as unknown as { sprint_id?: string }).sprint_id;
 
                     return (
                       <Link
-                        key={sprint.sprintId}
-                        href={`/student/${courseId}/sprints/${sprint.sprintId}`}
+                        key={sprintTargetId}
+                        href={`/student/${courseId}/sprints/${sprintTargetId}`}
                         className="block group"
                       >
+
                         <Card className={`rounded-3xl border bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer ${status ? status.cardStyle : 'border-border/50 hover:border-border hover:bg-muted/10'
                           }`}>
                           <div className={`absolute top-0 left-0 w-full h-[4px] opacity-80 ${status ? status.topLineStyle : 'bg-gradient-to-r from-primary to-orange-500'
@@ -176,12 +179,22 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                             <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                               {sprint.sprintName}
                             </CardTitle>
-                            {status && (
-                              <Badge variant="outline" className={`${status.style} font-bold rounded-full text-[10px] py-1 px-3.5 shrink-0`}>
-                                {status.label}
-                              </Badge>
-                            )}
+                            <div className="flex flex-col items-end gap-1.5 shrink-0">
+                              {status && (
+                                <Badge variant="outline" className={`${status.style} font-bold rounded-full text-[10px] py-1 px-3.5`}>
+                                  {status.label}
+                                </Badge>
+                              )}
+                              {((sprint as unknown as { isFullyReviewed?: boolean; alreadyReviewed?: boolean; peerReviewStatus?: string }).isFullyReviewed ||
+                                (sprint as unknown as { isFullyReviewed?: boolean; alreadyReviewed?: boolean; peerReviewStatus?: string }).alreadyReviewed ||
+                                (sprint as unknown as { isFullyReviewed?: boolean; alreadyReviewed?: boolean; peerReviewStatus?: string }).peerReviewStatus === "COMPLETED") && (
+                                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 font-bold rounded-full text-[10px] py-0.5 px-2.5 flex items-center gap-1">
+                                  <UserCheck size={12} /> Đã hoàn thành đánh giá
+                                </Badge>
+                              )}
+                            </div>
                           </CardHeader>
+
 
                           <CardContent className="space-y-4 pt-2 pb-6 flex-1 flex flex-col justify-between">
                             <div className="space-y-3.5">
@@ -197,7 +210,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                                   <p className={`text-xs truncate ${status ? status.dateStyle : 'text-foreground font-semibold'}`}>
                                     {hasDates ? (
                                       <>
-                                        {new Date(sprint.startDate!).toLocaleDateString("vi-VN")} - {new Date(sprint.endDate!).toLocaleDateString("vi-VN")}
+                                        {(() => { const d = new Date(sprint.startDate!); return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; })()} - {(() => { const d = new Date(sprint.endDate!); return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; })()}
                                       </>
                                     ) : (
                                       <span className="text-muted-foreground/75 italic font-medium">Chưa thiết lập thời gian</span>
