@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncStatus } from "../hooks/useSyncStatus";
+import { useProjectIntegrations, useTriggerProjectSync } from "../hooks/useProjectIntegrations";
 import {
   Table,
   TableBody,
@@ -11,8 +12,12 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, RefreshCcw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, RefreshCcw, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+
+
 
 const statusColors: Record<string, string> = {
   PENDING: "bg-muted text-muted-foreground border-muted-foreground/20",
@@ -39,6 +44,13 @@ export function formatSyncTimestamp(value: string | null | undefined): string {
 
 export function SyncStatusMonitor({ projectId }: { projectId: string }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: projectIntegration } = useProjectIntegrations(projectId);
+  const { mutate: triggerSync, isPending: isSyncing } = useTriggerProjectSync(projectId);
+
+  const isJiraConnected = !!projectIntegration?.jira && projectIntegration.jira.status !== "DISCONNECTED";
+  const hasGithubRepos = (projectIntegration?.githubRepositories?.length || 0) > 0;
+  const isConfigured = isJiraConnected || hasGithubRepos;
+
   const { data: syncData, isLoading, error, refetch, isFetching } = useSyncStatus(projectId, {
     refetchInterval: (query: unknown) => {
       const data = (query as { state?: { data?: unknown } })?.state?.data as { recentJobs?: { status?: string }[] } | undefined;
@@ -72,59 +84,82 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
   const paginatedJobs = jobs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-bold">Tiến trình Đồng bộ hóa</h3>
-        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching} className="rounded-xl h-9">
-          <RefreshCcw className={`mr-2 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
-          Làm mới
-        </Button>
+    <Card className="rounded-[2rem] border border-border/50 bg-card/45 backdrop-blur-xl shadow-sm p-6 md:p-8 space-y-4">
+      <div className="flex justify-between items-center flex-wrap gap-3 border-b border-border/40 pb-4">
+        <div>
+          <h3 className="font-extrabold text-base text-foreground">Tiến trình Đồng bộ hóa</h3>
+          <p className="text-xs text-muted-foreground font-medium">Theo dõi các tiến trình đang chạy và trạng thái đồng bộ dữ liệu mới nhất</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isConfigured && (
+            <Button
+              onClick={() => triggerSync(undefined)}
+              disabled={isSyncing}
+              className="rounded-xl h-9 font-bold bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-sm gap-2 text-xs cursor-pointer"
+            >
+              {isSyncing ? <Loader2 className="animate-spin h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 fill-current" />}
+              Đồng bộ ngay
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching} className="rounded-xl h-9 text-xs cursor-pointer border-border/40 hover:bg-muted/50">
+            <RefreshCcw className={`mr-2 h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            Làm mới
+          </Button>
+        </div>
       </div>
 
-      <div className="border border-border/50 rounded-2xl overflow-hidden bg-card shadow-sm">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="font-bold">Loại đồng bộ</TableHead>
-              <TableHead className="font-bold">Hệ thống</TableHead>
-              <TableHead className="font-bold">Trạng thái</TableHead>
-              <TableHead className="font-bold">Tiến độ (Thành công / Lỗi)</TableHead>
-              <TableHead className="font-bold">Cập nhật lúc</TableHead>
+
+
+      <div className="border border-border/40 rounded-2xl overflow-hidden bg-background/50 shadow-sm overflow-x-auto">
+        <Table className="min-w-[850px]">
+          <TableHeader className="bg-muted/40">
+            <TableRow className="hover:bg-transparent border-border/30">
+              <TableHead className="font-extrabold text-xs text-muted-foreground uppercase tracking-wider py-3.5">Loại đồng bộ</TableHead>
+              <TableHead className="font-extrabold text-xs text-muted-foreground uppercase tracking-wider py-3.5">Hệ thống</TableHead>
+              <TableHead className="font-extrabold text-xs text-muted-foreground uppercase tracking-wider py-3.5">Trạng thái</TableHead>
+              <TableHead className="font-extrabold text-xs text-muted-foreground uppercase tracking-wider py-3.5">Thành công / Lỗi</TableHead>
+              <TableHead className="font-extrabold text-xs text-muted-foreground uppercase tracking-wider py-3.5">Thời gian bắt đầu</TableHead>
+              <TableHead className="font-extrabold text-xs text-muted-foreground uppercase tracking-wider py-3.5">Thời gian hoàn thành</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedJobs.length > 0 ? (
               paginatedJobs.map((job) => (
-                <TableRow key={job.id} className="hover:bg-muted/30">
-                  <TableCell className="font-medium">{job.type}</TableCell>
-                  <TableCell>{job.targetSystem}</TableCell>
+                <TableRow key={job.id} className="hover:bg-muted/30 border-border/20 transition-colors">
+                  <TableCell className="font-bold text-xs text-foreground">{job.type}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground font-semibold">{job.targetSystem}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`${statusColors[job.status] || "bg-muted text-muted-foreground"} font-bold`}>
+                    <Badge variant="outline" className={`${statusColors[job.status] || "bg-muted text-muted-foreground"} font-bold text-[10px] rounded-full px-2.5 py-0.5`}>
                       {job.status === "IN_PROGRESS" && <Loader2 className="mr-1.5 h-3 w-3 animate-spin inline-block" />}
                       {job.status}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     {job.itemsProcessed !== null ? (
-                      <span className="font-mono text-sm">
+                      <span className="font-mono text-xs font-bold">
                         <span className="text-emerald-500">{job.itemsProcessed}</span> / <span className="text-destructive">{job.itemsFailed || 0}</span>
                       </span>
-                    ) : "-"}
+                    ) : (
+                      <span className="text-xs text-muted-foreground">-</span>
+                    )}
                     {job.errorCategory && (
-                      <p className="text-[10px] text-destructive mt-1 max-w-[200px] truncate" title={job.failureStage || job.errorCategory}>
+                      <p className="text-[10px] text-destructive mt-0.5 max-w-[200px] truncate font-medium" title={job.failureStage || job.errorCategory}>
                         Lỗi: {job.errorCategory}
                       </p>
                     )}
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {formatSyncTimestamp(job.completedAt || job.startedAt)}
+                  <TableCell className="text-xs text-muted-foreground font-medium">
+                    {formatSyncTimestamp(job.startedAt)}
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground font-medium">
+                    {formatSyncTimestamp(job.completedAt)}
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">
-                  Chưa có tiến trình đồng bộ nào.
+                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                  <p className="text-xs font-semibold">Chưa có tiến trình đồng bộ nào.</p>
                 </TableCell>
               </TableRow>
             )}
@@ -133,7 +168,7 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2 pb-2 px-1">
+        <div className="flex items-center justify-between pt-2 pb-1 px-1">
           <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             Trang {activePage} / {totalPages} (Tổng số {jobs.length} tiến trình)
           </div>
@@ -141,7 +176,7 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl h-8 w-8 p-0"
+              className="rounded-xl h-8 w-8 p-0 border-border/40 cursor-pointer"
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={activePage === 1}
             >
@@ -150,7 +185,7 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl h-8 w-8 p-0"
+              className="rounded-xl h-8 w-8 p-0 border-border/40 cursor-pointer"
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={activePage === totalPages}
             >
@@ -159,6 +194,7 @@ export function SyncStatusMonitor({ projectId }: { projectId: string }) {
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
+
 }

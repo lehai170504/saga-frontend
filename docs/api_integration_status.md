@@ -95,13 +95,16 @@ Dành cho Leader cấu hình không gian làm việc. Toàn bộ UI (Panel Setti
 - `POST /api/projects/{projectId}/jira/link`: Liên kết với 1 Project Key của Jira (Body: `JiraProjectLinkRequest`).
 - `DELETE /api/projects/{projectId}/jira`: Xóa liên kết Jira.
 - `POST /api/projects/{projectId}/github/repositories`: Thêm repository GitHub vào dự án (Body: `GitHubRepositoriesLinkRequest`).
-- `DELETE /api/projects/{projectId}/github/repositories/{repoId}`: Xóa repo GitHub khỏi dự án.
+- `DELETE /api/projects/{projectId}/github/repositories/{repoId}`: Ngắt kết nối repo GitHub khỏi dự án.
+- `POST /api/projects/{projectId}/github/repositories/{repositoryId}/connect`: Kết nối lại repository GitHub (cho repo có trạng thái DISCONNECTED/DEGRADED).
 - `GET /api/projects/{projectId}/sync-status`: Polling (5s/lần) trạng thái đồng bộ dữ liệu.
+- `POST /api/projects/{projectId}/sync`: Kích hoạt tiến trình đồng bộ thủ công dữ liệu dự án từ Jira và GitHub (Response 202 Accepted).
 - `GET /api/projects/{projectId}/github/repositories/{repositoryId}/branches`: Lấy danh sách nhánh GitHub của một repository.
   - Path Params: `projectId`, `repositoryId`
 - `GET /api/projects/{projectId}/github/repositories/{repositoryId}/commits`: Lấy lịch sử commit theo nhánh GitHub (hỗ trợ phân trang và filter branch).
   - Path Params: `projectId`, `repositoryId`
   - Query Params: `branch` (URL-encoded), `page`, `size`
+
 
 *Lưu ý luồng OAuth Connect (Redirect bằng trình duyệt, Backend xử lý Callback):*
 - `GET /api/projects/{projectId}/jira/connect`: Redirect sang Jira để ủy quyền (Project OAuth).
@@ -189,8 +192,12 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 - `GET /api/v1/courses/{courseId}/teams/{teamId}/sprints/velocity`: Vận tốc làm việc theo Sprint.
 
 ### 1.11. Quản lý Sprints & Đánh giá chéo (Sprints & Peer Review)
-- `GET /api/v1/projects/{projectId}/sprints`: Lấy danh sách Sprint của dự án phục vụ hiển thị Timeline.
+- `GET /api/v1/projects/{projectId}/sprints`: Lấy danh sách Sprint của dự án phục vụ hiển thị Timeline và Backlog.
 - `POST /api/v1/projects/{projectId}/sprints`: Tạo Sprint mới và đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+- `PUT /api/v1/projects/{projectId}/sprints/{sprintId}`: Cập nhật thông tin Sprint (Tên, Mục tiêu, Ngày bắt đầu/kết thúc).
+- `POST /api/v1/projects/{projectId}/sprints/{sprintId}/start`: Bắt đầu kích hoạt Sprint.
+- `POST /api/v1/projects/{projectId}/sprints/{sprintId}/close`: Đóng Sprint hoàn thành.
+- `DELETE /api/v1/projects/{projectId}/sprints/{sprintId}`: Xóa Sprint đồng bộ trên Jira.
 - `GET /api/v1/teams/{teamId}/sprints`: Lấy danh sách Sprint của một nhóm.
 - `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Đọc kết quả Peer Review của nhóm trong một Sprint cụ thể.
 - `GET /api/v1/teams/{teamId}/peer-review-rubric`: Lấy Rubric đánh giá chéo được thiết lập riêng cho nhóm.
@@ -203,10 +210,15 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 ### 1.12. Quản lý công việc (Jira Tasks)
 Toàn bộ luồng quản lý công việc và hiển thị Kanban Board của nhóm sinh viên đã được tích hợp đầy đủ:
 - `GET /api/v1/projects/{projectId}/tasks`: Lấy danh sách nhiệm vụ của dự án (hỗ trợ filter `keyword`, `sprintId`, `assigneeId`, `status`, phân trang, và giới hạn size tối đa 100).
-- `POST /api/v1/projects/{projectId}/tasks`: Tạo công việc mới đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Giao diện hỗ trợ cấu hình nâng cao truyền trực tiếp `issueTypeId` và `priorityId` nếu xảy ra lỗi ambiguous phân giải thông tin từ Jira.
-- `PUT /api/v1/projects/{projectId}/tasks/{taskId}`: Cập nhật thông tin chi tiết của công việc đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+- `GET /api/v1/projects/{projectId}/tasks/{taskId}`: Lấy chi tiết một nhiệm vụ.
+- `POST /api/v1/projects/{projectId}/tasks`: Tạo công việc mới đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Giao diện hỗ trợ truyền `issueTypeId` và `priorityId` để xử lý phân giải dữ liệu.
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}`: Cập nhật thông tin chi tiết công việc đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hỗ trợ truyền `priority`, `priorityId`, `priorityName` để tránh lỗi DTO rỗng.
 - `DELETE /api/v1/projects/{projectId}/tasks/{taskId}`: Xóa/Ngắt kết nối công việc đồng bộ trực tiếp trên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
-- `PUT /api/v1/projects/{projectId}/tasks/{taskId}/sprint`: Gán công việc vào Sprint (Body: `{ sprintId }`) hoặc chuyển về Backlog (Body: `{ backlog: true }`). Có cơ chế ổn định `Idempotency-Key` xuyên suốt khi retry mutation.
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}/sprint`: Gán công việc vào Sprint (Body: `{ sprintId }`) hoặc chuyển về Backlog (Body: `{ backlog: true }`).
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}/assignee`: Phân công/Bỏ phân công người thực hiện công việc (Body: `{ assigneeId }` hoặc `{ unassign: true }`).
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}/estimation`: Cập nhật Story Points cho công việc (Body: `{ value: number }`).
+- `GET /api/v1/projects/{projectId}/tasks/{taskId}/transitions`: Lấy danh sách các trạng thái hợp lệ có thể chuyển đổi cho công việc.
+- `POST /api/v1/projects/{projectId}/tasks/{taskId}/transitions`: Chuyển đổi trạng thái (Transition) của công việc trên bảng Kanban (yêu cầu gửi kèm `Idempotency-Key` ở Header).
 
 ---
 
@@ -225,20 +237,13 @@ Mặc dù UI Frontend đã được thiết kế sẵn (thậm chí dùng Mock D
    - Thiếu: `PATCH /api/v1/courses/{courseId}/teams/{teamId}/leader` (Gán/Chọn Leader).
    - *Hiện trạng:* Đã có API lấy `members` của 1 team cụ thể (`GET /api/v1/courses/{courseId}/teams/{teamId}/members`), nhưng chưa có API để lấy ra danh sách các `teamId` thuộc về `courseId` đó. Do vậy giao diện Tích hợp Dự án phải mock cứng ID là `"project-123"`.
 
-3. **Master Data - Cập nhật và Xóa (PUT / DELETE):**
+2. **Master Data - Cập nhật và Xóa (PUT / DELETE):**
    - Đã tích hợp thành công Cập nhật (`PUT`) và Xóa (`DELETE`) cho **Môn học (Subject)** và **Lớp học (Class)**.
    - Vẫn còn thiếu API PUT/DELETE cho **Khóa học (Course)** và **Học kỳ (Semester)** từ phía Backend.
 
-4. **Tìm kiếm Course/Class bằng Keyword:**
+3. **Tìm kiếm Course/Class bằng Keyword:**
    - Các API List (như `GET /api/v1/courses`) cần bổ sung param `?keyword=...` để thanh Search của Frontend có thể hoạt động.
 
-5. **Các API Backend ĐÃ CÓ nhưng Frontend CHƯA GỌI:**
-   - Sprints API:
-     - `GET /api/v1/projects/{projectId}/sprints`
-   - Peer Review API:
-     - `GET /api/v1/teams/{teamId}/peer-review-rubric`
-     - `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews/candidates`
-     - `POST /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`
 
 ### 2.2. Phía Frontend (Các hạng mục cần hoàn thiện tiếp)
 > **Những tính năng này có thể tự làm hoặc đợi BE làm xong (2.1) rồi mới ráp nối.**

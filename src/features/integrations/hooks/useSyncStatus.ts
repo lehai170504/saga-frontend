@@ -11,3 +11,5 @@ export const useSyncStatus = (projectId: string, options?: { refetchInterval?: n
     refetchInterval: options?.refetchInterval ?? false,
   });
 };
+
+

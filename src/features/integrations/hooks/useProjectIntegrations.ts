@@ -92,3 +92,36 @@ export const useDeleteGithubRepository = (projectId: string) => {
     },
   });
 };
+
+export const useReconnectGithubRepository = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (repositoryId: number) => projectIntegrationApi.reconnectGithubRepository(projectId, repositoryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
+      toast.success("Đã kết nối lại Repository thành công!");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Có lỗi xảy ra khi kết nối lại Repository.");
+    },
+  });
+};
+
+
+export const useTriggerProjectSync = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (provider?: string) => projectIntegrationApi.triggerSync(projectId, provider),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sync-status", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+      toast.success("Yêu cầu đồng bộ dữ liệu dự án đã được ghi nhận!");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Có lỗi xảy ra khi gửi yêu cầu đồng bộ.");
+    },
+  });
+};
+
+
+

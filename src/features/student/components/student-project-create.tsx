@@ -17,7 +17,9 @@ import { useCreateTeamProject, useProjectDetail, useUpdateProjectDetail } from "
 import { ProjectIntegrationPanel } from "@/features/integrations/components/project-integration-panel";
 import { SyncStatusMonitor } from "@/features/integrations/components/sync-status-monitor";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { Textarea } from "@/components/ui/textarea";
+
 
 export function StudentProjectCreate() {
   const router = useRouter();
@@ -237,70 +239,77 @@ export function StudentProjectCreate() {
             </div>
           </form>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-3 items-start">
-            <div className="lg:col-span-2 space-y-6">
-              <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative group">
-                <div className="space-y-2 flex-1 w-full">
-                  <div className="flex items-center justify-between w-full">
-                    <h3 className="font-extrabold text-sm uppercase tracking-wider text-muted-foreground">Dự án đang thực hiện</h3>
-                    {myRole === "LEADER" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-xl font-bold text-[10px] uppercase tracking-widest border-primary/20 hover:border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-all duration-300 flex items-center gap-1.5 px-3 py-1 cursor-pointer h-7 shadow-sm hover:shadow-md"
-                        onClick={handleOpenEdit}
-                      >
-                        <Edit2 size={11} className="transition-transform group-hover:rotate-12" />
-                        Sửa thông tin
-                      </Button>
+          <div className="space-y-6">
+            {/* Top Row: Project Detail & Integrations (2 cols) + Team Info Sidebar (1 col) */}
+            <div className="grid gap-6 lg:grid-cols-3 items-start">
+              <div className="lg:col-span-2 space-y-6">
+                <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative group">
+                  <div className="space-y-2 flex-1 w-full">
+                    <div className="flex items-center justify-between w-full">
+                      <h3 className="font-extrabold text-sm uppercase tracking-wider text-muted-foreground">Dự án đang thực hiện</h3>
+                      {myRole === "LEADER" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-xl font-bold text-[10px] uppercase tracking-widest border-primary/20 hover:border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-all duration-300 flex items-center gap-1.5 px-3 py-1 cursor-pointer h-7 shadow-sm hover:shadow-md"
+                          onClick={handleOpenEdit}
+                        >
+                          <Edit2 size={11} className="transition-transform group-hover:rotate-12" />
+                          Sửa thông tin
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-lg font-black text-foreground mt-1">{projectDetail?.name || myTeam.projectName}</p>
+                    {projectDetail?.description && (
+                      <p className="text-sm text-foreground/80 mt-2.5 font-medium leading-relaxed max-w-2xl border-l-2 border-primary/30 pl-3">
+                        {projectDetail.description}
+                      </p>
                     )}
                   </div>
-                  <p className="text-lg font-black text-foreground mt-1">{projectDetail?.name || myTeam.projectName}</p>
-                  {projectDetail?.description && (
-                    <p className="text-sm text-foreground/80 mt-2.5 font-medium leading-relaxed max-w-2xl border-l-2 border-primary/30 pl-3">
-                      {projectDetail.description}
+                  <div className="p-3 bg-primary/10 text-primary rounded-2xl shrink-0 hidden md:block">
+                    <FolderKanban size={24} />
+                  </div>
+                </Card>
+
+                <ProjectIntegrationPanel projectId={myTeam.projectId} />
+              </div>
+
+              <div className="space-y-6">
+                <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 space-y-6">
+                  <h3 className="font-extrabold text-foreground text-sm flex items-center gap-2 border-b border-border/40 pb-4">
+                    <ShieldCheck className="text-primary" size={16} />
+                    <span>Thông tin Nhóm</span>
+                  </h3>
+
+                  <div className="space-y-4 text-xs font-semibold">
+                    <div className="flex justify-between items-start gap-4">
+                      <span className="text-muted-foreground">Nhóm dự án:</span>
+                      <span className="text-primary text-right font-extrabold">{myTeam.teamName}</span>
+                    </div>
+                    <div className="flex justify-between items-start gap-4">
+                      <span className="text-muted-foreground">Vai trò của bạn:</span>
+                      <span className="text-foreground text-right font-extrabold">{myRole}</span>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border border-primary/20 bg-primary/10 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
+                  <Link2 className="text-primary shrink-0" size={16} />
+                  <div className="space-y-1">
+                    <h4 className="font-extrabold text-foreground text-[11px] uppercase tracking-wide">Quản lý tích hợp</h4>
+                    <p className="text-muted-foreground text-[10px] font-medium leading-relaxed">
+                      Chỉ nhóm trưởng (Leader) mới có quyền sửa đổi cấu hình tích hợp GitHub và Jira. Các thành viên khác chỉ có thể xem trạng thái.
                     </p>
-                  )}
-                </div>
-                <div className="p-3 bg-primary/10 text-primary rounded-2xl shrink-0 hidden md:block">
-                  <FolderKanban size={24} />
-                </div>
-              </Card>
+                  </div>
+                </Card>
+              </div>
+            </div>
 
-              <ProjectIntegrationPanel projectId={myTeam.projectId} />
-
+            {/* Bottom Row: Full-width Sync Status Table */}
+            <div className="space-y-6">
               <SyncStatusMonitor projectId={myTeam.projectId} />
             </div>
 
-            <div className="space-y-6">
-              <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 space-y-6">
-                <h3 className="font-extrabold text-foreground text-sm flex items-center gap-2 border-b border-border/40 pb-4">
-                  <ShieldCheck className="text-primary" size={16} />
-                  <span>Thông tin Nhóm</span>
-                </h3>
-
-                <div className="space-y-4 text-xs font-semibold">
-                  <div className="flex justify-between items-start gap-4">
-                    <span className="text-muted-foreground">Nhóm dự án:</span>
-                    <span className="text-primary text-right font-extrabold">{myTeam.teamName}</span>
-                  </div>
-                  <div className="flex justify-between items-start gap-4">
-                    <span className="text-muted-foreground">Vai trò của bạn:</span>
-                    <span className="text-foreground text-right font-extrabold">{myRole}</span>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="border border-primary/20 bg-primary/10 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm text-left">
-                <Link2 className="text-primary shrink-0" size={16} />
-                <div className="space-y-1">
-                  <h4 className="font-extrabold text-foreground text-[11px] uppercase tracking-wide">Quản lý tích hợp</h4>
-                  <p className="text-muted-foreground text-[10px] font-medium leading-relaxed">
-                    Chỉ nhóm trưởng (Leader) mới có quyền sửa đổi cấu hình tích hợp GitHub và Jira. Các thành viên khác chỉ có thể xem trạng thái.
-                  </p>
-                </div>
-              </Card>
-            </div>
           </div>
         )}
       </div>
