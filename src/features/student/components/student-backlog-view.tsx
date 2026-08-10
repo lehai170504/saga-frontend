@@ -21,7 +21,14 @@ import {
   ArrowRightLeft 
 } from "lucide-react";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
-import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
+import { 
+  useProjectSprints, 
+  useCreateSprint, 
+  useStartSprint, 
+  useCloseSprint, 
+  useUpdateSprint, 
+  useDeleteSprint 
+} from "@/features/projects/hooks/useTeamSprints";
 import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask } from "@/features/projects/hooks/useProjectTasks";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,7 +47,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { JiraTask } from "@/features/projects/types";
+import { JiraTask, Sprint } from "@/features/projects/types";
 import { UpdateTaskRequest } from "@/features/projects/api/taskApi";
 
 interface StudentBacklogViewProps {
@@ -80,6 +87,20 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<JiraTask | null>(null);
 
+  // Sprint actions state hooks
+  const [isCreateSprintOpen, setIsCreateSprintOpen] = useState(false);
+  const [sprintNameInput, setSprintNameInput] = useState("");
+  const [sprintGoalInput, setSprintGoalInput] = useState("");
+  const [sprintStartDateInput, setSprintStartDateInput] = useState("");
+  const [sprintEndDateInput, setSprintEndDateInput] = useState("");
+
+  const [isEditSprintOpen, setIsEditSprintOpen] = useState(false);
+  const [sprintToEdit, setSprintToEdit] = useState<Sprint | null>(null);
+  const [editSprintNameInput, setEditSprintNameInput] = useState("");
+  const [editSprintGoalInput, setEditSprintGoalInput] = useState("");
+  const [editSprintStartDateInput, setEditSprintStartDateInput] = useState("");
+  const [editSprintEndDateInput, setEditSprintEndDateInput] = useState("");
+
   // Queries
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
@@ -93,6 +114,96 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const createTaskMutation = useCreateTask(projectId);
   const updateTaskMutation = useUpdateTask(projectId);
   const deleteTaskMutation = useDeleteTask(projectId);
+
+  // Sprint Mutations
+  const createSprintMutation = useCreateSprint(projectId);
+  const startSprintMutation = useStartSprint(projectId);
+  const closeSprintMutation = useCloseSprint(projectId);
+  const updateSprintMutation = useUpdateSprint(projectId);
+  const deleteSprintMutation = useDeleteSprint(projectId);
+
+  // Sprint Actions Handlers
+  const handleOpenCreateSprint = () => {
+    setSprintNameInput(`Sprint ${sprints.length + 1}`);
+    setSprintGoalInput("");
+    setSprintStartDateInput("");
+    setSprintEndDateInput("");
+    setIsCreateSprintOpen(true);
+  };
+
+  const handleCreateSprint = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sprintNameInput.trim()) {
+      toast.error("Vui lòng nhập tên Sprint.");
+      return;
+    }
+    const key = crypto.randomUUID();
+    createSprintMutation.mutate(
+      {
+        name: sprintNameInput.trim(),
+        goal: sprintGoalInput.trim(),
+        startDate: sprintStartDateInput || null,
+        endDate: sprintEndDateInput || null,
+        idempotencyKey: key,
+      },
+      {
+        onSuccess: () => {
+          setIsCreateSprintOpen(false);
+        },
+      }
+    );
+  };
+
+  const handleOpenEditSprint = (sprint: Sprint) => {
+    setSprintToEdit(sprint);
+    setEditSprintNameInput(sprint.sprintName || "");
+    setEditSprintGoalInput(sprint.goal || "");
+    setEditSprintStartDateInput(sprint.startDate ? sprint.startDate.split("T")[0] : "");
+    setEditSprintEndDateInput(sprint.endDate ? sprint.endDate.split("T")[0] : "");
+    setIsEditSprintOpen(true);
+  };
+
+  const handleUpdateSprint = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sprintToEdit) return;
+    if (!editSprintNameInput.trim()) {
+      toast.error("Vui lòng nhập tên Sprint.");
+      return;
+    }
+    const key = crypto.randomUUID();
+    updateSprintMutation.mutate(
+      {
+        sprintId: sprintToEdit.sprintId,
+        name: editSprintNameInput.trim(),
+        goal: editSprintGoalInput.trim(),
+        startDate: editSprintStartDateInput || null,
+        endDate: editSprintEndDateInput || null,
+        idempotencyKey: key,
+      },
+      {
+        onSuccess: () => {
+          setIsEditSprintOpen(false);
+          setSprintToEdit(null);
+        },
+      }
+    );
+  };
+
+  const handleDeleteSprint = (sprintId: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xóa Sprint này không?")) return;
+    const key = crypto.randomUUID();
+    deleteSprintMutation.mutate({ sprintId, idempotencyKey: key });
+  };
+
+  const handleStartSprint = (sprintId: string) => {
+    const key = crypto.randomUUID();
+    startSprintMutation.mutate({ sprintId, idempotencyKey: key });
+  };
+
+  const handleCloseSprint = (sprintId: string) => {
+    const key = crypto.randomUUID();
+    closeSprintMutation.mutate({ sprintId, idempotencyKey: key });
+  };
 
 
 
@@ -468,7 +579,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
                     {/* Status count badges */}
                     <div className="flex items-center gap-1.5 text-[11px] font-bold">
                       <span className="px-2.5 py-0.5 rounded-full bg-muted/80 text-muted-foreground border border-border/10">
@@ -495,8 +606,68 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                         Sắp tới
                       </Badge>
                     )}
+
+                    {/* Start/Complete/Options buttons for Sprint */}
+                    {!isLoadingTeam && myTeamData?.roleInTeam === "LEADER" && (
+                      <div className="flex items-center gap-2">
+                        {sprint.state?.toUpperCase() === "ACTIVE" ? (
+                          <Button
+                            size="sm"
+                            onClick={() => handleCloseSprint(sprint.sprintId)}
+                            disabled={closeSprintMutation.isPending}
+                            className="h-8 rounded-xl text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground shadow-sm cursor-pointer"
+                          >
+                            {closeSprintMutation.isPending && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
+                            Hoàn thành Sprint
+                          </Button>
+                        ) : sprint.state?.toUpperCase() === "CLOSED" ? null : (
+                          <Button
+                            size="sm"
+                            onClick={() => handleStartSprint(sprint.sprintId)}
+                            disabled={startSprintMutation.isPending}
+                            className="h-8 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm cursor-pointer"
+                          >
+                            {startSprintMutation.isPending && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
+                            Bắt đầu Sprint
+                          </Button>
+                        )}
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 cursor-pointer flex items-center justify-center"
+                            >
+                              <MoreHorizontal size={14} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[120px] p-1.5 animate-in fade-in duration-200">
+                            <DropdownMenuItem
+                              onClick={() => handleOpenEditSprint(sprint)}
+                              className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+                            >
+                              Chỉnh sửa Sprint
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteSprint(sprint.sprintId)}
+                              className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
+                            >
+                              Xóa Sprint
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {sprint.goal && (
+                  <div className="px-4 py-2 bg-muted/5 border-b border-border/10 text-[11px] text-muted-foreground/80 italic font-medium">
+                    Mục tiêu: {sprint.goal}
+                  </div>
+                )}
 
                 {/* Sprint Content (Tasks List) */}
                 {!isCollapsed && (
@@ -639,6 +810,20 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                   {backlogTasks.length} Tasks
                 </span>
               </div>
+
+              {/* Create Sprint Button */}
+              {!isLoadingTeam && myTeamData?.roleInTeam === "LEADER" && (
+                <div onClick={(e) => e.stopPropagation()}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleOpenCreateSprint}
+                    className="h-8 rounded-xl text-xs font-bold bg-background/50 border-border/40 hover:bg-muted cursor-pointer shadow-sm"
+                  >
+                    Tạo Sprint
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Backlog Content */}
@@ -1050,6 +1235,173 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
               )}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Sprint Dialog */}
+      <Dialog open={isCreateSprintOpen} onOpenChange={setIsCreateSprintOpen}>
+        <DialogContent className="sm:max-w-[500px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40 space-y-2">
+            <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
+              Tạo Sprint mới
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Tạo Sprint mới trên Jira và đồng bộ về hệ thống SAGA.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleCreateSprint} className="space-y-4 pt-4">
+            {/* Name */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Tên Sprint *</label>
+              <Input
+                value={sprintNameInput}
+                onChange={(e) => setSprintNameInput(e.target.value)}
+                placeholder="Ví dụ: Sprint 1"
+                required
+                className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4"
+              />
+            </div>
+
+            {/* Goal */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Mục tiêu Sprint</label>
+              <Textarea
+                value={sprintGoalInput}
+                onChange={(e) => setSprintGoalInput(e.target.value)}
+                placeholder="Mô tả mục tiêu của Sprint..."
+                className="rounded-xl min-h-[80px] bg-background/50 border-border/40 text-xs p-4"
+              />
+            </div>
+
+            {/* Start & End Dates */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày bắt đầu</label>
+                <Input
+                  type="date"
+                  value={sprintStartDateInput}
+                  onChange={(e) => setSprintStartDateInput(e.target.value)}
+                  className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày kết thúc</label>
+                <Input
+                  type="date"
+                  value={sprintEndDateInput}
+                  onChange={(e) => setSprintEndDateInput(e.target.value)}
+                  className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
+                />
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-3 border-t border-border/40 pt-4 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs"
+                onClick={() => setIsCreateSprintOpen(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                type="submit"
+                disabled={createSprintMutation.isPending}
+                className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs bg-primary text-primary-foreground hover:bg-primary/95 flex items-center gap-1.5"
+              >
+                {createSprintMutation.isPending && <Loader2 className="h-3 w-3 animate-spin" />}
+                Tạo mới
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Sprint Dialog */}
+      <Dialog open={isEditSprintOpen} onOpenChange={setIsEditSprintOpen}>
+        <DialogContent className="sm:max-w-[500px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40 space-y-2">
+            <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
+              Chỉnh sửa Sprint
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Cập nhật thông tin của Sprint trực tiếp trên Jira.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleUpdateSprint} className="space-y-4 pt-4">
+            {/* Name */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Tên Sprint *</label>
+              <Input
+                value={editSprintNameInput}
+                onChange={(e) => setEditSprintNameInput(e.target.value)}
+                placeholder="Ví dụ: Sprint 1"
+                required
+                className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4"
+              />
+            </div>
+
+            {/* Goal */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Mục tiêu Sprint</label>
+              <Textarea
+                value={editSprintGoalInput}
+                onChange={(e) => setEditSprintGoalInput(e.target.value)}
+                placeholder="Mô tả mục tiêu của Sprint..."
+                className="rounded-xl min-h-[80px] bg-background/50 border-border/40 text-xs p-4"
+              />
+            </div>
+
+            {/* Start & End Dates */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày bắt đầu</label>
+                <Input
+                  type="date"
+                  value={editSprintStartDateInput}
+                  onChange={(e) => setEditSprintStartDateInput(e.target.value)}
+                  className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày kết thúc</label>
+                <Input
+                  type="date"
+                  value={editSprintEndDateInput}
+                  onChange={(e) => setEditSprintEndDateInput(e.target.value)}
+                  className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
+                />
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-3 border-t border-border/40 pt-4 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs"
+                onClick={() => {
+                  setIsEditSprintOpen(false);
+                  setSprintToEdit(null);
+                }}
+              >
+                Hủy
+              </Button>
+              <Button
+                type="submit"
+                disabled={updateSprintMutation.isPending}
+                className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs bg-primary text-primary-foreground hover:bg-primary/95 flex items-center gap-1.5"
+              >
+                {updateSprintMutation.isPending && <Loader2 className="h-3 w-3 animate-spin" />}
+                Lưu thay đổi
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
