@@ -392,7 +392,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const columns = [
     { id: "TODO", title: "Cần làm", color: "border-slate-500/30 bg-slate-500/5", dotColor: "bg-slate-500" },
     { id: "IN_PROGRESS", title: "Đang làm", color: "border-amber-500/30 bg-amber-500/5", dotColor: "bg-amber-500" },
-    { id: "IN_REVIEW", title: "Review", color: "border-purple-500/30 bg-purple-500/5", dotColor: "bg-purple-500" },
+    { id: "IN_REVIEW", title: "Đang đánh giá", color: "border-purple-500/30 bg-purple-500/5", dotColor: "bg-purple-500" },
     { id: "DONE", title: "Hoàn thành", color: "border-emerald-500/30 bg-emerald-500/5", dotColor: "bg-emerald-500" },
   ];
 
