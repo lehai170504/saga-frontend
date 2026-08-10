@@ -31,6 +31,44 @@ export const useImportStudents = () => {
   });
 };
 
+export const useDownloadAdminStudentsTemplate = () => {
+  return useMutation({
+    mutationFn: (courseId: string) => courseApi.downloadAdminStudentsTemplate(courseId),
+    onSuccess: (data: Blob, courseId: string) => {
+      const url = window.URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `course-admin-student-template-${courseId}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+    onError: () => {
+      toast.error(COURSE_MESSAGES.IMPORT.DOWNLOAD_TEMPLATE_ERROR);
+    }
+  });
+};
+
+export const useDownloadStudentsGroupingTemplate = () => {
+  return useMutation({
+    mutationFn: (courseId: string) => courseApi.downloadStudentsGroupingTemplate(courseId),
+    onSuccess: (data: Blob, courseId: string) => {
+      const url = window.URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `course-student-template-${courseId}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+    onError: () => {
+      toast.error(COURSE_MESSAGES.IMPORT.DOWNLOAD_TEMPLATE_ERROR);
+    }
+  });
+};
+
 export const useTeamMembers = (courseId: string, teamId: string, page = 0, size = 10) => {
   return useQuery({
     queryKey: ["courses", courseId, "teams", teamId, "members", page, size],

@@ -4,6 +4,7 @@ export const COURSE_MESSAGES = {
     SUCCESS_DETAILS: (created: number, reused: number) => `Import thành công! Đã thêm mới ${created} sinh viên, sử dụng lại ${reused} hồ sơ.`,
     ERROR_GENERIC: "Đã có lỗi xảy ra khi import danh sách sinh viên.",
     REQUIRE_FILE: "Vui lòng chọn file Excel để import",
+    DOWNLOAD_TEMPLATE_ERROR: "Không thể tải file mẫu. Vui lòng thử lại sau.",
   },
   EXPORT: {
     SUCCESS: "Xuất file báo cáo thành công",
