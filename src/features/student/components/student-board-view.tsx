@@ -111,6 +111,23 @@ function TaskStatusDropdown({
     }
   };
 
+  const translateTransitionName = (name: string) => {
+    const map: Record<string, string> = {
+      "To Do": "Cần làm",
+      "In Progress": "Đang làm",
+      "In Review": "Đang đánh giá",
+      "Done": "Đã hoàn thành",
+      "In Development": "Đang phát triển",
+      "Blocked": "Bị chặn",
+      "Open": "Mở",
+      "Closed": "Đã đóng",
+      "Reopened": "Mở lại",
+      "Resolved": "Đã giải quyết",
+      "Selected for Development": "Chọn để phát triển",
+    };
+    return map[name] ?? name;
+  };
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
@@ -139,7 +156,7 @@ function TaskStatusDropdown({
               onClick={() => handleSelectTransition(t.transitionId)}
               className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
             >
-              {t.name}
+              {translateTransitionName(t.name)}
             </DropdownMenuItem>
           ))
         )}
