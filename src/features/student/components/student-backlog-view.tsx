@@ -86,7 +86,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   
   const { data: sprintsData, isLoading: isLoadingSprints } = useProjectSprints(projectId);
   const { data: tasksData, isLoading: isLoadingTasks } = useProjectTasks(projectId, {
-    size: 200, // Load up to 200 tasks
+    size: 100, // Load up to 100 tasks (maximum allowed by backend)
   });
 
   // Mutations
