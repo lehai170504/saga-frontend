@@ -74,6 +74,15 @@ export function CourseCards() {
                       <span className="truncate">{course.semester?.name || course.semester?.code || "N/A"}</span>
                     </div>
                   </div>
+
+                  {course.instructor && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3 font-medium">
+                      <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0">
+                        {course.instructor.fullName?.charAt(0) || "G"}
+                      </div>
+                      <span className="truncate text-foreground">Giảng viên: {course.instructor.fullName}</span>
+                    </div>
+                  )}
                 </div>
 
                 {isAdmin && (
@@ -81,7 +90,7 @@ export function CourseCards() {
                     <Button
                       variant="default"
                       className="w-full rounded-xl gap-2 font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-all group-hover:shadow-md"
-                      onClick={() => router.push(`/admin/classes/${course.id}`)}
+                      onClick={() => router.push(`/admin/courses/${course.id}`)}
                     >
                       <Network size={16} />
                       <span>Workspace Quản trị</span>
@@ -103,3 +112,4 @@ export function CourseCards() {
     </div>
   );
 }
+

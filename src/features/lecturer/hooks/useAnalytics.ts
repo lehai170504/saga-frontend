@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { analyticsApi } from "../api/analyticsApi";
+import { courseApi } from "@/features/courses/api/courseApi";
 
 export const useTeamDetail = (courseId: string, teamId: string, page = 0, size = 20) => {
   return useQuery({
@@ -46,6 +47,14 @@ export const useEarlyWarnings = (courseId: string) => {
     queryKey: ["earlyWarnings", courseId],
     queryFn: () => analyticsApi.getEarlyWarnings(courseId),
     enabled: !!courseId,
+  });
+};
+
+export const useTeamMembers = (courseId: string, teamId: string) => {
+  return useQuery({
+    queryKey: ["team", courseId, teamId, "members"],
+    queryFn: () => courseApi.getTeamMembers(courseId, teamId),
+    enabled: !!courseId && !!teamId,
   });
 };
 

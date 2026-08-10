@@ -14,8 +14,8 @@ import { useStudentProgress, useStudentActivities, useStudentContributionDetail,
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function StudentProfilePage({ params }: { params: Promise<{ courseId: string, studentId: string }> }) {
-  const { courseId, studentId } = React.use(params);
+export default function AdminStudentProfilePage({ params }: { params: Promise<{ id: string, studentId: string }> }) {
+  const { id: courseId, studentId } = React.use(params);
   const [note, setNote] = useState("");
   const [savedNotes, setSavedNotes] = useState<{ id: number, text: string, time: string, author: string }[]>([]);
 
@@ -66,7 +66,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
   const handleSaveNote = () => {
     if (!note.trim()) return;
     setSavedNotes([
-      { id: Date.now(), text: note, time: new Date().toLocaleDateString('vi-VN'), author: "You" },
+      { id: Date.now(), text: note, time: new Date().toLocaleDateString('vi-VN'), author: "Admin" },
       ...savedNotes
     ]);
     setNote("");
@@ -78,9 +78,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
 
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link href={`/lecturer/${courseId}`} className="hover:text-foreground transition-colors">Dashboard</Link>
-          <ChevronRight size={14} />
-          <Link href={`/lecturer/${courseId}/students`} className="hover:text-foreground transition-colors">Sinh viên</Link>
+          <Link href={`/admin/courses/${courseId}`} className="hover:text-foreground transition-colors">Quản trị Khóa học</Link>
           <ChevronRight size={14} />
           <span className="text-foreground font-semibold">
             {isLoadingBasicInfo ? <Skeleton className="h-4 w-32 inline-block align-middle" /> : STUDENT.name}

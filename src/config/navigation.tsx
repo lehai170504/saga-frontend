@@ -11,6 +11,7 @@ import {
   Link2,
   Settings2,
   UserCheck,
+  GitCommit,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -52,9 +53,9 @@ export const getNavigationConfig = (
           title: "Dữ liệu Danh mục",
           items: [
             { href: "/master-data/subjects", icon: <BookOpen size={18} />, label: "Môn học" },
-            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học", matchPaths: ["/admin/classes"] },
+            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học" },
             { href: "/master-data/semesters", icon: <Calendar size={18} />, label: "Học kỳ" },
-            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học (Lớp PBL)" },
+            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học (Lớp PBL)", matchPaths: ["/admin/courses"] },
           ],
         },
         {
@@ -71,7 +72,7 @@ export const getNavigationConfig = (
       if (courseId) {
         return [
           {
-            title: className ? `Đang xem: Khóa học ${className}` : `Đang xem: KHÓA HỌC ${courseId.toUpperCase()}`,
+            title: className ? `Đang xem: Khóa học ${className}` : "Đang xem: Khóa học...",
             items: [
               { href: "/lecturer", icon: <ArrowLeft size={18} />, label: "Chọn khóa học khác", hideChevron: true, exact: true },
             ],
@@ -107,7 +108,7 @@ export const getNavigationConfig = (
       if (courseId) {
         return [
           {
-            title: className ? `Đang xem: Khóa học ${className}` : `Đang xem: KHÓA HỌC ${courseId.toUpperCase()}`,
+            title: className ? `Đang xem: Khóa học ${className}` : "Đang xem: Khóa học...",
             items: [
               { href: "/student", icon: <ArrowLeft size={18} />, label: "Chọn khóa học khác", hideChevron: true, exact: true },
             ],
@@ -118,6 +119,8 @@ export const getNavigationConfig = (
               { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
               { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
               { href: `/student/${courseId}/sprints`, icon: <UserCheck size={18} />, label: "Đánh giá chéo", exact: true },
+              { href: `/student/${courseId}/timeline`, icon: <Calendar size={18} />, label: "Timeline", exact: true },
+              { href: `/student/${courseId}/commits`, icon: <GitCommit size={18} />, label: "Commit", exact: true },
             ],
           },
         ];

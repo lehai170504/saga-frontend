@@ -8,14 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { FolderKanban, ShieldCheck, Link2, Loader2, Plus, ArrowLeft } from "lucide-react";
+import { FolderKanban, ShieldCheck, Link2, Loader2, Plus, ArrowLeft, Edit2 } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useStudentCourse } from "@/context/StudentCourseContext";
 import { useCourseStudents, useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
-import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
+import { useCreateTeamProject, useProjectDetail, useUpdateProjectDetail } from "@/features/projects/hooks/useProjects";
 import { ProjectIntegrationPanel } from "@/features/integrations/components/project-integration-panel";
 import { SyncStatusMonitor } from "@/features/integrations/components/sync-status-monitor";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export function StudentProjectCreate() {
   const router = useRouter();
@@ -53,8 +55,40 @@ export function StudentProjectCreate() {
     : myStudentRecord?.team?.teamMembers?.find(m => m.studentId === myProfileId)?.roleInTeam;
 
   const { mutate: createProject, isPending: isCreating } = useCreateTeamProject(myTeam?.teamId || "");
+  const { data: projectDetail } = useProjectDetail(myTeam?.projectId || "");
+  const updateProjectMutation = useUpdateProjectDetail(myTeam?.projectId || "");
 
   const [projectName, setProjectName] = useState("");
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+
+  const handleOpenEdit = () => {
+    setEditName(projectDetail?.name || myTeam?.projectName || "");
+    setEditDescription(projectDetail?.description || "");
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateProject = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editName.trim()) {
+      toast.error("Vui lòng điền tên đề tài dự án.");
+      return;
+    }
+
+    updateProjectMutation.mutate(
+      {
+        name: editName.trim(),
+        description: editDescription.trim() || null,
+      },
+      {
+        onSuccess: () => {
+          setIsEditOpen(false);
+          refetch();
+        },
+      }
+    );
+  };
 
   const isLoading = isLoadingCourse || isLoadingAuth || (isStudent ? isLoadingMyTeam : isLoadingStudents);
   const refetch = isStudent ? refetchMyTeam : refetchStudents;
@@ -205,12 +239,30 @@ export function StudentProjectCreate() {
         ) : (
           <div className="grid gap-6 lg:grid-cols-3 items-start">
             <div className="lg:col-span-2 space-y-6">
-              <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 md:p-8 flex items-center justify-between">
-                <div>
-                  <h3 className="font-extrabold text-sm uppercase tracking-wider text-muted-foreground">Dự án đang thực hiện</h3>
-                  <p className="text-lg font-black text-foreground mt-1">{myTeam.projectName}</p>
+              <Card className="rounded-[2rem] border border-border bg-card/45 backdrop-blur-xl shadow-sm p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative group">
+                <div className="space-y-2 flex-1 w-full">
+                  <div className="flex items-center justify-between w-full">
+                    <h3 className="font-extrabold text-sm uppercase tracking-wider text-muted-foreground">Dự án đang thực hiện</h3>
+                    {myRole === "LEADER" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-xl font-bold text-[10px] uppercase tracking-widest border-primary/20 hover:border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-all duration-300 flex items-center gap-1.5 px-3 py-1 cursor-pointer h-7 shadow-sm hover:shadow-md"
+                        onClick={handleOpenEdit}
+                      >
+                        <Edit2 size={11} className="transition-transform group-hover:rotate-12" />
+                        Sửa thông tin
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-lg font-black text-foreground mt-1">{projectDetail?.name || myTeam.projectName}</p>
+                  {projectDetail?.description && (
+                    <p className="text-sm text-foreground/80 mt-2.5 font-medium leading-relaxed max-w-2xl border-l-2 border-primary/30 pl-3">
+                      {projectDetail.description}
+                    </p>
+                  )}
                 </div>
-                <div className="p-3 bg-primary/10 text-primary rounded-2xl">
+                <div className="p-3 bg-primary/10 text-primary rounded-2xl shrink-0 hidden md:block">
                   <FolderKanban size={24} />
                 </div>
               </Card>
@@ -252,6 +304,73 @@ export function StudentProjectCreate() {
           </div>
         )}
       </div>
+
+      {/* Edit Project Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-[480px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40">
+            <DialogTitle className="text-lg font-bold text-foreground">Chỉnh sửa thông tin Dự án</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Cập nhật tên đề tài và mô tả chi tiết của dự án nhóm.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleUpdateProject} className="space-y-5 pt-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-project-name" className="text-sm font-bold text-foreground">
+                Tên đề tài / Dự án <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="edit-project-name"
+                required
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Ví dụ: Hệ thống quản lý thư viện số SAGA"
+                className="rounded-xl border-border/50 bg-background/80 h-11"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-project-description" className="text-sm font-bold text-foreground">
+                Mô tả dự án
+              </Label>
+              <Textarea
+                id="edit-project-description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Nhập mô tả ngắn gọn về đề tài của nhóm bạn..."
+                className="rounded-xl resize-none border-border/50 bg-background/80 min-h-[100px]"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 border-t border-border/40 pt-4 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl font-bold cursor-pointer h-11 px-5"
+                onClick={() => setIsEditOpen(false)}
+                disabled={updateProjectMutation.isPending}
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                type="submit"
+                className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg cursor-pointer h-11 px-5"
+                disabled={updateProjectMutation.isPending}
+              >
+                {updateProjectMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang lưu...
+                  </>
+                ) : (
+                  "Lưu thay đổi"
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

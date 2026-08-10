@@ -12,37 +12,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { toast } from "sonner";
 import { MetricCard } from "@/components/shared/MetricCard";
-import { ClassSettingsTab } from "@/features/admin/components/class-details/class-settings-tab";
-import { ClassStudentsTab } from "@/features/admin/components/class-details/class-students-tab";
-import { ClassGroupsTab } from "@/features/admin/components/class-details/class-groups-tab";
-import { ClassProjectsTab } from "@/features/admin/components/class-details/class-projects-tab";
-import { ClassStudentModal } from "@/features/admin/components/class-details/class-student-modal";
+import { CourseSettingsTab } from "@/features/admin/components/course-details/course-settings-tab";
+import { CourseStudentsTab } from "@/features/admin/components/course-details/course-students-tab";
+import { CourseGroupsTab, Group } from "@/features/admin/components/course-details/course-groups-tab";
+import { CourseProjectsTab, Project } from "@/features/admin/components/course-details/course-projects-tab";
+import { CourseStudentModal } from "@/features/admin/components/course-details/course-student-modal";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 
-// Mock Data
-const mockGroups = Array.from({ length: 9 }).map((_, i) => ({
-  id: `g${i + 1}`,
-  name: `Nhóm ${i + 1}`,
-  members: Math.floor(Math.random() * 2) + 4, // 4-5 members
-  leader: `Sinh viên ${i * 5 + 1}`,
-  topic: i % 2 === 0 ? "Quản lý thư viện" : "Bán hàng trực tuyến"
-}));
 
-const mockProjects = Array.from({ length: 9 }).map((_, i) => ({
-  id: `p${i + 1}`,
-  name: `Dự án môn học ${i + 1}: ${i % 2 === 0 ? "Quản lý thư viện" : "Bán hàng trực tuyến"}`,
-  group: `Nhóm ${i + 1}`,
-  status: i % 3 === 0 ? "Hoàn thành" : "Đang thực hiện",
-  progress: i % 3 === 0 ? 100 : Math.floor(Math.random() * 60) + 40,
-  githubRepos: [
-    `saga-frontend-p${i + 1}`,
-    ...(i % 2 === 0 ? [`saga-backend-p${i + 1}`] : [])
-  ],
-  jiraBoard: `Jira Board Nhóm ${i + 1}`
-}));
 
-export default function ClassDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+export default function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id: courseId } = React.use(params);
 
@@ -58,7 +38,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
   const students = React.useMemo(() => {
     if (!studentsResponse) return [];
     const withTeam = studentsResponse.studentsWithTeam.content.map(s => ({
-      id: s.studentId,
+      id: s.studentId || (s as any).id || (s as any).userId || crypto.randomUUID(),
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -67,7 +47,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
       teamName: s.team?.teamName
     }));
     const withoutTeam = studentsResponse.studentsWithoutTeam.content.map(s => ({
-      id: s.studentId,
+      id: s.studentId || (s as any).id || (s as any).userId || crypto.randomUUID(),
       studentId: s.studentCode,
       name: s.fullName,
       email: s.email,
@@ -76,6 +56,50 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
       teamName: undefined
     }));
     return [...withTeam, ...withoutTeam];
+  }, [studentsResponse]);
+
+  const dynamicGroups = React.useMemo(() => {
+    if (!studentsResponse) return [];
+
+    const teamMap = new Map<string, Group>();
+
+    studentsResponse.studentsWithTeam.content.forEach(s => {
+      if (!s.team) return;
+      if (!teamMap.has(s.team.teamId)) {
+        teamMap.set(s.team.teamId, {
+          id: s.team.teamId,
+          name: s.team.teamName,
+          members: (s.team.teamMembers || []).length,
+          leader: (s.team.teamMembers || []).find(m => m.roleInTeam === 'LEADER')?.fullName || "Chưa có Leader",
+          topic: s.team.projectName || "Chưa có đề tài",
+        });
+      }
+    });
+
+    return Array.from(teamMap.values());
+  }, [studentsResponse]);
+
+  const dynamicProjects = React.useMemo(() => {
+    if (!studentsResponse) return [];
+
+    const projectMap = new Map<string, Project>();
+
+    studentsResponse.studentsWithTeam.content.forEach(s => {
+      if (!s.team || !s.team.projectId) return;
+      if (!projectMap.has(s.team.projectId)) {
+        projectMap.set(s.team.projectId, {
+          id: s.team.projectId,
+          name: s.team.projectName,
+          group: s.team.teamName,
+          status: "Đang thực hiện",
+          progress: Math.floor(Math.random() * 60) + 40,
+          githubRepos: [`saga-frontend-${s.team.teamId}`, `saga-backend-${s.team.teamId}`],
+          jiraBoard: `Jira Board ${s.team.teamName}`
+        });
+      }
+    });
+
+    return Array.from(projectMap.values());
   }, [studentsResponse]);
 
   // Modals state
@@ -126,7 +150,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
             variant="outline"
             size="icon"
             className="rounded-full shadow-sm bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/80 transition-all"
-            onClick={() => router.push('/admin/classes')}
+            onClick={() => router.push('/master-data/courses')}
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -153,7 +177,7 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
             </h1>
             <p className="text-muted-foreground mt-2 flex items-center gap-2 font-medium">
               <GraduationCap className="w-4 h-4" />
-              {course?.subject?.name} • Giảng viên: {course?.instructor?.name} • {course?.semester?.name}
+              {course?.subject?.name} • Giảng viên: {course?.instructor?.fullName} • {course?.semester?.name}
             </p>
           </div>
         )}
@@ -170,8 +194,8 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
           { label: "Tổng sinh viên", value: students.length, icon: <Users className="w-4 h-4" /> },
-          { label: "Số lượng nhóm", value: mockGroups.length, icon: <UsersRound className="w-4 h-4" /> },
-          { label: "Số lượng dự án", value: mockProjects.length, icon: <FolderKanban className="w-4 h-4" /> }
+          { label: "Số lượng nhóm", value: dynamicGroups.length, icon: <UsersRound className="w-4 h-4" /> },
+          { label: "Số lượng dự án", value: dynamicProjects.length, icon: <FolderKanban className="w-4 h-4" /> }
         ].map((stat, i) => (
           <MetricCard
             key={i}
@@ -207,15 +231,19 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
         ) : (
           <>
             <TabsContent value="settings" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassSettingsTab classDetails={{
+              <CourseSettingsTab classDetails={{
                 className: course?.clazz?.classCode || "",
                 subject: course?.subject?.name || "",
                 semester: course?.semester?.name || "",
+                codeWeight: course?.codeContributionWeight,
+                docWeight: course?.documentContributionWeight,
+                designWeight: course?.designContributionWeight,
+                instructorId: course?.instructor?.id,
               }} />
             </TabsContent>
 
             <TabsContent value="students" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassStudentsTab
+              <CourseStudentsTab
                 students={students}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
@@ -228,18 +256,18 @@ export default function ClassDetailsPage({ params }: { params: Promise<{ id: str
             </TabsContent>
 
             <TabsContent value="groups" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassGroupsTab groups={mockGroups} courseId={courseId} />
+              <CourseGroupsTab groups={dynamicGroups} courseId={courseId} />
             </TabsContent>
 
             <TabsContent value="projects" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
-              <ClassProjectsTab projects={mockProjects} courseId={courseId} />
+              <CourseProjectsTab projects={dynamicProjects} courseId={courseId} />
             </TabsContent>
           </>
         )}
       </Tabs>
 
       {/* Student Modal */}
-      <ClassStudentModal
+      <CourseStudentModal
         isOpen={isStudentModalOpen}
         onOpenChange={setIsStudentModalOpen}
         editingStudentId={editingStudentId}

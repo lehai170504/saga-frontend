@@ -9,6 +9,7 @@ import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useTeamSprints } from "@/features/projects/hooks/useTeamSprints";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface StudentSprintsViewProps {
   courseId?: string;
@@ -26,8 +27,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingSprints);
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   if (!mounted) {
@@ -44,10 +44,10 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         <PageHeader
-          title="Sprints"
+          title="Đánh giá chéo"
           description={
             courseData
-              ? `Xem danh sách Sprints được đồng bộ từ Jira cho Khóa học ${courseData.courseCode || ""}`
+              ? `Chọn Sprint để thực hiện tự đánh giá và đánh giá chéo thành viên trong nhóm cho Khóa học ${courseData.courseCode || ""}`
               : "Đang tải dữ liệu khóa học..."
           }
         />
@@ -78,16 +78,15 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                   <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shadow-[0_2px_10px_rgba(234,88,12,0.2)]">
                     Nhóm của bạn
                   </span>
-                  <h2 className="text-3xl font-black tracking-tight text-foreground">
+                </div>
+                <div className="space-y-1">
+                  <h2 className="text-3xl font-extrabold text-foreground tracking-tight">
                     {myTeamData.teamName}
                   </h2>
-                </div>
-
-                <div className="flex items-center gap-3 text-muted-foreground bg-background/60 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 inline-flex shadow-sm">
-                  <FolderKanban size={18} className="text-primary" />
-                  <span className="font-semibold text-sm">
-                    {myTeamData.project?.name || "Chưa có đề tài"}
-                  </span>
+                  <p className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <FolderKanban size={14} className="text-primary" />
+                    Dự án: <span className="font-bold text-foreground">{myTeamData.project?.name || "Chưa có đề tài"}</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -96,7 +95,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
             <div className="space-y-5">
               <h3 className="text-sm font-extrabold tracking-widest uppercase text-muted-foreground ml-2 flex items-center gap-2">
                 <Calendar size={16} />
-                Danh sách Sprints ({sprints.length})
+                Danh sách Sprints cần đánh giá ({sprints.length})
               </h3>
 
               {sprints.length === 0 ? (
@@ -111,21 +110,63 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {sprints.map((sprint) => {
                     const hasDates = sprint.startDate && sprint.endDate;
+
+                    const getSprintStatus = () => {
+                      if (!sprint.endDate) return null;
+                      const now = new Date();
+                      const end = new Date(sprint.endDate);
+                      const diffTime = end.getTime() - now.getTime();
+                      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                      if (diffTime < 0) {
+                        return {
+                          label: "Quá hạn",
+                          style: "bg-destructive/10 text-destructive border-destructive/20 shadow-[0_2px_10px_rgba(239,68,68,0.1)]",
+                          cardStyle: "border-destructive/30 hover:border-destructive/50 hover:shadow-destructive/5",
+                          topLineStyle: "bg-destructive",
+                          dateStyle: "text-destructive font-bold"
+                        };
+                      }
+
+                      if (diffDays <= 3) {
+                        return {
+                          label: `Sắp kết thúc (Còn ${diffDays} ngày)`,
+                          style: "bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-[0_2px_10px_rgba(245,158,11,0.1)]",
+                          cardStyle: "border-amber-500/30 hover:border-amber-500/50 hover:shadow-amber-500/5",
+                          topLineStyle: "bg-gradient-to-r from-amber-500 to-orange-500",
+                          dateStyle: "text-amber-600 font-bold"
+                        };
+                      }
+
+                      return null;
+                    };
+
+                    const status = getSprintStatus();
+
                     return (
                       <Link
                         key={sprint.sprintId}
                         href={`/student/${courseId}/sprints/${sprint.sprintId}`}
                         className="block group"
                       >
-                        <Card className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:border-border transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer hover:bg-muted/10">
-                          <div className="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-primary to-orange-500 opacity-80" />
-
-                          <CardHeader className="pb-4 pt-6">
+                        <Card className={`rounded-3xl border bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer ${
+                          status ? status.cardStyle : 'border-border/50 hover:border-border hover:bg-muted/10'
+                        }`}>
+                          <div className={`absolute top-0 left-0 w-full h-[4px] opacity-80 ${
+                            status ? status.topLineStyle : 'bg-gradient-to-r from-primary to-orange-500'
+                          }`} />
+                          
+                          <CardHeader className="pb-4 pt-6 flex flex-row items-center justify-between gap-4">
                             <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                               {sprint.sprintName}
                             </CardTitle>
+                            {status && (
+                              <Badge variant="outline" className={`${status.style} font-bold rounded-full text-[10px] py-1 px-3.5 shrink-0`}>
+                                {status.label}
+                              </Badge>
+                            )}
                           </CardHeader>
-
+                          
                           <CardContent className="space-y-4 pt-2 pb-6 flex-1 flex flex-col justify-between">
                             <div className="space-y-3.5">
                               {/* Start & End Dates */}
@@ -137,7 +178,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                                   <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 leading-none mb-1">
                                     Thời gian chạy
                                   </p>
-                                  <p className="text-xs font-semibold text-foreground truncate">
+                                  <p className={`text-xs truncate ${status ? status.dateStyle : 'text-foreground font-semibold'}`}>
                                     {hasDates ? (
                                       <>
                                         {new Date(sprint.startDate!).toLocaleDateString("vi-VN")} - {new Date(sprint.endDate!).toLocaleDateString("vi-VN")}

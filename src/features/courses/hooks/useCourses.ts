@@ -17,6 +17,14 @@ export const useCourse = (id: string) => {
   });
 };
 
+export const useMyTeam = (courseId: string) => {
+  return useQuery({
+    queryKey: ["myTeam", courseId],
+    queryFn: () => courseApi.getMyTeamMembers(courseId),
+    enabled: !!courseId,
+  });
+};
+
 export const useCreateCourse = () => {
   const queryClient = useQueryClient();
 

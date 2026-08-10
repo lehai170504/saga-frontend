@@ -4,14 +4,19 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Users, Activity, BarChart, CheckCircle2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { useCourse } from "@/features/courses/hooks/useCourses";
-import { useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
+import { useTeamDetail, useTeamMembers, useTeamInteractions, useTeamHeatmap, useSprintVelocity, useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
 import { useTeamSprints } from "@/features/admin/hooks/useTeamSprints";
+import { InteractionGraph } from "@/features/admin/components/team-analytics/interaction-graph";
+import { TeamHeatmap } from "@/features/admin/components/team-analytics/team-heatmap";
+import { SprintVelocityChart } from "@/features/admin/components/team-analytics/sprint-velocity-chart";
 import { toast } from "sonner";
+import { subWeeks, format } from "date-fns";
 
 export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ id: string; teamId: string }> }) {
   const router = useRouter();
@@ -24,11 +29,27 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
 
   // Fetch Team Details (Sử dụng hook chung từ Lecturer)
   const { data: teamDetail, isLoading: isLoadingTeam } = useTeamDetail(courseId, teamId);
+  const { data: teamMembersPage, isLoading: isLoadingMembers } = useTeamMembers(courseId, teamId);
 
   // Fetch Sprints
   const { data: sprintsData, isLoading: isLoadingSprints } = useTeamSprints(teamId);
 
-  const isLoading = isLoadingCourse || isLoadingTeam || isLoadingSprints;
+  // Analytics Hooks
+  const { data: interactionsData, isLoading: isLoadingInteractions } = useTeamInteractions(courseId, teamId);
+
+  // Heatmap: Lấy từ 12 tuần trước
+  const endDate = format(new Date(), 'yyyy-MM-dd');
+  const startDate = format(subWeeks(new Date(), 12), 'yyyy-MM-dd');
+  const { data: heatmapData, isLoading: isLoadingHeatmap } = useTeamHeatmap(courseId, teamId, startDate, endDate);
+
+  const { data: velocityData, isLoading: isLoadingVelocity } = useSprintVelocity(courseId, teamId);
+  const { data: earlyWarnings } = useEarlyWarnings(courseId);
+
+  const teamWarningsCount = Array.isArray(earlyWarnings)
+    ? earlyWarnings.filter(w => w.teamId === teamId).length
+    : 0;
+
+  const isLoading = isLoadingCourse || isLoadingTeam || isLoadingSprints || isLoadingMembers;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 max-w-[1400px] mx-auto">
@@ -39,7 +60,7 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
             variant="outline"
             size="icon"
             className="rounded-full shadow-sm bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/80 transition-all"
-            onClick={() => router.push(`/admin/classes/${courseId}`)}
+            onClick={() => router.push(`/admin/courses/${courseId}`)}
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -87,7 +108,7 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
         />
         <MetricCard
           title="Cảnh báo hệ thống"
-          value={isLoading ? "-" : "0"}
+          value={isLoading ? "-" : teamWarningsCount.toString()}
           icon={<Activity className="w-4 h-4 text-destructive" />}
         />
       </div>
@@ -114,26 +135,34 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               <CardTitle>Thành viên Nhóm</CardTitle>
             </CardHeader>
             <CardContent>
-              {isLoadingTeam ? (
+              {isLoadingMembers ? (
                 <Skeleton className="h-32 w-full rounded-xl" />
-              ) : (
+              ) : teamMembersPage?.content && teamMembersPage.content.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {teamDetail?.members?.content?.map((member) => (
-                    <div key={member.studentId} className="flex items-center gap-4 p-4 border border-border/50 rounded-xl hover:bg-muted/30 transition-all">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
-                        {member.fullName ? member.fullName.charAt(0) : "U"}
+                  {teamMembersPage.content.map((member) => (
+                    <div key={member.studentId} className="flex items-center p-4 border border-border/50 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+                      <Avatar className="h-10 w-10 border-2 border-background shadow-sm mr-4">
+                        <AvatarImage src={`https://i.pravatar.cc/150?u=${member.studentId}`} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                          {member.fullName.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-sm truncate">{member.fullName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{member.studentCode}</p>
                       </div>
-                      <div>
-                        <p className="font-bold text-foreground">{member.fullName}</p>
-                        <p className="text-sm text-muted-foreground">{member.studentCode} • Vai trò: <span className="font-semibold text-primary">{member.roleInTeam}</span></p>
-                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md ml-2 whitespace-nowrap ${member.roleInTeam === "LEADER"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground"
+                        }`}>
+                        {member.roleInTeam === "LEADER" ? "Trưởng nhóm" : "Thành viên"}
+                      </span>
                     </div>
                   ))}
-                  {(!teamDetail?.members?.content || teamDetail.members.content.length === 0) && (
-                    <div className="col-span-full text-center py-8 text-muted-foreground font-medium">
-                      Nhóm chưa có thành viên nào.
-                    </div>
-                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-sm text-muted-foreground">Chưa có dữ liệu thành viên</p>
                 </div>
               )}
             </CardContent>
@@ -176,6 +205,16 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               )}
             </CardContent>
           </Card>
+
+          <Card className="rounded-2xl border-border bg-card shadow-sm mt-6">
+            <CardHeader>
+              <CardTitle>Vận tốc làm việc (Sprint Velocity)</CardTitle>
+              <CardDescription>So sánh điểm ước tính và điểm thực tế hoàn thành qua các Sprint.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SprintVelocityChart data={velocityData} isLoading={isLoadingVelocity} />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="graph" className="space-y-6 mt-0 animate-in fade-in-50 slide-in-from-bottom-2">
@@ -184,12 +223,8 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               <CardTitle>Interaction Graph (Node-Edge)</CardTitle>
               <CardDescription>Mạng tương tác Peer Review giữa các thành viên.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-center h-[400px] border border-border/50 rounded-xl bg-muted/10">
-              <div className="text-center space-y-4">
-                <Users size={48} className="mx-auto text-muted-foreground/50" />
-                <p className="font-medium text-muted-foreground">Đồ thị tương tác sẽ được vẽ tại đây dựa trên dữ liệu thật từ BE.</p>
-                <Button variant="outline" className="rounded-xl" onClick={() => toast.success("Đã kết nối API Graph")}>Tải lại Graph</Button>
-              </div>
+            <CardContent className="p-0 border-0">
+              <InteractionGraph data={interactionsData} isLoading={isLoadingInteractions} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -200,12 +235,8 @@ export default function AdminTeamAnalyticsPage({ params }: { params: Promise<{ i
               <CardTitle>Heatmap Hoạt động</CardTitle>
               <CardDescription>Tần suất Commit và Hoạt động nhóm.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-center h-[400px] border border-border/50 rounded-xl bg-muted/10">
-              <div className="text-center space-y-4">
-                <Activity size={48} className="mx-auto text-muted-foreground/50" />
-                <p className="font-medium text-muted-foreground">Biểu đồ nhiệt sẽ được render tại đây.</p>
-                <Button variant="outline" className="rounded-xl" onClick={() => toast.success("Đã kết nối API Heatmap")}>Tải lại Heatmap</Button>
-              </div>
+            <CardContent className="p-0 border-0">
+              <TeamHeatmap data={heatmapData} isLoading={isLoadingHeatmap} />
             </CardContent>
           </Card>
         </TabsContent>
