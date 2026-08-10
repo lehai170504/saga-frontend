@@ -219,6 +219,84 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<JiraTask | null>(null);
 
+  // ── Drag & Drop state ──────────────────────────────────────────────────────
+  const [draggedTask, setDraggedTask] = useState<JiraTask | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+  const [moveConfirm, setMoveConfirm] = useState<{
+    task: JiraTask;
+    targetColumnId: string;
+    targetColumnTitle: string;
+    transitionId: string;
+  } | null>(null);
+  const [isMoveLoading, setIsMoveLoading] = useState(false);
+  const transitionMutationBoard = useTransitionTask(projectId);
+
+  // Map column IDs to the Jira status name variants we might receive
+  const columnStatusNameMap: Record<string, string[]> = {
+    TODO:        ["To Do", "Backlog", "Open", "Reopened"],
+    IN_PROGRESS: ["In Progress", "In Development", "Selected for Development"],
+    IN_REVIEW:   ["In Review", "Review", "Code Review"],
+    DONE:        ["Done", "Closed", "Resolved"],
+  };
+
+  const handleDragStart = (e: React.DragEvent, task: JiraTask) => {
+    e.dataTransfer.effectAllowed = "move";
+    setDraggedTask(task);
+  };
+
+  const handleDragOver = (e: React.DragEvent, columnId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverColumn(columnId);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverColumn(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetColumnId: string) => {
+    e.preventDefault();
+    setDragOverColumn(null);
+    if (!draggedTask || !projectId) { setDraggedTask(null); return; }
+    // Ignore drop on same column
+    const currentStatus = draggedTask.status?.toUpperCase() || "TODO";
+    if (currentStatus === targetColumnId) { setDraggedTask(null); return; }
+
+    try {
+      const { taskApi } = await import("@/features/projects/api/taskApi");
+      const transitions = await taskApi.getTaskTransitions(projectId, draggedTask.id);
+      const candidates = columnStatusNameMap[targetColumnId] || [];
+      const matched = transitions.find(t =>
+        candidates.some(c => t.targetStatusName?.toLowerCase() === c.toLowerCase())
+      );
+      if (!matched) {
+        toast.error("Không tìm thấy bước chuyển hợp lệ sang trạng thái này.");
+        setDraggedTask(null);
+        return;
+      }
+      const col = columns.find(c => c.id === targetColumnId);
+      setMoveConfirm({
+        task: draggedTask,
+        targetColumnId,
+        targetColumnTitle: col?.title || targetColumnId,
+        transitionId: matched.transitionId,
+      });
+    } catch {
+      toast.error("Không thể kiểm tra các bước chuyển khả dụng.");
+    } finally {
+      setDraggedTask(null);
+    }
+  };
+
+  const handleConfirmMove = () => {
+    if (!moveConfirm || !projectId) return;
+    setIsMoveLoading(true);
+    transitionMutationBoard.mutate(
+      { taskId: moveConfirm.task.id, transitionId: moveConfirm.transitionId, idempotencyKey: crypto.randomUUID() },
+      { onSettled: () => { setIsMoveLoading(false); setMoveConfirm(null); } }
+    );
+  };
+
   const handleOpenEdit = (task: JiraTask) => {
     setTaskToEdit(task);
     setEditTitle(task.title || "");
@@ -570,9 +648,16 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                 const columnTasks = tasksByColumn[column.id] || [];
 
                 return (
-                  <div
+                <div
                     key={column.id}
-                    className={`flex flex-col gap-4 p-4 rounded-3xl border border-border/30 ${column.color} min-w-[250px]`}
+                    onDragOver={(e) => handleDragOver(e, column.id)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, column.id)}
+                    className={`flex flex-col gap-4 p-4 rounded-3xl border transition-all duration-200 min-w-[250px] ${
+                      dragOverColumn === column.id
+                        ? `border-primary/60 ${column.color} ring-2 ring-primary/30 scale-[1.01] shadow-lg`
+                        : `border-border/30 ${column.color}`
+                    }`}
                   >
                     {/* Column Header */}
                     <div className="flex items-center justify-between border-b border-border/20 pb-2">
@@ -594,14 +679,19 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                         </div>
                       ) : (
                         columnTasks.map((task) => (
-                          <Card
-                            key={task.id}
-                            onClick={() => {
-                              setSelectedTask(task);
-                              setIsDetailOpen(true);
-                            }}
-                            className="rounded-2xl border border-border/40 bg-card hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-pointer p-4 flex flex-col justify-between min-h-[140px]"
-                          >
+                           <Card
+                             key={task.id}
+                             draggable
+                             onDragStart={(e) => handleDragStart(e, task)}
+                             onDragEnd={() => setDraggedTask(null)}
+                             onClick={() => {
+                               setSelectedTask(task);
+                               setIsDetailOpen(true);
+                             }}
+                             className={`rounded-2xl border border-border/40 bg-card hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-grab active:cursor-grabbing p-4 flex flex-col justify-between min-h-[140px] ${
+                               draggedTask?.id === task.id ? "opacity-50 scale-95 ring-2 ring-primary/40" : ""
+                             }`}
+                           >
                             <div>
                               <div className="flex items-start justify-between gap-2">
                                 <h5 className="text-[13px] font-bold text-foreground leading-snug line-clamp-2 flex-1">
@@ -810,6 +900,51 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                 </div>
               </div>
             </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Move Confirm Dialog */}
+      <Dialog open={!!moveConfirm} onOpenChange={(open) => { if (!open && !isMoveLoading) setMoveConfirm(null); }}>
+        <DialogContent className="sm:max-w-[400px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40 space-y-2">
+            <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
+              Xác nhận chuyển trạng thái
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Thao tác này sẽ cập nhật trực tiếp lên Jira.
+            </DialogDescription>
+          </DialogHeader>
+          {moveConfirm && (
+            <div className="space-y-5 pt-4">
+              <p className="text-sm text-foreground leading-relaxed">
+                Bạn có chắc muốn chuyển công việc{" "}
+                <span className="font-extrabold text-primary">{moveConfirm.task.externalKey || moveConfirm.task.title}</span>{" "}
+                sang trạng thái{" "}
+                <span className="font-extrabold text-emerald-500">&quot;{moveConfirm.targetColumnTitle}&quot;</span>?
+              </p>
+              <div className="flex justify-end gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isMoveLoading}
+                  className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs"
+                  onClick={() => setMoveConfirm(null)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  type="button"
+                  disabled={isMoveLoading}
+                  className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={handleConfirmMove}
+                >
+                  {isMoveLoading ? (
+                    <><Loader2 size={14} className="animate-spin mr-1.5" /> Đang cập nhật...</>
+                  ) : "Xác nhận"}
+                </Button>
+              </div>
+            </div>
           )}
         </DialogContent>
       </Dialog>
