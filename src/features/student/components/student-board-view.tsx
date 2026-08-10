@@ -222,13 +222,6 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   // ── Drag & Drop state ──────────────────────────────────────────────────────
   const [draggedTask, setDraggedTask] = useState<JiraTask | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
-  const [moveConfirm, setMoveConfirm] = useState<{
-    task: JiraTask;
-    targetColumnId: string;
-    targetColumnTitle: string;
-    transitionId: string;
-  } | null>(null);
-  const [isMoveLoading, setIsMoveLoading] = useState(false);
   const transitionMutationBoard = useTransitionTask(projectId);
 
   // Map column IDs to the Jira status name variants we might receive
@@ -274,27 +267,17 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
         setDraggedTask(null);
         return;
       }
-      const col = columns.find(c => c.id === targetColumnId);
-      setMoveConfirm({
-        task: draggedTask,
-        targetColumnId,
-        targetColumnTitle: col?.title || targetColumnId,
+
+      transitionMutationBoard.mutate({
+        taskId: draggedTask.id,
         transitionId: matched.transitionId,
+        idempotencyKey: crypto.randomUUID()
       });
     } catch {
       toast.error("Không thể kiểm tra các bước chuyển khả dụng.");
     } finally {
       setDraggedTask(null);
     }
-  };
-
-  const handleConfirmMove = () => {
-    if (!moveConfirm || !projectId) return;
-    setIsMoveLoading(true);
-    transitionMutationBoard.mutate(
-      { taskId: moveConfirm.task.id, transitionId: moveConfirm.transitionId, idempotencyKey: crypto.randomUUID() },
-      { onSettled: () => { setIsMoveLoading(false); setMoveConfirm(null); } }
-    );
   };
 
   const handleOpenEdit = (task: JiraTask) => {
@@ -900,51 +883,6 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                 </div>
               </div>
             </>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Move Confirm Dialog */}
-      <Dialog open={!!moveConfirm} onOpenChange={(open) => { if (!open && !isMoveLoading) setMoveConfirm(null); }}>
-        <DialogContent className="sm:max-w-[400px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
-          <DialogHeader className="pb-4 border-b border-border/40 space-y-2">
-            <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
-              Xác nhận chuyển trạng thái
-            </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
-              Thao tác này sẽ cập nhật trực tiếp lên Jira.
-            </DialogDescription>
-          </DialogHeader>
-          {moveConfirm && (
-            <div className="space-y-5 pt-4">
-              <p className="text-sm text-foreground leading-relaxed">
-                Bạn có chắc muốn chuyển công việc{" "}
-                <span className="font-extrabold text-primary">{moveConfirm.task.externalKey || moveConfirm.task.title}</span>{" "}
-                sang trạng thái{" "}
-                <span className="font-extrabold text-emerald-500">&quot;{moveConfirm.targetColumnTitle}&quot;</span>?
-              </p>
-              <div className="flex justify-end gap-3 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isMoveLoading}
-                  className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs"
-                  onClick={() => setMoveConfirm(null)}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  type="button"
-                  disabled={isMoveLoading}
-                  className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs bg-primary text-primary-foreground hover:bg-primary/90"
-                  onClick={handleConfirmMove}
-                >
-                  {isMoveLoading ? (
-                    <><Loader2 size={14} className="animate-spin mr-1.5" /> Đang cập nhật...</>
-                  ) : "Xác nhận"}
-                </Button>
-              </div>
-            </div>
           )}
         </DialogContent>
       </Dialog>
