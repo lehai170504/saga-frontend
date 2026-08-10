@@ -522,7 +522,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                               </div>
 
                               <div className="space-y-0.5 mt-2.5">
-                                <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Due date</span>
+                                <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Hạn hoàn thành</span>
                                 <p className="text-xs text-foreground font-semibold">
                                   {formatDueDate(task.dueDate)}
                                 </p>
@@ -558,7 +558,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                         className="flex items-center gap-1.5 justify-start py-2.5 px-4 rounded-xl border border-dashed border-border/30 text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 hover:border-border transition-all duration-300 text-xs font-bold w-full cursor-pointer mt-2"
                       >
                         <Plus size={14} />
-                        Create
+                        Thêm công việc
                       </button>
                     </div>
                   </div>
