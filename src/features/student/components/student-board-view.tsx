@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
@@ -170,6 +171,7 @@ interface StudentBoardViewProps {
 }
 
 export function StudentBoardView({ courseId }: StudentBoardViewProps) {
+  const queryClient = useQueryClient();
   const [selectedSprintId, setSelectedSprintId] = useState<string>("ACTIVE_DEFAULT");
   const [selectedAssigneeId, setSelectedAssigneeId] = useState<string>("ALL");
   const [keyword, setKeyword] = useState("");
@@ -222,6 +224,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   // ── Drag & Drop state ──────────────────────────────────────────────────────
   const [draggedTask, setDraggedTask] = useState<JiraTask | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+  const [pendingTransitions, setPendingTransitions] = useState<Record<string, string>>({});
   const transitionMutationBoard = useTransitionTask(projectId);
 
   // Map column IDs to the Jira status name variants we might receive
@@ -251,32 +254,61 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     e.preventDefault();
     setDragOverColumn(null);
     if (!draggedTask || !projectId) { setDraggedTask(null); return; }
-    // Ignore drop on same column
-    const currentStatus = draggedTask.status?.toUpperCase() || "TODO";
-    if (currentStatus === targetColumnId) { setDraggedTask(null); return; }
+
+    const targetTask = draggedTask;
+    setDraggedTask(null);
+
+    // Ignore drop if already in target column or currently pending transition
+    const currentStatus = pendingTransitions[targetTask.id] || targetTask.status?.toUpperCase() || "TODO";
+    if (currentStatus === targetColumnId) return;
 
     try {
       const { taskApi } = await import("@/features/projects/api/taskApi");
-      const transitions = await taskApi.getTaskTransitions(projectId, draggedTask.id);
+      const transitions = await taskApi.getTaskTransitions(projectId, targetTask.id);
       const candidates = columnStatusNameMap[targetColumnId] || [];
       const matched = transitions.find(t =>
         candidates.some(c => t.targetStatusName?.toLowerCase() === c.toLowerCase())
       );
       if (!matched) {
         toast.error("Không tìm thấy bước chuyển hợp lệ sang trạng thái này.");
-        setDraggedTask(null);
         return;
       }
 
-      transitionMutationBoard.mutate({
-        taskId: draggedTask.id,
-        transitionId: matched.transitionId,
-        idempotencyKey: crypto.randomUUID()
-      });
+      // Optimistically move task to target column with loading/opaque state
+      const taskId = targetTask.id;
+      setPendingTransitions((prev) => ({ ...prev, [taskId]: targetColumnId }));
+
+      transitionMutationBoard.mutate(
+        {
+          taskId,
+          transitionId: matched.transitionId,
+          idempotencyKey: crypto.randomUUID(),
+        },
+        {
+          onSuccess: () => {
+            // Optimistically update cache so task stays in targetColumnId permanently without jumping back
+            queryClient.setQueriesData({ queryKey: ["project-tasks", projectId] }, (oldData: unknown) => {
+              const data = oldData as { content?: JiraTask[] };
+              if (!data || !data.content) return oldData;
+              return {
+                ...data,
+                content: data.content.map((t: JiraTask) =>
+                  t.id === taskId ? { ...t, status: targetColumnId } : t
+                ),
+              };
+            });
+          },
+          onSettled: () => {
+            setPendingTransitions((prev) => {
+              const next = { ...prev };
+              delete next[taskId];
+              return next;
+            });
+          },
+        }
+      );
     } catch {
       toast.error("Không thể kiểm tra các bước chuyển khả dụng.");
-    } finally {
-      setDraggedTask(null);
     }
   };
 
@@ -466,7 +498,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   };
 
   tasks.forEach((task) => {
-    const status = task.status?.toUpperCase() || "TODO";
+    const status = pendingTransitions[task.id] || task.status?.toUpperCase() || "TODO";
     if (status === "CANCELLED") return; // Ignore cancelled tasks
     if (tasksByColumn[status]) {
       tasksByColumn[status].push(task);
@@ -661,51 +693,67 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                           <span className="text-[10px] font-bold uppercase tracking-wider">Trống</span>
                         </div>
                       ) : (
-                        columnTasks.map((task) => (
-                           <Card
-                             key={task.id}
-                             draggable
-                             onDragStart={(e) => handleDragStart(e, task)}
-                             onDragEnd={() => setDraggedTask(null)}
-                             onClick={() => {
-                               setSelectedTask(task);
-                               setIsDetailOpen(true);
-                             }}
-                             className={`rounded-2xl border border-border/40 bg-card hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-grab active:cursor-grabbing p-4 flex flex-col justify-between min-h-[140px] ${
-                               draggedTask?.id === task.id ? "opacity-50 scale-95 ring-2 ring-primary/40" : ""
-                             }`}
-                           >
-                            <div>
-                              <div className="flex items-start justify-between gap-2">
-                                <h5 className="text-[13px] font-bold text-foreground leading-snug line-clamp-2 flex-1">
-                                  {task.title}
-                                </h5>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 cursor-pointer shrink-0 flex items-center justify-center"
-                                    >
-                                      <MoreVertical size={14} />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className="rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[100px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
-                                    <DropdownMenuItem
-                                      onClick={() => handleOpenEdit(task)}
-                                      className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
-                                    >
-                                      Sửa
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleOpenDelete(task)}
-                                      className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
-                                    >
-                                      Xóa
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </div>
+                        columnTasks.map((task) => {
+                          const isPendingMove = !!pendingTransitions[task.id];
+                          const isDraggingThis = draggedTask?.id === task.id;
+
+                          return (
+                            <Card
+                              key={task.id}
+                              draggable={!isPendingMove}
+                              onDragStart={(e) => handleDragStart(e, task)}
+                              onDragEnd={() => setDraggedTask(null)}
+                              onClick={() => {
+                                if (isPendingMove) return;
+                                setSelectedTask(task);
+                                setIsDetailOpen(true);
+                              }}
+                              className={`rounded-2xl border border-border/40 bg-card transition-all duration-300 p-4 flex flex-col justify-between min-h-[140px] ${
+                                isPendingMove
+                                  ? "opacity-60 bg-muted/40 border-dashed border-primary/50 cursor-wait animate-pulse"
+                                  : isDraggingThis
+                                  ? "opacity-50 scale-95 ring-2 ring-primary/40 cursor-grabbing"
+                                  : "hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] cursor-grab active:cursor-grabbing"
+                              }`}
+                            >
+                              <div>
+                                <div className="flex items-start justify-between gap-2">
+                                  <h5 className="text-[13px] font-bold text-foreground leading-snug line-clamp-2 flex-1">
+                                    {task.title}
+                                  </h5>
+                                  {isPendingMove ? (
+                                    <div className="flex items-center gap-1.5 text-primary text-[10px] font-bold shrink-0 bg-primary/10 px-2 py-1 rounded-lg border border-primary/20 animate-pulse">
+                                      <Loader2 size={12} className="animate-spin" />
+                                      <span>Đang chuyển...</span>
+                                    </div>
+                                  ) : (
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-7 w-7 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 cursor-pointer shrink-0 flex items-center justify-center"
+                                        >
+                                          <MoreVertical size={14} />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end" className="rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[100px] p-1.5 animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
+                                        <DropdownMenuItem
+                                          onClick={() => handleOpenEdit(task)}
+                                          className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
+                                        >
+                                          Sửa
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                          onClick={() => handleOpenDelete(task)}
+                                          className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
+                                        >
+                                          Xóa
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  )}
+                                </div>
 
                               <div className="space-y-0.5 mt-2.5">
                                 <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Hạn hoàn thành</span>
@@ -736,8 +784,9 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                               </div>
                             </div>
                           </Card>
-                        ))
-                      )}
+                        );
+                      })
+                    )}
 
                       <button
                         onClick={() => setIsCreateOpen(true)}
