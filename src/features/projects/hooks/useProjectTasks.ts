@@ -3,6 +3,7 @@ import { taskApi, GetTasksParams, CreateTaskRequest, UpdateTaskRequest } from ".
 import { JiraTask } from "../types";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { TASK_MESSAGES } from "../constants/messages";
 
 export const useProjectTasks = (projectId: string, params?: GetTasksParams) => {
   return useQuery({
@@ -23,14 +24,14 @@ export const useTaskDetail = (projectId: string, taskId: string) => {
 export const useCreateTask = (projectId: string, sprintId?: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ 
-      data, 
-      idempotencyKey, 
-      assignIdempotencyKey 
-    }: { 
-      data: CreateTaskRequest; 
-      idempotencyKey: string; 
-      assignIdempotencyKey: string; 
+    mutationFn: async ({
+      data,
+      idempotencyKey,
+      assignIdempotencyKey
+    }: {
+      data: CreateTaskRequest;
+      idempotencyKey: string;
+      assignIdempotencyKey: string;
     }) => {
       const newTask = await taskApi.createTask(projectId, data, idempotencyKey);
       if (sprintId && sprintId !== "ALL" && sprintId !== "ACTIVE_DEFAULT") {
@@ -40,11 +41,11 @@ export const useCreateTask = (projectId: string, sprintId?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
-      toast.success("Tạo Jira task thành công!");
+      toast.success(TASK_MESSAGES.CREATE.SUCCESS);
     },
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi tạo Jira task.";
+      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.CREATE.ERROR;
       toast.error(errMsg);
     }
   });
@@ -89,11 +90,11 @@ export const useUpdateTask = (projectId: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
-      toast.success("Cập nhật task thành công!");
+      toast.success(TASK_MESSAGES.UPDATE.SUCCESS);
     },
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi cập nhật task.";
+      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.UPDATE.ERROR;
       toast.error(errMsg);
     }
   });
@@ -128,14 +129,14 @@ export const useUpdateTaskEstimation = (projectId: string) => {
         });
       }
       const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi cập nhật điểm.";
+      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.UPDATE_ESTIMATION.ERROR;
       toast.error(errMsg);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     },
     onSuccess: () => {
-      toast.success("Cập nhật điểm công việc (Story Point) thành công!");
+      toast.success(TASK_MESSAGES.UPDATE_ESTIMATION.SUCCESS);
     },
   });
 };
@@ -177,9 +178,9 @@ export const useUpdateTaskAssignee = (projectId: string) => {
       const status = axiosErr?.response?.status;
       const backendMsg = axiosErr?.response?.data?.message || "";
 
-      let userMsg = "Có lỗi xảy ra khi đổi người thực hiện.";
+      let userMsg: string = TASK_MESSAGES.UPDATE_ASSIGNEE.ERROR;
       if (errCode === "JIRA_RESOURCE_NOT_FOUND" || status === 409 || backendMsg.includes("Jira resource")) {
-        userMsg = "Thành viên này chưa được thêm vào trang Jira (Jira Site) của dự án.";
+        userMsg = TASK_MESSAGES.UPDATE_ASSIGNEE.NOT_FOUND;
       } else if (backendMsg) {
         userMsg = backendMsg;
       }
@@ -190,7 +191,7 @@ export const useUpdateTaskAssignee = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     },
     onSuccess: () => {
-      toast.success("Cập nhật người thực hiện thành công!");
+      toast.success(TASK_MESSAGES.UPDATE_ASSIGNEE.SUCCESS);
     },
   });
 };
@@ -228,14 +229,14 @@ export const useUpdateTaskPriority = (projectId: string) => {
         });
       }
       const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi đổi độ ưu tiên.";
+      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.UPDATE_PRIORITY.ERROR;
       toast.error(errMsg);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     },
     onSuccess: () => {
-      toast.success("Cập nhật độ ưu tiên thành công!");
+      toast.success(TASK_MESSAGES.UPDATE_PRIORITY.SUCCESS);
     },
   });
 };
@@ -247,11 +248,11 @@ export const useDeleteTask = (projectId: string) => {
       taskApi.deleteTask(projectId, taskId, idempotencyKey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
-      toast.success("Xóa task thành công!");
+      toast.success(TASK_MESSAGES.DELETE.SUCCESS);
     },
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi xóa task.";
+      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.DELETE.ERROR;
       toast.error(errMsg);
     }
   });
@@ -272,11 +273,11 @@ export const useTransitionTask = (projectId: string) => {
       taskApi.transitionTask(projectId, taskId, transitionId, idempotencyKey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
-      toast.success("Cập nhật trạng thái công việc thành công!");
+      toast.success(TASK_MESSAGES.TRANSITION.SUCCESS);
     },
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || "Có lỗi xảy ra khi cập nhật trạng thái.";
+      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.TRANSITION.ERROR;
       toast.error(errMsg);
     }
   });

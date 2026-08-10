@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useCourseStudents } from "../hooks/useCourseStudents";
+import { useExportCourseReport } from "../hooks/useCourses";
 import { ImportStudentsDialog } from "./import-students-dialog";
 import { StudentDetailModal } from "./student-detail-modal";
-import { courseApi } from "../api/courseApi";
-import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -34,7 +33,6 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
   const [sortBy, setSortBy] = useState("studentCode");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
-  const [isExporting, setIsExporting] = useState(false);
 
   const { data, isLoading, refetch } = useCourseStudents(courseId, {
     keyword,
@@ -44,38 +42,15 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
     sortDirection
   });
 
+  const { mutate: exportReport, isPending: isExporting } = useExportCourseReport();
+
   const handleSearch = () => {
     setKeyword(searchInput);
     setPage(0); // Reset to first page on new search
   };
 
-  const handleExport = async () => {
-    try {
-      setIsExporting(true);
-      const response = await courseApi.exportCourseReport(courseId);
-
-      // Create a blob from the response data
-      const blob = new Blob([response.data as BlobPart], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-      const url = window.URL.createObjectURL(blob);
-
-      // Create a temporary anchor element to trigger download
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Course_Report_${courseClassName || courseId}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-
-      // Cleanup
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
-      toast.success("Xuất file báo cáo thành công");
-    } catch (error) {
-      console.error("Export failed:", error);
-      toast.error("Xuất file báo cáo thất bại");
-    } finally {
-      setIsExporting(false);
-    }
+  const handleExport = () => {
+    exportReport({ courseId, courseClassName });
   };
 
   const handleSort = (column: string) => {

@@ -53,12 +53,8 @@ export function ProjectDetailsModal({ projectId, trigger }: ProjectDetailsModalP
       { projectId, data: { name, description } },
       {
         onSuccess: () => {
-          toast.success("Cập nhật dự án thành công!");
           setIsEditing(false);
-        },
-        onError: () => {
-          toast.error("Có lỗi xảy ra khi cập nhật dự án");
-        },
+        }
       }
     );
   };

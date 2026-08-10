@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -40,22 +39,19 @@ export function CreateSemesterDialog() {
   });
 
   const onSubmit = async (data: SemesterFormValues) => {
-    try {
-      // Append seconds if user didn't select them (datetime-local sometimes omits seconds)
-      const payload = {
-        ...data,
-        startDate: data.startDate.length === 16 ? `${data.startDate}:00` : data.startDate,
-        endDate: data.endDate.length === 16 ? `${data.endDate}:00` : data.endDate,
-      };
+    // Append seconds if user didn't select them (datetime-local sometimes omits seconds)
+    const payload = {
+      ...data,
+      startDate: data.startDate.length === 16 ? `${data.startDate}:00` : data.startDate,
+      endDate: data.endDate.length === 16 ? `${data.endDate}:00` : data.endDate,
+    };
 
-      await createSemester(payload);
-      reset();
-      setOpen(false);
-    } catch (error: unknown) {
-
-      console.error("Failed to create semester", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi tạo học kỳ.");
-    }
+    createSemester(payload, {
+      onSuccess: () => {
+        reset();
+        setOpen(false);
+      }
+    });
   };
 
   return (

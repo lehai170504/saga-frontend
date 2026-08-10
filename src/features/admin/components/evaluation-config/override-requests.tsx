@@ -19,15 +19,7 @@ export function OverrideRequests() {
     if (message === null) return; // User cancelled
 
     decideMutation.mutate(
-      { requestId: id, data: { decision: "APPROVED", feedbackMessage: message } },
-      {
-        onSuccess: () => {
-          toast.success("Đã phê duyệt yêu cầu thành công!");
-        },
-        onError: () => {
-          toast.error("Có lỗi xảy ra khi phê duyệt.");
-        }
-      }
+      { requestId: id, data: { decision: "APPROVED", feedbackMessage: message } }
     );
   };
 
@@ -40,15 +32,7 @@ export function OverrideRequests() {
     }
 
     decideMutation.mutate(
-      { requestId: id, data: { decision: "REJECTED", feedbackMessage: message } },
-      {
-        onSuccess: () => {
-          toast.success("Đã từ chối yêu cầu.");
-        },
-        onError: () => {
-          toast.error("Có lỗi xảy ra khi từ chối.");
-        }
-      }
+      { requestId: id, data: { decision: "REJECTED", feedbackMessage: message } }
     );
   };
 

@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2, Settings2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -62,24 +61,21 @@ export function RequestWeightDialog({
   });
 
   const onSubmit = async (values: FormValues) => {
-    try {
-      await requestWeightChange({
-        courseId,
-        data: {
-          codeWeight: values.codeWeight / 100,
-          documentWeight: values.documentWeight / 100,
-          designWeight: values.designWeight / 100,
-          reason: values.reason,
-          lecturerId,
-        },
-      });
-      toast.success("Đã gửi yêu cầu thay đổi trọng số thành công");
-      setOpen(false);
-      form.reset();
-    } catch (error) {
-      toast.error("Có lỗi xảy ra khi gửi yêu cầu");
-      console.error(error);
-    }
+    requestWeightChange({
+      courseId,
+      data: {
+        codeWeight: values.codeWeight / 100,
+        documentWeight: values.documentWeight / 100,
+        designWeight: values.designWeight / 100,
+        reason: values.reason,
+        lecturerId,
+      },
+    }, {
+      onSuccess: () => {
+        setOpen(false);
+        form.reset();
+      }
+    });
   };
 
   return (

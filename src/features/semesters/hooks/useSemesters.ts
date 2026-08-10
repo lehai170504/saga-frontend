@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { semesterApi } from "../api/semesterApi";
 import { SemesterRequest } from "../types";
+import { toast } from "sonner";
+import { SEMESTER_MESSAGES } from "../constants/messages";
 
 export const useSemesters = (params?: { keyword?: string; page?: number; size?: number }) => {
   return useQuery({
@@ -23,7 +25,12 @@ export const useCreateSemester = () => {
   return useMutation({
     mutationFn: (data: SemesterRequest) => semesterApi.createSemester(data),
     onSuccess: () => {
+      toast.success(SEMESTER_MESSAGES.CREATE.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.CREATE.ERROR;
+      toast.error(errorMessage);
     },
   });
 };
@@ -34,8 +41,13 @@ export const useUpdateSemester = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: SemesterRequest }) => semesterApi.updateSemester(id, data),
     onSuccess: (_, variables) => {
+      toast.success(SEMESTER_MESSAGES.UPDATE.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
       queryClient.invalidateQueries({ queryKey: ["semesters", variables.id] });
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.UPDATE.ERROR;
+      toast.error(errorMessage);
     },
   });
 };
@@ -46,7 +58,12 @@ export const useDeleteSemester = () => {
   return useMutation({
     mutationFn: (id: string) => semesterApi.deleteSemester(id),
     onSuccess: () => {
+      toast.success(SEMESTER_MESSAGES.DELETE.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.DELETE.ERROR;
+      toast.error(errorMessage);
     },
   });
 };
@@ -63,8 +80,13 @@ export const useSetActiveSemester = () => {
   return useMutation({
     mutationFn: (semesterId: string) => semesterApi.setActiveSemester(semesterId),
     onSuccess: () => {
+      toast.success(SEMESTER_MESSAGES.SET_ACTIVE.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["semesters", "active"] });
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.SET_ACTIVE.ERROR;
+      toast.error(errorMessage);
     },
   });
 };

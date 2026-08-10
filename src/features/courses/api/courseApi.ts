@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
-import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse, CourseStudentDetail } from "../types";
+import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse, CourseStudentDetail, ImportStudentsResponse } from "../types";
 
 export const courseApi = {
   getCourses: async (params?: { subjectId?: string; semesterId?: string; instructorId?: string; page?: number; size?: number }) => {
@@ -23,8 +23,16 @@ export const courseApi = {
     return axiosInstance.delete<never, void>(`/api/v1/courses/${id}`);
   },
 
+  adminImportStudentsTemplate: async (courseId: string, formData: FormData) => {
+    return axiosInstance.post<never, ImportStudentsResponse>(`/api/v1/courses/${courseId}/admin-import-students-template`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+
   importStudents: async (courseId: string, formData: FormData) => {
-    return axiosInstance.post<never, string>(`/api/v1/courses/${courseId}/import-students`, formData, {
+    return axiosInstance.post<never, ImportStudentsResponse>(`/api/v1/courses/${courseId}/import-students`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

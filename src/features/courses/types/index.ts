@@ -107,3 +107,14 @@ export interface MyTeamMembersResponse {
   }>;
 }
 
+export interface ImportStudentsResponse {
+  operation: string;
+  message: string;
+  totalRows: number;
+  createdStudents: number;
+  reusedStudents: number;
+  invitationsQueued: number;
+  teamsCreated: number;
+  membershipsCreated: number;
+  groupingApplied: boolean;
+}

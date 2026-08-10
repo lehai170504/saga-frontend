@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
 
 import { Semester } from "../types";
 import { UpdateSemesterDialog } from "./update-semester-dialog";
@@ -29,13 +28,7 @@ export function SemesterActions({ semester, isActive = false }: SemesterActionsP
   const setActiveMutation = useSetActiveSemester();
 
   const handleSetActive = async () => {
-    try {
-      await setActiveMutation.mutateAsync(semester.id);
-      toast.success(`Đã thiết lập ${semester.name} làm học kỳ hiện tại`);
-    } catch (error) {
-      console.error("Set active semester failed:", error);
-      toast.error("Không thể thiết lập học kỳ hiện tại");
-    }
+    setActiveMutation.mutate(semester.id);
   };
 
   return (

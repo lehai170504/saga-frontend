@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Edit2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -78,14 +77,9 @@ export function EditCourseDialog({ courseId }: EditCourseDialogProps) {
   }, [course, open, reset]);
 
   const onSubmit = async (data: CourseFormValues) => {
-    try {
-      await updateCourse({ id: courseId, data });
-      toast.success("Cập nhật khóa học thành công!");
-      setOpen(false);
-    } catch (error: unknown) {
-      toast.error("Cập nhật khóa học thất bại!");
-      console.error("Failed to update course", error);
-    }
+    updateCourse({ id: courseId, data }, {
+      onSuccess: () => setOpen(false),
+    });
   };
 
   return (

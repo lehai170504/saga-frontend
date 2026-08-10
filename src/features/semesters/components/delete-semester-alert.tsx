@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -27,14 +26,9 @@ export function DeleteSemesterAlert({ semester, open, onOpenChange }: DeleteSeme
   const { mutateAsync: deleteSemester, isPending } = useDeleteSemester();
 
   const handleDelete = async () => {
-    try {
-      await deleteSemester(semester.id);
-      onOpenChange(false);
-      toast.success("Xóa học kỳ thành công!");
-    } catch (error: unknown) {
-      console.error("Failed to delete semester", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi xóa học kỳ.");
-    }
+    deleteSemester(semester.id, {
+      onSuccess: () => onOpenChange(false)
+    });
   };
 
   return (

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { projectApi } from "../api/projectApi";
 import { CreateTeamProjectRequest } from "../types";
 import { toast } from "sonner";
+import { PROJECT_MESSAGES } from "../constants/messages";
 
 export const useCreateTeamProject = (teamId: string) => {
   const queryClient = useQueryClient();
@@ -28,10 +29,10 @@ export const useUpdateProjectDetail = (projectId: string) => {
       projectApi.updateProjectDetail(projectId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-detail", projectId] });
-      toast.success("Cập nhật thông tin dự án thành công!");
+      toast.success(PROJECT_MESSAGES.UPDATE.SUCCESS);
     },
     onError: (err: Error | Record<string, unknown>) => {
-      toast.error((err as Error).message || "Có lỗi xảy ra khi cập nhật thông tin dự án.");
+      toast.error((err as Error).message || PROJECT_MESSAGES.UPDATE.ERROR);
     }
   });
 };

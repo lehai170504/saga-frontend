@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -40,15 +39,12 @@ export function CreateRubricDialog() {
   });
 
   const onSubmit = async (data: RubricFormValues) => {
-    try {
-      await createRubric(data);
-      reset();
-      setOpen(false);
-      toast.success("Thêm tiêu chí thành công!");
-    } catch (error: unknown) {
-      console.error("Failed to create rubric", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi thêm tiêu chí.");
-    }
+    createRubric(data, {
+      onSuccess: () => {
+        reset();
+        setOpen(false);
+      }
+    });
   };
 
   return (

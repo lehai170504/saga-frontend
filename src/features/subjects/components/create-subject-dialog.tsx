@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -38,15 +37,12 @@ export function CreateSubjectDialog() {
   });
 
   const onSubmit = async (data: SubjectFormValues) => {
-    try {
-      await createSubject(data);
-      reset();
-      setOpen(false);
-    } catch (error: unknown) {
-      
-      console.error("Failed to create subject", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi tạo môn học.");
-    }
+    createSubject(data, {
+      onSuccess: () => {
+        reset();
+        setOpen(false);
+      }
+    });
   };
 
   return (

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -38,15 +37,12 @@ export function CreateClassDialog() {
   });
 
   const onSubmit = async (data: ClassFormValues) => {
-    try {
-      await createClass(data);
-      reset();
-      setOpen(false);
-    } catch (error: unknown) {
-
-      console.error("Failed to create class", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi tạo lớp học.");
-    }
+    createClass(data, {
+      onSuccess: () => {
+        reset();
+        setOpen(false);
+      }
+    });
   };
 
   return (

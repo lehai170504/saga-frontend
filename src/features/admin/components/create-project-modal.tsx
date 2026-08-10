@@ -33,13 +33,9 @@ export function CreateProjectModal({ teamId, trigger }: CreateProjectModalProps)
       { teamId, data: { name } },
       {
         onSuccess: () => {
-          toast.success("Tạo dự án thành công!");
           setOpen(false);
           setName("");
-        },
-        onError: () => {
-          toast.error("Có lỗi xảy ra khi tạo dự án");
-        },
+        }
       }
     );
   };

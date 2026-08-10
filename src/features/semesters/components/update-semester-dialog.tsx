@@ -4,7 +4,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -56,20 +55,15 @@ export function UpdateSemesterDialog({ semester, open, onOpenChange }: UpdateSem
   });
 
   const onSubmit = async (data: SemesterFormValues) => {
-    try {
-      const payload = {
-        ...data,
-        startDate: data.startDate.length === 16 ? `${data.startDate}:00` : data.startDate,
-        endDate: data.endDate.length === 16 ? `${data.endDate}:00` : data.endDate,
-      };
+    const payload = {
+      ...data,
+      startDate: data.startDate.length === 16 ? `${data.startDate}:00` : data.startDate,
+      endDate: data.endDate.length === 16 ? `${data.endDate}:00` : data.endDate,
+    };
 
-      await updateSemester({ id: semester.id, data: payload });
-      onOpenChange(false);
-      toast.success("Cập nhật học kỳ thành công!");
-    } catch (error: unknown) {
-      console.error("Failed to update semester", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi cập nhật học kỳ.");
-    }
+    updateSemester({ id: semester.id, data: payload }, {
+      onSuccess: () => onOpenChange(false)
+    });
   };
 
   return (

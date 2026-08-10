@@ -53,13 +53,9 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
       { name: projectName },
       {
         onSuccess: () => {
-          toast.success("Khởi tạo dự án thành công!");
           setIsDialogOpen(false);
           setProjectName("");
           refetch();
-        },
-        onError: () => {
-          toast.error("Có lỗi xảy ra khi khởi tạo dự án");
         }
       }
     );

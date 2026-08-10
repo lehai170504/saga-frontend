@@ -113,11 +113,7 @@ export function StudentProjectCreate() {
 
     createProject({ name: projectName }, {
       onSuccess: () => {
-        toast.success("Khởi tạo dự án thành công!");
         refetch();
-      },
-      onError: (err: Error) => {
-        toast.error(err.message || "Có lỗi xảy ra khi tạo dự án");
       }
     });
   };

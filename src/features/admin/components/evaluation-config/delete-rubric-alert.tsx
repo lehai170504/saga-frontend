@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -29,14 +28,9 @@ export function DeleteRubricAlert({ open, onOpenChange, rubric }: DeleteRubricAl
     e.preventDefault();
     if (!rubric) return;
 
-    try {
-      await deleteRubric(rubric.rubricId);
-      onOpenChange(false);
-      toast.success("Đã xóa tiêu chí thành công!");
-    } catch (error: unknown) {
-      console.error("Failed to delete rubric", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi xóa tiêu chí.");
-    }
+    deleteRubric(rubric.rubricId, {
+      onSuccess: () => onOpenChange(false)
+    });
   };
 
   return (

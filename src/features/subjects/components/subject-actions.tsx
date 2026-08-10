@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MoreVertical, Edit, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -52,25 +51,15 @@ export function SubjectActions({ subject }: SubjectActionsProps) {
   });
 
   const onEditSubmit = async (data: SubjectFormValues) => {
-    try {
-      await updateSubject({ id: subject.id, data });
-      setIsEditOpen(false);
-      toast.success("Cập nhật môn học thành công.");
-    } catch (error: unknown) {
-      console.error("Failed to update subject", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi cập nhật.");
-    }
+    updateSubject({ id: subject.id, data }, {
+      onSuccess: () => setIsEditOpen(false)
+    });
   };
 
   const onDeleteConfirm = async () => {
-    try {
-      await deleteSubject(subject.id);
-      setIsDeleteOpen(false);
-      toast.success("Xóa môn học thành công.");
-    } catch (error: unknown) {
-      console.error("Failed to delete subject", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi xóa.");
-    }
+    deleteSubject(subject.id, {
+      onSuccess: () => setIsDeleteOpen(false)
+    });
   };
 
   return (

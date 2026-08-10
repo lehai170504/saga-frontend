@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   Dialog,
@@ -56,14 +55,9 @@ export function UpdateRubricDialog({ open, onOpenChange, rubric }: UpdateRubricD
 
   const onSubmit = async (data: RubricFormValues) => {
     if (!rubric) return;
-    try {
-      await updateRubric({ id: rubric.rubricId, data });
-      onOpenChange(false);
-      toast.success("Cập nhật tiêu chí thành công!");
-    } catch (error: unknown) {
-      console.error("Failed to update rubric", error);
-      toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi cập nhật tiêu chí.");
-    }
+    updateRubric({ id: rubric.rubricId, data }, {
+      onSuccess: () => onOpenChange(false)
+    });
   };
 
   return (

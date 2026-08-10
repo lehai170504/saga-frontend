@@ -43,16 +43,12 @@ export function ImportUsersModal() {
       return;
     }
 
-    try {
-      const response = await importUsers({ role, file });
-      toast.success(
-        `Import thành công! Đã tạo mới: ${response.createdCount}, Tái sử dụng: ${response.reusedCount}.`
-      );
-      setOpen(false);
-      setFile(null); // Reset after success
-    } catch {
-      toast.error("Đã xảy ra lỗi trong quá trình import.");
-    }
+    importUsers({ role, file }, {
+      onSuccess: () => {
+        setOpen(false);
+        setFile(null); // Reset after success
+      }
+    });
   };
 
   return (
