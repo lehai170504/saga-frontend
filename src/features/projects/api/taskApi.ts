@@ -73,6 +73,36 @@ export const taskApi = {
     });
   },
 
+  updateTaskAssignee: async (projectId: string, taskId: string, assigneeId: string | null, idempotencyKey: string) => {
+    return axiosInstance.put<never, unknown>(`/api/v1/projects/${projectId}/tasks/${taskId}/assignee`, {
+      assigneeId
+    }, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
+  },
+
+  updateTaskEstimation: async (projectId: string, taskId: string, storyPoint: number | null, idempotencyKey: string) => {
+    return axiosInstance.put<never, unknown>(`/api/v1/projects/${projectId}/tasks/${taskId}/estimation`, {
+      storyPoint
+    }, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
+  },
+
+  transitionTask: async (projectId: string, taskId: string, transitionId: string, idempotencyKey: string) => {
+    return axiosInstance.post<never, unknown>(`/api/v1/projects/${projectId}/tasks/${taskId}/transitions`, {
+      transitionId
+    }, {
+      headers: {
+        "Idempotency-Key": idempotencyKey
+      }
+    });
+  },
+
   deleteTask: async (projectId: string, taskId: string, idempotencyKey: string) => {
     return axiosInstance.delete(`/api/v1/projects/${projectId}/tasks/${taskId}`, {
       headers: {

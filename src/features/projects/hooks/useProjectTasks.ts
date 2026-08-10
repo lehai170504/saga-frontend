@@ -44,8 +44,33 @@ export const useCreateTask = (projectId: string, sprintId?: string) => {
 export const useUpdateTask = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ taskId, data, idempotencyKey }: { taskId: string; data: UpdateTaskRequest; idempotencyKey: string }) =>
-      taskApi.updateTask(projectId, taskId, data, idempotencyKey),
+    mutationFn: async ({
+      taskId,
+      data,
+      assigneeId,
+      sprintId,
+      mainIdempotencyKey,
+      assigneeIdempotencyKey,
+      sprintIdempotencyKey
+    }: {
+      taskId: string;
+      data?: UpdateTaskRequest;
+      assigneeId?: string | null;
+      sprintId?: string | null;
+      mainIdempotencyKey?: string;
+      assigneeIdempotencyKey?: string;
+      sprintIdempotencyKey?: string;
+    }) => {
+      if (data && Object.keys(data).length > 0) {
+        await taskApi.updateTask(projectId, taskId, data, mainIdempotencyKey!);
+      }
+      if (assigneeId !== undefined) {
+        await taskApi.updateTaskAssignee(projectId, taskId, assigneeId, assigneeIdempotencyKey!);
+      }
+      if (sprintId !== undefined) {
+        await taskApi.assignTaskToSprint(projectId, taskId, sprintId, sprintIdempotencyKey!);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
       toast.success("Cập nhật task thành công!");

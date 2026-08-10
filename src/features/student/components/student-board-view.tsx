@@ -127,27 +127,62 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
       return;
     }
 
-    const payload: UpdateTaskRequest = {
-      title: editTitle.trim(),
-      type: editIssueType,
+    // 1. Check dirty main fields
+    const isTitleChanged = editTitle.trim() !== (taskToEdit.title || "").trim();
+    const isDescriptionChanged = editDescription.trim() !== (taskToEdit.description || "").trim();
+    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
+    const isDueDateChanged = editDueDate !== origDueDate;
+    const isPriorityChanged = editPriority !== (taskToEdit.priority || "DEFAULT");
+
+    const newLabels = editLabels ? editLabels.split(",").map(s => s.trim()).filter(Boolean) : [];
+    const origLabels = taskToEdit.labels || [];
+    const isLabelsChanged = newLabels.length !== origLabels.length || newLabels.some((l, idx) => l !== origLabels[idx]);
+
+    const newComponents = editComponentIds ? editComponentIds.split(",").map(s => s.trim()).filter(Boolean) : [];
+    const origComponents = taskToEdit.components ? taskToEdit.components.map(c => c.name) : [];
+    const isComponentsChanged = newComponents.length !== origComponents.length || newComponents.some((c, idx) => c !== origComponents[idx]);
+
+    const mainPayload: UpdateTaskRequest = {};
+    if (isTitleChanged) mainPayload.title = editTitle.trim();
+    if (isDescriptionChanged) mainPayload.description = editDescription.trim();
+    if (isDueDateChanged) mainPayload.dueDate = editDueDate || null;
+    if (isPriorityChanged) mainPayload.priority = editPriority === "DEFAULT" ? undefined : editPriority;
+    if (isLabelsChanged) mainPayload.labels = newLabels;
+    if (isComponentsChanged) mainPayload.componentIds = newComponents;
+
+    // 2. Check assignee changes
+    const origAssignee = taskToEdit.assignee?.id || "UNASSIGNED";
+    const isAssigneeChanged = editAssignee !== origAssignee;
+
+    // 3. If nothing changed, just close
+    if (Object.keys(mainPayload).length === 0 && !isAssigneeChanged) {
+      setIsEditOpen(false);
+      setTaskToEdit(null);
+      return;
+    }
+
+    const mutationArgs: {
+      taskId: string;
+      data?: UpdateTaskRequest;
+      assigneeId?: string | null;
+      mainIdempotencyKey?: string;
+      assigneeIdempotencyKey?: string;
+    } = {
+      taskId: taskToEdit.id
     };
 
-    if (editPriority !== "DEFAULT") {
-      payload.priority = editPriority;
-    } else {
-      payload.priority = undefined;
+    if (Object.keys(mainPayload).length > 0) {
+      mutationArgs.data = mainPayload;
+      mutationArgs.mainIdempotencyKey = crypto.randomUUID();
     }
-    if (editDescription.trim()) {
-      payload.description = editDescription.trim();
-    }
-    payload.dueDate = editDueDate || null;
-    payload.labels = editLabels ? editLabels.split(",").map(s => s.trim()).filter(Boolean) : [];
-    payload.componentIds = editComponentIds ? editComponentIds.split(",").map(s => s.trim()).filter(Boolean) : [];
-    payload.assigneeId = editAssignee === "UNASSIGNED" ? undefined : editAssignee;
 
-    const idempotencyKey = crypto.randomUUID();
+    if (isAssigneeChanged) {
+      mutationArgs.assigneeId = editAssignee === "UNASSIGNED" ? null : editAssignee;
+      mutationArgs.assigneeIdempotencyKey = crypto.randomUUID();
+    }
+
     updateTaskMutation.mutate(
-      { taskId: taskToEdit.id, data: payload, idempotencyKey },
+      mutationArgs,
       {
         onSuccess: () => {
           setIsEditOpen(false);
