@@ -59,7 +59,19 @@ export const courseApi = {
   },
 
   exportCourseReport: async (courseId: string) => {
-    return axiosInstance.get(`/api/admin/reports/courses/${courseId}/export`, {
+    return axiosInstance.get<never, Blob>(`/api/admin/reports/courses/${courseId}/export`, {
+      responseType: "blob",
+    });
+  },
+
+  downloadAdminStudentsTemplate: async (courseId: string) => {
+    return axiosInstance.get<never, Blob>(`/api/v1/courses/${courseId}/admin-students-template`, {
+      responseType: "blob",
+    });
+  },
+
+  downloadStudentsGroupingTemplate: async (courseId: string) => {
+    return axiosInstance.get<never, Blob>(`/api/v1/courses/${courseId}/students-grouping-template`, {
       responseType: "blob",
     });
   }

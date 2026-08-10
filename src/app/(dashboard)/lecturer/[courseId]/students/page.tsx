@@ -96,7 +96,7 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
           description="Danh sách sinh viên, thêm mới hoặc import từ file Excel."
         />
         {/* <div className="flex gap-2">
-          <ImportStudentsDialog courseId={courseId} className={className} onSuccess={refetch} />
+          <ImportStudentsDialog courseId={courseId} className={className} onSuccess={refetch} role="LECTURER" />
           <Button className="gap-2 shadow-sm">
             <UserPlus size={16} />
             Thêm sinh viên
