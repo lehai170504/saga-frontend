@@ -12,14 +12,6 @@ export const useTeamSprints = (teamId: string) => {
   });
 };
 
-export const useProjectSprints = (projectId: string) => {
-  return useQuery({
-    queryKey: ["project-sprints", projectId],
-    queryFn: () => sprintApi.getProjectSprints(projectId),
-    enabled: !!projectId,
-  });
-};
-
 export const useTeamSprintCandidates = (teamId: string, sprintId: string) => {
   return useQuery({
     queryKey: ["team-sprint-candidates", teamId, sprintId],
