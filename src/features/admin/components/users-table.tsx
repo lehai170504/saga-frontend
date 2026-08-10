@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, GraduationCap, UserCircle2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, GraduationCap, Presentation, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/shared/DataState";
 import { UserProfileResponse } from "../api/userApi";
 
@@ -61,8 +61,10 @@ export const columns: ColumnDef<UserProfileResponse>[] = [
         <div className="flex items-center gap-2">
           {role === "STUDENT" ? (
             <GraduationCap className="w-4 h-4 text-primary" />
+          ) : role === "LECTURER" ? (
+            <Presentation className="w-4 h-4 text-amber-600 dark:text-amber-500" />
           ) : (
-            <UserCircle2 className="w-4 h-4 text-secondary" />
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
           )}
           <span className="capitalize font-medium text-foreground">
             {role === "STUDENT" ? "Sinh viên" : role === "LECTURER" ? "Giảng viên" : "Admin"}

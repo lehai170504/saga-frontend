@@ -14,3 +14,11 @@ export interface SemesterRequest {
   startDate: string; // LocalDateTime string
   endDate: string; // LocalDateTime string
 }
+
+export interface ActiveSemester {
+  semesterId: string;
+  semesterCode: string;
+  semesterName: string;
+  startDate: string;
+  endDate: string;
+}

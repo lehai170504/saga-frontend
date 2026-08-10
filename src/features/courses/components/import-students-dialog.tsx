@@ -9,11 +9,11 @@ import { useImportStudents } from "@/features/courses/hooks/useCourseStudents";
 
 interface ImportStudentsDialogProps {
   courseId: string;
-  className?: string;
+  courseClassName?: string;
   onSuccess?: () => void;
 }
 
-export function ImportStudentsDialog({ courseId, className = courseId, onSuccess }: ImportStudentsDialogProps) {
+export function ImportStudentsDialog({ courseId, courseClassName = courseId, onSuccess }: ImportStudentsDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +58,7 @@ export function ImportStudentsDialog({ courseId, className = courseId, onSuccess
         <DialogHeader>
           <DialogTitle>Import danh sách sinh viên</DialogTitle>
           <DialogDescription>
-            Tải lên file Excel (.xlsx, .csv) chứa danh sách sinh viên của lớp {className}.
+            Tải lên file Excel (.xlsx, .csv) chứa danh sách sinh viên của lớp {courseClassName}.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-2 py-4">

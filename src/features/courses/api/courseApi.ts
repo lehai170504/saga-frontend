@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
-import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse } from "../types";
+import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse, CourseStudentDetail } from "../types";
 
 export const courseApi = {
   getCourses: async (params?: { subjectId?: string; semesterId?: string; instructorId?: string; page?: number; size?: number }) => {
@@ -13,6 +13,14 @@ export const courseApi = {
 
   createCourse: async (data: CourseRequest) => {
     return axiosInstance.post<never, Course>("/api/v1/courses", data);
+  },
+
+  updateCourse: async (id: string, data: CourseRequest) => {
+    return axiosInstance.put<never, Course>(`/api/v1/courses/${id}`, data);
+  },
+
+  deleteCourse: async (id: string) => {
+    return axiosInstance.delete<never, void>(`/api/v1/courses/${id}`);
   },
 
   importStudents: async (courseId: string, formData: FormData) => {
@@ -34,7 +42,17 @@ export const courseApi = {
     return axiosInstance.get<never, CourseStudentsResponse>(`/api/v1/courses/${courseId}/students`, { params });
   },
 
+  getCourseStudent: async (courseId: string, studentId: string) => {
+    return axiosInstance.get<never, CourseStudentDetail>(`/api/v1/courses/${courseId}/students/${studentId}`);
+  },
+
   getMyTeamMembers: async (courseId: string) => {
     return axiosInstance.get<never, MyTeamMembersResponse>(`/api/me/courses/${courseId}/team/members`);
+  },
+
+  exportCourseReport: async (courseId: string) => {
+    return axiosInstance.get(`/api/admin/reports/courses/${courseId}/export`, {
+      responseType: "blob",
+    });
   }
 };

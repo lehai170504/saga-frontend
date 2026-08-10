@@ -18,12 +18,15 @@ export interface Course {
     id: string;
     code: string;
     name: string;
+    startDate?: string;
+    endDate?: string;
   };
   instructor: {
     id: string;
     cognitoSub?: string;
     email?: string;
     fullName: string;
+    accountStatus?: string;
   };
   createdAt: string;
   updatedAt: string;
@@ -70,6 +73,21 @@ export interface CourseStudent {
 export interface CourseStudentsResponse {
   studentsWithTeam: Page<CourseStudent>;
   studentsWithoutTeam: Page<CourseStudent>;
+}
+
+export interface CourseStudentDetail {
+  courseId: string;
+  studentId: string;
+  studentCode: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+  accountStatus: string;
+  team: {
+    teamId: string;
+    teamName: string;
+    roleInTeam: string;
+  } | null;
 }
 
 export interface MyTeamMembersResponse {

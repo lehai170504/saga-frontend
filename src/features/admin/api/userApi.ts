@@ -28,6 +28,12 @@ export interface UserFilterParams {
   size?: number;
 }
 
+export interface ImportUsersResponse {
+  role: "STUDENT" | "LECTURER";
+  createdCount: number;
+  reusedCount: number;
+}
+
 export const userApi = {
   getUsers: (params?: UserFilterParams) => {
     return axiosInstance.get<never, PageResponse<UserProfileResponse>>("/api/admin/users", { params });
@@ -35,5 +41,13 @@ export const userApi = {
 
   toggleUserStatus: (id: string, status: string) => {
     return axiosInstance.patch<never, UserProfileResponse>(`/api/admin/users/${id}/status`, { status });
+  },
+
+  importUsers: (role: "STUDENT" | "LECTURER", file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return axiosInstance.post<never, ImportUsersResponse>("/api/admin/users/import", formData, {
+      params: { role }
+    });
   }
 };

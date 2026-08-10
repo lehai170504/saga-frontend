@@ -17,6 +17,8 @@ import { ChevronLeft, ChevronRight, Network, GraduationCap, FolderGit2, ArrowRig
 import Link from "next/link";
 import { EmptyState } from "@/components/shared/DataState";
 import { AdminTeamResponse } from "../api/teamApi";
+import { CreateProjectModal } from "./create-project-modal";
+import { ProjectDetailsModal } from "./project-details-modal";
 
 interface TeamsTableProps {
   data: AdminTeamResponse[];
@@ -67,7 +69,12 @@ export const columns: ColumnDef<AdminTeamResponse>[] = [
   {
     id: "actions",
     cell: ({ row }) => (
-      <div className="flex justify-end pr-2">
+      <div className="flex justify-end pr-2 gap-2 items-center">
+        {!row.original.project ? (
+          <CreateProjectModal teamId={row.original.id} />
+        ) : (
+          <ProjectDetailsModal projectId={row.original.project.id} />
+        )}
         <Link href={`/admin/courses/${row.original.course.id}`}>
           <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary">
             <ArrowRight className="w-4 h-4" />

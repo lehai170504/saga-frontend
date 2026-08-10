@@ -7,10 +7,6 @@ Các resource cốt lõi (Subject, Class, Semester, Course) hiện tại chủ y
 
 **Danh sách API cần bổ sung:**
 - **Course (Quản lý Khóa học):**
-  - `GET /api/admin/courses/{id}` (Xem chi tiết khóa học góc độ Admin)
-  - `PUT /api/admin/courses/{id}` (Sửa khóa học: cập nhật Giảng viên, trạng thái, học kỳ)
-  - `DELETE /api/admin/courses/{id}` (Xóa khóa học)
-  - `GET /api/admin/courses/{id}/students` (Lấy danh sách sinh viên trong lớp)
   - `POST /api/admin/courses/{id}/students` (Thêm thủ công 1 sinh viên vào lớp - hiện tại chỉ mới có API Import Excel hàng loạt)
   - `DELETE /api/admin/courses/{id}/students/{studentId}` (Rút/Xóa 1 sinh viên khỏi lớp)
 
@@ -23,16 +19,10 @@ Hiện tại URL pattern `/api/admin/**` đã được đưa vào Security Rule 
 - `PUT /api/admin/users/{id}/role` (Tùy chọn): Nếu nghiệp vụ cho phép Admin set role thủ công.
 - `POST /api/admin/users/{id}/reset-password`: Cấp lại mật khẩu khẩn cấp (ép đổi mật khẩu hoặc gửi email reset) cho trường hợp user quên mật khẩu mà không tự lấy lại được.
 
-## 3. Import/Export Dữ liệu hàng loạt
-Trong quá trình vận hành, Admin thường xuyên làm việc với số lượng lớn dữ liệu (đầu kỳ học, cuối kỳ).
-**Danh sách API cần bổ sung:**
-- `POST /api/admin/users/import`: Import tài khoản User (Student/Lecturer) hàng loạt qua file Excel/CSV.
-- `GET /api/admin/reports/courses/{id}/export`: Xuất toàn bộ bảng điểm, báo cáo đánh giá của một khóa học ra file.
 
 ## 4. Cấu hình Hệ thống Chung (Global Settings & Evaluation Rules)
 Admin cần công cụ để tinh chỉnh hệ thống và các "Luật đánh giá cốt lõi" của AI mà không cần Dev can thiệp vào Database.
 **Danh sách API cần bổ sung:**
-- `PUT /api/admin/settings/active-semester`: Cấu hình "Học kỳ hiện tại" (để các màn hình FE tự động filter theo mặc định).
 - `GET /api/admin/settings/evaluation`: Lấy toàn bộ các cấu hình Đánh giá Toàn hệ thống hiện tại, bao gồm:
   + Ngưỡng Cảnh báo Sớm AI (AI Early Warning): % Gánh team, % Trễ tiến độ, Số ngày Ghosting, % Phá vỡ cam kết.
   + Tích hợp Dữ liệu (Data Anchors): Các tùy chọn bắt buộc Story Points Jira, Xác thực Ghosting / Nợ kỹ thuật GitHub.
@@ -41,11 +31,6 @@ Admin cần công cụ để tinh chỉnh hệ thống và các "Luật đánh g
 
 ## 5. Quản lý Thông báo Toàn hệ thống (Notifications)
 - `POST /api/admin/notifications/broadcast`: Gửi thông báo đến toàn bộ người dùng hoặc một role cụ thể (Ví dụ: thông báo bảo trì, nhắc nhở đầu kỳ học).
-
-## 6. Khắc phục sự cố & Hỗ trợ Người dùng (Support & Diagnostics)
-
-- **Giám sát Tích hợp (Integration Health):**
-  - `GET /api/admin/integrations/health`: Kiểm tra trạng thái webhook và kết nối của GitHub/Jira App toàn hệ thống xem có lỗi hay không.
 
 ## 7. Truy cập chéo Dữ liệu (Cross-access Entity)
 *(Câu hỏi cần làm rõ với BE về Kiến trúc API)*

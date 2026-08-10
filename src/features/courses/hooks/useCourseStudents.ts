@@ -43,3 +43,11 @@ export const useMyTeamMembers = (courseId: string, options?: { enabled?: boolean
     enabled: options?.enabled !== undefined ? options.enabled : !!courseId,
   });
 };
+
+export const useCourseStudent = (courseId: string, studentId: string, options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ["courses", courseId, "students", studentId],
+    queryFn: () => courseApi.getCourseStudent(courseId, studentId),
+    enabled: options?.enabled !== undefined ? options.enabled : (!!courseId && !!studentId),
+  });
+};

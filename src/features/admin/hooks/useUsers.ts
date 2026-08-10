@@ -47,3 +47,15 @@ export const useToggleUserStatus = () => {
     },
   });
 };
+
+export const useImportUsers = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ role, file }: { role: "STUDENT" | "LECTURER"; file: File }) =>
+      userApi.importUsers(role, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+    },
+  });
+};

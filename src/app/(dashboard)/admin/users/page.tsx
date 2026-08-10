@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useUsers, useToggleUserStatus } from "@/features/admin/hooks/useUsers";
 import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
+import { ImportUsersModal } from "@/features/admin/components/import-users-modal";
 
 export default function UsersManagementPage() {
   const [keyword, setKeyword] = useState("");
@@ -57,10 +58,9 @@ export default function UsersManagementPage() {
         title="Phân quyền Người dùng (RBAC)"
         description="Quản lý danh sách người dùng trên hệ thống SAGA. Admin có thể xem vai trò, cấp hoặc thu hồi quyền truy cập của từng tài khoản."
         workspace="Workspace Quản trị"
-      />
-
-
-
+      >
+        <ImportUsersModal />
+      </PageHeader>
       <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden">
         <CardContent className="p-6">
           {isLoading ? (

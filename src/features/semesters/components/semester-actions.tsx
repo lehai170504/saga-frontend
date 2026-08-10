@@ -1,26 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 import { Semester } from "../types";
 import { UpdateSemesterDialog } from "./update-semester-dialog";
 import { DeleteSemesterAlert } from "./delete-semester-alert";
+import { useSetActiveSemester } from "../hooks/useSemesters";
 
 interface SemesterActionsProps {
   semester: Semester;
+  isActive?: boolean;
 }
 
-export function SemesterActions({ semester }: SemesterActionsProps) {
+export function SemesterActions({ semester, isActive = false }: SemesterActionsProps) {
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+
+  const setActiveMutation = useSetActiveSemester();
+
+  const handleSetActive = async () => {
+    try {
+      await setActiveMutation.mutateAsync(semester.id);
+      toast.success(`Đã thiết lập ${semester.name} làm học kỳ hiện tại`);
+    } catch (error) {
+      console.error("Set active semester failed:", error);
+      toast.error("Không thể thiết lập học kỳ hiện tại");
+    }
+  };
 
   return (
     <>
@@ -30,7 +46,16 @@ export function SemesterActions({ semester }: SemesterActionsProps) {
             <MoreVertical className="h-4 w-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 rounded-xl">
+        <DropdownMenuContent align="end" className="w-48 rounded-xl">
+          {!isActive && (
+            <>
+              <DropdownMenuItem onClick={handleSetActive} className="cursor-pointer rounded-lg text-emerald-600 focus:text-emerald-700">
+                <Star className="mr-2 h-4 w-4" />
+                <span>Đặt làm hiện tại</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem onClick={() => setShowEdit(true)} className="cursor-pointer rounded-lg">
             <Pencil className="mr-2 h-4 w-4" />
             <span>Chỉnh sửa</span>

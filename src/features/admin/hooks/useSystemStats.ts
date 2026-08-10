@@ -7,3 +7,10 @@ export const useSystemStats = () => {
     queryFn: () => systemStatsApi.getSystemStats(),
   });
 };
+
+export const useIntegrationHealth = () => {
+  return useQuery({
+    queryKey: ["admin", "integrations", "health"],
+    queryFn: () => systemStatsApi.getIntegrationHealth(),
+  });
+};

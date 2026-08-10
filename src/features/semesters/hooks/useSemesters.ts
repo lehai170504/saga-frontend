@@ -50,3 +50,21 @@ export const useDeleteSemester = () => {
     },
   });
 };
+export const useActiveSemester = () => {
+  return useQuery({
+    queryKey: ["semesters", "active"],
+    queryFn: () => semesterApi.getActiveSemester(),
+  });
+};
+
+export const useSetActiveSemester = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (semesterId: string) => semesterApi.setActiveSemester(semesterId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["semesters", "active"] });
+      queryClient.invalidateQueries({ queryKey: ["semesters"] });
+    },
+  });
+};

@@ -18,7 +18,7 @@ export function CtaSection() {
         {/* Background Effects */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-[300px] bg-primary/30 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none" />
 
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white font-bold text-xs uppercase tracking-wider mb-8 backdrop-blur-md">
           <Sparkles className="w-4 h-4 text-primary-foreground" />
