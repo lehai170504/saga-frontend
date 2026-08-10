@@ -101,6 +101,14 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const [editSprintStartDateInput, setEditSprintStartDateInput] = useState("");
   const [editSprintEndDateInput, setEditSprintEndDateInput] = useState("");
 
+  // Drag & drop move confirmation state
+  const [isMoveConfirmOpen, setIsMoveConfirmOpen] = useState(false);
+  const [taskToMove, setTaskToMove] = useState<JiraTask | null>(null);
+  const [sourceSprintName, setSourceSprintName] = useState("");
+  const [targetSprintId, setTargetSprintId] = useState<string | null>(null);
+  const [targetSprintName, setTargetSprintName] = useState("");
+  const [dragOverSprintId, setDragOverSprintId] = useState<string | null>(null);
+
   // Queries
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
@@ -203,6 +211,33 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const handleCloseSprint = (sprintId: string) => {
     const key = crypto.randomUUID();
     closeSprintMutation.mutate({ sprintId, idempotencyKey: key });
+  };
+
+  // Drag & Drop handlers
+  const handleInitiateMove = (taskId: string, originalSprintId: string, destSprintId: string | null, destSprintName: string) => {
+    if (originalSprintId === (destSprintId || "backlog")) return;
+
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    let srcName = "Backlog";
+    if (originalSprintId !== "backlog") {
+      const srcSprint = sprints.find(s => s.sprintId === originalSprintId);
+      if (srcSprint) srcName = srcSprint.sprintName;
+    }
+
+    setTaskToMove(task);
+    setSourceSprintName(srcName);
+    setTargetSprintId(destSprintId);
+    setTargetSprintName(destSprintName);
+    setIsMoveConfirmOpen(true);
+  };
+
+  const handleConfirmMoveTask = () => {
+    if (!taskToMove) return;
+    handleMoveTaskSprint(taskToMove.id, targetSprintId);
+    setIsMoveConfirmOpen(false);
+    setTaskToMove(null);
   };
 
 
@@ -557,7 +592,29 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
             return (
               <div 
                 key={sprint.sprintId} 
-                className="glass-panel border border-border/30 rounded-2xl overflow-hidden shadow-sm"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (dragOverSprintId !== sprint.sprintId) {
+                    setDragOverSprintId(sprint.sprintId);
+                  }
+                }}
+                onDragLeave={() => {
+                  if (dragOverSprintId === sprint.sprintId) {
+                    setDragOverSprintId(null);
+                  }
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOverSprintId(null);
+                  const taskId = e.dataTransfer.getData("text/plain");
+                  const originalSprintId = e.dataTransfer.getData("originalSprintId");
+                  handleInitiateMove(taskId, originalSprintId, sprint.sprintId, sprint.sprintName);
+                }}
+                className={`glass-panel border rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${
+                  dragOverSprintId === sprint.sprintId 
+                    ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.01]" 
+                    : "border-border/30"
+                }`}
               >
                 {/* Sprint Header */}
                 <div 
@@ -680,7 +737,12 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                       sprintTasksList.map(task => (
                         <div 
                           key={task.id} 
-                          className="flex items-center justify-between gap-4 p-2.5 rounded-xl hover:bg-muted/30 border border-transparent hover:border-border/30 transition-all group"
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData("text/plain", task.id);
+                            e.dataTransfer.setData("originalSprintId", sprint.sprintId);
+                          }}
+                          className="flex items-center justify-between gap-4 p-2.5 rounded-xl hover:bg-muted/30 border border-transparent hover:border-border/30 transition-all group cursor-grab active:cursor-grabbing select-none"
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             {getTypeIcon(task.type)}
@@ -793,7 +855,31 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
           })}
 
           {/* Backlog Group */}
-          <div className="glass-panel border border-border/30 rounded-2xl overflow-hidden shadow-sm">
+          <div 
+            onDragOver={(e) => {
+              e.preventDefault();
+              if (dragOverSprintId !== "backlog") {
+                setDragOverSprintId("backlog");
+              }
+            }}
+            onDragLeave={() => {
+              if (dragOverSprintId === "backlog") {
+                setDragOverSprintId(null);
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOverSprintId(null);
+              const taskId = e.dataTransfer.getData("text/plain");
+              const originalSprintId = e.dataTransfer.getData("originalSprintId");
+              handleInitiateMove(taskId, originalSprintId, null, "Backlog");
+            }}
+            className={`glass-panel border rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${
+              dragOverSprintId === "backlog" 
+                ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.01]" 
+                : "border-border/30"
+            }`}
+          >
             {/* Backlog Header */}
             <div 
               onClick={() => setIsBacklogCollapsed(prev => !prev)}
@@ -837,7 +923,12 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                   backlogTasks.map(task => (
                     <div 
                       key={task.id} 
-                      className="flex items-center justify-between gap-4 p-2.5 rounded-xl hover:bg-muted/30 border border-transparent hover:border-border/30 transition-all group"
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData("text/plain", task.id);
+                        e.dataTransfer.setData("originalSprintId", "backlog");
+                      }}
+                      className="flex items-center justify-between gap-4 p-2.5 rounded-xl hover:bg-muted/30 border border-transparent hover:border-border/30 transition-all group cursor-grab active:cursor-grabbing select-none"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         {getTypeIcon(task.type)}
@@ -1402,6 +1493,57 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+      {/* Drag & Drop Move Task Confirmation Dialog */}
+      <Dialog open={isMoveConfirmOpen} onOpenChange={setIsMoveConfirmOpen}>
+        <DialogContent className="sm:max-w-[420px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
+          <DialogHeader className="pb-4 border-b border-border/40 space-y-2">
+            <DialogTitle className="text-base font-extrabold text-foreground leading-snug flex items-center gap-2">
+              <span className="p-2 bg-primary/10 text-primary rounded-xl">
+                <ArrowRightLeft size={16} />
+              </span>
+              Di chuyển công việc?
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground leading-normal pt-2">
+              Bạn có chắc chắn muốn di chuyển công việc{" "}
+              <strong className="text-foreground font-bold">
+                {taskToMove?.externalKey} - {taskToMove?.title}
+              </strong>{" "}
+              từ <strong className="text-foreground font-bold">{sourceSprintName}</strong> sang{" "}
+              <strong className="text-foreground font-bold">{targetSprintName}</strong> không?
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="pt-4 border-t border-border/40 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={updateTaskMutation.isPending}
+              className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs"
+              onClick={() => {
+                setIsMoveConfirmOpen(false);
+                setTaskToMove(null);
+              }}
+            >
+              Hủy
+            </Button>
+            <Button
+              type="button"
+              disabled={updateTaskMutation.isPending}
+              className="rounded-xl font-bold bg-primary hover:bg-primary/95 text-white h-10 px-5 text-xs cursor-pointer shadow-md hover:shadow-lg transition-all"
+              onClick={handleConfirmMoveTask}
+            >
+              {updateTaskMutation.isPending ? (
+                <>
+                  <Loader2 size={12} className="mr-2 animate-spin" />
+                  Đang di chuyển...
+                </>
+              ) : (
+                "Xác nhận di chuyển"
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
