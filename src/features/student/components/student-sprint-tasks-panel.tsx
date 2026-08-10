@@ -113,8 +113,9 @@ export function StudentSprintTasksPanel({
             {sprintGoal ? (
               <span className="italic flex items-center gap-1.5">
                 <Flag size={12} className="text-primary shrink-0" />
-                "{sprintGoal}"
+                &quot;{sprintGoal}&quot;
               </span>
+
             ) : (
               <span className="text-muted-foreground/60">Không có mục tiêu nào được thiết lập.</span>
             )}
