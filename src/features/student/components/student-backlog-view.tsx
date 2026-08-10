@@ -182,13 +182,13 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const getStatusBadge = (status: string) => {
     switch (status?.toUpperCase()) {
       case "DONE":
-        return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Done</Badge>;
+        return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Đã hoàn thành</Badge>;
       case "IN_PROGRESS":
-        return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">In Progress</Badge>;
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Đang làm</Badge>;
       case "IN_REVIEW":
-        return <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Review</Badge>;
+        return <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Đang đánh giá</Badge>;
       default:
-        return <Badge variant="outline" className="bg-muted text-muted-foreground border-muted-foreground/20 text-[10px] font-bold rounded-lg px-2 py-0.5">To Do</Badge>;
+        return <Badge variant="outline" className="bg-muted text-muted-foreground border-muted-foreground/20 text-[10px] font-bold rounded-lg px-2 py-0.5">Cần làm</Badge>;
     }
   };
 
@@ -484,15 +484,15 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
 
                     {sprint.state?.toUpperCase() === "ACTIVE" ? (
                       <Badge className="bg-primary/10 text-primary border border-primary/20 rounded-lg text-[10px] font-bold px-2.5 py-1">
-                        Active
+                        Đang hoạt động
                       </Badge>
                     ) : sprint.state?.toUpperCase() === "CLOSED" ? (
                       <Badge className="bg-muted text-muted-foreground border border-border/20 rounded-lg text-[10px] font-bold px-2.5 py-1">
-                        Closed
+                        Đã đóng
                       </Badge>
                     ) : (
                       <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-lg text-[10px] font-bold px-2.5 py-1">
-                        Future
+                        Sắp tới
                       </Badge>
                     )}
                   </div>
