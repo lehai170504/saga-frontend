@@ -15,6 +15,7 @@ import { JiraTask } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { getTypeBadge } from "./board-helpers";
 import { TaskStatusDropdown } from "./task-status-dropdown";
+import { TaskTraceabilitySection } from "@/features/projects/components/task-traceability-section";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -188,6 +189,9 @@ export function TaskDetailModal({
                 {selectedTask.storyPoint ?? 0}
               </span>
             </div>
+
+            {/* Traceability Jira Task ↔ GitHub Issue */}
+            <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} />
           </div>
         </div>
 

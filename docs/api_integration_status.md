@@ -236,6 +236,20 @@ Toàn bộ luồng thông báo quả chuông và đẩy tín hiệu Push Notific
 - `POST /api/admin/notifications/broadcast`: Admin gửi thông báo broadcast toàn hệ thống (yêu cầu gửi kèm `Idempotency-Key` ở Header).
 - `POST /api/v1/courses/notifications/broadcast`: Giảng viên gửi thông báo broadcast cho sinh viên trong khóa học quản lý (yêu cầu gửi kèm `Idempotency-Key` ở Header).
 
+### 1.16. Tích hợp GitHub Repositories, GitHub Issues & Traceability (Task ↔ Issue)
+Đã cập nhật theo hợp đồng API mới nhất của Backend (`FRONTEND_HANDOFF.md` & `FRONTEND_API_INTEGRATION.md`):
+- `GET /api/v1/courses/{courseId}/teams/{teamId}/detail`: Dữ liệu `project` trả thêm danh sách `repositories: [{ repositoryId, repositoryName }]` trong đó `repositoryId` dạng `number/int64`. FE cho phép chọn repository linh hoạt (không mặc định `repositories[0]`).
+- Dùng `repositoryId` (number) trực tiếp cho các API:
+  - `GET /api/projects/{projectId}/github/repositories/{repositoryId}/branches`
+  - `GET /api/projects/{projectId}/github/repositories/{repositoryId}/commits`
+  - `GET /api/projects/{projectId}/github/issues?repositoryId={repositoryId}`
+- `GET /api/projects/{projectId}/github/issues`: Danh sách GitHub Issues (hỗ trợ `state`: `OPEN`/`CLOSED`, `repositoryId` filter, `keyword` search, `page`, `size`, `assignedToMe`). Hook `useGithubIssues`.
+- `GET /api/projects/{projectId}/github/issues/{issueId}`: Chi tiết một GitHub Issue bằng local Issue ID. Hook `useGithubIssueDetail`.
+- `POST /api/v1/projects/{projectId}/tasks/{taskId}/github-issues/{issueId}`: Tạo liên kết Jira Task với GitHub Issue (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hook `useLinkTaskIssue`.
+- `DELETE /api/v1/projects/{projectId}/tasks/{taskId}/github-issues/{issueId}`: Hủy liên kết Jira Task với GitHub Issue (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hook `useUnlinkTaskIssue`.
+- `GET /api/v1/projects/{projectId}/tasks/{taskId}/traceability`: Đọc ma trận Traceability của 1 Task. Hook `useTaskTraceability`.
+- `GET /api/projects/{projectId}/traceability`: Đọc ma trận Traceability của toàn bộ Dự án. Hook `useProjectTraceability`.
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)

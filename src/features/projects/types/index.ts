@@ -191,3 +191,6 @@ export type ProjectDashboardStatsResponse = {
     pullRequestCount: number;
   };
 };
+
+export * from "./githubIssue";
+export * from "./traceability";

@@ -90,6 +90,11 @@ export interface CourseStudentDetail {
   } | null;
 }
 
+export interface ProjectRepositoryRef {
+  repositoryId: number;
+  repositoryName: string;
+}
+
 export interface MyTeamMembersResponse {
   courseId: string;
   teamId: string;
@@ -98,6 +103,7 @@ export interface MyTeamMembersResponse {
   project: {
     id: string;
     name: string;
+    repositories?: ProjectRepositoryRef[];
   } | null;
   members: Page<{
     studentId: string;
