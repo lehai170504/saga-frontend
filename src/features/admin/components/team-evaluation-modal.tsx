@@ -25,8 +25,8 @@ interface TeamEvaluationModalProps {
 
 export const TeamEvaluationModal = ({ courseId, teamId, isOpen, onClose, teamName }: TeamEvaluationModalProps) => {
   // Only fetch when teamId exists and modal is open
-  const { data: evaluation, isLoading } = useContributionEvaluation(teamId || "");
-  const { data: earlyWarningsData, isLoading: isWarningsLoading } = useEarlyWarnings(courseId || "");
+  const { data: evaluation, isLoading } = useContributionEvaluation(teamId || "", isOpen);
+  const { data: earlyWarningsData, isLoading: isWarningsLoading } = useEarlyWarnings(courseId || "", isOpen);
 
   const teamWarnings = earlyWarningsData?.warnings?.filter(w => w.teamId === teamId) || [];
 

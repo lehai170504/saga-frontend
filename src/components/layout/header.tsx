@@ -23,7 +23,7 @@ import { ProfileModal } from "@/features/user/components/profile-modal";
 import { MobileMenuButton } from "@/components/layout/mobile-buttons";
 import { useNotificationsList, useUnreadCount, useMarkAsRead } from "@/features/notifications/hooks/useNotifications";
 import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush";
-import { useQueryClient } from "@tanstack/react-query";
+
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 
@@ -56,7 +56,6 @@ export function Header({ onMenuClick }: HeaderProps) {
     }
   }, []);
 
-  const queryClient = useQueryClient();
   const { data: notificationsData } = useNotificationsList();
   const { data: unreadData } = useUnreadCount();
   const { mutate: markAsRead } = useMarkAsRead();

@@ -14,7 +14,7 @@ export const notificationApi = {
     await axiosInstance.patch(`/api/me/notifications/${id}/read`);
   },
 
-  registerFirebaseInstallation: async (installationId: string): Promise<any> => {
+  registerFirebaseInstallation: async (installationId: string): Promise<{ id: string }> => {
     return axiosInstance.post(`/api/me/firebase-installations`, { firebaseInstallationId: installationId });
   },
 
