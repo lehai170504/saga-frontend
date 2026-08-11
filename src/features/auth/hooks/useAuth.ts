@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import { getFirebaseInstallationId } from '@/lib/firebase';
 import { notificationApi } from '@/features/notifications/api/notificationApi';
 
+let isFirebaseRegistered = false;
+
 export function useAuth() {
 
   const setUser = useAuthStore((state) => state.setUser);
@@ -39,13 +41,21 @@ export function useAuth() {
       setCsrf(data?.csrf ?? null);
       setInitializing(false);
 
-      if (data?.user) {
+      if (data?.user && !isFirebaseRegistered) {
+        isFirebaseRegistered = true;
         // Register Firebase Installation ID
         getFirebaseInstallationId().then(fid => {
           if (fid) {
-            notificationApi.registerFirebaseInstallation(fid).catch(() => {
+            notificationApi.registerFirebaseInstallation(fid).then((response) => {
+              if (response && response.id) {
+                localStorage.setItem('saga_firebase_uuid', response.id);
+              }
+            }).catch(() => {
+              isFirebaseRegistered = false;
               console.log("Firebase registration failed, but suppressing error to prevent dev overlay.");
             });
+          } else {
+            isFirebaseRegistered = false;
           }
         });
       }
@@ -60,10 +70,12 @@ export function useAuth() {
 
     try {
       // Try to revoke Firebase Installation ID before logging out
-      const fid = await getFirebaseInstallationId();
-      if (fid) {
-        await notificationApi.revokeFirebaseInstallation(fid).catch(console.error);
+      const uuid = localStorage.getItem('saga_firebase_uuid');
+      if (uuid) {
+        await notificationApi.revokeFirebaseInstallation(uuid).catch(console.error);
+        localStorage.removeItem('saga_firebase_uuid');
       }
+      isFirebaseRegistered = false;
 
       const response = await fetch(`${API_BASE_URL}/api/auth/csrf`, {
         credentials: "include",

@@ -14,6 +14,7 @@ import {
   GitCommit,
   Activity,
   FolderKanban,
+  Radio,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -65,6 +66,7 @@ export const getNavigationConfig = (
         {
           title: "Hệ thống",
           items: [
+            { href: "/admin/broadcast", icon: <Radio size={18} />, label: "Gửi thông báo" },
             { href: "/admin/evaluation-config", icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
             { href: "/admin/system-logs", icon: <Logs size={18} />, label: "Nhật ký hệ thống" },
             { href: "/admin/guide", icon: <BookOpen size={18} />, label: "Hướng dẫn" },
