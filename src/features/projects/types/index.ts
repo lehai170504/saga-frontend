@@ -30,6 +30,33 @@ export type ReviewCandidate = {
   alreadyReviewed: boolean;
   existingReviewId: string | null;
   existingTotalStarRating: number | null;
+  existingCreatedAt?: string | null;
+};
+
+export type SubmitPeerReviewRequest = {
+  revieweeId: string;
+  starRating?: number;
+  criteriaRatings?: { rubricId: string; starRating: number }[];
+  comment: string;
+  createdAt?: string;
+};
+
+export type PeerReviewItem = {
+  id?: string;
+  reviewerId?: string;
+  reviewerName?: string;
+  revieweeId?: string;
+  revieweeName?: string;
+  starRating?: number;
+  criteriaRatings?: { rubricId: string; starRating: number }[];
+  comment?: string;
+  createdAt?: string;
+};
+
+export type SprintPeerReviewsResponse = {
+  sprintId?: string;
+  teamId?: string;
+  reviews: PeerReviewItem[];
 };
 
 export type SprintCandidatesResponse = {
@@ -38,6 +65,7 @@ export type SprintCandidatesResponse = {
   reviewerId: string;
   candidates: ReviewCandidate[];
 };
+
 
 export type RubricCriterion = {
   rubricId: string;

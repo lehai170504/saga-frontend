@@ -40,6 +40,7 @@ export type CourseWeightsResponse = {
   codeWeight: number;
   documentWeight: number;
   designWeight: number;
+  testingWeight: number;
 };
 
 export type RequestCourseWeightPayload = {

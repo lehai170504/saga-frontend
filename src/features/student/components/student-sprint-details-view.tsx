@@ -7,7 +7,7 @@ import { ArrowLeft, Users, UserCheck, ShieldAlert, Star, Loader2 } from "lucide-
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
-import { useTeamSprintCandidates, useTeamRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
+import { useTeamSprintCandidates, useTeamRubric, useSubmitPeerReview, useTeamSprintReviews } from "@/features/projects/hooks/useTeamSprints";
 import { RubricCriterion } from "@/features/projects/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ interface EvaluatingCandidate {
   alreadyReviewed?: boolean;
   existingTotalStarRating?: number | null;
   existingComment?: string | null;
+  existingCreatedAt?: string | null;
   [key: string]: unknown;
 }
 
@@ -48,6 +49,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(activeTeamId, sprintId || "");
   const { data: teamRubricData, isLoading: isLoadingTeamRubric } = useTeamRubric(activeTeamId);
   const submitReviewMutation = useSubmitPeerReview(activeTeamId, sprintId || "");
+  const { data: sprintReviewsData } = useTeamSprintReviews(activeTeamId, sprintId || "");
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
 
@@ -61,6 +63,12 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   }
 
   const candidates = candidatesData?.candidates || [];
+
+  // Build a map: revieweeId -> PeerReviewItem (from GET /peer-reviews)
+  const reviewsMap = (sprintReviewsData?.reviews || []).reduce((acc, review) => {
+    if (review.revieweeId) acc[review.revieweeId] = review;
+    return acc;
+  }, {} as Record<string, import("@/features/projects/types").PeerReviewItem>);
 
   // Determine criteria with fallbacks (Team -> Default -> Hardcoded standard)
   const getRubricCriteria = (): RubricCriterion[] => {
@@ -124,14 +132,16 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
       rubricId: c.rubricId,
       starRating: ratings[c.rubricId] || 0
     }));
-    const totalStarRating = criteriaRatings.reduce((sum: number, item: { rubricId: string; starRating: number }) => sum + item.starRating, 0);
+    const sumStarRating = criteriaRatings.reduce((sum: number, item: { rubricId: string; starRating: number }) => sum + item.starRating, 0);
+    const overallStarRating = criteriaRatings.length > 0 ? Math.round(sumStarRating / criteriaRatings.length) : 0;
 
     const payload = {
       revieweeId: evaluatingCandidate.studentId,
-      starRating: totalStarRating,
+      starRating: overallStarRating,
       criteriaRatings,
       comment: comment.trim()
     };
+
 
     submitReviewMutation.mutate(payload, {
       onSuccess: () => {
@@ -197,10 +207,21 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
             {/* Candidates Section */}
             <div className="space-y-5">
+              {candidates.length > 0 && candidates.every((c) => c.alreadyReviewed) && (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 p-4 rounded-2xl flex items-center gap-3 animate-in fade-in duration-300">
+                  <UserCheck size={20} className="shrink-0 text-emerald-500" />
+                  <div>
+                    <p className="text-xs font-extrabold uppercase tracking-wide">Đã hoàn thành đánh giá chéo</p>
+                    <p className="text-xs opacity-90 mt-0.5">Bạn đã thực hiện tự đánh giá và đánh giá đầy đủ tất cả các thành viên trong nhóm cho Sprint này.</p>
+                  </div>
+                </div>
+              )}
+
               <h3 className="text-sm font-extrabold tracking-widest uppercase text-muted-foreground ml-2 flex items-center gap-2">
                 <Users size={16} />
                 Thành viên cần đánh giá ({candidates.length})
               </h3>
+
 
               {candidates.length === 0 ? (
                 <div className="text-center p-12 glass-panel rounded-[2rem] border-dashed">
@@ -247,6 +268,20 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
                                   <span className="text-xs font-bold">{candidate.existingTotalStarRating} sao</span>
                                 </div>
                               )}
+                              {isReviewed && (() => {
+                                const reviewCreatedAt = reviewsMap[candidate.studentId]?.createdAt
+                                  || candidate.existingCreatedAt;
+                                if (!reviewCreatedAt) return null;
+                                const d = new Date(reviewCreatedAt as string);
+                                const dd = String(d.getDate()).padStart(2, '0');
+                                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                                const yyyy = d.getFullYear();
+                                return (
+                                  <p className="text-[10px] font-semibold text-muted-foreground/70 mt-0.5">
+                                    Đánh giá lúc: {`${dd}-${mm}-${yyyy}`}
+                                  </p>
+                                );
+                              })()}
                             </div>
                           </div>
 

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { sprintApi } from "../api/sprintApi";
-import { rubricApi } from "@/features/admin/api/rubricApi";
 import { toast } from "sonner";
+import { PeerReviewItem } from "../types";
 import { AxiosError } from "axios";
 import { SPRINT_MESSAGES } from "../constants/messages";
 
@@ -29,27 +29,28 @@ export const useTeamRubric = (teamId: string) => {
   });
 };
 
-export const useDefaultRubric = () => {
-  return useQuery({
-    queryKey: ["default-rubric"],
-    queryFn: () => rubricApi.getDefaultRubric(),
-  });
-};
-
 export const useSubmitPeerReview = (teamId: string, sprintId: string) => {
+
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: { revieweeId: string; starRating?: number; criteriaRatings?: { rubricId: string; starRating: number }[]; comment: string }) =>
+  return useMutation<PeerReviewItem, AxiosError<{ message: string }>, { revieweeId: string; starRating?: number; criteriaRatings?: { rubricId: string; starRating: number }[]; comment: string }>({
+    mutationFn: (data) =>
       sprintApi.submitPeerReview(teamId, sprintId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-sprint-candidates", teamId, sprintId] });
       toast.success(SPRINT_MESSAGES.PEER_REVIEW.SUCCESS);
     },
-    onError: (err: unknown) => {
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || SPRINT_MESSAGES.PEER_REVIEW.ERROR;
+    onError: (err) => {
+      const errMsg = err?.response?.data?.message || SPRINT_MESSAGES.PEER_REVIEW.ERROR;
       toast.error(errMsg);
     }
+  });
+};
+
+export const useTeamSprintReviews = (teamId: string, sprintId: string) => {
+  return useQuery({
+    queryKey: ["team-sprint-reviews", teamId, sprintId],
+    queryFn: () => sprintApi.getTeamSprintReviews(teamId, sprintId),
+    enabled: !!teamId && !!sprintId,
   });
 };
 

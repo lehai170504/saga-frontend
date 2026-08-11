@@ -21,6 +21,11 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { toast } from "sonner";
 import { ProfileModal } from "@/features/user/components/profile-modal";
 import { MobileMenuButton } from "@/components/layout/mobile-buttons";
+import { useNotificationsList, useUnreadCount, useMarkAsRead } from "@/features/notifications/hooks/useNotifications";
+import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const roleDisplay: Record<string, string> = {
   admin: "Quản trị viên",
@@ -51,52 +56,25 @@ export function Header({ onMenuClick }: HeaderProps) {
     }
   }, []);
 
-  // State quản lý thông báo
-  const [notifications, setNotifications] = useState([
-    {
-      id: "1",
-      title: "GitHub Commits mới",
-      description: "Nguyễn Văn An đã đẩy 3 commits lên nhánh main",
-      time: "2 phút trước",
-      type: "github",
-      read: false,
-    },
-    {
-      id: "2",
-      title: "Cảnh báo trễ hạn",
-      description: "Bạn có 2 tasks Jira sắp trễ hạn trong Sprint 3",
-      time: "15 phút trước",
-      type: "jira",
-      read: false,
-    },
-    {
-      id: "3",
-      title: "Nhận xét mới",
-      description: "Giảng viên Dr. Nguyen Van A đã phản hồi báo cáo tiến độ",
-      time: "1 giờ trước",
-      type: "feedback",
-      read: true,
-    },
-    {
-      id: "4",
-      title: "Đơn báo cáo vắng mặt",
-      description: "Đơn báo cáo vắng mặt Slot 3 ngày 2026-06-28 đã được duyệt",
-      time: "1 ngày trước",
-      type: "absence",
-      read: true,
-    },
-  ]);
+  const queryClient = useQueryClient();
+  const { data: notificationsData } = useNotificationsList();
+  const { data: unreadData } = useUnreadCount();
+  const { mutate: markAsRead } = useMarkAsRead();
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const notifications = notificationsData?.content || [];
+  const unreadCount = unreadData?.unreadCount || 0;
 
-  const handleMarkAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => n.id === id ? { ...n, read: true } : n)
-    );
+  useFirebasePush();
+
+  const handleMarkAsRead = (id: string, actionUrl: string | null) => {
+    markAsRead(id);
+    if (actionUrl) {
+      router.push(actionUrl);
+    }
   };
 
   const handleMarkAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    notifications.filter(n => !n.read).forEach(n => markAsRead(n.id));
     toast.success("Đã đánh dấu tất cả thông báo là đã đọc!");
   };
 
@@ -205,7 +183,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                     return (
                       <DropdownMenuItem
                         key={notif.id}
-                        onClick={() => handleMarkAsRead(notif.id)}
+                        onClick={() => handleMarkAsRead(notif.id, notif.actionUrl)}
                         className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
                           }`}
                       >
@@ -218,10 +196,12 @@ export function Header({ onMenuClick }: HeaderProps) {
                             <h4 className={`text-xs truncate ${notif.read ? "font-bold text-foreground/80" : "font-bold text-foreground"}`}>
                               {notif.title}
                             </h4>
-                            <span className="text-[9px] font-bold text-muted-foreground shrink-0">{notif.time}</span>
+                            <span className="text-[9px] font-bold text-muted-foreground shrink-0">
+                              {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true, locale: vi })}
+                            </span>
                           </div>
                           <p className="text-[10px] text-muted-foreground leading-normal line-clamp-2">
-                            {notif.description}
+                            {notif.message}
                           </p>
                         </div>
 

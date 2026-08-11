@@ -19,6 +19,7 @@ import { EmptyState } from "@/components/shared/DataState";
 import { AdminTeamResponse } from "../api/teamApi";
 import { CreateProjectModal } from "./create-project-modal";
 import { ProjectDetailsModal } from "./project-details-modal";
+import { TeamEvaluationAction } from "./team-evaluation-action";
 
 interface TeamsTableProps {
   data: AdminTeamResponse[];
@@ -70,6 +71,7 @@ export const columns: ColumnDef<AdminTeamResponse>[] = [
     id: "actions",
     cell: ({ row }) => (
       <div className="flex justify-end pr-2 gap-2 items-center">
+        <TeamEvaluationAction courseId={row.original.course.id} teamId={row.original.id} teamName={row.original.name} />
         {!row.original.project ? (
           <CreateProjectModal teamId={row.original.id} />
         ) : (

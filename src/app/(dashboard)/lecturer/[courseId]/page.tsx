@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Users, AlertTriangle, ShieldCheck, Activity, Settings2, ShieldAlert, Zap, Layers, Trophy, HeartPulse, Siren, ArrowUpRight, ArrowDownRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { BroadcastDialog } from "@/features/notifications/components/broadcast-dialog";
 import {
   AreaChart,
   Area,
@@ -97,12 +98,15 @@ export default function LecturerDashboard({ params }: { params: Promise<{ course
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi hiệu suất Agile và các rủi ro dự án trên toàn bộ các nhóm.</p>
           </div>
-          <Link href={`/lecturer/${courseId}/evaluation-config`}>
-            <Button className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-indigo-500/20 bg-primary hover:bg-indigo-700 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
-              <Settings2 size={16} />
-              Cấu hình AI Rules & Hệ số
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-4 md:mt-0">
+            <BroadcastDialog courseIds={[courseId]} />
+            <Link href={`/lecturer/${courseId}/evaluation-config`}>
+              <Button className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-indigo-500/20 bg-primary hover:bg-indigo-700 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+                <Settings2 size={16} />
+                Cấu hình AI Rules & Hệ số
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Grid */}

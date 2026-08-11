@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
-import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse, CourseStudentDetail, ImportStudentsResponse } from "../types";
+import { Course, CourseRequest, TeamMemberResponse, CourseStudentsResponse, MyTeamMembersResponse, CourseStudentDetail, ImportStudentsResponse, ManualAddStudentRequest, ManualAddStudentResponse, RemoveStudentResponse } from "../types";
 
 export const courseApi = {
   getCourses: async (params?: { subjectId?: string; semesterId?: string; instructorId?: string; page?: number; size?: number }) => {
@@ -45,6 +45,15 @@ export const courseApi = {
     });
   },
 
+  addStudentManual: async (courseId: string, data: ManualAddStudentRequest) => {
+    return axiosInstance.post<never, ManualAddStudentResponse>(`/api/v1/courses/${courseId}/students/manual`, data);
+  },
+
+  removeStudent: async (courseId: string, studentId: string) => {
+    return axiosInstance.delete<never, RemoveStudentResponse>(`/api/v1/courses/${courseId}/students/${studentId}`);
+  },
+
+
   getTeamMembers: async (courseId: string, teamId: string, params?: { page?: number; size?: number }) => {
     return axiosInstance.get<never, Page<TeamMemberResponse>>(`/api/v1/courses/${courseId}/teams/${teamId}/members`, { params });
   },
@@ -65,7 +74,19 @@ export const courseApi = {
   },
 
   exportCourseReport: async (courseId: string) => {
-    return axiosInstance.get(`/api/admin/reports/courses/${courseId}/export`, {
+    return axiosInstance.get<never, Blob>(`/api/admin/reports/courses/${courseId}/export`, {
+      responseType: "blob",
+    });
+  },
+
+  downloadAdminStudentsTemplate: async (courseId: string) => {
+    return axiosInstance.get<never, Blob>(`/api/v1/courses/${courseId}/admin-students-template`, {
+      responseType: "blob",
+    });
+  },
+
+  downloadStudentsGroupingTemplate: async (courseId: string) => {
+    return axiosInstance.get<never, Blob>(`/api/v1/courses/${courseId}/students-grouping-template`, {
       responseType: "blob",
     });
   }

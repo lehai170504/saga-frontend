@@ -5,7 +5,7 @@ import {
   StudentActivitiesResponse,
   StudentContributionDetailResponse,
   StudentBasicInfo,
-  EarlyWarning,
+  EarlyWarningsResponse,
   TeamInteraction,
   HeatmapData,
   SprintVelocity
@@ -45,7 +45,7 @@ export const analyticsApi = {
   },
 
   getEarlyWarnings: async (courseId: string) => {
-    return axiosInstance.get<never, EarlyWarning[]>(
+    return axiosInstance.get<never, EarlyWarningsResponse>(
       `/api/v1/courses/${courseId}/early-warnings`
     );
   },

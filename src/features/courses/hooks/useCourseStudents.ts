@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ManualAddStudentRequest } from "../types";
 import { courseApi } from "../api/courseApi";
 import { toast } from "sonner";
 import { COURSE_MESSAGES } from "../constants/messages";
@@ -27,6 +28,44 @@ export const useImportStudents = () => {
     onError: (error: unknown) => {
       const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.IMPORT.ERROR_GENERIC;
       toast.error(errorMessage);
+    }
+  });
+};
+
+export const useDownloadAdminStudentsTemplate = () => {
+  return useMutation({
+    mutationFn: (courseId: string) => courseApi.downloadAdminStudentsTemplate(courseId),
+    onSuccess: (data: Blob, courseId: string) => {
+      const url = window.URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `course-admin-student-template-${courseId}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+    onError: () => {
+      toast.error(COURSE_MESSAGES.IMPORT.DOWNLOAD_TEMPLATE_ERROR);
+    }
+  });
+};
+
+export const useDownloadStudentsGroupingTemplate = () => {
+  return useMutation({
+    mutationFn: (courseId: string) => courseApi.downloadStudentsGroupingTemplate(courseId),
+    onSuccess: (data: Blob, courseId: string) => {
+      const url = window.URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `course-student-template-${courseId}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+    onError: () => {
+      toast.error(COURSE_MESSAGES.IMPORT.DOWNLOAD_TEMPLATE_ERROR);
     }
   });
 };
@@ -64,5 +103,33 @@ export const useCourseStudent = (courseId: string, studentId: string, options?: 
     queryKey: ["courses", courseId, "students", studentId],
     queryFn: () => courseApi.getCourseStudent(courseId, studentId),
     enabled: options?.enabled !== undefined ? options.enabled : (!!courseId && !!studentId),
+  });
+};
+
+export const useAddStudentManual = () => {
+  return useMutation({
+    mutationFn: ({ courseId, data }: { courseId: string; data: ManualAddStudentRequest }) =>
+      courseApi.addStudentManual(courseId, data),
+    onSuccess: () => {
+      toast.success("Thêm sinh viên thành công");
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Thêm sinh viên thất bại";
+      toast.error(errorMessage);
+    }
+  });
+};
+
+export const useRemoveStudent = () => {
+  return useMutation({
+    mutationFn: ({ courseId, studentId }: { courseId: string; studentId: string }) =>
+      courseApi.removeStudent(courseId, studentId),
+    onSuccess: () => {
+      toast.success("Xóa sinh viên thành công");
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Xóa sinh viên thất bại";
+      toast.error(errorMessage);
+    }
   });
 };

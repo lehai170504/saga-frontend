@@ -12,8 +12,10 @@ import { useProjectTasks } from "@/features/projects/hooks/useProjectTasks";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Search, User, Award, AlertCircle, Flag, CheckSquare, BarChart3 } from "lucide-react";
+import { Loader2, Search, User, Award, AlertCircle, Flag, CheckSquare, BarChart3, Calendar } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
+import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
+
 
 interface StudentSprintTasksPanelProps {
   isOpen: boolean;
@@ -238,61 +240,73 @@ export function StudentSprintTasksPanel({
                   <p className="text-sm font-semibold">Không tìm thấy công việc nào.</p>
                 </div>
               ) : (
-                tasks.map((task: JiraTask) => (
-                  <div
-                    key={task.id}
-                    className="group p-4 bg-muted/10 border border-border/40 rounded-2xl hover:border-primary/20 hover:bg-muted/20 hover:shadow-md transition-all duration-300 flex flex-col gap-3 relative overflow-hidden"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-1.5 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          {getTypeBadge(task.type)}
-                          <span className="text-[11px] font-black text-muted-foreground hover:text-primary transition-colors tracking-wide uppercase">
-                            {task.externalKey}
-                          </span>
+                tasks.map((task: JiraTask) => {
+                  const dueDateInfo = getTaskDueDateInfo(task.dueDate, task.status);
+                  return (
+                    <div
+                      key={task.id}
+                      className={`group p-4 rounded-2xl border transition-all duration-300 flex flex-col gap-3 relative overflow-hidden ${
+                        dueDateInfo?.cardBorderStyle ? dueDateInfo.cardBorderStyle : 'bg-muted/10 border-border/40 hover:border-primary/20 hover:bg-muted/20 hover:shadow-md'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1.5 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            {getTypeBadge(task.type)}
+                            <span className="text-[11px] font-black text-muted-foreground hover:text-primary transition-colors tracking-wide uppercase">
+                              {task.externalKey}
+                            </span>
+                            {dueDateInfo && (
+                              <Badge variant="outline" className={`rounded-xl text-[10px] py-0.5 px-2 flex items-center gap-1 border ${dueDateInfo.badgeStyle}`}>
+                                <Calendar size={11} className={dueDateInfo.iconColorStyle} />
+                                <span>{dueDateInfo.badgeLabel}</span>
+                              </Badge>
+                            )}
+                          </div>
+                          <h4 className="text-sm font-bold text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                            {task.title}
+                          </h4>
                         </div>
-                        <h4 className="text-sm font-bold text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                          {task.title}
-                        </h4>
+                        {task.storyPoint > 0 && (
+                          <Badge variant="secondary" className="rounded-xl font-bold bg-primary/5 text-primary border-primary/10 shrink-0 px-2.5 py-1">
+                            {task.storyPoint} SP
+                          </Badge>
+                        )}
                       </div>
-                      {task.storyPoint > 0 && (
-                        <Badge variant="secondary" className="rounded-xl font-bold bg-primary/5 text-primary border-primary/10 shrink-0 px-2.5 py-1">
-                          {task.storyPoint} SP
-                        </Badge>
-                      )}
-                    </div>
 
-                    <div className="flex items-center justify-between gap-4 pt-2 border-t border-border/20 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-[10px] shrink-0">
-                          {task.assignee?.fullName ? (() => {
-                            const words = task.assignee.fullName.trim().split(/\s+/);
-                            const first = words[0]?.[0] ?? "";
-                            const last = words.length > 1 ? words[words.length - 1]?.[0] ?? "" : "";
-                            return (first + last).toUpperCase();
-                          })() : <User size={10} />}
-                        </div>
-                        <div>
-                          <p className="font-bold text-foreground">
-                            {task.assignee?.fullName || "Chưa giao việc"}
-                          </p>
-                          {task.assignee?.studentCode && (
-                            <p className="text-[9px] font-bold text-muted-foreground/60 tracking-wider">
-                              {task.assignee.studentCode}
+                      <div className="flex items-center justify-between gap-4 pt-2 border-t border-border/20 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <div className="h-6 w-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-[10px] shrink-0">
+                            {task.assignee?.fullName ? (() => {
+                              const words = task.assignee.fullName.trim().split(/\s+/);
+                              const first = words[0]?.[0] ?? "";
+                              const last = words.length > 1 ? words[words.length - 1]?.[0] ?? "" : "";
+                              return (first + last).toUpperCase();
+                            })() : <User size={10} />}
+                          </div>
+                          <div>
+                            <p className="font-bold text-foreground">
+                              {task.assignee?.fullName || "Chưa giao việc"}
                             </p>
-                          )}
+                            {task.assignee?.studentCode && (
+                              <p className="text-[9px] font-bold text-muted-foreground/60 tracking-wider">
+                                {task.assignee.studentCode}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="text-[10px] font-bold uppercase tracking-wide">
+                            Ưu tiên: <span className={getPriorityStyle(task.priority)}>{task.priority}</span>
+                          </span>
+                          {getStatusBadge(task.status)}
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-[10px] font-bold uppercase tracking-wide">
-                          Ưu tiên: <span className={getPriorityStyle(task.priority)}>{task.priority}</span>
-                        </span>
-                        {getStatusBadge(task.status)}
-                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
+
               )}
             </div>
           </div>

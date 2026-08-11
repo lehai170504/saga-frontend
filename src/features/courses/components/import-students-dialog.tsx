@@ -5,7 +5,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { FileSpreadsheet, UploadCloud, DownloadCloud, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useAdminImportStudentsTemplate } from "@/features/courses/hooks/useCourseStudents";
+import {
+  useAdminImportStudentsTemplate,
+  useDownloadAdminStudentsTemplate
+} from "@/features/courses/hooks/useCourseStudents";
 import { COURSE_MESSAGES } from "../constants/messages";
 
 interface ImportStudentsDialogProps {
@@ -20,6 +23,7 @@ export function ImportStudentsDialog({ courseId, courseClassName = courseId, onS
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const importMutation = useAdminImportStudentsTemplate();
+  const downloadMutation = useDownloadAdminStudentsTemplate();
 
   const handleImport = () => {
     if (!selectedFile) {
@@ -41,7 +45,7 @@ export function ImportStudentsDialog({ courseId, courseClassName = courseId, onS
   };
 
   const handleDownloadTemplate = () => {
-    toast.info(COURSE_MESSAGES.COMMON.FEATURE_IN_DEVELOPMENT);
+    downloadMutation.mutate(courseId);
   };
 
   return (
@@ -56,7 +60,7 @@ export function ImportStudentsDialog({ courseId, courseClassName = courseId, onS
         <DialogHeader>
           <DialogTitle>Import danh sách sinh viên</DialogTitle>
           <DialogDescription>
-            Tải lên file Excel template (5 cột: Class, RollNumber, Email, MemberCode, FullName) chứa danh sách sinh viên của lớp {courseClassName}.
+            Tải lên file Excel template <b>(5 cột: Class, RollNumber, Email, MemberCode, FullName)</b> chứa danh sách sinh viên của lớp {courseClassName}.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-2 py-4">
@@ -84,15 +88,16 @@ export function ImportStudentsDialog({ courseId, courseClassName = courseId, onS
             </p>
           </div>
           <div className="flex justify-center">
-            <Button variant="ghost" size="sm" className="text-primary gap-2 hover:bg-primary/10" onClick={handleDownloadTemplate}>
-              <DownloadCloud size={16} /> Tải file mẫu (Template)
+            <Button variant="ghost" size="sm" className="text-primary gap-2 hover:bg-primary/10" onClick={handleDownloadTemplate} disabled={downloadMutation.isPending}>
+              {downloadMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <DownloadCloud size={16} />}
+              {downloadMutation.isPending ? "Đang tải..." : "Tải file mẫu (Template)"}
             </Button>
           </div>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleImport} disabled={importMutation.isPending} className="w-full gap-2">
+          <Button onClick={handleImport} disabled={importMutation.isPending} className="w-full gap-2 rounded-xl">
             {importMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-            {importMutation.isPending ? "Đang xử lý..." : "Bắt đầu Import"}
+            {importMutation.isPending ? "Đang xử lý..." : "Xác nhận Import"}
           </Button>
         </div>
       </DialogContent>

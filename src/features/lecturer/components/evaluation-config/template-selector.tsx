@@ -24,9 +24,9 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
   // Sync state when data is loaded
   useEffect(() => {
     if (weightsData) {
-      setCodeWeight(weightsData.codeWeight);
-      setDocumentWeight(weightsData.documentWeight);
-      setDesignWeight(weightsData.designWeight);
+      setCodeWeight(Number(weightsData.codeWeight.toFixed(2)));
+      setDocumentWeight(Number(weightsData.documentWeight.toFixed(2)));
+      setDesignWeight(Number(weightsData.designWeight.toFixed(2)));
     }
   }, [weightsData]);
 
@@ -190,15 +190,15 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span>Lập trình (Code):</span>
-                      <strong className="text-foreground">{weightsData?.codeWeight ?? 33.33}%</strong>
+                      <strong className="text-foreground">{weightsData?.codeWeight != null ? weightsData.codeWeight.toFixed(2) : "33.33"}%</strong>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Viết tài liệu (Docs):</span>
-                      <strong className="text-foreground">{weightsData?.documentWeight ?? 33.33}%</strong>
+                      <strong className="text-foreground">{weightsData?.documentWeight != null ? weightsData.documentWeight.toFixed(2) : "33.33"}%</strong>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Thiết kế (Design):</span>
-                      <strong className="text-foreground">{weightsData?.designWeight ?? 33.34}%</strong>
+                      <strong className="text-foreground">{weightsData?.designWeight != null ? weightsData.designWeight.toFixed(2) : "33.34"}%</strong>
                     </div>
                   </div>
                   <div className="pt-4 mt-4 border-t border-border/50 text-xs">

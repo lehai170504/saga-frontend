@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { authApi } from '../api/authApi';
 import { useAuthStore } from '@/stores/authStore';
 import { useEffect } from 'react';
+import { getFirebaseInstallationId } from '@/lib/firebase';
+import { notificationApi } from '@/features/notifications/api/notificationApi';
 
 export function useAuth() {
 
@@ -36,6 +38,17 @@ export function useAuth() {
       setUser(data?.user ?? null);
       setCsrf(data?.csrf ?? null);
       setInitializing(false);
+
+      if (data?.user) {
+        // Register Firebase Installation ID
+        getFirebaseInstallationId().then(fid => {
+          if (fid) {
+            notificationApi.registerFirebaseInstallation(fid).catch(() => {
+              console.log("Firebase registration failed, but suppressing error to prevent dev overlay.");
+            });
+          }
+        });
+      }
     }
   }, [data, isLoading, isFetching, setUser, setCsrf, setInitializing]);
 
@@ -46,6 +59,12 @@ export function useAuth() {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
 
     try {
+      // Try to revoke Firebase Installation ID before logging out
+      const fid = await getFirebaseInstallationId();
+      if (fid) {
+        await notificationApi.revokeFirebaseInstallation(fid).catch(console.error);
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/auth/csrf`, {
         credentials: "include",
         headers: {

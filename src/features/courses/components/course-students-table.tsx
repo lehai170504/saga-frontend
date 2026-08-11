@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useCourseStudents } from "../hooks/useCourseStudents";
+import { useCourseStudents, useRemoveStudent } from "../hooks/useCourseStudents";
 import { useExportCourseReport } from "../hooks/useCourses";
 import { ImportStudentsDialog } from "./import-students-dialog";
+import { AddStudentManualDialog } from "./add-student-manual-dialog";
 import { StudentDetailModal } from "./student-detail-modal";
 import {
   Table,
@@ -13,12 +14,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Users, UserX, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Download, Loader2 } from "lucide-react";
+import { Search, Users, UserX, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Download, Loader2, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CourseStudent } from "../types";
 
 interface CourseStudentsTableProps {
   courseId: string;
@@ -33,6 +45,9 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
   const [sortBy, setSortBy] = useState("studentCode");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+  const [studentToDelete, setStudentToDelete] = useState<CourseStudent | null>(null);
+
+  const { mutateAsync: removeStudent, isPending: isRemoving } = useRemoveStudent();
 
   const { data, isLoading, refetch } = useCourseStudents(courseId, {
     keyword,
@@ -41,6 +56,17 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
     sortBy,
     sortDirection
   });
+
+  const handleRemove = async () => {
+    if (!studentToDelete) return;
+    try {
+      await removeStudent({ courseId, studentId: studentToDelete.studentId });
+      setStudentToDelete(null);
+      refetch();
+    } catch (error) {
+      console.error("Failed to remove student", error);
+    }
+  };
 
   const { mutate: exportReport, isPending: isExporting } = useExportCourseReport();
 
@@ -122,6 +148,7 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
             {isExporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
             Export Excel
           </Button>
+          <AddStudentManualDialog courseId={courseId} onSuccess={() => refetch()} />
           <ImportStudentsDialog courseId={courseId} courseClassName={courseClassName} onSuccess={() => refetch()} />
         </div>
       </div>
@@ -162,7 +189,8 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                   <TableHead className="font-semibold h-12 px-6 cursor-pointer hover:text-primary transition-colors select-none" onClick={() => handleSort("email")}>
                     <div className="flex items-center">Email {renderSortIcon("email")}</div>
                   </TableHead>
-                  <TableHead className="font-semibold h-12 px-6 text-right">Nhóm</TableHead>
+                  <TableHead className="font-semibold h-12 px-6">Nhóm</TableHead>
+                  <TableHead className="font-semibold h-12 px-6 text-right">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -172,12 +200,13 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                       <TableCell className="px-6 py-4"><Skeleton className="h-4 w-20" /></TableCell>
                       <TableCell className="px-6 py-4"><Skeleton className="h-4 w-40" /></TableCell>
                       <TableCell className="px-6 py-4"><Skeleton className="h-4 w-48" /></TableCell>
-                      <TableCell className="px-6 py-4 text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+                      <TableCell className="px-6 py-4"><Skeleton className="h-4 w-16" /></TableCell>
+                      <TableCell className="px-6 py-4 text-right"><Skeleton className="h-8 w-8 ml-auto rounded-xl" /></TableCell>
                     </TableRow>
                   ))
                 ) : data?.studentsWithTeam.content.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
+                    <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
                       Không có sinh viên nào trong danh sách.
                     </TableCell>
                   </TableRow>
@@ -191,12 +220,25 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                       <TableCell className="font-medium px-6 py-4">{student.studentCode}</TableCell>
                       <TableCell className="font-semibold px-6 py-4">{student.fullName}</TableCell>
                       <TableCell className="text-muted-foreground px-6 py-4">{student.email}</TableCell>
-                      <TableCell className="text-right px-6 py-4">
+                      <TableCell className="px-6 py-4">
                         {student.team && (
                           <Badge variant="outline" className="rounded-full px-3 py-1 border-primary/20 text-primary bg-primary/5 whitespace-nowrap">
                             {student.team.teamName}
                           </Badge>
                         )}
+                      </TableCell>
+                      <TableCell className="text-right px-6 py-4">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setStudentToDelete(student);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
@@ -221,6 +263,7 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                   <TableHead className="font-semibold h-12 px-6 cursor-pointer hover:text-primary transition-colors select-none" onClick={() => handleSort("email")}>
                     <div className="flex items-center">Email {renderSortIcon("email")}</div>
                   </TableHead>
+                  <TableHead className="font-semibold h-12 px-6 text-right">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -230,11 +273,12 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                       <TableCell className="px-6 py-4"><Skeleton className="h-4 w-20" /></TableCell>
                       <TableCell className="px-6 py-4"><Skeleton className="h-4 w-40" /></TableCell>
                       <TableCell className="px-6 py-4"><Skeleton className="h-4 w-48" /></TableCell>
+                      <TableCell className="px-6 py-4 text-right"><Skeleton className="h-8 w-8 ml-auto rounded-xl" /></TableCell>
                     </TableRow>
                   ))
                 ) : data?.studentsWithoutTeam.content.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="h-32 text-center text-muted-foreground">
+                    <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
                       Không có sinh viên nào trong danh sách.
                     </TableCell>
                   </TableRow>
@@ -248,6 +292,19 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                       <TableCell className="font-medium px-6 py-4">{student.studentCode}</TableCell>
                       <TableCell className="font-semibold px-6 py-4">{student.fullName}</TableCell>
                       <TableCell className="text-muted-foreground px-6 py-4">{student.email}</TableCell>
+                      <TableCell className="text-right px-6 py-4">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setStudentToDelete(student);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
@@ -264,6 +321,24 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
         isOpen={!!selectedStudentId}
         onClose={() => setSelectedStudentId(null)}
       />
+
+      <AlertDialog open={!!studentToDelete} onOpenChange={(open) => !open && setStudentToDelete(null)}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa sinh viên?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn xóa sinh viên <strong className="text-foreground">{studentToDelete?.fullName}</strong> khỏi khóa học? Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogCancel className="rounded-xl">Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove} disabled={isRemoving} className="rounded-xl bg-destructive hover:bg-destructive/90">
+              {isRemoving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              Xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

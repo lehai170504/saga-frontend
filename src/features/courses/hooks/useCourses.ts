@@ -81,7 +81,7 @@ export const useExportCourseReport = () => {
     mutationFn: ({ courseId, courseClassName }: { courseId: string; courseClassName?: string }) =>
       courseApi.exportCourseReport(courseId).then((response) => ({ response, courseClassName, courseId })),
     onSuccess: ({ response, courseClassName, courseId }) => {
-      const blob = new Blob([response.data as BlobPart], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const blob = new Blob([response as unknown as BlobPart], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;

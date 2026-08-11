@@ -8,11 +8,15 @@ import { Plus, Users, FolderKanban, ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProjectsManagementPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = React.use(params);
-  const { data: studentsData, isLoading } = useCourseStudents(courseId);
+  const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId);
+
+  const courseName = courseData?.clazz?.name || courseId;
 
   const studentsWithTeam = studentsData?.studentsWithTeam?.content || [];
 
@@ -46,23 +50,21 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
     }
   });
 
-  const teams = Array.from(teamsMap.values());
+  const teams = Array.from(teamsMap.values()).sort((a, b) => {
+    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+  });
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <PageHeader
-          title={`Quản lý nhóm dự án - Lớp ${courseId}`}
+          title={`Quản lý nhóm dự án - Lớp ${courseName}`}
           description="Quản lý thông tin các nhóm, đề tài và thành viên."
         />
-        <Button className="gap-2 rounded-xl">
-          <Plus size={16} />
-          Tạo nhóm ngẫu nhiên
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading ? (
+        {isLoadingStudents || isLoadingCourse ? (
           // Skeleton Loader
           Array.from({ length: 3 }).map((_, i) => (
             <Card key={i} className="rounded-[2rem] h-[250px] shadow-sm border-border bg-card">

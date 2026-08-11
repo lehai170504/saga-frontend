@@ -17,6 +17,7 @@ import { useCourses } from "@/features/courses/hooks/useCourses";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BroadcastDialog } from "@/features/notifications/components/broadcast-dialog";
 
 function CourseStats({ courseId }: { courseId: string }) {
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
@@ -31,7 +32,7 @@ function CourseStats({ courseId }: { courseId: string }) {
     });
   }
   const teamCount = teamsMap.size;
-  const warningCount = warningsData?.length || 0;
+  const warningCount = warningsData?.warnings?.length || 0;
 
   return (
     <div className="grid grid-cols-2 gap-3 mt-6">
@@ -91,9 +92,9 @@ export default function ClassSelectionPage() {
             description="Lựa chọn một lớp học để bắt đầu theo dõi tiến độ và quản lý dự án."
           />
 
-          <div className="w-full md:w-[280px]">
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <Select value={selectedSemester} onValueChange={setSelectedSemester}>
-              <SelectTrigger className="w-full h-12 rounded-xl bg-card/50 backdrop-blur-xl border-border/50 text-foreground font-semibold focus:ring-primary/20 transition-all hover:bg-card/80">
+              <SelectTrigger className="w-full sm:w-[240px] h-12 rounded-xl bg-card/50 backdrop-blur-xl border-border/50 text-foreground font-semibold focus:ring-primary/20 transition-all hover:bg-card/80">
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-muted-foreground" />
                   <SelectValue placeholder="Chọn học kỳ" />
@@ -114,6 +115,7 @@ export default function ClassSelectionPage() {
                 )}
               </SelectContent>
             </Select>
+            
           </div>
         </div>
 

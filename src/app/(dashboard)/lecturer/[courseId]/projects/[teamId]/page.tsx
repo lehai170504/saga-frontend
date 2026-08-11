@@ -24,7 +24,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
   // Fetch real data
   const { data: teamDetail, isLoading: isLoadingMembers } = useTeamDetail(courseId, teamId);
 
-  const teamName = teamDetail?.teamName || `Nhóm ${teamId.slice(0, 8)}...`;
+  const teamName = teamDetail?.teamName || "Đang tải thông tin nhóm...";
   const projectName = teamDetail?.project?.name || "Chưa có dự án";
 
   const projectDetail = {
@@ -47,7 +47,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
         </Link>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <PageHeader
-            title={`${projectDetail.name}: ${projectDetail.project}`}
+            title={`${projectDetail.name}${projectDetail.project && projectDetail.project !== "Chưa có dự án" ? ` - ${projectDetail.project}` : ''}`}
             description="Chi tiết dự án, tiến độ Agile và đánh giá cổ phần Slices của từng thành viên."
           />
           {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
@@ -95,9 +95,25 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
                   <CardTitle className="text-lg font-bold">Thông tin dự án</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Chưa có mô tả dự án từ hệ thống.
-                  </p>
+                  {projectDetail.project && projectDetail.project !== "Chưa có dự án" ? (
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Thông tin chi tiết về dự án đang được cập nhật từ hệ thống.
+                    </p>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm font-semibold text-warning">
+                        Nhóm chưa được liên kết với không gian làm việc (Workspace).
+                      </p>
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Các cấu hình còn thiếu:</p>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-destructive" /> Chưa kết nối GitHub Repository</li>
+                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-destructive" /> Chưa kết nối Jira Board</li>
+                          <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-warning" /> Chưa cập nhật Tài liệu Thiết kế Hệ thống</li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 

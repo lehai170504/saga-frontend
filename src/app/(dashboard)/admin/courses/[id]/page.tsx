@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft, BookOpen, Users, Calendar, GraduationCap, Percent, Code,
-  FileText, Layout, User, Mail, ShieldCheck, Clock, Trash2, Loader2
+  FileText, Layout, User, Mail, ShieldCheck, Clock, Trash2, Loader2, Scale
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseDialog } from "@/features/courses/components/edit-course-dialog";
 import { CourseStudentsTable } from "@/features/courses/components/course-students-table";
+import { CourseWeightsConfig } from "@/features/admin/components/course-weights-config";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -139,7 +140,7 @@ export default function CourseDetailPage() {
         </div>
       ) : course ? (
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2 rounded-2xl mb-8 p-1 bg-muted/50 border border-border/50">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3 rounded-2xl mb-8 p-1 bg-muted/50 border border-border/50">
             <TabsTrigger value="overview" className="rounded-xl font-semibold flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               Tổng quan
@@ -147,6 +148,10 @@ export default function CourseDetailPage() {
             <TabsTrigger value="students" className="rounded-xl font-semibold flex items-center gap-2">
               <Users className="w-4 h-4" />
               Danh sách Sinh viên
+            </TabsTrigger>
+            <TabsTrigger value="evaluation" className="rounded-xl font-semibold flex items-center gap-2">
+              <Scale className="w-4 h-4" />
+              Trọng số Đánh giá
             </TabsTrigger>
           </TabsList>
 
@@ -277,6 +282,10 @@ export default function CourseDetailPage() {
 
           <TabsContent value="students" className="mt-0">
             <CourseStudentsTable courseId={courseId} courseClassName={course.clazz.name} />
+          </TabsContent>
+
+          <TabsContent value="evaluation" className="mt-0">
+            <CourseWeightsConfig courseId={courseId} />
           </TabsContent>
         </Tabs>
       ) : null}

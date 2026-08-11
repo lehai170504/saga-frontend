@@ -199,9 +199,9 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 - `POST /api/v1/projects/{projectId}/sprints/{sprintId}/close`: Đóng Sprint hoàn thành.
 - `DELETE /api/v1/projects/{projectId}/sprints/{sprintId}`: Xóa Sprint đồng bộ trên Jira.
 - `GET /api/v1/teams/{teamId}/sprints`: Lấy danh sách Sprint của một nhóm.
-- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Đọc kết quả Peer Review của nhóm trong một Sprint cụ thể.
+- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Đọc lịch sử đánh giá Peer Review của nhóm trong một Sprint. Hook `useTeamSprintReviews` gọi endpoint này và trả về `reviews: PeerReviewItem[]` (bao gồm `createdAt`, `revieweeId`, `starRating`, `comment`). Frontend dùng để hiển thị timestamp đánh giá (`dd-mm-yyyy`) trên card thành viên trong `StudentSprintDetailsView`.
 - `GET /api/v1/teams/{teamId}/peer-review-rubric`: Lấy Rubric đánh giá chéo được thiết lập riêng cho nhóm.
-- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews/candidates`: Lấy danh sách ứng viên (các thành viên cùng nhóm) để đánh giá chéo.
+- `GET /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews/candidates`: Lấy danh sách ứng viên (các thành viên cùng nhóm) để đánh giá chéo. Response `ReviewCandidate` bao gồm: `alreadyReviewed`, `existingTotalStarRating`, `existingCreatedAt` (ngày đánh giá dự phòng).
 - `POST /api/v1/teams/{teamId}/sprints/{sprintId}/peer-reviews`: Gửi đánh giá chéo cho một thành viên trong nhóm.
 - `GET /api/v1/peer-review-rubrics/default`: Lấy cấu hình Rubric đánh giá chéo chuẩn của toàn trường.
 - `GET /api/v1/courses/contribution-slice-weights`: Lấy trọng số đóng góp của một khóa học.
@@ -209,16 +209,19 @@ Toàn bộ các API phân tích dữ liệu cho giảng viên đã được cấ
 
 ### 1.12. Quản lý công việc (Jira Tasks)
 Toàn bộ luồng quản lý công việc và hiển thị Kanban Board của nhóm sinh viên đã được tích hợp đầy đủ:
-- `GET /api/v1/projects/{projectId}/tasks`: Lấy danh sách nhiệm vụ của dự án (hỗ trợ filter `keyword`, `sprintId`, `assigneeId`, `status`, phân trang, và giới hạn size tối đa 100).
-- `GET /api/v1/projects/{projectId}/tasks/{taskId}`: Lấy chi tiết một nhiệm vụ.
-- `POST /api/v1/projects/{projectId}/tasks`: Tạo công việc mới đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Giao diện hỗ trợ truyền `issueTypeId` và `priorityId` để xử lý phân giải dữ liệu.
-- `PUT /api/v1/projects/{projectId}/tasks/{taskId}`: Cập nhật thông tin chi tiết công việc đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hỗ trợ truyền `priority`, `priorityId`, `priorityName` để tránh lỗi DTO rỗng.
+- `GET /api/v1/projects/{projectId}/tasks`: Lấy danh sách nhiệm vụ của dự án (hỗ trợ filter `keyword`, `sprintId`, `assigneeId`, `status`, phân trang, và giới hạn size tối đa 100). Response bao gồm field `labels: string[]` — hiển thị dưới dạng chips màu primary trên Board Card, Backlog Row và Task Detail Modal.
+- `GET /api/v1/projects/{projectId}/tasks/{taskId}`: Lấy chi tiết một nhiệm vụ (bao gồm `labels[]`).
+- `POST /api/v1/projects/{projectId}/tasks`: Tạo công việc mới đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Giao diện hỗ trợ truyền `issueTypeId` và `priorityId` để xử lý phân giải dữ liệu. Field `labels` hỗ trợ nhập chuỗi phân cách bằng dấu phẩy.
+- `PUT /api/v1/projects/{projectId}/tasks/{taskId}`: Cập nhật thông tin chi tiết công việc đồng bộ trực tiếp lên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hỗ trợ truyền `priority`, `priorityId`, `priorityName` để tránh lỗi DTO rỗng. Hỗ trợ cập nhật `labels[]`.
 - `DELETE /api/v1/projects/{projectId}/tasks/{taskId}`: Xóa/Ngắt kết nối công việc đồng bộ trực tiếp trên Jira (yêu cầu gửi kèm `Idempotency-Key` ở Header).
 - `PUT /api/v1/projects/{projectId}/tasks/{taskId}/sprint`: Gán công việc vào Sprint (Body: `{ sprintId }`) hoặc chuyển về Backlog (Body: `{ backlog: true }`).
 - `PUT /api/v1/projects/{projectId}/tasks/{taskId}/assignee`: Phân công/Bỏ phân công người thực hiện công việc (Body: `{ assigneeId }` hoặc `{ unassign: true }`).
 - `PUT /api/v1/projects/{projectId}/tasks/{taskId}/estimation`: Cập nhật Story Points cho công việc (Body: `{ value: number }`).
 - `GET /api/v1/projects/{projectId}/tasks/{taskId}/transitions`: Lấy danh sách các trạng thái hợp lệ có thể chuyển đổi cho công việc.
 - `POST /api/v1/projects/{projectId}/tasks/{taskId}/transitions`: Chuyển đổi trạng thái (Transition) của công việc trên bảng Kanban (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+
+### 1.13. Tích hợp GitHub — Lọc Repository theo trạng thái
+Dropdown chọn Repository trong trang **Lịch sử Commit** đã được cập nhật để chỉ hiển thị các repository có trạng thái `ACTIVE`. Các repository `DISCONNECTED` hoặc `DEGRADED` bị loại khỏi danh sách lựa chọn (lọc tại `useMemo` trong `student-commits-view.tsx`).
 
 ---
 
