@@ -4,7 +4,7 @@ import React from "react";
 import { useGetCourseWeights } from "@/features/admin/hooks/useContributionWeight";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
-import { Code, FileText, PenTool, Bug, Scale } from "lucide-react";
+import { Code, FileText, PenTool, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CourseWeightsConfigProps {

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings2, Save, AlertTriangle, ClipboardCheck } from "lucide-react";
+import { Save, AlertTriangle, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
