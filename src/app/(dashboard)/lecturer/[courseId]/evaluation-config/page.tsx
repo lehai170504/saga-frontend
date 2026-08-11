@@ -70,7 +70,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
         </TabsList>
 
         <TabsContent value="template" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <TemplateSelector />
+          <TemplateSelector courseId={courseId} />
         </TabsContent>
 
         <TabsContent value="phases" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">

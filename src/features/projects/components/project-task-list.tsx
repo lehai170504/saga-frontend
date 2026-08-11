@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -161,7 +161,6 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
                       {task.assignee ? (
                         <div className="flex items-center gap-2">
                           <Avatar className="h-7 w-7 border shadow-sm">
-                            <AvatarImage src={task.assignee.avatarUrl || ""} />
                             <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
                               {task.assignee.fullName.charAt(0)}
                             </AvatarFallback>
@@ -220,7 +219,6 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
                   {taskDetail.assignee ? (
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 border shadow-sm">
-                        <AvatarImage src={taskDetail.assignee.avatarUrl || ""} />
                         <AvatarFallback className="font-bold bg-primary/10 text-primary">
                           {taskDetail.assignee.fullName.charAt(0)}
                         </AvatarFallback>

@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import {
@@ -17,17 +16,11 @@ import {
 import { PageHeader } from "@/components/shared/PageHeader";
 import { GraphProcessingChart } from "@/features/admin/components/graph-processing-chart";
 import { SystemAnomalyChart } from "@/features/admin/components/system-anomaly-chart";
+import { useSystemStats } from "@/features/admin/hooks/useSystemStats";
+import { IntegrationHealthCards } from "@/features/admin/components/integration-health-cards";
 
 export default function AdminDashboard() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate data loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: stats, isLoading } = useSystemStats();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -57,16 +50,16 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Giảng viên
+                  Người dùng (Profiles)
                 </CardTitle>
                 <div className="p-2 bg-primary/10 rounded-xl">
                   <Users className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold text-foreground">45</div>
+                <div className="text-4xl font-extrabold text-foreground">{stats?.totalProfiles || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-success" /> Trong hệ thống
+                  <CheckCircle2 className="w-3 h-3 text-success" /> Tài khoản hệ thống
                 </p>
               </CardContent>
             </Card>
@@ -74,34 +67,17 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Sinh viên
-                </CardTitle>
-                <div className="p-2 bg-primary/10 rounded-xl">
-                  <GraduationCap className="h-4 w-4 text-primary" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-extrabold text-foreground">1,248</div>
-                <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-success" /> Trong hệ thống
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
-              <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Lớp học (Kỳ hiện tại)
+                  Khóa học
                 </CardTitle>
                 <div className="p-2 bg-success/10 rounded-xl">
-                  <Network className="h-4 w-4 text-success" />
+                  <GraduationCap className="h-4 w-4 text-success" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold text-foreground">32</div>
-                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
+                <div className="text-4xl font-extrabold text-foreground">{stats?.totalCourses || 0}</div>
+                <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-success animate-pulse"></span>
-                  Thuộc Học kỳ Fall 2026
+                  Đã tạo trên hệ thống
                 </p>
               </CardContent>
             </Card>
@@ -109,16 +85,34 @@ export default function AdminDashboard() {
             <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
               <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-bold text-muted-foreground">
-                  Khối lượng Đồ thị (24h)
+                  Nhóm (Teams)
                 </CardTitle>
                 <div className="p-2 bg-primary/10 rounded-xl">
                   <Network className="h-4 w-4 text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-extrabold text-foreground">24.5k</div>
+                <div className="text-4xl font-extrabold text-foreground">{stats?.totalTeams || 0}</div>
+                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
+                  <CheckCircle2 className="w-3 h-3 text-success" /> Hoạt động
+                </p>
+              </CardContent>
+            </Card>
+
+
+            <Card className="rounded-2xl shadow-sm border-border hover:shadow-md transition-all">
+              <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+                <CardTitle className="text-sm font-bold text-muted-foreground">
+                  Dự án (Projects)
+                </CardTitle>
+                <div className="p-2 bg-amber-500/10 rounded-xl">
+                  <Server className="h-4 w-4 text-amber-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-extrabold text-foreground">{stats?.totalProjects || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1 font-medium">
-                  <span className="text-success font-bold">Đỉnh & Cạnh</span> đã trích xuất
+                  <span className="text-success font-bold">Đã thiết lập</span>
                 </p>
               </CardContent>
             </Card>
@@ -146,66 +140,7 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {/* Integrations Card */}
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Server className="h-5 w-5 text-muted-foreground" />
-              Trạng thái Tích hợp Hệ thống
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {isLoading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-20 w-full rounded-xl" />
-                <Skeleton className="h-20 w-full rounded-xl" />
-              </div>
-            ) : (
-              <>
-                <div className="flex justify-between items-center p-4 border border-border/50 rounded-xl bg-muted/20 hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="h-6 w-6 text-primary" fill="currentColor">
-                        <path d="M12.004 0c-2.35 2.395-2.365 6.185.133 8.585l3.412 3.413-3.197 3.198a6.501 6.501 0 0 1 1.412 7.04l9.566-9.566a.95.95 0 0 0 0-1.344L12.004 0zm-1.748 1.74L.67 11.327a.95.95 0 0 0 0 1.344C4.45 16.44 8.22 20.244 12 24c2.295-2.298 2.395-6.096-.08-8.533l-3.47-3.469 3.2-3.2c-1.918-1.955-2.363-4.725-1.394-7.057z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground">Jira Software Cloud</p>
-                      <p className="text-sm text-muted-foreground mt-0.5">Webhook WebSockets Status</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-bold tracking-wide">
-                      <div className="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></div>
-                      CONNECTED
-                    </div>
-                    <span className="text-[10px] text-muted-foreground font-medium">Last ping: 2m ago</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center p-4 border border-border/50 rounded-xl bg-muted/20 hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-card flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="h-6 w-6 text-foreground dark:text-zinc-100" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground">GitHub Organization</p>
-                      <p className="text-sm text-muted-foreground mt-0.5">Webhook WebSockets Status</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-xs font-bold tracking-wide">
-                      <div className="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></div>
-                      CONNECTED
-                    </div>
-                    <span className="text-[10px] text-muted-foreground font-medium">Last ping: 15s ago</span>
-                  </div>
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        <IntegrationHealthCards />
 
         {/* Activity Feed Card */}
         <Card className="rounded-2xl shadow-sm border-border">

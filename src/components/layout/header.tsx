@@ -108,7 +108,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <>
-      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
+      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
         {/* Logo and Mobile Menu */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0 relative z-10">
           {onMenuClick && (

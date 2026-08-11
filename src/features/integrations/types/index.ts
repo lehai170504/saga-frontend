@@ -81,3 +81,43 @@ export type GitHubRepositoriesLinkRequest = {
   installationId: number;
   repositoryIds: number[];
 };
+
+export type TriggerSyncTarget = {
+  jobId: string;
+  targetSystem: string;
+  status: string;
+  coalesced: boolean;
+};
+
+export type TriggerSyncResponse = {
+  projectId: string;
+  requestedProvider?: string;
+  accepted: boolean;
+  targets: TriggerSyncTarget[];
+};
+
+export type SyncHistoryJobItem = {
+  id: string;
+  targetSystem: string;
+  type: "JIRA_SYNC" | "GIT_SYNC" | "INITIAL_BACKFILL" | "RECONCILIATION" | "WEBHOOK_PROCESSING" | "OTHER" | string;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "PARTIAL_FAILURE" | "FAILED" | string;
+  startedAt: string | null;
+  completedAt: string | null;
+  itemsProcessed: number | null;
+  itemsFailed: number | null;
+  errorCategory: string | null;
+  failureStage: string | null;
+};
+
+export type SyncHistoryResponse = {
+  projectId: string;
+  jobs: {
+    content: SyncHistoryJobItem[];
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    hasNext: boolean;
+  };
+};
+

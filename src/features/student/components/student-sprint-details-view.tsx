@@ -7,7 +7,8 @@ import { ArrowLeft, Users, UserCheck, ShieldAlert, Star, Loader2 } from "lucide-
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
-import { useTeamSprintCandidates, useTeamRubric, useDefaultRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
+import { useTeamSprintCandidates, useTeamRubric, useSubmitPeerReview } from "@/features/projects/hooks/useTeamSprints";
+import { RubricCriterion } from "@/features/projects/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -46,7 +47,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const activeTeamId = myTeamData?.teamId || "";
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(activeTeamId, sprintId || "");
   const { data: teamRubricData, isLoading: isLoadingTeamRubric } = useTeamRubric(activeTeamId);
-  const { data: defaultRubricData, isLoading: isLoadingDefaultRubric } = useDefaultRubric();
   const submitReviewMutation = useSubmitPeerReview(activeTeamId, sprintId || "");
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
@@ -63,12 +63,9 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const candidates = candidatesData?.candidates || [];
 
   // Determine criteria with fallbacks (Team -> Default -> Hardcoded standard)
-  const getRubricCriteria = () => {
+  const getRubricCriteria = (): RubricCriterion[] => {
     if (teamRubricData?.criteria && teamRubricData.criteria.length > 0) {
       return teamRubricData.criteria;
-    }
-    if (defaultRubricData?.criteria && defaultRubricData.criteria.length > 0) {
-      return defaultRubricData.criteria;
     }
     return [
       {
@@ -112,7 +109,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
     if (!evaluatingCandidate) return;
 
     // Validate that all criteria are rated
-    const unrated = criteria.filter(c => !ratings[c.rubricId]);
+    const unrated = criteria.filter((c: RubricCriterion) => !ratings[c.rubricId]);
     if (unrated.length > 0) {
       toast.error(`Vui lòng đánh giá điểm sao cho tiêu chí: "${unrated[0].criteriaName}"`);
       return;
@@ -123,11 +120,11 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
       return;
     }
 
-    const criteriaRatings = criteria.map(c => ({
+    const criteriaRatings = criteria.map((c: RubricCriterion) => ({
       rubricId: c.rubricId,
-      starRating: ratings[c.rubricId]
+      starRating: ratings[c.rubricId] || 0
     }));
-    const totalStarRating = criteriaRatings.reduce((sum, item) => sum + item.starRating, 0);
+    const totalStarRating = criteriaRatings.reduce((sum: number, item: { rubricId: string; starRating: number }) => sum + item.starRating, 0);
 
     const payload = {
       revieweeId: evaluatingCandidate.studentId,
@@ -147,9 +144,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
 
@@ -312,7 +306,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
                 <form onSubmit={handleSubmitReview} className="space-y-6 pt-4">
                   {/* Rubric Criteria star ratings */}
                   <div className="space-y-4">
-                    {isLoadingTeamRubric || isLoadingDefaultRubric ? (
+                    {isLoadingTeamRubric ? (
                       <div className="flex flex-col items-center justify-center py-6 gap-2">
                         <Loader2 className="animate-spin text-primary h-6 w-6" />
                         <span className="text-xs text-muted-foreground">Đang tải các tiêu chí đánh giá...</span>

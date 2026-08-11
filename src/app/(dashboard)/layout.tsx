@@ -22,6 +22,13 @@ export default function DashboardLayout({
   const [isSidebarHidden, setIsSidebarHidden] = React.useState(false);
 
   React.useEffect(() => {
+    // Reset window scroll position to top on route change to prevent layout shift/hiding header
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+
     const checkSidebarVisibility = () => {
       // Hide sidebar on Lecturer Home
       if (pathname === "/lecturer") {

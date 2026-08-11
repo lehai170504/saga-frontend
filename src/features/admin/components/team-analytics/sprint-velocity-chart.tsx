@@ -29,8 +29,7 @@ export function SprintVelocityChart({ data, isLoading }: SprintVelocityChartProp
     );
   }
 
-  // Ensure chartData is an array to avoid Recharts crashing
-  const chartData = Array.isArray(data) ? data : (data as any)?.content || [];
+  const chartData = Array.isArray(data) ? data : ((data as unknown as Record<string, SprintVelocity[]>)?.content) || [];
 
   if (chartData.length === 0) {
     return (

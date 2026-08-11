@@ -3,10 +3,17 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Loader2, BookOpen, Clock, Activity } from "lucide-react";
+import { ArrowRight, Loader2, BookOpen, Calendar, Clock } from "lucide-react";
 import { useSemesters } from "@/features/semesters/hooks/useSemesters";
 import { useCourses } from "@/features/courses/hooks/useCourses";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function StudentSelectionPage() {
   const router = useRouter();
@@ -29,7 +36,6 @@ export default function StudentSelectionPage() {
   const courses = coursesPage?.content || [];
 
   const handleConfirmCardSelection = (courseId: string) => {
-    // Điều hướng vào trong lớp học
     router.push(`/student/${courseId}`);
   };
 
@@ -57,75 +63,91 @@ export default function StudentSelectionPage() {
 
   const getFirstName = (fullName?: string) => {
     if (!fullName) return "bạn";
-    // Loại bỏ phần trong ngoặc đơn (nếu có) như " (K18 HCM)"
     const cleanName = fullName.replace(/\s*\(.*?\)\s*/g, '').trim();
     const parts = cleanName.split(" ");
     return parts.length > 0 ? parts[parts.length - 1] : "bạn";
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-72px)] pb-16 w-full animate-in fade-in duration-500">
-      {/* Header Area - Full width background, fluid content */}
-      <div className="bg-background border-b border-border/40 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.05)] w-full">
-        <div className="w-full px-4 md:px-8 xl:px-12 py-8 md:py-10 space-y-6 md:space-y-8">
-          <div className="flex flex-col space-y-2 md:space-y-3">
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
-              {getGreeting()}, {getFirstName(user?.fullName)}
+    <div className="flex flex-col gap-8 animate-in fade-in duration-500 pb-12">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-background to-primary/5 border border-primary/10 p-8 md:p-10 shadow-sm">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-4">
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
+              {getGreeting()}, <span className="text-primary">{getFirstName(user?.fullName)}</span> 👋
             </h1>
-            <p className="text-muted-foreground font-medium text-base">
-              Chọn không gian làm việc môn học của bạn để tiếp tục.
+            <p className="text-muted-foreground font-medium text-sm md:text-base max-w-lg">
+              Xem danh sách các môn học trong học kỳ hiện tại và truy cập nhanh vào không gian làm việc của bạn.
             </p>
           </div>
 
-          {/* Toolbar: Search & Filters */}
-          <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 w-full">
-            {/* Semester Tabs */}
-            <div className="flex flex-wrap items-center gap-2 p-1.5 bg-muted/30 border border-border/30 rounded-2xl w-full xl:w-auto">
-              {isLoadingSemesters ? (
-                <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground font-medium">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Đang tải học kỳ...
-                </div>
-              ) : semesters.length === 0 ? (
-                <div className="px-4 py-2 text-sm text-muted-foreground font-medium">Không có học kỳ nào</div>
-              ) : (
-                semesters.map((sem) => (
-                  <button
-                    key={sem.id}
-                    onClick={() => handleSemesterChange(sem.id)}
-                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${selectedSemester === sem.id
-                      ? "bg-background text-foreground shadow-sm border border-border/40 scale-[1.02]"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                      }`}
-                  >
-                    {sem.name}
-                  </button>
-                ))
-              )}
-            </div>
-
+          <div className="w-full md:w-72 shrink-0 bg-background/50 backdrop-blur-md p-1.5 rounded-2xl border border-border/50 shadow-sm">
+            {isLoadingSemesters ? (
+              <div className="h-11 rounded-xl bg-muted/50 animate-pulse w-full flex items-center px-4">
+                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+              </div>
+            ) : semesters.length === 0 ? (
+              <div className="h-11 rounded-xl bg-muted w-full flex items-center px-4 text-sm text-muted-foreground font-medium">
+                Không có dữ liệu
+              </div>
+            ) : (
+              <Select value={selectedSemester} onValueChange={handleSemesterChange}>
+                <SelectTrigger className="w-full bg-background border-none shadow-none rounded-xl h-11 focus:ring-0 focus:ring-offset-0 font-semibold text-foreground">
+                  <SelectValue placeholder="Chọn học kỳ" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-border/50 shadow-xl">
+                  {semesters.map((sem) => (
+                    <SelectItem key={sem.id} value={sem.id} className="rounded-lg cursor-pointer font-medium py-2.5">
+                      {sem.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
+
+        {/* Decorative ambient elements */}
+        <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[80px] opacity-60 pointer-events-none" />
+        <div className="absolute left-0 bottom-0 translate-y-1/3 -translate-x-1/4 w-64 h-64 bg-primary/10 rounded-full blur-[60px] opacity-50 pointer-events-none" />
       </div>
 
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Left Column: Courses */}
+        <div className="xl:col-span-2 flex flex-col gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
+            <h2 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                <BookOpen size={20} strokeWidth={2.5} />
+              </div>
+              Lớp học của bạn
+            </h2>
 
-      {/* Main Content: Courses Grid */}
-      <div className="w-full mt-8 md:mt-10">
-        <div className="w-full px-4 md:px-8 xl:px-12">
-          {/* Fluid grid: 1 col on mobile, 2 cols on lg, 3 cols on 2xl */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-8 w-full">
+            {courses.length > 0 && (
+              <span className="text-xs font-bold uppercase tracking-wider bg-muted px-4 py-2 rounded-full text-muted-foreground border border-border/50">
+                {courses.length} Lớp học
+              </span>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {isLoadingCourses ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-40 w-full rounded-3xl bg-muted/40 animate-pulse border border-border/30" />
+                <div key={i} className="h-[220px] w-full rounded-[2rem] bg-muted/40 animate-pulse border border-border/30" />
               ))
             ) : courses.length === 0 ? (
-              <div className="col-span-full py-24 flex flex-col items-center justify-center text-center space-y-5 bg-muted/10 border border-border/40 rounded-[2rem] border-dashed">
-                <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center text-muted-foreground shadow-sm">
-                  <BookOpen size={36} strokeWidth={1.5} />
+              <div className="col-span-full py-20 flex flex-col items-center justify-center text-center space-y-5 bg-card/50 border border-border/40 rounded-[2.5rem] border-dashed shadow-sm">
+                <div className="w-20 h-20 bg-muted/50 rounded-[2rem] flex items-center justify-center text-muted-foreground border border-border/50">
+                  <BookOpen size={32} strokeWidth={1.5} />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground tracking-tight">Không tìm thấy môn học</h3>
-                <p className="text-base text-muted-foreground max-w-md">
-                  Hiện tại không có lớp học nào khớp với bộ lọc. Hãy thử tìm kiếm với từ khóa khác nhé.
-                </p>
+                <div className="space-y-2 max-w-md">
+                  <h3 className="text-2xl font-extrabold text-foreground tracking-tight">Chưa có môn học nào</h3>
+                  <p className="text-sm md:text-base text-muted-foreground font-medium">
+                    Không tìm thấy lớp học nào trong học kỳ này. Bạn thử chọn một học kỳ khác xem sao nhé.
+                  </p>
+                </div>
               </div>
             ) : (
               courses.map((course) => {
@@ -134,60 +156,47 @@ export default function StudentSelectionPage() {
                   <Card
                     key={course.id}
                     onClick={() => handleConfirmCardSelection(course.id)}
-                    className="group relative overflow-hidden bg-background border border-border/50 hover:border-primary/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 cursor-pointer rounded-[1.75rem] flex flex-col justify-center"
+                    className="group overflow-hidden bg-background border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-pointer rounded-[2rem] flex flex-col"
                   >
-                    {/* Premium top border glow on hover */}
-                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    {/* Responsive Vertical Layout for the Card */}
-                    <CardContent className="p-6 md:p-8 flex flex-col h-full justify-between relative z-10 w-full gap-6">
-
-                      <div className="flex flex-col space-y-6">
-                        {/* Top: Icon & Action Button */}
-                        <div className="flex justify-between items-start w-full">
-                          <div className="w-16 h-16 shrink-0 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 group-hover:scale-105 group-hover:rotate-3 transition-transform duration-500">
-                            <BookOpen size={32} strokeWidth={1.5} />
-                          </div>
-
-                          <div className="w-12 h-12 shrink-0 rounded-full bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm group-hover:shadow-md">
-                            <ArrowRight size={20} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
-
-                        {/* Middle: Details */}
-                        <div className="flex flex-col space-y-3">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="whitespace-nowrap text-[11px] font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-md border border-primary/20">
-                              {course.subject.subjectCode}
-                            </span>
-                            {status === "active" ? (
-                              <span className="whitespace-nowrap flex items-center gap-1.5 text-[11px] font-bold text-success bg-success/15 px-3 py-1 rounded-md border border-success/30">
-                                <Activity size={14} strokeWidth={2.5} />
-                                ĐANG DIỄN RA
-                              </span>
-                            ) : status === "upcoming" ? (
-                              <span className="whitespace-nowrap flex items-center gap-1.5 text-[11px] font-bold text-warning bg-warning/15 px-3 py-1 rounded-md border border-warning/30">
-                                <Clock size={14} strokeWidth={2.5} />
-                                SẮP DIỄN RA
-                              </span>
-                            ) : (
-                              <span className="whitespace-nowrap flex items-center gap-1.5 text-[11px] font-bold text-muted-foreground bg-muted/50 px-3 py-1 rounded-md border border-border/50">
-                                <Clock size={14} strokeWidth={2.5} />
-                                ĐÃ KẾT THÚC
-                              </span>
-                            )}
-                          </div>
-
-                          <h3 className="text-xl md:text-2xl font-bold text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors tracking-tight">
-                            {course.subject.name}
-                          </h3>
-                        </div>
+                    <CardContent className="p-0 flex flex-col h-full">
+                      {/* Header: Status and Subject Code */}
+                      <div className="p-6 pb-4 flex items-start justify-between gap-4 bg-muted/20 group-hover:bg-primary/5 transition-colors duration-300 border-b border-border/40">
+                        <span className="text-xs font-black text-primary tracking-widest uppercase bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/10 shadow-sm">
+                          {course.subject.subjectCode}
+                        </span>
+                        {status === "active" ? (
+                          <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-emerald-500/20">
+                            Đang diễn ra
+                          </span>
+                        ) : status === "upcoming" ? (
+                          <span className="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-amber-500/20">
+                            Sắp diễn ra
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-extrabold text-muted-foreground bg-muted px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-border/50">
+                            Đã kết thúc
+                          </span>
+                        )}
                       </div>
 
-                      {/* Bottom: Class Info */}
-                      <div className="pt-5 border-t border-border/50 flex items-center justify-between w-full mt-auto">
-                        <span className="whitespace-nowrap text-xs text-muted-foreground font-semibold uppercase tracking-wider shrink-0">Lớp học</span>
-                        <span className="text-sm md:text-base font-bold text-foreground truncate pl-4 text-right">{course.clazz.name}</span>
+                      {/* Body: Subject Name */}
+                      <div className="p-6 pt-5 flex-1 bg-card">
+                        <h3 className="text-lg md:text-xl font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                          {course.subject.name}
+                        </h3>
+                      </div>
+
+                      {/* Footer: Class Name & Action */}
+                      <div className="px-6 py-5 border-t border-border/50 flex items-center justify-between mt-auto bg-card">
+                        <div className="flex items-center text-muted-foreground gap-3">
+                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center border border-border/50">
+                            <span className="text-[10px] font-black text-foreground">{course.clazz.name.charAt(0)}</span>
+                          </div>
+                          <span className="text-sm font-semibold">Lớp {course.clazz.name}</span>
+                        </div>
+                        <div className="w-9 h-9 rounded-full bg-background border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 shadow-sm">
+                          <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -196,7 +205,31 @@ export default function StudentSelectionPage() {
             )}
           </div>
         </div>
+
+        {/* Right Column: Schedule / Quick Stats (Placeholder to fill space nicely) */}
+        <div className="xl:col-span-1 flex flex-col gap-6">
+          <h2 className="text-xl font-black tracking-tight text-foreground flex items-center gap-3 px-2">
+            <div className="p-2 rounded-xl bg-primary/10 text-primary">
+              <Calendar size={18} strokeWidth={2.5} />
+            </div>
+            Lịch trình & Nhiệm vụ
+          </h2>
+
+          <Card className="rounded-[2rem] border-border/60 shadow-sm bg-card/50 overflow-hidden flex-1 min-h-[350px]">
+            <CardContent className="p-8 flex flex-col items-center justify-center h-full text-center space-y-4">
+              <div className="w-20 h-20 bg-muted/50 rounded-[2rem] flex items-center justify-center text-muted-foreground border border-border/50">
+                <Clock size={32} strokeWidth={1.5} />
+              </div>
+              <div className="space-y-2 max-w-[250px]">
+                <h3 className="text-lg font-bold text-foreground">Chưa có nhiệm vụ</h3>
+                <p className="text-sm text-muted-foreground font-medium">
+                  Bạn đang rảnh rỗi! Không có lịch học hay bài tập nào sắp đến hạn trong tuần này.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div >
+    </div>
   );
 }

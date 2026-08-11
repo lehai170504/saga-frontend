@@ -5,24 +5,25 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { FileSpreadsheet, UploadCloud, DownloadCloud, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useImportStudents } from "@/features/courses/hooks/useCourseStudents";
+import { useAdminImportStudentsTemplate } from "@/features/courses/hooks/useCourseStudents";
+import { COURSE_MESSAGES } from "../constants/messages";
 
 interface ImportStudentsDialogProps {
   courseId: string;
-  className?: string;
+  courseClassName?: string;
   onSuccess?: () => void;
 }
 
-export function ImportStudentsDialog({ courseId, className = courseId, onSuccess }: ImportStudentsDialogProps) {
+export function ImportStudentsDialog({ courseId, courseClassName = courseId, onSuccess }: ImportStudentsDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const importMutation = useImportStudents();
+  const importMutation = useAdminImportStudentsTemplate();
 
   const handleImport = () => {
     if (!selectedFile) {
-      toast.error("Vui lòng chọn file Excel để import");
+      toast.error(COURSE_MESSAGES.IMPORT.REQUIRE_FILE);
       return;
     }
 
@@ -35,15 +36,12 @@ export function ImportStudentsDialog({ courseId, className = courseId, onSuccess
         setSelectedFile(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
         if (onSuccess) onSuccess();
-      },
-      onError: (error: unknown) => {
-        toast.error((error as { message?: string })?.message || "Có lỗi xảy ra khi import sinh viên.");
       }
     });
   };
 
   const handleDownloadTemplate = () => {
-    toast.info("Tính năng đang được phát triển, vui lòng thử lại sau!");
+    toast.info(COURSE_MESSAGES.COMMON.FEATURE_IN_DEVELOPMENT);
   };
 
   return (
@@ -58,7 +56,7 @@ export function ImportStudentsDialog({ courseId, className = courseId, onSuccess
         <DialogHeader>
           <DialogTitle>Import danh sách sinh viên</DialogTitle>
           <DialogDescription>
-            Tải lên file Excel (.xlsx, .csv) chứa danh sách sinh viên của lớp {className}.
+            Tải lên file Excel template (5 cột: Class, RollNumber, Email, MemberCode, FullName) chứa danh sách sinh viên của lớp {courseClassName}.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-2 py-4">

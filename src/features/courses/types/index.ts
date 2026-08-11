@@ -18,12 +18,15 @@ export interface Course {
     id: string;
     code: string;
     name: string;
+    startDate?: string;
+    endDate?: string;
   };
   instructor: {
     id: string;
     cognitoSub?: string;
     email?: string;
     fullName: string;
+    accountStatus?: string;
   };
   createdAt: string;
   updatedAt: string;
@@ -42,15 +45,10 @@ export interface CourseRequest {
 }
 
 export interface TeamMemberResponse {
-  id: string;
-  teamId: string;
   studentId: string;
+  fullName: string;
+  studentCode: string;
   roleInTeam: string;
-  student: {
-    id: string;
-    studentCode: string;
-    name: string;
-  };
 }
 
 export interface CourseStudent {
@@ -77,6 +75,21 @@ export interface CourseStudentsResponse {
   studentsWithoutTeam: Page<CourseStudent>;
 }
 
+export interface CourseStudentDetail {
+  courseId: string;
+  studentId: string;
+  studentCode: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+  accountStatus: string;
+  team: {
+    teamId: string;
+    teamName: string;
+    roleInTeam: string;
+  } | null;
+}
+
 export interface MyTeamMembersResponse {
   courseId: string;
   teamId: string;
@@ -94,3 +107,14 @@ export interface MyTeamMembersResponse {
   }>;
 }
 
+export interface ImportStudentsResponse {
+  operation: string;
+  message: string;
+  totalRows: number;
+  createdStudents: number;
+  reusedStudents: number;
+  invitationsQueued: number;
+  teamsCreated: number;
+  membershipsCreated: number;
+  groupingApplied: boolean;
+}

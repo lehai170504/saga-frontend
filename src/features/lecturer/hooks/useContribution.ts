@@ -24,3 +24,25 @@ export const useOverrideContribution = () => {
     },
   });
 };
+
+export const useCourseContributionWeights = (courseId: string) => {
+  return useQuery({
+    queryKey: ["course-contribution-weights", courseId],
+    queryFn: () => contributionApi.getCourseContributionWeights(courseId),
+    enabled: !!courseId,
+  });
+};
+
+export const useRequestCourseContributionWeight = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ courseId, data }: { courseId: string; data: import("../types/contribution").CourseContributionWeightRequest }) =>
+      contributionApi.requestCourseContributionWeight(courseId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["course-contribution-weights", variables.courseId],
+      });
+    },
+  });
+};

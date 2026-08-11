@@ -11,10 +11,10 @@ export type ProjectResponse = {
 export type Sprint = {
   sprintId: string;
   sprintName: string;
-  externalSprintId: string | null;
   startDate: string | null;
   endDate: string | null;
   goal: string | null;
+  state?: string;
 };
 
 export type TeamSprintsResponse = {
@@ -92,3 +92,58 @@ export interface GithubCommitsResponse {
     hasNext: boolean;
   };
 }
+
+export type JiraTaskComponent = {
+  id: string;
+  name: string;
+};
+
+export type JiraTaskSprint = {
+  id: string;
+  name: string;
+  externalSprintId: string | null;
+};
+
+export type JiraTaskActor = {
+  id: string;
+  fullName: string;
+  studentCode: string;
+};
+
+export type JiraTask = {
+  id: string;
+  projectId: string;
+  externalId: string;
+  externalKey: string;
+  title: string;
+  type: string;
+  status: string;
+  priority: string;
+  storyPoint: number;
+  storyPoints?: number;
+  story_point?: number;
+  estimation?: number;
+  dueDate: string | null;
+  externalUpdatedAt: string | null;
+  resolvedAt: string | null;
+  resolution: string | null;
+  description: string | null;
+  labels: string[];
+  components: JiraTaskComponent[];
+  sprint: JiraTaskSprint | null;
+  assignee: JiraTaskActor | null;
+  reporter: JiraTaskActor | null;
+  blocksTaskId: string | null;
+};
+
+export type ProjectTasksResponse = {
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  content: JiraTask[];
+  number: number;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+};

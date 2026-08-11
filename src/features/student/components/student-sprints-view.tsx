@@ -27,7 +27,8 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingSprints);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -38,9 +39,6 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         <PageHeader
@@ -111,7 +109,17 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                   {sprints.map((sprint) => {
                     const hasDates = sprint.startDate && sprint.endDate;
 
-                    const getSprintStatus = () => {
+                     const getSprintStatus = () => {
+                      if (sprint.state === "CLOSED" || sprint.state === "closed") {
+                        return {
+                          label: "Đã hoàn thành",
+                          style: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_2px_10px_rgba(16,185,129,0.1)]",
+                          cardStyle: "border-emerald-500/30 hover:border-emerald-500/50 hover:shadow-emerald-500/5",
+                          topLineStyle: "bg-emerald-500",
+                          dateStyle: "text-muted-foreground"
+                        };
+                      }
+
                       if (!sprint.endDate) return null;
                       const now = new Date();
                       const end = new Date(sprint.endDate);
@@ -138,6 +146,16 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                         };
                       }
 
+                      if (sprint.state === "ACTIVE" || sprint.state === "active") {
+                        return {
+                          label: "Đang hoạt động",
+                          style: "bg-primary/10 text-primary border-primary/20 shadow-[0_2px_10px_rgba(234,88,12,0.1)]",
+                          cardStyle: "border-primary/30 hover:border-primary/50 hover:shadow-primary/5",
+                          topLineStyle: "bg-gradient-to-r from-primary to-orange-500",
+                          dateStyle: "text-primary font-semibold"
+                        };
+                      }
+
                       return null;
                     };
 
@@ -149,13 +167,11 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                         href={`/student/${courseId}/sprints/${sprint.sprintId}`}
                         className="block group"
                       >
-                        <Card className={`rounded-3xl border bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer ${
-                          status ? status.cardStyle : 'border-border/50 hover:border-border hover:bg-muted/10'
-                        }`}>
-                          <div className={`absolute top-0 left-0 w-full h-[4px] opacity-80 ${
-                            status ? status.topLineStyle : 'bg-gradient-to-r from-primary to-orange-500'
-                          }`} />
-                          
+                        <Card className={`rounded-3xl border bg-card/60 backdrop-blur-md shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden h-full cursor-pointer ${status ? status.cardStyle : 'border-border/50 hover:border-border hover:bg-muted/10'
+                          }`}>
+                          <div className={`absolute top-0 left-0 w-full h-[4px] opacity-80 ${status ? status.topLineStyle : 'bg-gradient-to-r from-primary to-orange-500'
+                            }`} />
+
                           <CardHeader className="pb-4 pt-6 flex flex-row items-center justify-between gap-4">
                             <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                               {sprint.sprintName}
@@ -166,7 +182,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
                               </Badge>
                             )}
                           </CardHeader>
-                          
+
                           <CardContent className="space-y-4 pt-2 pb-6 flex-1 flex flex-col justify-between">
                             <div className="space-y-3.5">
                               {/* Start & End Dates */}

@@ -48,3 +48,4 @@ These terms must be kept in English as they are widely used by IT students:
 ## 3. General Conventions
 - Maintain a highly aesthetic, "Premium" look and feel. 
 - Avoid generic and boring layouts. Always apply proper padding (`p-6`), spacing (`gap-4`, `space-y-6`), and soft borders (`border border-border/50`).
+- **Git Commits:** DO NOT automatically run `git commit`. The user will manage git commits manually.

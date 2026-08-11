@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
-import { Semester, SemesterRequest } from "../types";
+import { Semester, SemesterRequest, ActiveSemester } from "../types";
 
 export const semesterApi = {
   getSemesters: async (params?: { keyword?: string; page?: number; size?: number }) => {
@@ -13,5 +13,21 @@ export const semesterApi = {
 
   createSemester: async (data: SemesterRequest) => {
     return axiosInstance.post<never, Semester>("/api/v1/semesters", data);
+  },
+
+  updateSemester: async (id: string, data: SemesterRequest) => {
+    return axiosInstance.put<never, Semester>(`/api/v1/semesters/${id}`, data);
+  },
+
+  deleteSemester: async (id: string) => {
+    return axiosInstance.delete<never, void>(`/api/v1/semesters/${id}`);
+  },
+
+  getActiveSemester: async () => {
+    return axiosInstance.get<never, ActiveSemester>("/api/admin/settings/active-semester");
+  },
+
+  setActiveSemester: async (semesterId: string) => {
+    return axiosInstance.put<never, ActiveSemester>("/api/admin/settings/active-semester", { semesterId });
   },
 };

@@ -53,3 +53,20 @@ export interface ContributionOverrideRequest {
   overrideType: "TEAM_CONTRIBUTION_OVERRIDE";
   adjustments: ContributionAdjustment[];
 }
+
+export interface CourseContributionWeightResponse {
+  courseId: string;
+  codeWeight: number;
+  documentWeight: number;
+  designWeight: number;
+  lastUpdatedAt: string | null;
+}
+
+export interface CourseContributionWeightRequest {
+  codeWeight: number;
+  documentWeight: number;
+  designWeight: number;
+  reason: string;
+  lecturerId: string;
+}
+

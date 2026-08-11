@@ -53,13 +53,9 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
       { name: projectName },
       {
         onSuccess: () => {
-          toast.success("Khởi tạo dự án thành công!");
           setIsDialogOpen(false);
           setProjectName("");
           refetch();
-        },
-        onError: () => {
-          toast.error("Có lỗi xảy ra khi khởi tạo dự án");
         }
       }
     );
@@ -69,7 +65,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     return <div className="p-6 min-h-screen bg-background" />;
   }
 
-  const projectId = myTeamData?.project?.projectId || (myTeamData?.project as { id?: string })?.id;
+  const projectId = myTeamData?.project?.id;
   const members = myTeamData?.members?.content || [];
 
   // Sắp xếp Trưởng nhóm lên đầu
@@ -81,9 +77,6 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
 

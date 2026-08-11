@@ -1,46 +1,79 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings2, BookOpen, Trash2, Plus, Info } from "lucide-react";
+import { Settings2, BookOpen, Info, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuthStore } from "@/stores/authStore";
+import { useCourseContributionWeights, useRequestCourseContributionWeight } from "../../hooks/useContribution";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const defaultMultipliers = [
-  { id: "1a", name: "Lập trình & Logic (Code)", value: 2.0 },
-  { id: "1b", name: "Thiết kế Kiến trúc/Database", value: 1.5 },
-  { id: "1c", name: "Viết Tài liệu (Docs)", value: 1.0 },
-  { id: "1d", name: "Kiểm thử (Testing)", value: 1.0 },
-];
+export function TemplateSelector({ courseId }: { courseId: string }) {
+  const { user } = useAuthStore();
+  const { data: weightsData, isLoading } = useCourseContributionWeights(courseId);
+  const { mutate: requestOverride, isPending } = useRequestCourseContributionWeight();
 
-export function TemplateSelector() {
-  const [multipliers, setMultipliers] = useState([...defaultMultipliers]);
+  const [codeWeight, setCodeWeight] = useState(33.33);
+  const [documentWeight, setDocumentWeight] = useState(33.33);
+  const [designWeight, setDesignWeight] = useState(33.34);
   const [overrideReason, setOverrideReason] = useState("");
 
-  const updateMultiplier = (id: string, field: "name" | "value", value: string | number) => {
-    setMultipliers(multipliers.map(m => m.id === id ? { ...m, [field]: value } : m));
+  // Sync state when data is loaded
+  useEffect(() => {
+    if (weightsData) {
+      setCodeWeight(weightsData.codeWeight);
+      setDocumentWeight(weightsData.documentWeight);
+      setDesignWeight(weightsData.designWeight);
+    }
+  }, [weightsData]);
+
+  const totalWeight = (codeWeight + documentWeight + designWeight).toFixed(2);
+  const isValid = Math.abs(parseFloat(totalWeight) - 100) < 0.1;
+  const isModified = weightsData && (
+    codeWeight !== weightsData.codeWeight ||
+    documentWeight !== weightsData.documentWeight ||
+    designWeight !== weightsData.designWeight
+  );
+
+  const handleSubmit = () => {
+    if (!isValid) {
+      toast.error("Tổng trọng số phải bằng xấp xỉ 100%");
+      return;
+    }
+    if (!overrideReason.trim()) {
+      toast.error("Vui lòng nhập lý do để Admin phê duyệt");
+      return;
+    }
+    requestOverride(
+      { courseId, data: { codeWeight, documentWeight, designWeight, reason: overrideReason, lecturerId: user?.localProfileId || "" } },
+      {
+        onSuccess: () => {
+          toast.success("Đã gửi yêu cầu thay đổi trọng số lên Admin thành công!");
+          setOverrideReason("");
+        },
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || "Có lỗi xảy ra khi gửi yêu cầu");
+        }
+      }
+    );
   };
 
-  const removeMultiplier = (id: string) => {
-    setMultipliers(multipliers.filter(m => m.id !== id));
-  };
-
-  const addMultiplier = () => {
-    setMultipliers([...multipliers, { id: Date.now().toString(), name: "Công việc mới", value: 1.0 }]);
-  };
-
-  const isModified = JSON.stringify(multipliers) !== JSON.stringify(defaultMultipliers);
+  if (isLoading) {
+    return <Skeleton className="w-full h-96 rounded-2xl" />;
+  }
 
   return (
     <div className="space-y-6">
       <Card className="rounded-2xl border-border bg-card/40 backdrop-blur-xl shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-primary" /> Kế thừa & Tùy chỉnh Khung Hệ số
+            <BookOpen className="w-5 h-5 text-primary" /> Kế thừa & Tùy chỉnh Khung Hệ số (Slices)
           </CardTitle>
           <CardDescription>
-            Lớp học này tự động kế thừa <strong>Bộ Khung Hệ số Kỹ thuật Phần mềm (SE)</strong> do Admin thiết lập. Bạn có thể tự do thêm, bớt hoặc điều chỉnh Hệ số (Multipliers) sao cho phù hợp với đặc thù riêng của Lớp học này.
+            Tùy chỉnh phân bổ ngân sách 100% phần trăm đóng góp cho các nhóm công việc: <strong>Lập trình, Viết tài liệu, và Thiết kế</strong>. Mặc định là 1/3 cho mỗi nhóm.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -51,55 +84,66 @@ export function TemplateSelector() {
               <div className="p-4 bg-success/10 border border-success/20 text-success rounded-xl space-y-2">
                 <div className="flex items-center gap-2 font-bold">
                   <Info className="w-4 h-4" />
-                  <span>Đang sử dụng: Bộ Khung Chuẩn SE</span>
+                  <span>Tổng ngân sách điểm Đóng góp (Contribution): 100%</span>
                 </div>
                 <p className="text-sm">
-                  Mọi sự thay đổi về loại công việc và hệ số ở bảng bên dưới sẽ chỉ áp dụng riêng cho tiến độ đánh giá của lớp học này. Việc ghi đè sẽ cần Admin kiểm duyệt.
+                  Tổng 3 trọng số phải bằng đúng 100%. Nếu thay đổi hệ số này, phần Đóng góp thực tế của sinh viên sẽ tự động scale dựa trên các loại Task tương ứng. Việc thay đổi cần Admin kiểm duyệt.
                 </p>
               </div>
 
               {/* Customizing Multipliers */}
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-foreground dark:text-zinc-200 font-bold mb-2">
-                  <Settings2 className="w-5 h-5 text-primary" />
-                  <h3>Tinh chỉnh Hệ số Công việc của Lớp</h3>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4">
-                  {multipliers.map((m) => (
-                    <div key={m.id} className="flex items-center gap-3 p-3 bg-background border border-border/50 rounded-xl hover:border-primary/30 transition-colors">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-bold w-1/3">1. Lập trình & Logic (Code)</Label>
+                    <div className="flex items-center gap-2 w-2/3">
                       <Input
-                        value={m.name}
-                        onChange={(e) => updateMultiplier(m.id, "name", e.target.value)}
-                        className="flex-1 h-10 text-sm font-medium bg-transparent border-transparent focus-visible:ring-primary/20 px-2"
+                        type="number"
+                        step="0.01"
+                        value={codeWeight}
+                        onChange={(e) => setCodeWeight(parseFloat(e.target.value) || 0)}
+                        className="h-10 text-center font-bold"
                       />
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Input
-                          type="number"
-                          step="0.1"
-                          value={m.value}
-                          onChange={(e) => updateMultiplier(m.id, "value", parseFloat(e.target.value) || 0)}
-                          className="h-10 w-24 text-center font-bold text-success bg-success/10 border-success/20"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeMultiplier(m.id)}
-                          className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0 rounded-lg"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      <span className="text-sm font-medium w-6">%</span>
                     </div>
-                  ))}
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-bold w-1/3">2. Viết Tài liệu (Docs)</Label>
+                    <div className="flex items-center gap-2 w-2/3">
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={documentWeight}
+                        onChange={(e) => setDocumentWeight(parseFloat(e.target.value) || 0)}
+                        className="h-10 text-center font-bold"
+                      />
+                      <span className="text-sm font-medium w-6">%</span>
+                    </div>
+                  </div>
 
-                  <Button
-                    variant="outline"
-                    onClick={addMultiplier}
-                    className="h-12 border-dashed border-2 border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/50 rounded-xl font-bold transition-all"
-                  >
-                    <Plus className="w-4 h-4 mr-2" /> Thêm Loại Công Việc Mới
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-bold w-1/3">3. Thiết kế/Kiến trúc (Design)</Label>
+                    <div className="flex items-center gap-2 w-2/3">
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={designWeight}
+                        onChange={(e) => setDesignWeight(parseFloat(e.target.value) || 0)}
+                        className="h-10 text-center font-bold"
+                      />
+                      <span className="text-sm font-medium w-6">%</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end border-t pt-4 mt-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm">Tổng cộng:</span>
+                      <span className={`font-bold text-lg ${!isValid ? "text-destructive" : "text-success"}`}>
+                        {totalWeight}%
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -110,23 +154,24 @@ export function TemplateSelector() {
                     <Info className="w-5 h-5 shrink-0 mt-0.5" />
                     <div className="space-y-1">
                       <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
-                      <p className="text-xs">Hệ số công việc đã bị thay đổi so với khung chuẩn SE. Bạn cần ghi rõ lý do để Admin xem xét duyệt.</p>
+                      <p className="text-xs">Hệ số đã thay đổi so với cấu hình gốc. Vui lòng nhập lý do (VD: Đồ án lớp này tập trung mạnh vào AI, nên cần tăng trọng số Lập trình).</p>
                     </div>
                   </div>
 
                   <Textarea
-                    placeholder="Ví dụ: Đồ án lớp này tập trung mạnh vào AI, nên cần thêm task Train Model với hệ số 2.5..."
-                    className="min-h-[100px] border-primary/20 focus-visible:ring-primary6285"
+                    placeholder="Lý do điều chỉnh..."
+                    className="min-h-[100px] border-primary/20 focus-visible:ring-primary/20"
                     value={overrideReason}
                     onChange={(e) => setOverrideReason(e.target.value)}
                   />
 
                   <div className="flex justify-end">
                     <Button
-                      disabled={!overrideReason.trim()}
-                      className="bg-primary text-white font-bold rounded-xl"
+                      onClick={handleSubmit}
+                      disabled={isPending || !overrideReason.trim() || !isValid}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                     >
-                      Gửi yêu cầu Ghi đè Khung Hệ số
+                      {isPending ? "Đang gửi..." : "Gửi yêu cầu lên Admin"}
                     </Button>
                   </div>
                 </div>
@@ -137,26 +182,27 @@ export function TemplateSelector() {
               <Card className="rounded-2xl border-border bg-primary/5 shadow-sm h-full">
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-2">
-                    <Info className="w-5 h-5 text-primary" />
-                    <h3 className="font-bold text-lg">Quy chuẩn Hệ số Gốc</h3>
+                    <Settings2 className="w-5 h-5 text-primary" />
+                    <h3 className="font-bold text-lg">Cấu hình Đang dùng</h3>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm text-muted-foreground pt-4">
-                  <div>
-                    <strong className="text-foreground">1. Lập trình & Logic (2.0):</strong>
-                    <p className="mt-1">Code đòi hỏi tư duy phức tạp và tốn nhiều effort nhất trong Sprint để ra được Working Software.</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span>Lập trình (Code):</span>
+                      <strong className="text-foreground">{weightsData?.codeWeight ?? 33.33}%</strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Viết tài liệu (Docs):</span>
+                      <strong className="text-foreground">{weightsData?.documentWeight ?? 33.33}%</strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Thiết kế (Design):</span>
+                      <strong className="text-foreground">{weightsData?.designWeight ?? 33.34}%</strong>
+                    </div>
                   </div>
-                  <div>
-                    <strong className="text-foreground">2. Thiết kế Kiến trúc/DB (1.5):</strong>
-                    <p className="mt-1">Dù ít code hơn nhưng mang tính rủi ro cốt lõi. Sai kiến trúc sẽ phải xây lại toàn bộ dự án.</p>
-                  </div>
-                  <div>
-                    <strong className="text-foreground">3. Kiểm thử / QA (1.0):</strong>
-                    <p className="mt-1">Mức độ đồ án sinh viên thường tập trung vào test cơ bản, chất xám bỏ ra ổn định ở mức tiêu chuẩn.</p>
-                  </div>
-                  <div>
-                    <strong className="text-foreground">4. Viết Tài liệu (1.0):</strong>
-                    <p className="mt-1">Quan trọng để bàn giao nhưng độ phức tạp kỹ thuật thấp, tránh làm chênh lệch điểm quá lớn với Dev.</p>
+                  <div className="pt-4 mt-4 border-t border-border/50 text-xs">
+                    <p>Lần cập nhật cuối: {weightsData?.lastUpdatedAt ? new Date(weightsData.lastUpdatedAt).toLocaleDateString("vi-VN") : "Chưa có thay đổi"}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -168,3 +214,4 @@ export function TemplateSelector() {
     </div>
   );
 }
+

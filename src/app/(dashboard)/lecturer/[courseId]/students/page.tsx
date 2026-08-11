@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { CourseStudent } from "@/features/courses/types";
+import { ImportGroupingDialog } from "@/features/lecturer/components/import-grouping-dialog";
 
 export default function StudentsManagementPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = React.use(params);
@@ -95,13 +96,9 @@ export default function StudentsManagementPage({ params }: { params: Promise<{ c
           title={`Quản lý sinh viên - Lớp ${className}`}
           description="Danh sách sinh viên, thêm mới hoặc import từ file Excel."
         />
-        {/* <div className="flex gap-2">
-          <ImportStudentsDialog courseId={courseId} className={className} onSuccess={refetch} />
-          <Button className="gap-2 shadow-sm">
-            <UserPlus size={16} />
-            Thêm sinh viên
-          </Button>
-        </div> */}
+        <div className="flex gap-2">
+          <ImportGroupingDialog courseId={courseId} courseClassName={className} onSuccess={() => window.location.reload()} />
+        </div>
       </div>
 
       <Card className="rounded-2xl shadow-sm border-border">

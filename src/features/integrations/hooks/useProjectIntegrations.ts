@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectIntegrationApi } from "../api/projectIntegrationApi";
 import { JiraProjectLinkRequest, GitHubRepositoriesLinkRequest, ProjectIntegrationsResponse } from "../types";
 import { toast } from "sonner";
+import { INTEGRATION_MESSAGES } from "../constants/messages";
 
 export const useProjectIntegrations = (projectId: string) => {
   return useQuery({
@@ -61,10 +62,10 @@ export const useDeleteProjectJiraIntegration = (projectId: string) => {
         sessionStorage.removeItem("integration_redirect_back");
       }
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
-      toast.success("Ngắt kết nối Jira thành công!");
+      toast.success(INTEGRATION_MESSAGES.JIRA.DELETE.SUCCESS);
     },
     onError: (err: Error) => {
-      toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Jira.");
+      toast.error(err.message || INTEGRATION_MESSAGES.JIRA.DELETE.ERROR);
     },
   });
 };
@@ -85,10 +86,43 @@ export const useDeleteGithubRepository = (projectId: string) => {
     mutationFn: (repositoryId: number) => projectIntegrationApi.deleteGithubRepository(projectId, repositoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
-      toast.success("Ngắt kết nối Repository thành công!");
+      toast.success(INTEGRATION_MESSAGES.GITHUB.DELETE_REPO.SUCCESS);
     },
     onError: (err: Error) => {
-      toast.error(err.message || "Có lỗi xảy ra khi ngắt kết nối Repository.");
+      toast.error(err.message || INTEGRATION_MESSAGES.GITHUB.DELETE_REPO.ERROR);
     },
   });
 };
+
+export const useReconnectGithubRepository = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (repositoryId: number) => projectIntegrationApi.reconnectGithubRepository(projectId, repositoryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
+      toast.success(INTEGRATION_MESSAGES.GITHUB.RECONNECT_REPO.SUCCESS);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || INTEGRATION_MESSAGES.GITHUB.RECONNECT_REPO.ERROR);
+    },
+  });
+};
+
+
+export const useTriggerProjectSync = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (provider?: string) => projectIntegrationApi.triggerSync(projectId, provider),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sync-status", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+      toast.success(INTEGRATION_MESSAGES.SYNC.TRIGGER.SUCCESS);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || INTEGRATION_MESSAGES.SYNC.TRIGGER.ERROR);
+    },
+  });
+};
+
+
+
