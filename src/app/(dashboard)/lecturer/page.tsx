@@ -31,7 +31,7 @@ function CourseStats({ courseId }: { courseId: string }) {
     });
   }
   const teamCount = teamsMap.size;
-  const warningCount = warningsData?.length || 0;
+  const warningCount = warningsData?.warnings?.length || 0;
 
   return (
     <div className="grid grid-cols-2 gap-3 mt-6">

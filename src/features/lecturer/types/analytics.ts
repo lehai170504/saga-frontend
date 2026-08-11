@@ -116,9 +116,17 @@ export interface StudentContributionDetailResponse {
 export interface EarlyWarning {
   studentId: string;
   teamId: string;
-  signalType: "OVERDUE_TASK";
-  severity: string | null;
+  warningType: string;
+  severity: string;
+  detectedAt: string;
   message: string;
+  taskId: string;
+  dueDate: string;
+}
+
+export interface EarlyWarningsResponse {
+  courseId: string;
+  warnings: EarlyWarning[];
 }
 
 export interface InteractionNode {

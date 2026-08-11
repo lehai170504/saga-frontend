@@ -228,7 +228,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     projectId,
     { sprintId: currentSprintId }
   );
-  const rawTasks: JiraTask[] = (tasksData as any)?.tasks || (tasksData as any)?.content || [];
+  const rawTasks: JiraTask[] = (tasksData as { tasks?: JiraTask[], content?: JiraTask[] })?.tasks || (tasksData as { tasks?: JiraTask[], content?: JiraTask[] })?.content || [];
 
   // Filter tasks locally by assignee & search keyword
   const tasks = rawTasks.filter((task: JiraTask) => {
@@ -246,12 +246,12 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     return matchesAssignee && matchesKeyword;
   });
 
-  const rawMembers = (myTeamData?.members as any)?.content || myTeamData?.members || [];
+  const rawMembers = (myTeamData?.members as { content?: { studentId: string; fullName: string }[] })?.content || myTeamData?.members || [];
   const teamMembers = Array.isArray(rawMembers)
-    ? rawMembers.map((m: { studentId: string; fullName: string }) => ({
-        studentId: m.studentId,
-        fullName: m.fullName,
-      }))
+    ? (rawMembers as { studentId: string; fullName: string }[]).map((m) => ({
+      studentId: m.studentId,
+      fullName: m.fullName,
+    }))
     : [];
 
   const columns = [

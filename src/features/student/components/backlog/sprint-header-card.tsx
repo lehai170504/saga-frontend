@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, ChevronRight, Calendar, Plus, MoreHorizontal, Play, CheckCircle2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Calendar, Plus, MoreHorizontal } from "lucide-react";
 import { Sprint } from "@/features/projects/types";
 import { formatSprintDates } from "./backlog-helpers";
 

@@ -118,3 +118,37 @@ export interface ImportStudentsResponse {
   membershipsCreated: number;
   groupingApplied: boolean;
 }
+
+export interface ManualAddStudentRequest {
+  studentCode: string;
+  email: string;
+  fullName: string;
+  group?: string;
+  leader?: boolean;
+}
+
+export interface ManualAddStudentResponse {
+  operation: string;
+  message: string;
+  studentId: string;
+  studentCode: string;
+  email: string;
+  fullName: string;
+  enrolledInCourse: boolean;
+  teamId?: string;
+  teamName?: string;
+  roleInTeam?: string;
+}
+
+export interface RemoveStudentResponse {
+  operation: string;
+  message: string;
+  studentId: string;
+  studentCode: string;
+  email: string;
+  fullName: string;
+  enrolledInCourse: boolean;
+  teamId?: string;
+  teamName?: string;
+  roleInTeam?: string;
+}

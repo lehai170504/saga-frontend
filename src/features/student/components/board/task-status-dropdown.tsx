@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,24 +13,26 @@ import { useTaskTransitions, useTransitionTask } from "@/features/projects/hooks
 import { TaskTransition } from "@/features/projects/api/taskApi";
 import { JiraTask } from "@/features/projects/types";
 
-export function TaskStatusDropdown({ 
-  projectId, 
+export function TaskStatusDropdown({
+  projectId,
   task,
   onTransitionSuccess
-}: { 
-  projectId: string; 
-  task: JiraTask; 
+}: {
+  projectId: string;
+  task: JiraTask;
   onTransitionSuccess?: (updatedTask: JiraTask) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [localStatus, setLocalStatus] = useState<string | null>(null);
-  
+  const [prevTaskStatus, setPrevTaskStatus] = useState(task.status);
+
+  if (task.status !== prevTaskStatus) {
+    setPrevTaskStatus(task.status);
+    setLocalStatus(null);
+  }
+
   const { data: transitionsData, isLoading } = useTaskTransitions(projectId, task.id, isOpen);
   const transitionMutation = useTransitionTask(projectId);
-
-  useEffect(() => {
-    setLocalStatus(null);
-  }, [task.status]);
 
   const translateTransitionName = (name: string) => {
     const map: Record<string, string> = {
@@ -110,8 +112,8 @@ export function TaskStatusDropdown({
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           disabled={isPending}
           className={`h-7 rounded-lg text-[10px] font-bold px-2.5 py-0.5 flex items-center gap-1 cursor-pointer border shadow-sm transition-all hover:opacity-90 ${getStatusStyle(displayStatusRaw)}`}

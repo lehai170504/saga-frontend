@@ -6,8 +6,7 @@ import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectSprints, useCreateSprint, useUpdateSprint, useDeleteSprint } from "@/features/projects/hooks/useTeamSprints";
 import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask } from "@/features/projects/hooks/useProjectTasks";
 import { useAuthStore } from "@/stores/authStore";
-import { Button } from "@/components/ui/button";
-import { FolderKanban, Loader2, AlertCircle, ClipboardList, Plus } from "lucide-react";
+import { FolderKanban, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { UpdateTaskRequest } from "@/features/projects/api/taskApi";
 import { JiraTask, Sprint } from "@/features/projects/types";
@@ -87,6 +86,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   // Move Task Confirm Dialog State
   const [isMoveConfirmOpen, setIsMoveConfirmOpen] = useState(false);
   const [taskToMove, setTaskToMove] = useState<JiraTask | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [targetSprintForMove, setTargetSprintForMove] = useState<string | null>(null);
 
   // Queries & Mutations
@@ -94,7 +94,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const sprints = sprintsData?.sprints || [];
 
   const { data: tasksData, isLoading: isLoadingTasks, error } = useProjectTasks(projectId);
-  const rawTasks: JiraTask[] = (tasksData as any)?.tasks || (tasksData as any)?.content || [];
+  const rawTasks: JiraTask[] = (tasksData as { tasks?: JiraTask[], content?: JiraTask[] })?.tasks || (tasksData as { tasks?: JiraTask[], content?: JiraTask[] })?.content || [];
 
   const createTaskMutation = useCreateTask(projectId);
   const updateTaskMutation = useUpdateTask(projectId);
@@ -261,8 +261,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
     const activeSprintId = targetSprintIdForCreate || undefined;
 
     createTaskMutation.mutate(
-      { 
-        data: payload, 
+      {
+        data: payload,
         idempotencyKey,
         assignIdempotencyKey: activeSprintId ? assignIdempotencyKey : ""
       },
@@ -411,13 +411,12 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const getSprintTasks = (sprintId: string) => {
     return tasks.filter((t) => t.sprint?.id === sprintId);
   };
-
-  const rawMembers = (myTeamData?.members as any)?.content || myTeamData?.members || [];
+  const rawMembers = (myTeamData?.members as { content?: { studentId: string; fullName: string }[] })?.content || myTeamData?.members || [];
   const teamMembers = Array.isArray(rawMembers)
-    ? rawMembers.map((m: { studentId: string; fullName: string }) => ({
-        studentId: m.studentId,
-        fullName: m.fullName,
-      }))
+    ? (rawMembers as { studentId: string; fullName: string }[]).map((m) => ({
+      studentId: m.studentId,
+      fullName: m.fullName,
+    }))
     : [];
 
   const isLoading = isLoadingTeam || isLoadingSprints;

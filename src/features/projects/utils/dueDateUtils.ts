@@ -1,5 +1,3 @@
-import { JiraTask } from "../types";
-
 export interface TaskDueDateInfo {
   isOverdue: boolean;
   isNearDeadline: boolean;

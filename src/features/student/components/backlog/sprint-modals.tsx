@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Loader2, ArrowRightLeft } from "lucide-react";
-import { Sprint, JiraTask } from "@/features/projects/types";
+import { JiraTask } from "@/features/projects/types";
 import { getTodayString } from "./backlog-helpers";
 
 interface CreateSprintModalProps {

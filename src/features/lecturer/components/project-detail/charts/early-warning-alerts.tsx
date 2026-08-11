@@ -14,7 +14,7 @@ interface EarlyWarningAlertsProps {
 
 export function EarlyWarningAlerts({ courseId, teamId }: EarlyWarningAlertsProps) {
   const { data: warnings, isLoading } = useEarlyWarnings(courseId);
-  const teamWarnings = warnings?.filter(w => w.teamId === teamId) || [];
+  const teamWarnings = warnings?.warnings?.filter(w => w.teamId === teamId) || [];
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden">
       <CardHeader className="border-b border-border/50 bg-destructive/5 pb-4">
@@ -47,7 +47,7 @@ export function EarlyWarningAlerts({ courseId, teamId }: EarlyWarningAlertsProps
                       </Avatar>
                       SV {alert.studentId.substring(0, 8)}
                     </div>
-                    {alert.signalType === "OVERDUE_TASK" && (
+                    {alert.warningType === "OVERDUE_TASK" && (
                       <Button variant="outline" size="sm" className="h-7 text-xs font-bold border-destructive/30 text-destructive hover:bg-destructive hover:text-white">
                         Thực thi: Xử lý Task quá hạn
                       </Button>
