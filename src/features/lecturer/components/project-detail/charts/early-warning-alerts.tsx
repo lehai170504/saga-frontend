@@ -14,8 +14,6 @@ interface EarlyWarningAlertsProps {
 
 export function EarlyWarningAlerts({ courseId, teamId }: EarlyWarningAlertsProps) {
   const { data: warnings, isLoading } = useEarlyWarnings(courseId);
-  const warningsArray = Array.isArray(warnings) ? warnings : (warnings as any)?.content || [];
-  // const teamWarnings = warningsArray.filter((w: any) => w.teamId === teamId);
   const teamWarnings = warnings?.warnings?.filter(w => w.teamId === teamId) || [];
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg overflow-hidden">

@@ -54,4 +54,17 @@ export const getFirebaseInstallationId = async () => {
   }
 };
 
+export const getFirebaseToken = async () => {
+  if (typeof window === "undefined") return null;
+  try {
+    if (!messaging) return null;
+    const vapidKey = VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "";
+    const token = await getToken(messaging, { vapidKey });
+    return token;
+  } catch (error) {
+    console.warn("Error getting Firebase FCM Token", error);
+    return null;
+  }
+};
+
 export { app, messaging, getToken, onMessage };

@@ -4,7 +4,7 @@ import { useClasses } from "../hooks/useClasses";
 import { CreateClassDialog } from "./create-class-dialog";
 import { ClassActions } from "./class-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Loader2, Network, Clock, Users } from "lucide-react";
+import { Network, Clock, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";

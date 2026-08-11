@@ -223,6 +223,19 @@ Toàn bộ luồng quản lý công việc và hiển thị Kanban Board của n
 ### 1.13. Tích hợp GitHub — Lọc Repository theo trạng thái
 Dropdown chọn Repository trong trang **Lịch sử Commit** đã được cập nhật để chỉ hiển thị các repository có trạng thái `ACTIVE`. Các repository `DISCONNECTED` hoặc `DEGRADED` bị loại khỏi danh sách lựa chọn (lọc tại `useMemo` trong `student-commits-view.tsx`).
 
+### 1.14. Thống kê Tổng quan Dự án (Project Dashboard Stats)
+- `GET /api/projects/{projectId}/dashboard-stats`: Xem thống kê tổng quan dự án (tổng số task, số task đã hoàn thành, chưa hoàn thành, tỉ lệ %, số repository GitHub, số commit, số pull request). Hook `useProjectDashboardStats` tích hợp hiển thị giao diện trang **Thống kê dự án** (`StudentProjectStatsView`) với biểu đồ Donut & Bar Chart của Recharts.
+
+### 1.15. Thông báo & Firebase Push Notifications (Notification & Firebase)
+Toàn bộ luồng thông báo quả chuông và đẩy tín hiệu Push Notification qua Firebase Web SDK đã được tích hợp chuẩn theo hợp đồng Handoff:
+- `GET /api/me/notifications?page=0&size=20`: Lấy danh sách thông báo phân trang của người dùng hiện tại (ADMIN / LECTURER / STUDENT).
+- `GET /api/me/notifications/unread-count`: Lấy số lượng thông báo chưa đọc hiển thị badge đỏ tại icon quả chuông ở Header.
+- `PATCH /api/me/notifications/{id}/read`: Đánh dấu một thông báo là đã đọc khi người dùng click xem.
+- `POST /api/me/firebase-installations`: Đăng ký Firebase Installation ID (FID) của trình duyệt lên backend để nhận Push Signal (tự động gọi sau khi nạp session user & CSRF thành công).
+- `DELETE /api/me/firebase-installations/{id}`: Thu hồi đăng ký thiết bị Firebase khi người dùng đăng xuất.
+- `POST /api/admin/notifications/broadcast`: Admin gửi thông báo broadcast toàn hệ thống (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+- `POST /api/v1/courses/notifications/broadcast`: Giảng viên gửi thông báo broadcast cho sinh viên trong khóa học quản lý (yêu cầu gửi kèm `Idempotency-Key` ở Header).
+
 ---
 
 ## 2. Các API và Tính năng CÒN THIẾU (Cần bổ sung)

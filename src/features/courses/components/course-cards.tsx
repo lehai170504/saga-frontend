@@ -3,7 +3,7 @@
 import { useCourses } from "../hooks/useCourses";
 import { CreateCourseDialog } from "./create-course-dialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Loader2, GraduationCap, BookOpen, Network, Calendar, ArrowRight } from "lucide-react";
+import { GraduationCap, BookOpen, Network, Calendar, ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
