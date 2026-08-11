@@ -58,8 +58,9 @@ export function ImportGroupingDialog({ courseId, courseClassName = courseId, onS
       link.parentNode?.removeChild(link);
       
       toast.success("Tải template thành công! Hãy mở file, điền cột Group và Leader (x) rồi upload lại.", { id: "download-template" });
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Có lỗi xảy ra khi tải template.");
+    } catch (error: unknown) {
+      const errObj = error as { response?: { data?: { message?: string } } };
+      toast.error(errObj?.response?.data?.message || "Có lỗi xảy ra khi tải template.");
     } finally {
       setIsDownloading(false);
     }

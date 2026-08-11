@@ -228,15 +228,6 @@ export function Header({ onMenuClick }: HeaderProps) {
                   })
                 )}
               </div>
-
-              <DropdownMenuSeparator className="bg-border/40 my-2" />
-
-              <DropdownMenuItem
-                onClick={() => router.push("/notifications")}
-                className="justify-center text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
-              >
-                Xem tất cả thông báo
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

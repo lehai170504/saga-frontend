@@ -124,13 +124,19 @@ export function TimelineCard({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[120px] p-1.5 animate-in fade-in duration-200">
                     <DropdownMenuItem
-                      onClick={() => onOpenEdit(sprint)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenEdit(sprint);
+                      }}
                       className="rounded-xl px-3 py-2 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
                     >
                       Chỉnh sửa
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onOpenDelete(sprint)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenDelete(sprint);
+                      }}
                       className="rounded-xl px-3 py-2 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
                     >
                       Xóa Sprint

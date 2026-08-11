@@ -4,17 +4,18 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { User, Flag, Calendar, Sparkles, Clock, Tag } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { getTypeBadge } from "./board-helpers";
 import { TaskStatusDropdown } from "./task-status-dropdown";
+import { TaskTraceabilitySection } from "@/features/projects/components/task-traceability-section";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -34,10 +35,10 @@ export function TaskDetailModal({
   if (!selectedTask) return null;
 
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[450px] sm:w-[540px] p-6 border-l border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl overflow-y-auto flex flex-col justify-between">
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[520px] md:max-w-[580px] max-h-[85vh] rounded-3xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-5 overflow-y-auto flex flex-col justify-between">
         <div>
-          <SheetHeader className="pb-4 border-b border-border/40 space-y-2 text-left">
+          <DialogHeader className="pb-4 border-b border-border/40 space-y-2 text-left">
             <div className="flex flex-wrap items-center gap-2">
               {getTypeBadge(selectedTask.type)}
               <span className="text-xs font-black text-muted-foreground tracking-wide uppercase">
@@ -54,13 +55,13 @@ export function TaskDetailModal({
                 onTransitionSuccess={onTaskUpdated} 
               />
             </div>
-            <SheetTitle className="text-lg font-extrabold text-foreground leading-snug">
+            <DialogTitle className="text-xl font-extrabold text-foreground leading-snug">
               {selectedTask.title}
-            </SheetTitle>
-            <SheetDescription className="text-xs text-muted-foreground">
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
               Chi tiết công việc đồng bộ trực tiếp từ Jira.
-            </SheetDescription>
-          </SheetHeader>
+            </DialogDescription>
+          </DialogHeader>
 
           <div className="space-y-5 pt-5">
             {/* Description */}
@@ -188,6 +189,9 @@ export function TaskDetailModal({
                 {selectedTask.storyPoint ?? 0}
               </span>
             </div>
+
+            {/* Traceability Jira Task ↔ GitHub Issue */}
+            <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} />
           </div>
         </div>
 
@@ -208,7 +212,7 @@ export function TaskDetailModal({
             </Button>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

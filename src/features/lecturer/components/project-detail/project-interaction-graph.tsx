@@ -47,13 +47,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
   }, [interactionData]);
 
   const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number,role:string, x: number, y: number, color: string, interactions: number } | null>(null);
-  
-  // Set default selected node
-  React.useEffect(() => {
-    if (projectNodes.length > 0 && !selectedNode) {
-      setSelectedNode(projectNodes[0]);
-    }
-  }, [projectNodes, selectedNode]);
+  const activeSelectedNode = selectedNode || (projectNodes.length > 0 ? projectNodes[0] : null);
 
   return (
     <div className="space-y-6">
@@ -168,7 +162,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
               projectNodes.map(node => (
                 <div
                   key={node.id}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-bold shadow-lg ${node.color} ${selectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background z-20' : 'opacity-90 z-10'}`}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 flex items-center justify-center text-white font-bold shadow-lg ${node.color} ${activeSelectedNode?.id === node.id ? 'ring-4 ring-primary ring-offset-4 ring-offset-background z-20' : 'opacity-90 z-10'}`}
                   style={{
                     left: `${node.x}%`,
                     top: `${node.y}%`,
@@ -189,20 +183,20 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
         {/* Right Panel: Node Details */}
         <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden h-fit">
           <CardContent className="p-6">
-            {selectedNode ? (
+            {activeSelectedNode ? (
               <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
                 <div className="text-center space-y-2">
-                  <div className={`w-20 h-20 mx-auto rounded-full ${selectedNode.color} flex items-center justify-center text-white text-2xl font-bold shadow-lg mb-4`}>
-                    {selectedNode.name.charAt(0)}
+                  <div className={`w-20 h-20 mx-auto rounded-full ${activeSelectedNode.color} flex items-center justify-center text-white text-2xl font-bold shadow-lg mb-4`}>
+                    {activeSelectedNode.name.charAt(0)}
                   </div>
-                  <h2 className="text-xl font-bold text-foreground">{selectedNode.name}</h2>
-                  <p className="text-sm text-muted-foreground font-medium">{selectedNode.role}</p>
+                  <h2 className="text-xl font-bold text-foreground">{activeSelectedNode.name}</h2>
+                  <p className="text-sm text-muted-foreground font-medium">{activeSelectedNode.role}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-muted/50 rounded-xl p-3 text-center border border-border/50">
                     <p className="text-xs font-semibold text-muted-foreground mb-1">Tương tác</p>
-                    <p className="text-2xl font-bold text-primary">{selectedNode.interactions}</p>
+                    <p className="text-2xl font-bold text-primary">{activeSelectedNode.interactions}</p>
                   </div>
                   <div className="bg-muted/50 rounded-xl p-3 text-center border border-border/50">
                     <p className="text-xs font-semibold text-muted-foreground mb-1">Mức độ</p>
@@ -213,8 +207,8 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                 <div className="space-y-3 pt-4 border-t border-border/50">
                   <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Phân tích Chi tiết (AI)</h3>
                   <div className="space-y-2">
-                    {projectEdges.filter(e => e.source === selectedNode?.id || e.target === selectedNode?.id).map((edge, idx) => {
-                      const isSource = edge.source === selectedNode?.id;
+                    {projectEdges.filter(e => e.source === activeSelectedNode?.id || e.target === activeSelectedNode?.id).map((edge, idx) => {
+                      const isSource = edge.source === activeSelectedNode?.id;
                       const otherNode = projectNodes.find(n => n.id === (isSource ? edge.target : edge.source));
 
                       const getActionText = () => {

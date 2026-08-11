@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings2, BookOpen, Info, Save } from "lucide-react";
+import { Settings2, BookOpen, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,19 +16,18 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
   const { data: weightsData, isLoading } = useCourseContributionWeights(courseId);
   const { mutate: requestOverride, isPending } = useRequestCourseContributionWeight();
 
-  const [codeWeight, setCodeWeight] = useState(33.33);
-  const [documentWeight, setDocumentWeight] = useState(33.33);
-  const [designWeight, setDesignWeight] = useState(33.34);
+  const [customCodeWeight, setCustomCodeWeight] = useState<number | null>(null);
+  const [customDocumentWeight, setCustomDocumentWeight] = useState<number | null>(null);
+  const [customDesignWeight, setCustomDesignWeight] = useState<number | null>(null);
   const [overrideReason, setOverrideReason] = useState("");
 
-  // Sync state when data is loaded
-  useEffect(() => {
-    if (weightsData) {
-      setCodeWeight(Number(weightsData.codeWeight.toFixed(2)));
-      setDocumentWeight(Number(weightsData.documentWeight.toFixed(2)));
-      setDesignWeight(Number(weightsData.designWeight.toFixed(2)));
-    }
-  }, [weightsData]);
+  const codeWeight = customCodeWeight ?? (weightsData ? Number(weightsData.codeWeight.toFixed(2)) : 33.33);
+  const documentWeight = customDocumentWeight ?? (weightsData ? Number(weightsData.documentWeight.toFixed(2)) : 33.33);
+  const designWeight = customDesignWeight ?? (weightsData ? Number(weightsData.designWeight.toFixed(2)) : 33.34);
+
+  const setCodeWeight = (val: number) => setCustomCodeWeight(val);
+  const setDocumentWeight = (val: number) => setCustomDocumentWeight(val);
+  const setDesignWeight = (val: number) => setCustomDesignWeight(val);
 
   const totalWeight = (codeWeight + documentWeight + designWeight).toFixed(2);
   const isValid = Math.abs(parseFloat(totalWeight) - 100) < 0.1;
@@ -54,8 +53,9 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
           toast.success("Đã gửi yêu cầu thay đổi trọng số lên Admin thành công!");
           setOverrideReason("");
         },
-        onError: (err: any) => {
-          toast.error(err?.response?.data?.message || "Có lỗi xảy ra khi gửi yêu cầu");
+        onError: (err: Error) => {
+          const resErr = err as Error & { response?: { data?: { message?: string } } };
+          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi gửi yêu cầu");
         }
       }
     );

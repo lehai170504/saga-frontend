@@ -4,7 +4,7 @@ import { useSemesters, useActiveSemester } from "../hooks/useSemesters";
 import { CreateSemesterDialog } from "./create-semester-dialog";
 import { SemesterActions } from "./semester-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Loader2, Calendar, CalendarClock, CalendarDays } from "lucide-react";
+import { Calendar, CalendarClock, CalendarDays } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";

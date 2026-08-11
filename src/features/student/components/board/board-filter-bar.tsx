@@ -43,13 +43,28 @@ export function BoardFilterBar({
               <SelectValue placeholder="Lọc theo Sprint" />
             </SelectTrigger>
             <SelectContent position="popper" side="bottom" className="rounded-2xl shadow-xl border-border/40 mt-1">
-              {sprints
+              {[...sprints]
                 .filter((s) => s.state?.toUpperCase() !== "CLOSED")
-                .map((s) => (
-                  <SelectItem key={s.sprintId} value={s.sprintId} className="rounded-xl font-medium text-xs">
-                    {s.sprintName} {(s.state === "active" || s.state === "ACTIVE") ? "(Hiện tại)" : ""}
-                  </SelectItem>
-                ))}
+                .sort((a, b) => {
+                  const getOrder = (state?: string) => {
+                    const st = state?.toUpperCase();
+                    if (st === "ACTIVE" || st === "IN_PROGRESS") return 1;
+                    return 2;
+                  };
+                  return getOrder(a.state) - getOrder(b.state);
+                })
+                .map((s) => {
+                  const st = s.state?.toUpperCase();
+                  let badgeText = "";
+                  if (st === "ACTIVE" || st === "IN_PROGRESS") badgeText = "(Hiện tại)";
+                  else if (st === "FUTURE" || st === "PLANNED") badgeText = "(Sắp tới)";
+
+                  return (
+                    <SelectItem key={s.sprintId} value={s.sprintId} className="rounded-xl font-medium text-xs">
+                      {s.sprintName} {badgeText}
+                    </SelectItem>
+                  );
+                })}
             </SelectContent>
           </Select>
         </div>

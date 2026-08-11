@@ -77,9 +77,10 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const sprints = sprintsData?.sprints || [];
 
   // Determine active sprint and effective sprint ID
+  const openSprints = sprints.filter((s) => s.state?.toUpperCase() !== "CLOSED");
   const activeSprint = sprints.find((s) => s.state === "active" || s.state === "ACTIVE");
   const currentSprintId = selectedSprintId === "ACTIVE_DEFAULT"
-    ? (activeSprint ? activeSprint.sprintId : (sprints[0]?.sprintId || ""))
+    ? (activeSprint ? activeSprint.sprintId : (openSprints[0]?.sprintId || sprints[0]?.sprintId || ""))
     : selectedSprintId;
 
   // Task mutations

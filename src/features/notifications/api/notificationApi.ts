@@ -14,12 +14,12 @@ export const notificationApi = {
     await axiosInstance.patch(`/api/me/notifications/${id}/read`);
   },
 
-  registerFirebaseInstallation: async (installationId: string): Promise<{ id: string }> => {
+  registerFirebaseInstallation: async (installationId: string): Promise<{ id?: string; firebaseInstallationId?: string } | void> => {
     return axiosInstance.post(`/api/me/firebase-installations`, { firebaseInstallationId: installationId });
   },
 
-  revokeFirebaseInstallation: async (installationId: string): Promise<void> => {
-    await axiosInstance.delete(`/api/me/firebase-installations/${installationId}`);
+  revokeFirebaseInstallation: async (id: string): Promise<void> => {
+    await axiosInstance.delete(`/api/me/firebase-installations/${id}`);
   },
 
   adminBroadcast: async (payload: AdminBroadcastRequest, idempotencyKey: string): Promise<void> => {

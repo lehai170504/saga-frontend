@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { notificationApi } from "../api/notificationApi";
 import { AdminBroadcastRequest } from "../types";
-import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
 export const useNotificationsList = (page = 0, size = 20) => {
@@ -35,7 +34,7 @@ export const useMarkAsRead = () => {
 export const useAdminBroadcast = () => {
   return useMutation({
     mutationFn: async (payload: AdminBroadcastRequest) => {
-      const idempotencyKey = uuidv4();
+      const idempotencyKey = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
       return notificationApi.adminBroadcast(payload, idempotencyKey);
     },
     onSuccess: () => {

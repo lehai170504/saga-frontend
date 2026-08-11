@@ -5,8 +5,6 @@ import { useEffect } from 'react';
 import { getFirebaseInstallationId } from '@/lib/firebase';
 import { notificationApi } from '@/features/notifications/api/notificationApi';
 
-let isFirebaseRegistered = false;
-
 export function useAuth() {
 
   const setUser = useAuthStore((state) => state.setUser);
@@ -41,21 +39,19 @@ export function useAuth() {
       setCsrf(data?.csrf ?? null);
       setInitializing(false);
 
-      if (data?.user && !isFirebaseRegistered) {
-        isFirebaseRegistered = true;
-        // Register Firebase Installation ID
-        getFirebaseInstallationId().then(fid => {
+      if (data?.user && data?.csrf) {
+        // Register Firebase Installation ID safely
+        getFirebaseInstallationId().then(async (fid) => {
           if (fid) {
-            notificationApi.registerFirebaseInstallation(fid).then((response) => {
-              if (response && response.id) {
-                localStorage.setItem('saga_firebase_uuid', response.id);
+            try {
+              const res = await notificationApi.registerFirebaseInstallation(fid);
+              if (res && res.id) {
+                localStorage.setItem("saga_firebase_registration_id", res.id);
               }
-            }).catch(() => {
-              isFirebaseRegistered = false;
-              console.log("Firebase registration failed, but suppressing error to prevent dev overlay.");
-            });
-          } else {
-            isFirebaseRegistered = false;
+            } catch (err) {
+              // Gracefully handle duplicate registration (409) or temporary server errors
+              console.warn("Firebase installation registration warning:", err);
+            }
           }
         });
       }
@@ -69,13 +65,14 @@ export function useAuth() {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
 
     try {
-      // Try to revoke Firebase Installation ID before logging out
-      const uuid = localStorage.getItem('saga_firebase_uuid');
-      if (uuid) {
-        await notificationApi.revokeFirebaseInstallation(uuid).catch(console.error);
-        localStorage.removeItem('saga_firebase_uuid');
+      // Try to revoke Firebase Installation Registration before logging out
+      const regId = localStorage.getItem("saga_firebase_registration_id");
+      const fid = await getFirebaseInstallationId();
+      const targetId = regId || fid;
+      if (targetId) {
+        await notificationApi.revokeFirebaseInstallation(targetId).catch(() => {});
+        localStorage.removeItem("saga_firebase_registration_id");
       }
-      isFirebaseRegistered = false;
 
       const response = await fetch(`${API_BASE_URL}/api/auth/csrf`, {
         credentials: "include",

@@ -4,7 +4,7 @@ import { useSubjects } from "../hooks/useSubjects";
 import { CreateSubjectDialog } from "./create-subject-dialog";
 import { SubjectActions } from "./subject-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Loader2, BookOpen, Clock, Layers } from "lucide-react";
+import { BookOpen, Clock, Layers } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
