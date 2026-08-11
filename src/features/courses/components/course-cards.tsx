@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/shared/Skeleton";
 
 export function CourseCards() {
   const { data: page, isLoading, error } = useCourses();
@@ -15,22 +16,6 @@ export function CourseCards() {
   const router = useRouter();
 
   const isAdmin = user?.applicationRole === "ADMIN";
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center p-8 h-[50vh]">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20 font-medium">
-        Đã có lỗi xảy ra khi tải danh sách khóa học.
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -42,7 +27,17 @@ export function CourseCards() {
         {isAdmin && <CreateCourseDialog />}
       </PageHeader>
 
-      {page?.content && page.content.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-44 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="text-center text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20 font-medium">
+          Đã có lỗi xảy ra khi tải danh sách khóa học.
+        </div>
+      ) : page?.content && page.content.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {page.content.map((course) => (
             <Card key={course.id} className="rounded-2xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col h-full group relative">

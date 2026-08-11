@@ -2,7 +2,7 @@
 
 import { useCourseStudent } from "../hooks/useCourseStudents";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Mail, User, ShieldCheck, UserX, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

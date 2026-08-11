@@ -23,6 +23,8 @@ import { ProfileModal } from "@/features/user/components/profile-modal";
 import { MobileMenuButton } from "@/components/layout/mobile-buttons";
 import { useNotificationsList, useUnreadCount, useMarkAsRead } from "@/features/notifications/hooks/useNotifications";
 import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush";
+import { BroadcastModal } from "@/features/admin/components/broadcast-modal";
+import { Megaphone } from "lucide-react";
 
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -45,6 +47,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   // State quản lý việc đóng/mở Profile Modal
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isBroadcastOpen, setIsBroadcastOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -119,6 +122,19 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         {/* Right side: Notifications + Theme toggle + User Dropdown */}
         <div className="flex items-center gap-2.5 shrink-0 relative z-10">
+
+          {/* Broadcast (Admin only) */}
+          {user?.applicationRole === "ADMIN" && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-full relative bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all duration-300 hover:scale-105 cursor-pointer"
+              aria-label="Gửi thông báo toàn trường"
+              onClick={() => setIsBroadcastOpen(true)}
+            >
+              <Megaphone className="h-4 w-4" />
+            </Button>
+          )}
 
           {/* Notifications */}
           <DropdownMenu>
@@ -216,10 +232,10 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuSeparator className="bg-border/40 my-2" />
 
               <DropdownMenuItem
-                onClick={() => router.push(user?.applicationRole === "STUDENT" ? "/student/audit-logs" : "/lecturer")}
+                onClick={() => router.push("/notifications")}
                 className="justify-center text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground cursor-pointer py-2 rounded-xl focus:bg-muted/40 outline-none"
               >
-                Xem tất cả nhật ký
+                Xem tất cả thông báo
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -315,6 +331,13 @@ export function Header({ onMenuClick }: HeaderProps) {
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
       />
+
+      {user?.applicationRole === "ADMIN" && (
+        <BroadcastModal
+          isOpen={isBroadcastOpen}
+          onClose={() => setIsBroadcastOpen(false)}
+        />
+      )}
     </>
   );
 }

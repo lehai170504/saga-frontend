@@ -45,7 +45,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
 
   const { data: sprintsData } = useProjectSprints(projectId);
   const sprints = sprintsData?.sprints || [];
-  
+
   const { data: tasksData, isLoading } = useProjectTasks(projectId, {
     sprintId: selectedSprintId === "all" ? undefined : selectedSprintId,
     keyword: keyword || undefined,
@@ -125,10 +125,10 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
                 </TableRow>
               ) : (
                 tasks.map((task) => (
-                  <TableRow 
-                    key={task.taskId} 
+                  <TableRow
+                    key={task.id}
                     className="group hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedTaskId(task.taskId)}
+                    onClick={() => setSelectedTaskId(task.id)}
                   >
                     <TableCell className="pl-6 font-medium whitespace-nowrap text-muted-foreground">
                       {task.externalKey}

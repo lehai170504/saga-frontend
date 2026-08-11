@@ -36,7 +36,7 @@ export const TeamEvaluationModal = ({ courseId, teamId, isOpen, onClose, teamNam
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <PieChart className="w-6 h-6 text-primary" />
-            Đánh giá Đóng góp Nhóm: {teamName || "Đang tải..."}
+            Đánh giá Đóng góp Nhóm: {teamName || <Skeleton className="w-32 h-6 inline-block align-middle" />}
           </DialogTitle>
           <DialogDescription>
             Báo cáo chi tiết về điểm số và phần trăm đóng góp của các thành viên qua các Sprints.

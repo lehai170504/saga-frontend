@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useCourse, useDeleteCourse } from "@/features/courses/hooks/useCourses";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseDialog } from "@/features/courses/components/edit-course-dialog";

@@ -62,9 +62,9 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
 
       // Handle both standard graph format and specific SAGA API format
       const rawNode = node as unknown as Record<string, string | undefined>;
-      const nodeId = rawNode.studentId || node.id || `n-${i}`;
-      const nodeLabel = rawNode.fullName || rawNode.name || node.label || "Unknown";
-      const nodeGroup = rawNode.studentCode || node.group;
+      const nodeId = rawNode.studentId || rawNode.id || `n-${i}`;
+      const nodeLabel = rawNode.fullName || rawNode.name || rawNode.label || "Unknown";
+      const nodeGroup = rawNode.studentCode || rawNode.group;
 
       return {
         id: String(nodeId),

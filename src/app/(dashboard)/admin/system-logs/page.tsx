@@ -34,22 +34,22 @@ export default function SystemLogsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Tổng sự kiện (Hệ thống)"
-          value={isLoading ? "-" : (logsData?.totalElements?.toString() || "0")}
+          value={isLoading ? <Skeleton className="h-8 w-16" /> : (logsData?.totalElements?.toString() || "0")}
           icon={<Activity className="w-4 h-4 text-primary" />}
         />
         <MetricCard
           title="Cảnh báo / Lỗi"
-          value={isLoading ? "-" : "0"}
+          value={isLoading ? <Skeleton className="h-8 w-12" /> : "0"}
           icon={<AlertTriangle className="w-4 h-4 text-destructive" />}
         />
         <MetricCard
           title="Tình trạng Server"
-          value={isLoading ? "-" : "Bình thường"}
+          value={isLoading ? <Skeleton className="h-8 w-24" /> : "Bình thường"}
           icon={<ShieldCheck className="w-4 h-4 text-emerald-500" />}
         />
         <MetricCard
           title="Kết nối DB"
-          value={isLoading ? "-" : "Ổn định"}
+          value={isLoading ? <Skeleton className="h-8 w-16" /> : "Ổn định"}
           icon={<Clock className="w-4 h-4 text-primary" />}
         />
       </div>

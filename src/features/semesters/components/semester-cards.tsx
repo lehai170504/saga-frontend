@@ -7,6 +7,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Loader2, Calendar, CalendarClock, CalendarDays } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/shared/Skeleton";
 
 export function SemesterCards() {
   const { data: page, isLoading, error } = useSemesters();
@@ -15,22 +16,6 @@ export function SemesterCards() {
 
   const isAdmin = user?.applicationRole === "ADMIN";
   const activeSemesterId = activeSemesterData?.semesterId;
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center p-8 h-[50vh]">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20 font-medium">
-        Đã có lỗi xảy ra khi tải danh sách học kỳ.
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -42,7 +27,17 @@ export function SemesterCards() {
         {isAdmin && <CreateSemesterDialog />}
       </PageHeader>
 
-      {page?.content && page.content.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-44 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="text-center text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20 font-medium">
+          Đã có lỗi xảy ra khi tải danh sách học kỳ.
+        </div>
+      ) : page?.content && page.content.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
           {page.content.map((semester) => {
             const isActive = semester.id === activeSemesterId;

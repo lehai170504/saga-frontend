@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Search, Users, UserX, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Download, Loader2, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CourseStudent } from "../types";
