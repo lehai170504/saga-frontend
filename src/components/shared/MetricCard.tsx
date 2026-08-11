@@ -12,7 +12,7 @@ export function MetricCard({ title, value, icon }: MetricCardProps) {
       <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2.5 font-medium">
         <span className="p-2 bg-muted rounded-xl text-foreground/70">{icon}</span> {title}
       </p>
-      <p className="text-3xl font-extrabold tracking-tight text-foreground">{value}</p>
+      <div className="text-3xl font-extrabold tracking-tight text-foreground">{value}</div>
     </div>
   );
 }

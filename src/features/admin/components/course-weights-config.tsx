@@ -34,8 +34,8 @@ export const CourseWeightsConfig = ({ courseId }: CourseWeightsConfigProps) => {
   }
 
   const formatWeight = (val: number | undefined) => {
-    if (val === undefined || val === null) return 0;
-    return Number.isInteger(val) ? val : Number(val.toFixed(1));
+    if (val === undefined || val === null) return "0.00";
+    return val.toFixed(2);
   };
 
   const weightCards = [
@@ -62,14 +62,6 @@ export const CourseWeightsConfig = ({ courseId }: CourseWeightsConfigProps) => {
       color: "text-purple-500",
       bg: "bg-purple-500/10",
       border: "border-purple-500/20",
-    },
-    {
-      title: "Trọng số Testing",
-      value: formatWeight(weights.testingWeight),
-      icon: Bug,
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
     },
   ];
 

@@ -211,9 +211,9 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                     </TableCell>
                   </TableRow>
                 ) : (
-                  data?.studentsWithTeam.content.map((student) => (
+                  data?.studentsWithTeam.content.map((student, index) => (
                     <TableRow
-                      key={student.studentId}
+                      key={`${student.studentId}-${index}`}
                       className="hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => setSelectedStudentId(student.studentId)}
                     >
@@ -283,9 +283,9 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                     </TableCell>
                   </TableRow>
                 ) : (
-                  data?.studentsWithoutTeam.content.map((student) => (
+                  data?.studentsWithoutTeam.content.map((student, index) => (
                     <TableRow
-                      key={student.studentId}
+                      key={`${student.studentId}-${index}`}
                       className="hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => setSelectedStudentId(student.studentId)}
                     >

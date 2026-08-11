@@ -7,7 +7,6 @@ import { Settings2, Save, AlertTriangle, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
-import { TaskMultiplierTemplates } from "@/features/admin/components/evaluation-config/task-multiplier-templates";
 import { OverrideRequests } from "@/features/admin/components/evaluation-config/override-requests";
 
 export default function EvaluationConfigPage() {
@@ -47,9 +46,6 @@ export default function EvaluationConfigPage() {
           <TabsTrigger value="ai-warnings" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
             <AlertTriangle className="w-4 h-4 mr-2" /> Ngưỡng Cảnh báo AI
           </TabsTrigger>
-          <TabsTrigger value="templates" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
-            <Settings2 className="w-4 h-4 mr-2" /> Bộ Khung Hệ số (SE)
-          </TabsTrigger>
           <TabsTrigger value="requests" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6 relative">
             <ClipboardCheck className="w-4 h-4 mr-2" /> Yêu cầu Kiểm duyệt
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
@@ -59,10 +55,6 @@ export default function EvaluationConfigPage() {
 
         <TabsContent value="ai-warnings" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
           <AiWarningRules />
-        </TabsContent>
-
-        <TabsContent value="templates" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <TaskMultiplierTemplates />
         </TabsContent>
 
         <TabsContent value="requests" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">

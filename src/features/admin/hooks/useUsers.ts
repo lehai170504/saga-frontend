@@ -55,19 +55,3 @@ export const useToggleUserStatus = () => {
   });
 };
 
-export const useImportUsers = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ role, file }: { role: "STUDENT" | "LECTURER"; file: File }) =>
-      userApi.importUsers(role, file),
-    onSuccess: () => {
-      toast.success(ADMIN_MESSAGES.USER.IMPORT_SUCCESS);
-      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
-    },
-    onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || ADMIN_MESSAGES.USER.IMPORT_ERROR;
-      toast.error(errorMessage);
-    }
-  });
-};
