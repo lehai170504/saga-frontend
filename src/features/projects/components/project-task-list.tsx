@@ -36,11 +36,13 @@ import { useTaskDetail } from "../hooks/useTasks";
 interface ProjectTaskListProps {
   projectId: string;
   sprintId?: string;
+  members?: { id: string; name: string; role?: string }[];
 }
 
-export function ProjectTaskList({ projectId, sprintId: initialSprintId }: ProjectTaskListProps) {
+export function ProjectTaskList({ projectId, sprintId: initialSprintId, members = [] }: ProjectTaskListProps) {
   const [keyword, setKeyword] = useState("");
   const [selectedSprintId, setSelectedSprintId] = useState<string>(initialSprintId || "all");
+  const [selectedAssigneeId, setSelectedAssigneeId] = useState<string>("all");
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const { data: sprintsData } = useProjectSprints(projectId);
@@ -48,6 +50,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
   
   const { data: tasksData, isLoading } = useProjectTasks(projectId, {
     sprintId: selectedSprintId === "all" ? undefined : selectedSprintId,
+    assigneeId: selectedAssigneeId === "all" ? undefined : selectedAssigneeId,
     keyword: keyword || undefined,
     size: 50,
   });
@@ -58,6 +61,25 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
   );
 
   const tasks = tasksData?.content || [];
+
+  const getStatusColor = (status: string) => {
+    if (!status) return "bg-muted text-muted-foreground border-border";
+    const s = status.toLowerCase();
+    if (s.includes("done") || s.includes("completed") || s.includes("resolved") || s.includes("closed") || s.includes("hoàn thành")) {
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+    }
+    if (s.includes("progress") || s.includes("doing") || s.includes("đang làm") || s.includes("active")) {
+      return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+    }
+    if (s.includes("review") || s.includes("test")) {
+      return "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20";
+    }
+    if (s.includes("block") || s.includes("bug") || s.includes("cancel") || s.includes("fail")) {
+      return "bg-destructive/10 text-destructive border-destructive/20";
+    }
+    // Default (To Do, Backlog, etc)
+    return "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20";
+  };
 
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
@@ -81,6 +103,22 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
                 ))}
               </SelectContent>
             </Select>
+
+            {members.length > 0 && (
+              <Select value={selectedAssigneeId} onValueChange={setSelectedAssigneeId}>
+                <SelectTrigger className="w-full sm:w-[180px] bg-background/50 border-border/50 h-9 font-medium">
+                  <SelectValue placeholder="Người phụ trách" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="font-medium">Tất cả thành viên</SelectItem>
+                  {members.map((member) => (
+                    <SelectItem key={member.id} value={member.id} className="font-medium">
+                      {member.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
@@ -148,7 +186,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="font-semibold whitespace-nowrap bg-background">
+                      <Badge variant="outline" className={`font-bold whitespace-nowrap ${getStatusColor(task.status)}`}>
                         {task.status}
                       </Badge>
                     </TableCell>
@@ -202,7 +240,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId }: Projec
                     <Badge variant="outline" className="font-bold border-primary text-primary bg-primary/10">
                       {taskDetail.externalKey}
                     </Badge>
-                    <Badge variant="outline" className="font-semibold bg-background">
+                    <Badge variant="outline" className={`font-bold ${getStatusColor(taskDetail.status)}`}>
                       {taskDetail.status}
                     </Badge>
                   </div>

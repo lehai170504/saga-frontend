@@ -1,6 +1,10 @@
 export interface ProjectBasicInfo {
   id: string;
   name: string;
+  repositories?: {
+    repositoryId: number;
+    repositoryName: string;
+  }[];
 }
 
 export interface StudentBasicInfo {
@@ -146,16 +150,37 @@ export interface TeamInteraction {
   edges: InteractionEdge[];
 }
 
-export interface HeatmapData {
+export interface HeatmapDay {
   date: string;
   commits: number;
+  totalActivities: number;
+}
+
+export interface HeatmapResponse {
+  courseId: string;
+  teamId: string;
+  studentId: string | null;
+  startDate: string;
+  endDate: string;
+  days: HeatmapDay[];
 }
 
 export interface SprintVelocity {
   sprintId: string;
   sprintName: string;
+  startDate?: string;
+  endDate?: string;
+  totalTasks?: number;
+  completedTasks?: number;
   currentPlannedPoints: number;
   completedPoints: number;
-  nullPointCount: number;
+  tasksWithoutStoryPoints?: number;
+  nullPointCount?: number;
   bugsCount: number;
+}
+
+export interface SprintVelocityResponse {
+  courseId: string;
+  teamId: string;
+  sprints: SprintVelocity[];
 }

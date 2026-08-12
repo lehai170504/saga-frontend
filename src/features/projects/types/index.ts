@@ -121,6 +121,30 @@ export interface GithubCommitsResponse {
   };
 }
 
+export interface GithubIssueInfo {
+  issueId: string;
+  githubIssueId?: number;
+  number: number;
+  title: string;
+  state: string;
+  authorLogin?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  url?: string;
+  repositoryId?: number;
+}
+
+export interface GithubIssuesResponse {
+  projectId: string;
+  repositoryId?: number;
+  issues: {
+    content: GithubIssueInfo[];
+    page: number;
+    size: number;
+    hasNext: boolean;
+  };
+}
+
 export type JiraTaskComponent = {
   id: string;
   name: string;

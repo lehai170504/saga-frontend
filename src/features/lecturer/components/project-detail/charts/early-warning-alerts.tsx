@@ -10,9 +10,10 @@ import { useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
 interface EarlyWarningAlertsProps {
   courseId: string;
   teamId: string;
+  members?: { id: string; name: string }[];
 }
 
-export function EarlyWarningAlerts({ courseId, teamId }: EarlyWarningAlertsProps) {
+export function EarlyWarningAlerts({ courseId, teamId, members = [] }: EarlyWarningAlertsProps) {
   const { data: warnings, isLoading } = useEarlyWarnings(courseId);
   const warningsArray = Array.isArray(warnings) ? warnings : (warnings as any)?.content || [];
   // const teamWarnings = warningsArray.filter((w: any) => w.teamId === teamId);
@@ -33,31 +34,35 @@ export function EarlyWarningAlerts({ courseId, teamId }: EarlyWarningAlertsProps
           <div className="flex justify-center p-8 text-muted-foreground">Đang tải cảnh báo...</div>
         ) : (
           <>
-            {teamWarnings.map((alert, idx) => (
-              <div key={idx} className="flex gap-4 p-4 rounded-2xl border border-destructive/20 bg-destructive/5 items-start">
-                <div className="p-2 bg-destructive/10 rounded-full text-destructive shrink-0 mt-1">
-                  <AlertCircle size={20} />
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-foreground text-sm">{alert.message}</h4>
+            {teamWarnings.map((alert, idx) => {
+              const memberName = members.find(m => m.id === alert.studentId)?.name || `SV ${alert.studentId.substring(0, 8)}`;
+              
+              return (
+                <div key={idx} className="flex gap-4 p-4 rounded-2xl border border-destructive/20 bg-destructive/5 items-start">
+                  <div className="p-2 bg-destructive/10 rounded-full text-destructive shrink-0 mt-1">
+                    <AlertCircle size={20} />
                   </div>
-                  <div className="flex items-center gap-3 mt-2">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/50 text-xs font-bold">
-                      <Avatar className="w-4 h-4">
-                        <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{alert.studentId.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      SV {alert.studentId.substring(0, 8)}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex justify-between items-start">
+                      <h4 className="font-bold text-foreground text-sm">{alert.message}</h4>
                     </div>
-                    {alert.warningType === "OVERDUE_TASK" && (
-                      <Button variant="outline" size="sm" className="h-7 text-xs font-bold border-destructive/30 text-destructive hover:bg-destructive hover:text-white">
-                        Thực thi: Xử lý Task quá hạn
-                      </Button>
-                    )}
+                    <div className="flex items-center gap-3 mt-2">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/50 text-xs font-bold">
+                        <Avatar className="w-4 h-4">
+                          <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{memberName.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        {memberName}
+                      </div>
+                      {alert.warningType === "OVERDUE_TASK" && (
+                        <Button variant="outline" size="sm" className="h-7 text-xs font-bold border-destructive/30 text-destructive hover:bg-destructive hover:text-white">
+                          Thực thi: Xử lý Task quá hạn
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {teamWarnings.length === 0 && (
               <div className="flex flex-col items-center justify-center p-8 text-success">

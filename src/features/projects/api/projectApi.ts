@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { CreateTeamProjectRequest, ProjectResponse, GithubBranchesResponse, GithubCommitsResponse } from "../types";
+import { CreateTeamProjectRequest, ProjectResponse, GithubBranchesResponse, GithubCommitsResponse, GithubIssuesResponse } from "../types";
 
 export const projectApi = {
   createTeamProject: async (teamId: string, data: CreateTeamProjectRequest) => {
@@ -19,6 +19,11 @@ export const projectApi = {
   getGithubCommits: async (projectId: string, repositoryId: string, branch: string, page = 0, size = 20) => {
     return axiosInstance.get<never, GithubCommitsResponse>(`/api/projects/${projectId}/github/repositories/${repositoryId}/commits`, {
       params: { branch, page, size }
+    });
+  },
+  getGithubIssues: async (projectId: string, repositoryId?: string, page = 0, size = 20) => {
+    return axiosInstance.get<never, GithubIssuesResponse>(`/api/projects/${projectId}/github/issues`, {
+      params: { repositoryId, page, size }
     });
   }
 };

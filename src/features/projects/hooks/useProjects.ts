@@ -52,3 +52,11 @@ export const useGithubCommits = (projectId: string, repositoryId: string, branch
     enabled: !!projectId && !!repositoryId && !!branch,
   });
 };
+
+export const useGithubIssues = (projectId: string, repositoryId?: string, page = 0, size = 20) => {
+  return useQuery({
+    queryKey: ["project-github-issues", projectId, repositoryId, page, size],
+    queryFn: () => projectApi.getGithubIssues(projectId, repositoryId, page, size),
+    enabled: !!projectId,
+  });
+};

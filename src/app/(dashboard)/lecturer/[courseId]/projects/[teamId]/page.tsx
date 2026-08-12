@@ -16,6 +16,9 @@ import { SprintVelocityBar } from "@/features/lecturer/components/project-detail
 import { useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectTaskList } from "@/features/projects/components/project-task-list";
+import { ProjectCommitsView } from "@/features/lecturer/components/project-detail/project-commits-view";
+import { ProjectIssuesView } from "@/features/lecturer/components/project-detail/project-issues-view";
+import { GitCommit, CircleDot } from "lucide-react";
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ courseId: string, teamId: string }> }) {
   const { courseId, teamId } = React.use(params);
@@ -33,9 +36,11 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
     project: projectName,
     projectId: teamDetail?.project?.id,
     members: teamDetail?.members?.content?.map(s => ({
+      id: s.studentId,
       name: s.fullName,
       role: s.roleInTeam === "LEADER" ? "Leader" : "Thành viên",
     })) || [],
+    repositories: teamDetail?.project?.repositories || [],
   };
 
   return (
@@ -72,10 +77,13 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
               <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
             </TabsTrigger>
             <TabsTrigger value="tasks" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
-              <ListTodo className="w-4 h-4 mr-2" /> Công việc (Tasks)
+              <ListTodo className="w-4 h-4 mr-2" /> Công việc (Jira)
             </TabsTrigger>
-            <TabsTrigger value="slicing-pie" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
-              <PieChartIcon className="w-4 h-4 mr-2" /> Đánh giá Đóng góp & AI
+            <TabsTrigger value="commits" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <GitCommit className="w-4 h-4 mr-2" /> Lịch sử Commit (Github)
+            </TabsTrigger>
+            <TabsTrigger value="issues" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
             </TabsTrigger>
             <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
               <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
@@ -83,6 +91,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
               <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
             </TabsTrigger>
+            
           </TabsList>
         )}
 
@@ -174,7 +183,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             <div className="xl:col-span-2 space-y-6">
               {projectDetail.project && projectDetail.project !== "Chưa có dự án" ? (
                 <>
-                  <EarlyWarningAlerts courseId={courseId} teamId={teamId} />
+                  <EarlyWarningAlerts courseId={courseId} teamId={teamId} members={projectDetail.members} />
                   <SprintVelocityBar courseId={courseId} teamId={teamId} />
                 </>
               ) : (
@@ -193,10 +202,6 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
 
         {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
           <>
-            <TabsContent value="slicing-pie" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <TeamEvaluation courseId={courseId} teamId={teamId} />
-            </TabsContent>
-
             <TabsContent value="heatmap" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ProjectHeatmap courseId={courseId} teamId={projectDetail.id} />
             </TabsContent>
@@ -206,9 +211,17 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             </TabsContent>
 
             {projectDetail.projectId && (
-              <TabsContent value="tasks" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <ProjectTaskList projectId={projectDetail.projectId} />
-              </TabsContent>
+              <>
+                <TabsContent value="tasks" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <ProjectTaskList projectId={projectDetail.projectId} members={projectDetail.members} />
+                </TabsContent>
+                <TabsContent value="commits" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <ProjectCommitsView projectId={projectDetail.projectId} repositories={projectDetail.repositories} />
+                </TabsContent>
+                <TabsContent value="issues" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <ProjectIssuesView projectId={projectDetail.projectId} repositories={projectDetail.repositories} />
+                </TabsContent>
+              </>
             )}
           </>
         )}
