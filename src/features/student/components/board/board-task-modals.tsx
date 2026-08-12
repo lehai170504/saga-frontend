@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, Bug, Sparkles, PlusSquare, Bookmark, CheckSquare } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
 import { getTodayString } from "./board-helpers";
 import { CustomDateInput } from "../shared/custom-date-input";
@@ -100,9 +100,31 @@ export function BoardCreateTaskModal({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/40">
-                  <SelectItem value="TASK" className="text-xs">Task (Mặc định)</SelectItem>
-                  <SelectItem value="BUG" className="text-xs">Bug</SelectItem>
-                  <SelectItem value="STORY" className="text-xs">Story</SelectItem>
+                  <SelectItem value="BUG" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <Bug size={14} className="text-red-500 shrink-0" /> Bug
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="FEATURE" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <Sparkles size={14} className="text-emerald-500 shrink-0" /> Feature
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="REQUEST" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <PlusSquare size={14} className="text-blue-500 shrink-0" /> Request
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="STORY" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <Bookmark size={14} className="text-emerald-600 shrink-0" /> Story
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="TASK" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <CheckSquare size={14} className="text-blue-600 shrink-0" /> Task
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -273,9 +295,31 @@ export function BoardEditTaskModal({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/40">
-                  <SelectItem value="TASK" className="text-xs">Task</SelectItem>
-                  <SelectItem value="BUG" className="text-xs">Bug</SelectItem>
-                  <SelectItem value="STORY" className="text-xs">Story</SelectItem>
+                  <SelectItem value="BUG" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <Bug size={14} className="text-red-500 shrink-0" /> Bug
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="FEATURE" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <Sparkles size={14} className="text-emerald-500 shrink-0" /> Feature
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="REQUEST" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <PlusSquare size={14} className="text-blue-500 shrink-0" /> Request
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="STORY" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <Bookmark size={14} className="text-emerald-600 shrink-0" /> Story
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="TASK" className="text-xs">
+                    <span className="flex items-center gap-2">
+                      <CheckSquare size={14} className="text-blue-600 shrink-0" /> Task
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>

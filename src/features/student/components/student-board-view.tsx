@@ -124,7 +124,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
       ) : (
         <>
           <BoardFilterBar
-            currentSprintId={selectedSprintId}
+            currentSprintId={currentSprintId}
             onSprintChange={setSelectedSprintId}
             sprints={sprints}
             selectedAssigneeId={selectedAssigneeId}

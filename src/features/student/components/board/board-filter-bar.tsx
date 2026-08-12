@@ -44,20 +44,14 @@ export function BoardFilterBar({
             </SelectTrigger>
             <SelectContent position="popper" side="bottom" className="rounded-2xl shadow-xl border-border/40 mt-1">
               {[...sprints]
-                .filter((s) => s.state?.toUpperCase() !== "CLOSED")
-                .sort((a, b) => {
-                  const getOrder = (state?: string) => {
-                    const st = state?.toUpperCase();
-                    if (st === "ACTIVE" || st === "IN_PROGRESS") return 1;
-                    return 2;
-                  };
-                  return getOrder(a.state) - getOrder(b.state);
+                .filter((s) => {
+                  const st = s.state?.toUpperCase() || "";
+                  return st !== "CLOSED" && st !== "FUTURE" && st !== "PLANNED";
                 })
                 .map((s) => {
                   const st = s.state?.toUpperCase();
                   let badgeText = "";
                   if (st === "ACTIVE" || st === "IN_PROGRESS") badgeText = "(Hiện tại)";
-                  else if (st === "FUTURE" || st === "PLANNED") badgeText = "(Sắp tới)";
 
                   return (
                     <SelectItem key={s.sprintId} value={s.sprintId} className="rounded-xl font-medium text-xs">

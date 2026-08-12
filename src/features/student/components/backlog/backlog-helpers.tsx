@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Bug, CheckSquare, ChevronsUp, ChevronUp, Equal, ChevronDown, ChevronsDown } from "lucide-react";
+import { Bug, CheckSquare, Sparkles, PlusSquare, Bookmark, ChevronsUp, ChevronUp, Equal, ChevronDown, ChevronsDown } from "lucide-react";
 
 export const PRIORITIES = [
   { id: "HIGHEST", label: "Highest", icon: <ChevronsUp size={14} className="text-red-500 shrink-0" /> },
@@ -61,11 +61,16 @@ export const formatSprintDates = (startStr?: string | null, endStr?: string | nu
 export const getTypeIcon = (type?: string) => {
   switch (type?.toUpperCase()) {
     case "BUG":
-      return <Bug size={14} className="text-destructive shrink-0" />;
+      return <Bug size={14} className="text-red-500 shrink-0" />;
+    case "FEATURE":
+      return <Sparkles size={14} className="text-emerald-500 shrink-0" />;
+    case "REQUEST":
+      return <PlusSquare size={14} className="text-blue-500 shrink-0" />;
     case "STORY":
-      return <CheckSquare size={14} className="text-emerald-500 shrink-0" />;
+      return <Bookmark size={14} className="text-emerald-600 shrink-0" />;
+    case "TASK":
     default:
-      return <CheckSquare size={14} className="text-blue-500 shrink-0" />;
+      return <CheckSquare size={14} className="text-blue-600 shrink-0" />;
   }
 };
 
@@ -73,19 +78,32 @@ export const getTypeBadge = (type?: string) => {
   switch (type?.toUpperCase()) {
     case "BUG":
       return (
-        <Badge variant="destructive" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5">
+        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20">
           Bug
+        </Badge>
+      );
+    case "FEATURE":
+      return (
+        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+          Feature
+        </Badge>
+      );
+    case "REQUEST":
+      return (
+        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-blue-500/10 text-blue-500 border border-blue-500/20">
+          Request
         </Badge>
       );
     case "STORY":
       return (
-        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-emerald-600/10 text-emerald-600 border border-emerald-600/20">
           Story
         </Badge>
       );
+    case "TASK":
     default:
       return (
-        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-blue-500/10 text-blue-500 border border-blue-500/20">
+        <Badge variant="secondary" className="rounded-xl font-extrabold text-[10px] px-2 py-0.5 bg-blue-600/10 text-blue-600 border border-blue-600/20">
           Task
         </Badge>
       );
