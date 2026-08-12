@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { useSprintPeerReviews } from "../../hooks/usePeerReview";
 import { useTeamDetail } from "../../hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Star, Timer, Users } from "lucide-react";
 import {
   Table,

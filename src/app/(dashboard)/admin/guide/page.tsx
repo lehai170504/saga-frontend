@@ -76,7 +76,7 @@ export default function AdminGuidePage() {
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <p className="text-muted-foreground leading-relaxed">
-                SAGA (Student Academic Graph Analytics) là hệ thống đánh giá tự động và trực quan hóa hoạt động học tập dựa trên đồ thị (Graph) và dữ liệu chéo từ <strong>GitHub, Jira</strong> cùng dữ liệu học vụ do Admin quản lý.
+                SAGA là Hệ thống Đánh giá Liên tục tự động tổng hợp dữ liệu từ <strong>GitHub, Jira</strong>, kết hợp mô hình <strong>Slicing Pie</strong> để tính toán tỷ lệ đóng góp của sinh viên và trực quan hóa qua <strong>Mạng tương tác</strong>.
               </p>
 
               <div className="mt-6 space-y-4">
@@ -97,8 +97,8 @@ export default function AdminGuidePage() {
                   <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 text-center flex flex-col items-center justify-center gap-2 h-full relative overflow-hidden">
                     <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full"></div>
                     <Network className="w-6 h-6 text-primary relative z-10" />
-                    <span className="text-xs font-bold text-primary uppercase relative z-10">3. SAGA Graph</span>
-                    <span className="text-[11px] text-primary/80 relative z-10">Phân tích Tương tác</span>
+                    <span className="text-xs font-bold text-primary uppercase relative z-10">3. Slicing Pie</span>
+                    <span className="text-[11px] text-primary/80 relative z-10">Tính toán & Trực quan hóa</span>
                   </div>
                 </div>
               </div>
@@ -125,17 +125,21 @@ export default function AdminGuidePage() {
                 <div className="space-y-4">
                   <h3 className="font-bold text-foreground">Dữ liệu cần quản lý bao gồm:</h3>
                   <ul className="space-y-3">
-                    <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <li className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" />
-                      <span><strong>Kỳ học (Semesters):</strong> Thiết lập học kỳ hiện tại và thời gian.</span>
+                      <span><strong>Khóa học (Courses):</strong> Thực thể hiển thị chính, đóng vai trò liên kết Môn học, Lớp học, Học kỳ và Giảng viên phụ trách.</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" />
-                      <span><strong>Môn học (Courses):</strong> Các môn học đang vận hành trong kỳ.</span>
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                      <span><strong>Môn học (Subjects):</strong> Danh mục các môn học trong chương trình đào tạo.</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-success shrink-0" />
-                      <span><strong>Danh sách Lớp (Classes & Rosters):</strong> Phân công sinh viên và Giảng viên thủ công.</span>
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                      <span><strong>Lớp học (Classes):</strong> Danh sách các lớp hành chính của sinh viên.</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+                      <span><strong>Học kỳ (Semesters):</strong> Thiết lập các học kỳ và mốc thời gian diễn ra.</span>
                     </li>
                   </ul>
                 </div>
@@ -173,9 +177,9 @@ export default function AdminGuidePage() {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="p-4 bg-primary/10 dark:bg-blue-950/20 rounded-2xl border border-primary/20 mb-4">
-                <h4 className="font-bold text-primary mb-2">Đồ thị Mạng tương tác (Interaction Graph) hoạt động như thế nào?</h4>
+                <h4 className="font-bold text-primary mb-2">Mạng tương tác và Slicing Pie hoạt động như thế nào?</h4>
                 <p className="text-sm text-primary/80 dark:text-blue-300">
-                  Mỗi khi một sinh viên push code, tạo Pull Request trên GitHub, hoặc chuyển trạng thái task trên Jira, hệ thống sẽ ánh xạ hành động đó thành <strong>Cạnh (Edge)</strong> nối giữa sinh viên đó và các thành viên khác trong Node Mạng tương tác. Admin không cần can thiệp quá trình này, nhưng cần hướng dẫn sinh viên liên kết đúng tài khoản.
+                  Mỗi khi sinh viên push code, tạo Pull Request trên GitHub, hoặc hoàn thành Task trên Jira, hệ thống sẽ ánh xạ thành <strong>cổ phần đóng góp (Slices)</strong> và vẽ các đường liên kết trên <strong>Mạng tương tác</strong>. Admin không cần can thiệp quá trình này, nhưng cần nhắc sinh viên liên kết đúng tài khoản hệ thống.
                 </p>
               </div>
 
@@ -205,7 +209,7 @@ export default function AdminGuidePage() {
               <div className="rounded-2xl border border-border overflow-hidden">
                 <div className="grid grid-cols-4 bg-muted/50 p-4 border-b border-border text-sm font-bold uppercase tracking-wider text-muted-foreground">
                   <div>Vai trò (Role)</div>
-                  <div className="text-center">Xem Đồ thị</div>
+                  <div className="text-center">Xem Mạng tương tác</div>
                   <div className="text-center">Đánh giá Thành viên</div>
                   <div className="text-center">Quản trị Hệ thống</div>
                 </div>
@@ -213,24 +217,42 @@ export default function AdminGuidePage() {
                   <div className="font-semibold text-foreground flex items-center gap-2">
                     <ShieldCheck size={16} className="text-primary" /> Admin
                   </div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
+                    <span className="text-[10px] text-muted-foreground block">(Toàn hệ thống)</span>
+                  </div>
+                  <div className="text-center text-muted-foreground">-</div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
+                    <span className="text-[10px] text-muted-foreground block">(Toàn quyền)</span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 p-4 border-b border-border/50 items-center hover:bg-muted/30 transition-colors">
                   <div className="font-semibold text-foreground flex items-center gap-2">
                     <FileText size={16} className="text-primary" /> Giảng viên
                   </div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto" /></div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
+                    <span className="text-[10px] text-muted-foreground block">(Các lớp phụ trách)</span>
+                  </div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
+                    <span className="text-[10px] text-muted-foreground block">(Kiểm duyệt & Chốt điểm)</span>
+                  </div>
                   <div className="text-center text-muted-foreground">-</div>
                 </div>
                 <div className="grid grid-cols-4 p-4 items-center hover:bg-muted/30 transition-colors">
                   <div className="font-semibold text-foreground flex items-center gap-2">
                     <Users size={16} className="text-primary" /> Sinh viên
                   </div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto text-success/50" /> <span className="text-[10px] text-muted-foreground block">(Nhóm của mình)</span></div>
-                  <div className="text-center text-success"><CheckCircle2 className="w-5 h-5 mx-auto text-success/50" /> <span className="text-[10px] text-muted-foreground block">(Chấm chéo)</span></div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/50" />
+                    <span className="text-[10px] text-muted-foreground block">(Nhóm của mình)</span>
+                  </div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/50" />
+                    <span className="text-[10px] text-muted-foreground block">(Chấm chéo / Tự đánh giá)</span>
+                  </div>
                   <div className="text-center text-muted-foreground">-</div>
                 </div>
               </div>
@@ -255,18 +277,18 @@ export default function AdminGuidePage() {
             <CardContent className="p-6">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="faq-1" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Sinh viên khiếu nại biểu đồ nhiệt (Heatmap) không hiển thị hoạt động?</AccordionTrigger>
+                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Sinh viên khiếu nại Biểu đồ nhiệt không hiển thị hoạt động?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
                     <strong>Nguyên nhân:</strong> Sinh viên chưa liên kết tài khoản GitHub/Jira đúng với Email trường, hoặc chưa commit vào nhánh mặc định của Repository.<br />
-                    <strong>Cách giải quyết:</strong> Hướng dẫn sinh viên vào menu <span className="font-semibold text-foreground">Kết nối tài khoản</span> để kiểm tra trạng thái liên kết (Link Status). Sau khi liên kết đúng, hệ thống sẽ tự động truy xuất lại dữ liệu trong lần chạy Cronjob tiếp theo (hoặc khoảng 30 phút).
+                    <strong>Cách giải quyết:</strong> Hướng dẫn sinh viên vào menu <span className="font-semibold text-foreground">Cài đặt</span> để kiểm tra trạng thái liên kết. Sau khi liên kết đúng, hệ thống sẽ tự động đồng bộ lại dữ liệu trong lần chạy tiếp theo (khoảng 30 phút).
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="faq-2" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Giảng viên không thấy danh sách lớp được phân công?</AccordionTrigger>
+                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Giảng viên không thấy danh sách khóa học được phân công?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    <strong>Nguyên nhân:</strong> Quá trình tạo lớp bị thiếu thông tin giảng viên, hoặc giảng viên đăng nhập bằng email không khớp với dữ liệu đã tạo.<br />
-                    <strong>Cách giải quyết:</strong> Admin vào mục <span className="font-semibold text-foreground">Quản lý Lớp PBL</span>, tìm lớp bị thiếu và cập nhật lại thông tin bằng email chính xác của giảng viên.
+                    <strong>Nguyên nhân:</strong> Quá trình thiết lập khóa học bị thiếu thông tin giảng viên, hoặc giảng viên đăng nhập bằng email không khớp với dữ liệu học vụ.<br />
+                    <strong>Cách giải quyết:</strong> Admin vào mục <span className="font-semibold text-foreground">Khóa học</span>, tìm khóa học bị thiếu và cập nhật lại thông tin bằng email chính xác của giảng viên.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -278,9 +300,9 @@ export default function AdminGuidePage() {
                 </AccordionItem>
 
                 <AccordionItem value="faq-4" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi trang dữ liệu học vụ tải chậm?</AccordionTrigger>
+                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi trang dữ liệu tải chậm?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    Trường hợp trang tải chậm hoặc treo thường do khối lượng dữ liệu truy xuất lớn. Vui lòng làm mới (F5) trang. Nếu vấn đề vẫn tiếp diễn, bạn có thể kiểm tra tab <strong>Network</strong> hoặc liên hệ với bộ phận kỹ thuật để tối ưu hóa truy vấn cơ sở dữ liệu.
+                    Trường hợp trang tải chậm hoặc treo thường do khối lượng dữ liệu truy xuất lớn. Vui lòng làm mới (F5) trang. Nếu vấn đề vẫn tiếp diễn, bạn có thể kiểm tra tab <strong>Network</strong> hoặc liên hệ với bộ phận kỹ thuật để tối ưu hóa hệ thống.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

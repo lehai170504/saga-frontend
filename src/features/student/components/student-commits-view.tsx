@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectIntegrations } from "@/features/integrations/hooks/useProjectIntegrations";
-import { GitHubRepositoryResponse } from "@/features/integrations/types";
 import { useGithubBranches, useGithubCommits } from "@/features/projects/hooks/useProjects";
 import { GithubBranchInfo, GithubCommitInfo } from "@/features/projects/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,18 +27,30 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
-
   const { data: integrations, isLoading: isLoadingIntegrations } = useProjectIntegrations(projectId);
-  const repos = React.useMemo<GitHubRepositoryResponse[]>(
-    () => (integrations?.githubRepositories || []).filter((r) => r.status === "ACTIVE"),
-    [integrations?.githubRepositories]
-  );
-  const selectedRepo = repos.find((r) => String(r.repositoryId) === selectedRepoId);
 
-  // Automatically select first ACTIVE repository when loaded
+  const repos = React.useMemo(() => {
+    const integrationRepos = (integrations?.githubRepositories || [])
+      .filter((r) => r.status === "ACTIVE")
+      .map((r) => ({
+        repositoryId: String(r.repositoryId),
+        fullName: r.fullName,
+      }));
+
+    if (integrationRepos.length > 0) return integrationRepos;
+
+    return (myTeamData?.project?.repositories || []).map((r) => ({
+      repositoryId: String(r.repositoryId),
+      fullName: r.repositoryName,
+    }));
+  }, [integrations?.githubRepositories, myTeamData?.project?.repositories]);
+
+  const selectedRepo = repos.find((r) => r.repositoryId === selectedRepoId);
+
+  // Automatically select first repository when loaded
   useEffect(() => {
     if (repos.length > 0 && !selectedRepoId) {
-      const timer = setTimeout(() => setSelectedRepoId(String(repos[0].repositoryId)), 0);
+      const timer = setTimeout(() => setSelectedRepoId(repos[0].repositoryId), 0);
       return () => clearTimeout(timer);
     }
   }, [repos, selectedRepoId]);
@@ -190,7 +201,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
                       <SelectValue placeholder="Chọn repository..." />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border bg-background">
-                      {repos.map((repo: GitHubRepositoryResponse) => (
+                      {repos.map((repo) => (
                         <SelectItem
                           key={repo.repositoryId}
                           value={String(repo.repositoryId)}

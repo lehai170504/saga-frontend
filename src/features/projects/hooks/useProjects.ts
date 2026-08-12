@@ -60,3 +60,11 @@ export const useGithubIssues = (projectId: string, repositoryId?: string, page =
     enabled: !!projectId,
   });
 };
+
+export const useProjectDashboardStats = (projectId: string) => {
+  return useQuery({
+    queryKey: ["project-dashboard-stats", projectId],
+    queryFn: () => projectApi.getProjectDashboardStats(projectId),
+    enabled: !!projectId,
+  });
+};

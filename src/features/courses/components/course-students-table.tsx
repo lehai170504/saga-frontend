@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Search, Users, UserX, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Download, Loader2, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CourseStudent } from "../types";
@@ -211,9 +211,9 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                     </TableCell>
                   </TableRow>
                 ) : (
-                  data?.studentsWithTeam.content.map((student) => (
+                  data?.studentsWithTeam.content.map((student, index) => (
                     <TableRow
-                      key={student.studentId}
+                      key={`${student.studentId}-${index}`}
                       className="hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => setSelectedStudentId(student.studentId)}
                     >
@@ -283,9 +283,9 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
                     </TableCell>
                   </TableRow>
                 ) : (
-                  data?.studentsWithoutTeam.content.map((student) => (
+                  data?.studentsWithoutTeam.content.map((student, index) => (
                     <TableRow
-                      key={student.studentId}
+                      key={`${student.studentId}-${index}`}
                       className="hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => setSelectedStudentId(student.studentId)}
                     >

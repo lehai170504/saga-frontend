@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useTeamSprints } from "@/features/projects/hooks/useTeamSprints";
@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Timer, Info } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -21,44 +20,30 @@ export default function LecturerPeerReviewsPage({ params }: { params: Promise<{ 
   
   // Lấy danh sách nhóm từ Course Students
   const { data: studentsData, isLoading: isLoadingTeams } = useCourseStudents(courseId);
-  const studentsWithTeam = studentsData?.studentsWithTeam?.content || [];
-  
+
   const teams = useMemo(() => {
+    const list = studentsData?.studentsWithTeam?.content || [];
     const map = new Map<string, { id: string, name: string }>();
-    studentsWithTeam.forEach(s => {
+    list.forEach(s => {
       if (s.team && !map.has(s.team.teamId)) {
         map.set(s.team.teamId, { id: s.team.teamId, name: s.team.teamName });
       }
     });
-    // Sort teams by name so "Group 1" or "Nhóm 1" is always first
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }));
-  }, [studentsWithTeam]);
+  }, [studentsData]);
 
   const [selectedTeamId, setSelectedTeamId] = useState<string>("");
   const [selectedSprintId, setSelectedSprintId] = useState<string>("");
 
-  // Tự động chọn nhóm đầu tiên nếu chưa chọn
-  useEffect(() => {
-    if (teams.length > 0 && !selectedTeamId) {
-      setSelectedTeamId(teams[0].id);
-    }
-  }, [teams, selectedTeamId]);
+  const effectiveTeamId = selectedTeamId || (teams.length > 0 ? teams[0].id : "");
 
   // Lấy danh sách Sprints của Team được chọn
-  const { data: sprintsData, isLoading: isLoadingSprints } = useTeamSprints(selectedTeamId);
+  const { data: sprintsData, isLoading: isLoadingSprints } = useTeamSprints(effectiveTeamId);
   const sprints = sprintsData?.sprints || [];
 
-  // Tự động chọn sprint đầu tiên (mới nhất/hoặc cũ nhất) nếu chưa chọn
-  useEffect(() => {
-    if (sprints.length > 0) {
-      // Ưu tiên giữ sprint cũ nếu nó vẫn còn trong list, ngược lại lấy sprint đầu tiên
-      if (!selectedSprintId || !sprints.some(s => s.sprintId === selectedSprintId)) {
-        setSelectedSprintId(sprints[sprints.length - 1].sprintId);
-      }
-    } else {
-      setSelectedSprintId("");
-    }
-  }, [sprints, selectedSprintId]);
+  const effectiveSprintId = (selectedSprintId && sprints.some(s => s.sprintId === selectedSprintId))
+    ? selectedSprintId
+    : (sprints.length > 0 ? sprints[sprints.length - 1].sprintId : "");
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -76,7 +61,7 @@ export default function LecturerPeerReviewsPage({ params }: { params: Promise<{ 
             {isLoadingTeams ? (
               <Skeleton className="h-9 w-full" />
             ) : teams.length > 0 ? (
-              <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
+              <Select value={effectiveTeamId} onValueChange={setSelectedTeamId}>
                 <SelectTrigger className="w-full h-9 bg-background border-border/50">
                   <SelectValue placeholder="Chọn một nhóm" />
                 </SelectTrigger>
@@ -103,10 +88,10 @@ export default function LecturerPeerReviewsPage({ params }: { params: Promise<{ 
             <Timer size={16} />
           </div>
           <div className="flex-1">
-            {isLoadingSprints && selectedTeamId ? (
+            {isLoadingSprints && effectiveTeamId ? (
               <Skeleton className="h-9 w-full" />
             ) : sprints.length > 0 ? (
-              <Select value={selectedSprintId} onValueChange={setSelectedSprintId}>
+              <Select value={effectiveSprintId} onValueChange={setSelectedSprintId}>
                 <SelectTrigger className="w-full h-9 bg-background border-border/50">
                   <SelectValue placeholder="Chọn một Sprint" />
                 </SelectTrigger>
@@ -129,8 +114,8 @@ export default function LecturerPeerReviewsPage({ params }: { params: Promise<{ 
 
       <TeamSprintReviews 
         courseId={courseId}
-        teamId={selectedTeamId}
-        sprintId={selectedSprintId}
+        teamId={effectiveTeamId}
+        sprintId={effectiveSprintId}
       />
     </div>
   );

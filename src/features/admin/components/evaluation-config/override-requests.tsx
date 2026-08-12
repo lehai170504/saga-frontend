@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, XCircle, Clock, ShieldAlert, AlertTriangle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { useGetWeightRequests, useDecideWeightRequest } from "../../hooks/useContributionWeight";
 import { toast } from "sonner";
 
@@ -52,9 +53,9 @@ export function OverrideRequests() {
       </div>
 
       {isLoadingRequests ? (
-        <div className="p-8 text-center text-muted-foreground border border-dashed border-border/50 rounded-2xl bg-card/20 flex items-center justify-center gap-2">
-          <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
-          Đang tải danh sách yêu cầu...
+        <div className="grid grid-cols-1 gap-4 mt-4">
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <Skeleton className="h-48 w-full rounded-2xl" />
         </div>
       ) : !requestsResponse ? (
         <div className="p-8 text-center text-destructive border border-dashed border-destructive/50 rounded-2xl bg-destructive/10">

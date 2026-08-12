@@ -39,13 +39,19 @@ export function useAuth() {
       setCsrf(data?.csrf ?? null);
       setInitializing(false);
 
-      if (data?.user) {
-        // Register Firebase Installation ID
-        getFirebaseInstallationId().then(fid => {
+      if (data?.user && data?.csrf) {
+        // Register Firebase Installation ID safely
+        getFirebaseInstallationId().then(async (fid) => {
           if (fid) {
-            notificationApi.registerFirebaseInstallation(fid).catch(() => {
-              console.log("Firebase registration failed, but suppressing error to prevent dev overlay.");
-            });
+            try {
+              const res = await notificationApi.registerFirebaseInstallation(fid);
+              if (res && res.id) {
+                localStorage.setItem("saga_firebase_registration_id", res.id);
+              }
+            } catch (err) {
+              // Gracefully handle duplicate registration (409) or temporary server errors
+              console.warn("Firebase installation registration warning:", err);
+            }
           }
         });
       }
@@ -59,10 +65,13 @@ export function useAuth() {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
 
     try {
-      // Try to revoke Firebase Installation ID before logging out
+      // Try to revoke Firebase Installation Registration before logging out
+      const regId = localStorage.getItem("saga_firebase_registration_id");
       const fid = await getFirebaseInstallationId();
-      if (fid) {
-        await notificationApi.revokeFirebaseInstallation(fid).catch(console.error);
+      const targetId = regId || fid;
+      if (targetId) {
+        await notificationApi.revokeFirebaseInstallation(targetId).catch(() => {});
+        localStorage.removeItem("saga_firebase_registration_id");
       }
 
       const response = await fetch(`${API_BASE_URL}/api/auth/csrf`, {

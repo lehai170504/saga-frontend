@@ -4,31 +4,16 @@ import { useSubjects } from "../hooks/useSubjects";
 import { CreateSubjectDialog } from "./create-subject-dialog";
 import { SubjectActions } from "./subject-actions";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Loader2, BookOpen, Clock, Layers } from "lucide-react";
+import { BookOpen, Clock, Layers } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/shared/Skeleton";
 
 export function SubjectCards() {
   const { data: page, isLoading, error } = useSubjects();
   const { user } = useAuth();
 
   const isAdmin = user?.applicationRole === "ADMIN";
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center p-8 h-[50vh]">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20 font-medium">
-        Đã có lỗi xảy ra khi tải danh sách môn học.
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -40,7 +25,17 @@ export function SubjectCards() {
         {isAdmin && <CreateSubjectDialog />}
       </PageHeader>
 
-      {page?.content && page.content.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-44 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="text-center text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20 font-medium">
+          Đã có lỗi xảy ra khi tải danh sách môn học.
+        </div>
+      ) : page?.content && page.content.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
           {page.content.map((subject) => (
             <Card key={subject.id} className="rounded-2xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col h-full group relative">

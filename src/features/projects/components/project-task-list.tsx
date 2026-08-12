@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import { useProjectTasks } from "../hooks/useTasks";
+import { useTaskTraceability } from "../hooks/useTraceability";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Search, User } from "lucide-react";
+import { FileText, Search, User, GitPullRequest, GitCommit, CircleDot } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -39,6 +40,45 @@ interface ProjectTaskListProps {
   members?: { id: string; name: string; role?: string }[];
 }
 
+function TaskTraceabilityDetails({ projectId, taskId }: { projectId: string; taskId: string }) {
+  const { data: traceability, isLoading } = useTaskTraceability(projectId, taskId);
+
+  if (isLoading) {
+    return <Skeleton className="h-32 w-full mt-4 rounded-xl" />;
+  }
+
+  if (!traceability || (traceability.githubIssues.length === 0)) {
+    return null;
+  }
+
+  return (
+    <div className="mt-6 space-y-4 pt-6 border-t border-border/50">
+      <h4 className="font-bold text-sm text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+        <CircleDot size={16} /> Liên kết GitHub
+      </h4>
+      
+      {traceability.githubIssues.length > 0 && (
+        <div className="space-y-2">
+          {traceability.githubIssues.map((issue) => (
+            <div key={issue.issueId} className="flex items-center justify-between p-3 border border-border bg-card/50 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3">
+                <CircleDot size={16} className={issue.state?.toLowerCase() === 'closed' ? 'text-purple-500' : 'text-emerald-500'} />
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-foreground leading-tight">{issue.title}</span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="outline" className="text-[10px] font-mono py-0 h-4 bg-background">#{issue.number}</Badge>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase">{issue.state}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ProjectTaskList({ projectId, sprintId: initialSprintId, members = [] }: ProjectTaskListProps) {
   const [keyword, setKeyword] = useState("");
   const [selectedSprintId, setSelectedSprintId] = useState<string>(initialSprintId || "all");
@@ -47,7 +87,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
 
   const { data: sprintsData } = useProjectSprints(projectId);
   const sprints = sprintsData?.sprints || [];
-  
+
   const { data: tasksData, isLoading } = useProjectTasks(projectId, {
     sprintId: selectedSprintId === "all" ? undefined : selectedSprintId,
     assigneeId: selectedAssigneeId === "all" ? undefined : selectedAssigneeId,
@@ -163,10 +203,10 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
                 </TableRow>
               ) : (
                 tasks.map((task) => (
-                  <TableRow 
-                    key={task.taskId} 
+                  <TableRow
+                    key={task.id}
                     className="group hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedTaskId(task.taskId)}
+                    onClick={() => setSelectedTaskId(task.id)}
                   >
                     <TableCell className="pl-6 font-medium whitespace-nowrap text-muted-foreground">
                       {task.externalKey}
@@ -300,6 +340,8 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
                     )}
                   </div>
                 </div>
+
+                <TaskTraceabilityDetails projectId={projectId} taskId={taskDetail.id} />
               </div>
             </>
           ) : (

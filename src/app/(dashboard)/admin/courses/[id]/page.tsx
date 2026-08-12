@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useCourse, useDeleteCourse } from "@/features/courses/hooks/useCourses";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseDialog } from "@/features/courses/components/edit-course-dialog";
@@ -251,7 +251,7 @@ export default function CourseDetailPage() {
                     </div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Code</span>
                     <span className="text-3xl font-black text-rose-500">
-                      {((course.codeContributionWeight || 0)).toFixed(0)}%
+                      {((course.codeContributionWeight || 0)).toFixed(2)}%
                     </span>
                   </div>
 
@@ -261,7 +261,7 @@ export default function CourseDetailPage() {
                     </div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Document</span>
                     <span className="text-3xl font-black text-blue-500">
-                      {((course.documentContributionWeight || 0)).toFixed(0)}%
+                      {((course.documentContributionWeight || 0)).toFixed(2)}%
                     </span>
                   </div>
 
@@ -271,7 +271,7 @@ export default function CourseDetailPage() {
                     </div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Design</span>
                     <span className="text-3xl font-black text-purple-500">
-                      {((course.designContributionWeight || 0)).toFixed(0)}%
+                      {((course.designContributionWeight || 0)).toFixed(2)}%
                     </span>
                   </div>
                 </div>

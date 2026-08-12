@@ -42,11 +42,12 @@ export const useStudentContributionDetail = (courseId: string, studentId: string
   });
 };
 
-export const useEarlyWarnings = (courseId: string) => {
+export const useEarlyWarnings = (courseId: string, enabled: boolean = true) => {
   return useQuery({
     queryKey: ["earlyWarnings", courseId],
     queryFn: () => analyticsApi.getEarlyWarnings(courseId),
-    enabled: !!courseId,
+    enabled: !!courseId && enabled,
+    staleTime: 5 * 60 * 1000,
   });
 };
 

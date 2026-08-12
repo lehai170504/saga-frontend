@@ -18,7 +18,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectTaskList } from "@/features/projects/components/project-task-list";
 import { ProjectCommitsView } from "@/features/lecturer/components/project-detail/project-commits-view";
 import { ProjectIssuesView } from "@/features/lecturer/components/project-detail/project-issues-view";
-import { GitCommit, CircleDot } from "lucide-react";
+import { ProjectDashboardStats } from "@/features/lecturer/components/project-detail/project-dashboard-stats";
+import { ProjectTraceabilityView } from "@/features/lecturer/components/project-detail/project-traceability-view";
+import { GitCommit, CircleDot, Waypoints } from "lucide-react";
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ courseId: string, teamId: string }> }) {
   const { courseId, teamId } = React.use(params);
@@ -55,18 +57,6 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             title={`${projectDetail.name}${projectDetail.project && projectDetail.project !== "Chưa có dự án" ? ` - ${projectDetail.project}` : ''}`}
             description="Chi tiết dự án, tiến độ Agile và đánh giá cổ phần Slices của từng thành viên."
           />
-          {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
-            <div className="flex gap-3">
-              <Button variant="outline" className="gap-2 rounded-xl border-border/50 bg-muted dark:hover:bg-accent/50 shadow-sm">
-                <FileText size={16} />
-                Báo cáo Sprint
-              </Button>
-              <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90">
-                <GitMerge size={16} />
-                Lịch sử Commit
-              </Button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -84,6 +74,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             </TabsTrigger>
             <TabsTrigger value="issues" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
               <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
+            </TabsTrigger>
+            <TabsTrigger value="traceability" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+              <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
             </TabsTrigger>
             <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
               <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
@@ -183,6 +176,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             <div className="xl:col-span-2 space-y-6">
               {projectDetail.project && projectDetail.project !== "Chưa có dự án" ? (
                 <>
+                  {projectDetail.projectId && <ProjectDashboardStats projectId={projectDetail.projectId} />}
                   <EarlyWarningAlerts courseId={courseId} teamId={teamId} members={projectDetail.members} />
                   <SprintVelocityBar courseId={courseId} teamId={teamId} />
                 </>
@@ -220,6 +214,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
                 </TabsContent>
                 <TabsContent value="issues" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <ProjectIssuesView projectId={projectDetail.projectId} repositories={projectDetail.repositories} />
+                </TabsContent>
+                <TabsContent value="traceability" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <ProjectTraceabilityView projectId={projectDetail.projectId} />
                 </TabsContent>
               </>
             )}

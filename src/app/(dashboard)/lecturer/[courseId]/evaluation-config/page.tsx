@@ -1,27 +1,12 @@
-"use client";
-import React, { useState, use } from "react";
+import React, { use } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Save, ArrowLeft } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { TemplateSelector } from "@/features/lecturer/components/evaluation-config/template-selector";
-import { useCourse } from "@/features/courses/hooks/useCourses";
 
 export default function ClassEvaluationConfigPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
-  const { data: courseData } = useCourse(courseId);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSaveAll = () => {
-    setIsSaving(true);
-    toast.loading("Đang lưu cấu hình đánh giá cho lớp...", { id: "save-class-config" });
-
-    setTimeout(() => {
-      setIsSaving(false);
-      toast.success("Đã lưu thành công cấu hình lớp học!", { id: "save-class-config" });
-    }, 1500);
-  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -33,7 +18,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
         </Link>
         <div>
           <h1 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Cấu hình Đánh giá Nhóm</h1>
-          <h2 className="text-2xl font-extrabold text-foreground">Lớp {courseData?.name || courseId}</h2>
+          <h2 className="text-2xl font-extrabold text-foreground">Lớp {courseId}</h2>
         </div>
       </div>
 

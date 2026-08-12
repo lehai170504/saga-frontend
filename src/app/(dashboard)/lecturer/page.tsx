@@ -17,7 +17,6 @@ import { useCourses } from "@/features/courses/hooks/useCourses";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BroadcastDialog } from "@/features/notifications/components/broadcast-dialog";
 
 function CourseStats({ courseId }: { courseId: string }) {
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);

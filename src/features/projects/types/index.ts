@@ -145,6 +145,22 @@ export interface GithubIssuesResponse {
   };
 }
 
+export interface ProjectDashboardStatsResponse {
+  projectId: string;
+  generatedAt: string;
+  tasks: {
+    total: number;
+    completed: number;
+    incomplete: number;
+    completionPercentage: number;
+  };
+  github: {
+    repositoryCount: number;
+    commitCount: number;
+    pullRequestCount: number;
+  };
+}
+
 export type JiraTaskComponent = {
   id: string;
   name: string;
@@ -199,3 +215,22 @@ export type ProjectTasksResponse = {
   last: boolean;
   empty: boolean;
 };
+
+export type ProjectDashboardStatsResponse = {
+  projectId: string;
+  generatedAt: string;
+  tasks: {
+    total: number;
+    completed: number;
+    incomplete: number;
+    completionPercentage: number;
+  };
+  github: {
+    repositoryCount: number;
+    commitCount: number;
+    pullRequestCount: number;
+  };
+};
+
+export * from "./githubIssue";
+export * from "./traceability";

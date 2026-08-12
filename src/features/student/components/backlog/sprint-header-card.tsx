@@ -109,13 +109,19 @@ export function SprintHeaderCard({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-xl border border-border/40 bg-background/95 backdrop-blur-xl shadow-xl min-w-[140px] p-1.5 animate-in fade-in duration-200">
               <DropdownMenuItem
-                onClick={() => onOpenEditSprint(sprint)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenEditSprint(sprint);
+                }}
                 className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors"
               >
                 Chỉnh sửa Sprint
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => onDeleteSprint(sprint.sprintId)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteSprint(sprint.sprintId);
+                }}
                 className="rounded-lg px-2.5 py-1.5 text-xs font-bold text-destructive hover:bg-destructive/10 focus:bg-destructive/10 cursor-pointer transition-colors"
               >
                 Xóa Sprint

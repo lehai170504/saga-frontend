@@ -3,8 +3,7 @@
 import React from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Users, FolderKanban, ArrowRight } from "lucide-react";
+import { Users, FolderKanban, ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";

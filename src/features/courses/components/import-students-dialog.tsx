@@ -60,7 +60,7 @@ export function ImportStudentsDialog({ courseId, courseClassName = courseId, onS
         <DialogHeader>
           <DialogTitle>Import danh sách sinh viên</DialogTitle>
           <DialogDescription>
-            Tải lên file Excel template <b>(5 cột: Class, RollNumber, Email, MemberCode, FullName)</b> chứa danh sách sinh viên của lớp {courseClassName}.
+            Tải lên file Excel template <b>(5 cột: Class, StudentCode, Email, MemberCode, FullName)</b> chứa danh sách sinh viên của lớp {courseClassName}.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-2 py-4">

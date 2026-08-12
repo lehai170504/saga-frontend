@@ -262,12 +262,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
                               <p className="text-xs text-muted-foreground font-semibold">
                                 MSSV: {candidate.studentCode}
                               </p>
-                              {isReviewed && candidate.existingTotalStarRating !== null && (
-                                <div className="flex items-center gap-1 text-amber-500 mt-1">
-                                  <Star size={12} className="fill-amber-500" />
-                                  <span className="text-xs font-bold">{candidate.existingTotalStarRating} sao</span>
-                                </div>
-                              )}
                               {isReviewed && (() => {
                                 const reviewCreatedAt = reviewsMap[candidate.studentId]?.createdAt
                                   || candidate.existingCreatedAt;

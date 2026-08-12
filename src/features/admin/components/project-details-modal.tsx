@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useProjectDetail, useProjectStats, useUpdateProject } from "../hooks/useProjects";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Progress } from "@/components/ui/progress";
 
 interface ProjectDetailsModalProps {
