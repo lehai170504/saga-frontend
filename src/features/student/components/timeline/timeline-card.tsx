@@ -69,7 +69,7 @@ export function TimelineCard({
                 {status.label}
               </Badge>
 
-              {status.label === "Sắp tới" && isLeader && (
+              {(status.label === "Sắp tới" || status.label === "Chưa thiết lập" || sprint.state?.toUpperCase() === "FUTURE") && isLeader && (
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();

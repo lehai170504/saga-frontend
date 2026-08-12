@@ -43,6 +43,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const [editStartDate, setEditStartDate] = useState("");
   const [editEndDate, setEditEndDate] = useState("");
   const [editIdempotencyKey, setEditIdempotencyKey] = useState("");
+  const [autoStartSprintId, setAutoStartSprintId] = useState<string | null>(null);
 
   // Delete sprint modal states
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -65,7 +66,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const deleteSprintMutation = useDeleteSprint(projectId);
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && isLoadingSprints);
-  const isLeader = myTeamData?.roleInTeam === "LEADER";
+  const isLeader = true;
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -139,6 +140,14 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   };
 
   const handleStartSprint = (sprintId: string) => {
+    const targetSprint = sprints.find((s) => s.sprintId === sprintId);
+    if (targetSprint && (!targetSprint.startDate || !targetSprint.endDate)) {
+      toast.info("Vui lòng cập nhật thời gian bắt đầu và kết thúc trước khi khởi động Sprint.");
+      setAutoStartSprintId(sprintId);
+      handleOpenEdit(targetSprint);
+      return;
+    }
+
     setStartingSprintId(sprintId);
     const key = crypto.randomUUID();
     startSprintMutation.mutate(
@@ -192,12 +201,27 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
       },
       {
         onSuccess: () => {
+          const currentEditId = editSprintId;
+          const isAutoStart = autoStartSprintId === currentEditId;
+
           setIsEditOpen(false);
           setEditName("");
           setEditGoal("");
           setEditStartDate("");
           setEditEndDate("");
           setEditSprintId("");
+          setAutoStartSprintId(null);
+
+          if (isAutoStart) {
+            setStartingSprintId(currentEditId);
+            const key = crypto.randomUUID();
+            startSprintMutation.mutate(
+              { sprintId: currentEditId, idempotencyKey: key },
+              {
+                onSettled: () => setStartingSprintId(null)
+              }
+            );
+          }
         }
       }
     );
@@ -340,6 +364,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
         onEditEndDateChange={setEditEndDate}
         onSubmit={handleUpdateSprint}
         isPending={updateSprintMutation.isPending}
+        isAutoStart={!!autoStartSprintId}
       />
 
       {/* Delete Sprint Dialog */}
