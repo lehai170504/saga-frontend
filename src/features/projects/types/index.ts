@@ -121,6 +121,46 @@ export interface GithubCommitsResponse {
   };
 }
 
+export interface GithubIssueInfo {
+  issueId: string;
+  githubIssueId?: number;
+  number: number;
+  title: string;
+  state: string;
+  authorLogin?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  url?: string;
+  repositoryId?: number;
+}
+
+export interface GithubIssuesResponse {
+  projectId: string;
+  repositoryId?: number;
+  issues: {
+    content: GithubIssueInfo[];
+    page: number;
+    size: number;
+    hasNext: boolean;
+  };
+}
+
+export interface ProjectDashboardStatsResponse {
+  projectId: string;
+  generatedAt: string;
+  tasks: {
+    total: number;
+    completed: number;
+    incomplete: number;
+    completionPercentage: number;
+  };
+  github: {
+    repositoryCount: number;
+    commitCount: number;
+    pullRequestCount: number;
+  };
+}
+
 export type JiraTaskComponent = {
   id: string;
   name: string;

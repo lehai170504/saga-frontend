@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useSprintPeerReviews } from "../../hooks/usePeerReview";
 import { useTeamDetail } from "../../hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,6 +24,28 @@ interface TeamSprintReviewsProps {
 export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintReviewsProps) {
   const { data: reviewsData, isLoading: isLoadingReviews } = useSprintPeerReviews(teamId, sprintId);
   const { data: teamData, isLoading: isLoadingTeam } = useTeamDetail(courseId, teamId);
+
+  const reviews = reviewsData?.reviews || [];
+  const members = teamData?.members?.content || [];
+
+  const getMemberName = (memberId: string) => {
+    const member = members.find((m: any) => m.studentId === memberId);
+    return member?.fullName || member?.studentCode || memberId;
+  };
+
+  const groupedReviews = useMemo(() => {
+    const groups: Record<string, any[]> = {};
+    reviews.forEach((review: any) => {
+      const key = review.revieweeId;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(review);
+    });
+    return Object.entries(groups).map(([revieweeId, userReviews]) => ({
+      revieweeId,
+      revieweeName: getMemberName(revieweeId),
+      reviews: userReviews
+    })).sort((a, b) => a.revieweeName.localeCompare(b.revieweeName));
+  }, [reviews, members]);
 
   if (!teamId) {
     return (
@@ -58,14 +80,6 @@ export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintRevi
     );
   }
 
-  const reviews = reviewsData?.reviews || [];
-  const members = teamData?.members?.content || [];
-
-  const getMemberName = (memberId: string) => {
-    const member = members.find(m => m.studentId === memberId);
-    return member?.fullName || member?.studentCode || memberId;
-  };
-
   if (reviews.length === 0) {
     return (
       <Card className="border-dashed border-2 bg-muted/20">
@@ -78,42 +92,62 @@ export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintRevi
     );
   }
 
+
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <h3 className="text-lg font-bold tracking-tight">Kết quả Đánh giá chéo (Peer Review)</h3>
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead>Người đánh giá (Reviewer)</TableHead>
-              <TableHead>Người được đánh giá (Reviewee)</TableHead>
-              <TableHead>Tổng điểm (Star)</TableHead>
-              <TableHead>Thời gian nộp</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {reviews.map((review) => (
-              <TableRow key={review.id} className="group">
-                <TableCell className="font-medium text-foreground">
-                  {getMemberName(review.reviewerId)}
-                </TableCell>
-                <TableCell>
-                  {getMemberName(review.revieweeId)}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1 text-amber-500 font-bold">
-                    <span>{review.totalStarRating.toFixed(1)}</span>
-                    <Star className="h-4 w-4 fill-current" />
-                  </div>
-                </TableCell>
-                <TableCell className="text-muted-foreground text-sm">
-                  {new Date(review.submittedAt).toLocaleString("vi-VN")}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      
+      {groupedReviews.map((group) => (
+        <div key={group.revieweeId} className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-primary/10 text-primary rounded-lg shrink-0">
+              <Users size={16} />
+            </div>
+            <h4 className="font-bold text-foreground">Người được đánh giá: <span className="text-primary">{group.revieweeName}</span></h4>
+          </div>
+          
+          <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead className="w-[30%]">Người đánh giá (Reviewer)</TableHead>
+                  <TableHead className="w-[15%]">Tổng điểm</TableHead>
+                  <TableHead className="w-[35%]">Nhận xét</TableHead>
+                  <TableHead className="w-[20%]">Thời gian nộp</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {group.reviews.map((review: any) => {
+                  const rating = review.starRating ?? review.totalStarRating;
+                  
+                  return (
+                    <TableRow key={review.id} className="group/row">
+                      <TableCell className="font-medium text-foreground">
+                        {getMemberName(review.reviewerId)}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1 text-amber-500 font-bold">
+                          <span>{rating != null ? Number(rating).toFixed(1) : "-"}</span>
+                          <Star className="h-4 w-4 fill-current" />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground line-clamp-2" title={review.comment}>
+                          {review.comment || <span className="italic opacity-50">Không có nhận xét</span>}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {new Date(review.submittedAt || review.createdAt).toLocaleString("vi-VN")}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

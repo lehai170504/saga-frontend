@@ -33,7 +33,7 @@ export function ProjectHeatmap({ courseId, teamId }: { courseId: string; teamId:
   
   // Dữ liệu mảng 30 ngày
   const days = Array.from({ length: 30 }, (_, i) => i + 1);
-  const teamHeatmap = Array.isArray(heatmapData) ? heatmapData : [];
+  const teamHeatmap = heatmapData?.days || [];
 
   return (
     <div className="space-y-6">

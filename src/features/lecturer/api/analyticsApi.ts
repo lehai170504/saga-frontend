@@ -7,8 +7,8 @@ import {
   StudentBasicInfo,
   EarlyWarningsResponse,
   TeamInteraction,
-  HeatmapData,
-  SprintVelocity
+  HeatmapResponse,
+  SprintVelocityResponse
 } from "../types/analytics";
 
 export const analyticsApi = {
@@ -57,14 +57,14 @@ export const analyticsApi = {
   },
 
   getTeamHeatmap: async (courseId: string, teamId: string, startDate: string, endDate: string, studentId?: string) => {
-    return axiosInstance.get<never, HeatmapData[]>(
+    return axiosInstance.get<never, HeatmapResponse>(
       `/api/v1/courses/${courseId}/teams/${teamId}/heatmap`,
       { params: { startDate, endDate, studentId } }
     );
   },
 
   getSprintVelocity: async (courseId: string, teamId: string) => {
-    return axiosInstance.get<never, SprintVelocity[]>(
+    return axiosInstance.get<never, SprintVelocityResponse>(
       `/api/v1/courses/${courseId}/teams/${teamId}/sprints/velocity`
     );
   }

@@ -38,15 +38,15 @@ export const traceabilityApi = {
   getTaskTraceability: async (
     projectId: string,
     taskId: string
-  ): Promise<TaskTraceability> => {
-    return axiosInstance.get(
+  ) => {
+    return axiosInstance.get<never, TaskTraceability>(
       `/api/v1/projects/${projectId}/tasks/${taskId}/traceability`
     );
   },
 
   getProjectTraceability: async (
     projectId: string
-  ): Promise<ProjectTraceability> => {
-    return axiosInstance.get(`/api/projects/${projectId}/traceability`);
+  ) => {
+    return axiosInstance.get<never, ProjectTraceability>(`/api/projects/${projectId}/traceability`);
   },
 };

@@ -70,6 +70,14 @@ export interface TaskTraceability {
   timeline?: TaskTraceabilityTimelineItem[];
 }
 
+export interface TraceabilityTimelineEvent {
+  sourceType: string;
+  resourceId: string;
+  displayKey: string;
+  title: string;
+  timestamp: string;
+}
+
 export interface ProjectTraceability {
   projectId: string;
   projectName?: string;

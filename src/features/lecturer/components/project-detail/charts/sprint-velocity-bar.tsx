@@ -13,7 +13,7 @@ interface SprintVelocityBarProps {
 
 export function SprintVelocityBar({ courseId, teamId }: SprintVelocityBarProps) {
   const { data: velocityData, isLoading } = useSprintVelocity(courseId, teamId);
-  const chartData = Array.isArray(velocityData) ? velocityData : ((velocityData as unknown) as { content?: unknown[] })?.content || [];
+  const chartData = velocityData?.sprints || [];
 
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
