@@ -7,8 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useNotificationsList, useMarkAsRead, useUnreadCount } from "@/features/notifications/hooks/useNotifications";
-import { formatDistanceToNow } from "date-fns";
-import { vi } from "date-fns/locale";
+import { formatNotificationRelativeTime, formatNotificationFullTime } from "@/features/notifications/utils/formatTime";
 import { GitBranch, Compass, MessageSquare, Check, Bell, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -118,8 +117,11 @@ export default function NotificationsPage() {
                         <h4 className={`text-base truncate ${!notif.read ? "font-bold text-foreground" : "font-medium text-foreground/80"}`}>
                           {notif.title}
                         </h4>
-                        <span className="text-xs font-medium text-muted-foreground shrink-0 whitespace-nowrap mt-1">
-                          {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true, locale: vi })}
+                        <span
+                          className="text-xs font-medium text-muted-foreground shrink-0 whitespace-nowrap mt-1"
+                          title={formatNotificationFullTime(notif.createdAt)}
+                        >
+                          {formatNotificationRelativeTime(notif.createdAt)}
                         </span>
                       </div>
                       <p className={`text-sm leading-relaxed ${!notif.read ? "text-foreground/90 font-medium" : "text-muted-foreground"}`}>
