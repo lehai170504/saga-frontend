@@ -243,12 +243,22 @@ Toàn bộ luồng thông báo quả chuông và đẩy tín hiệu Push Notific
   - `GET /api/projects/{projectId}/github/repositories/{repositoryId}/branches`
   - `GET /api/projects/{projectId}/github/repositories/{repositoryId}/commits`
   - `GET /api/projects/{projectId}/github/issues?repositoryId={repositoryId}`
-- `GET /api/projects/{projectId}/github/issues`: Danh sách GitHub Issues (hỗ trợ `state`: `OPEN`/`CLOSED`, `repositoryId` filter, `keyword` search, `page`, `size`, `assignedToMe`). Hook `useGithubIssues`.
-- `GET /api/projects/{projectId}/github/issues/{issueId}`: Chi tiết một GitHub Issue bằng local Issue ID. Hook `useGithubIssueDetail`.
-- `POST /api/v1/projects/{projectId}/tasks/{taskId}/github-issues/{issueId}`: Tạo liên kết Jira Task với GitHub Issue (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hook `useLinkTaskIssue`.
+- `GET /api/projects/{projectId}/github/issues`: Danh sách GitHub Issues (hỗ trợ `state`: `OPEN`/`CLOSED`, `repositoryId` filter, `keyword` search, `page`, `size`, `assignedToMe`). Response trả về mảng `content` và object `summary`. Hook `useGithubIssues`.
+- `GET /api/projects/{projectId}/github/issues/{issueId}`: Chi tiết một GitHub Issue bằng local Issue ID. Response trả về object chứa `{ issue, linkedTasks, linkedPullRequests, linkedCommits, timeline }`. Hook `useGithubIssueDetail`.
+- `POST /api/v1/projects/{projectId}/tasks/{taskId}/github-issues/{issueId}`: Tạo liên kết Jira Task với GitHub Issue (yêu cầu gửi kèm `Idempotency-Key` ở Header). Response trả về `{ taskId, issueId, linked: true }`. Hook `useLinkTaskIssue`.
 - `DELETE /api/v1/projects/{projectId}/tasks/{taskId}/github-issues/{issueId}`: Hủy liên kết Jira Task với GitHub Issue (yêu cầu gửi kèm `Idempotency-Key` ở Header). Hook `useUnlinkTaskIssue`.
-- `GET /api/v1/projects/{projectId}/tasks/{taskId}/traceability`: Đọc ma trận Traceability của 1 Task. Hook `useTaskTraceability`.
-- `GET /api/projects/{projectId}/traceability`: Đọc ma trận Traceability của toàn bộ Dự án. Hook `useProjectTraceability`.
+- `GET /api/v1/projects/{projectId}/tasks/{taskId}/traceability`: Đọc ma trận Traceability của 1 Task. Response trả về `{ task, linkedIssues, timeline }`. Hook `useTaskTraceability`.
+- `GET /api/projects/{projectId}/traceability`: Đọc ma trận Traceability của toàn bộ Dự án. Response trả về `{ projectId, limit, truncated, tasks, timeline }`. Hook `useProjectTraceability`.
+
+**Cập nhật UI/UX & Tính năng mới đã hoàn thiện:**
+1. **Thêm 5 Loại công việc (Issue Types) Jira**:
+   - Hỗ trợ 5 loại chuẩn Jira: `BUG` (đỏ), `FEATURE` (xanh lá), `REQUEST` (xanh dương), `STORY` (xanh lá mạ), `TASK` (xanh dương đậm) với Icons và Badges tương ứng trên cả 2 màn hình Backlog và Board View (Create & Edit Modals).
+2. **Thiết kế Drawer & Modal linh hoạt**:
+   - Tab Backlog: Xem chi tiết Task dạng **Drawer** trượt từ lề phải sang mượt mà (`Sheet`).
+   - Tab Board: Xem chi tiết Task dạng **Modal** căn giữa (`Dialog`).
+3. **Hiển thị Icon Git Issue (`GitFork`) chuẩn Jira trên Kanban Card**:
+   - Tự động xuất hiện Icon `GitFork` nhã nhặn tại vị trí nằm giữa ô **Story Point** và ô **Priority (`=`)** trên từng Task Card khi Task đã liên kết thành công với GitHub Issue.
+   - Hỗ trợ Tooltip hover *"Đã liên kết GitHub Issue (Bấm để xem)"* và click mở trực tiếp Drawer/Modal xem Ma trận liên kết.
 
 ---
 

@@ -26,8 +26,7 @@ import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush"
 import { BroadcastModal } from "@/features/admin/components/broadcast-modal";
 import { Megaphone } from "lucide-react";
 
-import { formatDistanceToNow } from "date-fns";
-import { vi } from "date-fns/locale";
+import { formatNotificationRelativeTime } from "@/features/notifications/utils/formatTime";
 
 const roleDisplay: Record<string, string> = {
   admin: "Quản trị viên",
@@ -212,7 +211,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                               {notif.title}
                             </h4>
                             <span className="text-[9px] font-bold text-muted-foreground shrink-0">
-                              {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true, locale: vi })}
+                              {formatNotificationRelativeTime(notif.createdAt)}
                             </span>
                           </div>
                           <p className="text-[10px] text-muted-foreground leading-normal line-clamp-2">

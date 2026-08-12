@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Input } from "@/components/ui/input";
+import { Calendar as CalendarIcon, X } from "lucide-react";
 
 interface CustomDateInputProps {
   value: string; // yyyy-mm-dd (internal format)
@@ -13,9 +14,11 @@ interface CustomDateInputProps {
 
 /**
  * A custom date input that displays dd-mm-yyyy to users
- * while keeping the internal value as yyyy-mm-dd for API compatibility.
+ * and supports clicking a Calendar icon to open the native DatePicker popup.
  */
 export function CustomDateInput({ value, onChange, min, className, id }: CustomDateInputProps) {
+  const hiddenDateRef = useRef<HTMLInputElement>(null);
+
   // Convert yyyy-mm-dd -> dd-mm-yyyy for display
   const toDisplay = (iso: string) => {
     if (!iso || iso.length < 10) return iso;
@@ -39,11 +42,26 @@ export function CustomDateInput({ value, onChange, min, className, id }: CustomD
     onChange(toISO(raw));
   };
 
-  // Determine the min display value for native min constraint fallback
-  const minDisplay = min ? toDisplay(min) : undefined;
+  const handleNativeDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
+  const openCalendarPicker = () => {
+    if (hiddenDateRef.current) {
+      if (typeof hiddenDateRef.current.showPicker === "function") {
+        try {
+          hiddenDateRef.current.showPicker();
+        } catch {
+          hiddenDateRef.current.click();
+        }
+      } else {
+        hiddenDateRef.current.click();
+      }
+    }
+  };
 
   return (
-    <div className="relative">
+    <div className="relative flex items-center w-full">
       <Input
         id={id}
         type="text"
@@ -53,12 +71,10 @@ export function CustomDateInput({ value, onChange, min, className, id }: CustomD
         onChange={handleChange}
         pattern="\d{2}-\d{2}-\d{4}"
         maxLength={10}
-        className={className}
+        className={`pr-14 ${className || ""}`}
         onKeyDown={(e) => {
-          // Allow: backspace, delete, tab, arrows, digits and hyphen
           const allowed = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
           if (allowed.includes(e.key)) return;
-          // Auto-insert hyphen
           const curVal = (e.target as HTMLInputElement).value;
           if (!/[0-9]/.test(e.key)) {
             e.preventDefault();
@@ -69,11 +85,13 @@ export function CustomDateInput({ value, onChange, min, className, id }: CustomD
           }
         }}
         onBlur={(e) => {
-          // Validate on blur: if not valid dd-mm-yyyy, clear
           const val = e.target.value;
+          if (!val) {
+            onChange("");
+            return;
+          }
           const match = val.match(/^(\d{2})-(\d{2})-(\d{4})$/);
           if (!match) {
-            onChange("");
             return;
           }
           const [, d, m, y] = match;
@@ -82,28 +100,51 @@ export function CustomDateInput({ value, onChange, min, className, id }: CustomD
             onChange("");
             return;
           }
-          // Enforce min date
           if (min) {
             const minDate = new Date(min);
             if (date < minDate) {
               onChange(min);
+              return;
             }
           }
           onChange(`${y}-${m}-${d}`);
         }}
-        title={minDisplay ? `Từ ngày ${minDisplay}` : undefined}
       />
-      {value && (
+
+      {/* Hidden native date input for calendar popup */}
+      <input
+        ref={hiddenDateRef}
+        type="date"
+        min={min}
+        value={value || ""}
+        onChange={handleNativeDateChange}
+        className="sr-only pointer-events-none absolute opacity-0 w-0 h-0"
+        tabIndex={-1}
+      />
+
+      {/* Right control buttons: Clear button & Calendar Icon button */}
+      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="p-1 rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 transition-colors cursor-pointer"
+            tabIndex={-1}
+            title="Xóa ngày"
+          >
+            <X size={12} />
+          </button>
+        )}
         <button
           type="button"
-          onClick={() => onChange("")}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground text-xs leading-none"
+          onClick={openCalendarPicker}
+          className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors cursor-pointer shrink-0"
           tabIndex={-1}
-          title="Xóa ngày"
+          title="Chọn ngày từ Lịch"
         >
-          ✕
+          <CalendarIcon size={15} />
         </button>
-      )}
+      </div>
     </div>
   );
 }
