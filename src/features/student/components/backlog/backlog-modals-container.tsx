@@ -177,13 +177,14 @@ export function BacklogModalsContainer({
 }: BacklogModalsContainerProps) {
   return (
     <>
-      {/* Task Detail Modal */}
+      {/* Task Detail Drawer */}
       <TaskDetailModal
         isOpen={isDetailOpen}
         onOpenChange={setIsDetailOpen}
         selectedTask={selectedTask}
         projectId={projectId}
         onTaskUpdated={(updatedTask) => setSelectedTask(updatedTask)}
+        variant="drawer"
       />
 
       {/* Create Task Modal */}

@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
-import { GithubIssue, GithubIssuesParams } from "../types/githubIssue";
+import { GithubIssue, GithubIssuesParams, GithubIssueDetailResponse } from "../types/githubIssue";
 
 export const githubIssueApi = {
   getIssues: async (
@@ -15,7 +15,7 @@ export const githubIssueApi = {
   getIssueDetail: async (
     projectId: string,
     issueId: string
-  ): Promise<GithubIssue> => {
+  ): Promise<GithubIssueDetailResponse> => {
     return axiosInstance.get(`/api/projects/${projectId}/github/issues/${issueId}`);
   },
 };

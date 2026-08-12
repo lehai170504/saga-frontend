@@ -19,8 +19,47 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
   const { data: traceability, isLoading } = useTaskTraceability(projectId, taskId);
   const { mutate: unlinkIssue } = useUnlinkTaskIssue(projectId, taskId);
 
-  const linkedIssues = traceability?.githubIssues || [];
-  const linkedIssueIds = linkedIssues.map((i) => i.issueId);
+  // Normalize linked issues list safely supporting new & old response structure
+  const linkedIssuesList = React.useMemo(() => {
+    if (!traceability) return [];
+
+    // New API format: linkedIssues.items
+    const rawLinkedIssues = (traceability as unknown as { linkedIssues?: { items?: Array<{ issue: Record<string, unknown> }> } | Array<Record<string, unknown>> }).linkedIssues;
+    if (rawLinkedIssues && typeof rawLinkedIssues === "object" && "items" in rawLinkedIssues && Array.isArray(rawLinkedIssues.items)) {
+      return rawLinkedIssues.items.map((item) => {
+        const iss = item.issue || {};
+        const repoObj = (iss.repository as { fullName?: string }) || {};
+        const repoFullName = repoObj.fullName || "";
+        const num = (iss.issueNumber as number) ?? (iss.number as number) ?? 0;
+        const rawUrl = (iss.htmlUrl as string) || (repoFullName ? `https://github.com/${repoFullName}/issues/${num}` : "#");
+
+        return {
+          issueId: (iss.id as string) || (iss.issueId as string) || "",
+          issueNumber: num,
+          title: (iss.title as string) || "Chưa có tiêu đề",
+          state: (iss.state as string) || "OPEN",
+          htmlUrl: rawUrl,
+          repositoryName: repoFullName,
+        };
+      });
+    }
+
+    // Old API format: githubIssues
+    if (Array.isArray(traceability.githubIssues)) {
+      return traceability.githubIssues.map((iss) => ({
+        issueId: iss.issueId || "",
+        issueNumber: iss.githubIssueNumber || 0,
+        title: iss.title || "Chưa có tiêu đề",
+        state: iss.state || "OPEN",
+        htmlUrl: iss.htmlUrl || "#",
+        repositoryName: iss.repositoryName || "",
+      }));
+    }
+
+    return [];
+  }, [traceability]);
+
+  const linkedIssueIds = linkedIssuesList.map((i) => i.issueId).filter(Boolean);
 
   const handleUnlink = (issueId: string) => {
     setUnlinkingIssueId(issueId);
@@ -57,7 +96,7 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
         <div className="flex items-center justify-center p-4 text-xs text-muted-foreground gap-2">
           <Loader2 className="size-4 animate-spin text-primary" /> Đang tải ma trận liên kết...
         </div>
-      ) : linkedIssues.length === 0 ? (
+      ) : linkedIssuesList.length === 0 ? (
         <div className="p-3 bg-muted/20 border border-border/30 rounded-xl text-center">
           <p className="text-xs text-muted-foreground italic">
             Chưa có GitHub Issue nào được liên kết với công việc này.
@@ -65,7 +104,7 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
         </div>
       ) : (
         <div className="space-y-2">
-          {linkedIssues.map((issue) => {
+          {linkedIssuesList.map((issue) => {
             const isUnlinking = unlinkingIssueId === issue.issueId;
 
             return (
@@ -83,16 +122,18 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
                           : "border-muted text-muted-foreground bg-muted/20"
                       }`}
                     >
-                      <CircleDot className="size-2.5 mr-1 inline" /> #{issue.githubIssueNumber}
+                      <CircleDot className="size-2.5 mr-1 inline" /> #{issue.issueNumber}
                     </Badge>
-                    <span className="text-[10px] font-semibold text-muted-foreground truncate">
-                      {issue.repositoryName}
-                    </span>
+                    {issue.repositoryName && (
+                      <span className="text-[10px] font-semibold text-muted-foreground truncate">
+                        {issue.repositoryName}
+                      </span>
+                    )}
                   </div>
 
                   <p className="font-bold text-foreground truncate">{issue.title}</p>
 
-                  {issue.htmlUrl && (
+                  {issue.htmlUrl && issue.htmlUrl !== "#" && (
                     <a
                       href={issue.htmlUrl}
                       target="_blank"

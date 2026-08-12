@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { TaskTraceability, ProjectTraceability } from "../types/traceability";
+import { TaskTraceability, ProjectTraceability, LinkTaskIssueResponse } from "../types/traceability";
 
 export const traceabilityApi = {
   linkTaskIssue: async (
@@ -7,7 +7,7 @@ export const traceabilityApi = {
     taskId: string,
     issueId: string,
     idempotencyKey: string
-  ): Promise<void> => {
+  ): Promise<LinkTaskIssueResponse> => {
     return axiosInstance.post(
       `/api/v1/projects/${projectId}/tasks/${taskId}/github-issues/${issueId}`,
       {},
