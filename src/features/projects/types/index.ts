@@ -185,6 +185,8 @@ export type JiraTask = {
   externalKey: string;
   title: string;
   type: string;
+  issueType?: string;
+  issue_type?: string;
   status: string;
   priority: string;
   storyPoint: number;
@@ -214,22 +216,6 @@ export type ProjectTasksResponse = {
   first: boolean;
   last: boolean;
   empty: boolean;
-};
-
-export type ProjectDashboardStatsResponse = {
-  projectId: string;
-  generatedAt: string;
-  tasks: {
-    total: number;
-    completed: number;
-    incomplete: number;
-    completionPercentage: number;
-  };
-  github: {
-    repositoryCount: number;
-    commitCount: number;
-    pullRequestCount: number;
-  };
 };
 
 export * from "./githubIssue";

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, ExternalLink, CircleDot, Link2, Loader2 } from "lucide-react";
+import { Plus, Trash2, ExternalLink, CircleDot, Link2, Loader2, GitPullRequest, GitCommit } from "lucide-react";
 import { useTaskTraceability, useUnlinkTaskIssue } from "../hooks/useTraceability";
 import { LinkGithubIssueModal } from "./link-github-issue-modal";
 
@@ -59,6 +59,42 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
     return [];
   }, [traceability]);
 
+  const linkedPRsList = React.useMemo(() => {
+    if (!traceability?.linkedPullRequests?.items) return [];
+    return (traceability.linkedPullRequests.items as Array<Record<string, unknown>>).map((p) => {
+      const repoObj = (p.repository as { fullName?: string }) || {};
+      const repoFullName = repoObj.fullName || "";
+      const num = (p.pullNumber as number) ?? (p.number as number) ?? 0;
+      const url = (p.htmlUrl as string) || (repoFullName ? `https://github.com/${repoFullName}/pull/${num}` : "#");
+      return {
+        id: (p.id as string) || String(num),
+        pullNumber: num,
+        title: (p.title as string) || `PR #${num}`,
+        status: (p.status as string) || "OPEN",
+        htmlUrl: url,
+        repositoryName: repoFullName,
+      };
+    });
+  }, [traceability]);
+
+  const linkedCommitsList = React.useMemo(() => {
+    if (!traceability?.linkedCommits?.items) return [];
+    return (traceability.linkedCommits.items as Array<Record<string, unknown>>).map((c) => {
+      const repoObj = (c.repository as { fullName?: string }) || {};
+      const repoFullName = repoObj.fullName || "";
+      const shaStr = (c.sha as string) || "";
+      const shortSha = shaStr.substring(0, 7) || "commit";
+      const url = (c.htmlUrl as string) || (repoFullName && shaStr ? `https://github.com/${repoFullName}/commit/${shaStr}` : "#");
+      return {
+        id: (c.id as string) || shaStr,
+        sha: shortSha,
+        message: (c.message as string) || "Commit",
+        htmlUrl: url,
+        repositoryName: repoFullName,
+      };
+    });
+  }, [traceability]);
+
   const linkedIssueIds = linkedIssuesList.map((i) => i.issueId).filter(Boolean);
 
   const handleUnlink = (issueId: string) => {
@@ -96,14 +132,15 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
         <div className="flex items-center justify-center p-4 text-xs text-muted-foreground gap-2">
           <Loader2 className="size-4 animate-spin text-primary" /> Đang tải ma trận liên kết...
         </div>
-      ) : linkedIssuesList.length === 0 ? (
+      ) : linkedIssuesList.length === 0 && linkedPRsList.length === 0 && linkedCommitsList.length === 0 ? (
         <div className="p-3 bg-muted/20 border border-border/30 rounded-xl text-center">
           <p className="text-xs text-muted-foreground italic">
-            Chưa có GitHub Issue nào được liên kết với công việc này.
+            Chưa có GitHub Issue, PR hoặc Commit nào được liên kết với công việc này.
           </p>
         </div>
       ) : (
         <div className="space-y-2">
+          {/* GitHub Issues List */}
           {linkedIssuesList.map((issue) => {
             const isUnlinking = unlinkingIssueId === issue.issueId;
 
@@ -122,7 +159,7 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
                           : "border-muted text-muted-foreground bg-muted/20"
                       }`}
                     >
-                      <CircleDot className="size-2.5 mr-1 inline" /> #{issue.issueNumber}
+                      <CircleDot className="size-2.5 mr-1 inline" /> Issue #{issue.issueNumber}
                     </Badge>
                     {issue.repositoryName && (
                       <span className="text-[10px] font-semibold text-muted-foreground truncate">
@@ -159,6 +196,60 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
               </div>
             );
           })}
+
+          {/* Linked Pull Requests */}
+          {linkedPRsList.map((pr) => (
+            <div
+              key={pr.id}
+              className="p-3 rounded-xl border border-purple-500/20 bg-purple-500/5 flex items-center justify-between gap-3 text-xs"
+            >
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="outline" className="rounded-md text-[9px] py-0 px-1.5 font-bold border-purple-500/30 text-purple-600 bg-purple-500/10">
+                    <GitPullRequest className="size-2.5 mr-1 inline" /> PR #{pr.pullNumber} {pr.status}
+                  </Badge>
+                  {pr.repositoryName && (
+                    <span className="text-[10px] font-semibold text-muted-foreground truncate">
+                      {pr.repositoryName}
+                    </span>
+                  )}
+                </div>
+                <p className="font-bold text-foreground truncate">{pr.title}</p>
+                {pr.htmlUrl && pr.htmlUrl !== "#" && (
+                  <a href={pr.htmlUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-600 hover:underline">
+                    Xem PR trên GitHub <ExternalLink size={10} />
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {/* Linked Commits */}
+          {linkedCommitsList.map((cm) => (
+            <div
+              key={cm.id}
+              className="p-3 rounded-xl border border-blue-500/20 bg-blue-500/5 flex items-center justify-between gap-3 text-xs"
+            >
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="outline" className="rounded-md text-[9px] py-0 px-1.5 font-bold border-blue-500/30 text-blue-600 bg-blue-500/10 font-mono">
+                    <GitCommit className="size-2.5 mr-1 inline" /> {cm.sha}
+                  </Badge>
+                  {cm.repositoryName && (
+                    <span className="text-[10px] font-semibold text-muted-foreground truncate">
+                      {cm.repositoryName}
+                    </span>
+                  )}
+                </div>
+                <p className="font-bold text-foreground truncate">{cm.message}</p>
+                {cm.htmlUrl && cm.htmlUrl !== "#" && (
+                  <a href={cm.htmlUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:underline">
+                    Xem Commit trên GitHub <ExternalLink size={10} />
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

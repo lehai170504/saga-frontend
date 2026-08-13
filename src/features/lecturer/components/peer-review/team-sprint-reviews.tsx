@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { useSprintPeerReviews } from "../../hooks/usePeerReview";
 import { useTeamDetail } from "../../hooks/useAnalytics";
+import { PeerReviewItem } from "@/features/projects/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Star, Timer, Users } from "lucide-react";
@@ -25,18 +26,18 @@ export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintRevi
   const { data: reviewsData, isLoading: isLoadingReviews } = useSprintPeerReviews(teamId, sprintId);
   const { data: teamData, isLoading: isLoadingTeam } = useTeamDetail(courseId, teamId);
 
-  const reviews = reviewsData?.reviews || [];
-  const members = teamData?.members?.content || [];
+  const reviews = useMemo(() => reviewsData?.reviews || [], [reviewsData?.reviews]);
+  const members = useMemo(() => teamData?.members?.content || [], [teamData?.members?.content]);
 
-  const getMemberName = (memberId: string) => {
-    const member = members.find((m: any) => m.studentId === memberId);
+  const getMemberName = React.useCallback((memberId: string) => {
+    const member = members.find((m: { studentId?: string }) => m.studentId === memberId);
     return member?.fullName || member?.studentCode || memberId;
-  };
+  }, [members]);
 
   const groupedReviews = useMemo(() => {
-    const groups: Record<string, any[]> = {};
-    reviews.forEach((review: any) => {
-      const key = review.revieweeId;
+    const groups: Record<string, PeerReviewItem[]> = {};
+    reviews.forEach((review) => {
+      const key = review.revieweeId || "unknown";
       if (!groups[key]) groups[key] = [];
       groups[key].push(review);
     });
@@ -45,7 +46,7 @@ export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintRevi
       revieweeName: getMemberName(revieweeId),
       reviews: userReviews
     })).sort((a, b) => a.revieweeName.localeCompare(b.revieweeName));
-  }, [reviews, members]);
+  }, [reviews, getMemberName]);
 
   if (!teamId) {
     return (
@@ -118,13 +119,14 @@ export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintRevi
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {group.reviews.map((review: any) => {
+                {group.reviews.map((review: PeerReviewItem & { totalStarRating?: number; submittedAt?: string }) => {
                   const rating = review.starRating ?? review.totalStarRating;
+                  const dateStr = review.submittedAt || review.createdAt;
                   
                   return (
-                    <TableRow key={review.id} className="group/row">
+                    <TableRow key={review.id || Math.random().toString()} className="group/row">
                       <TableCell className="font-medium text-foreground">
-                        {getMemberName(review.reviewerId)}
+                        {getMemberName(review.reviewerId || "")}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 text-amber-500 font-bold">
@@ -138,7 +140,7 @@ export function TeamSprintReviews({ courseId, teamId, sprintId }: TeamSprintRevi
                         </span>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm">
-                        {new Date(review.submittedAt || review.createdAt).toLocaleString("vi-VN")}
+                        {dateStr ? new Date(dateStr).toLocaleString("vi-VN") : "-"}
                       </TableCell>
                     </TableRow>
                   );

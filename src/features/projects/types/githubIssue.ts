@@ -21,6 +21,8 @@ export interface GithubIssue {
   issueId?: string;
   issueNumber: number;
   githubIssueNumber?: number;
+  number?: number;
+  githubIssueId?: number;
   title: string;
   state: "OPEN" | "CLOSED" | string;
   htmlUrl?: string;

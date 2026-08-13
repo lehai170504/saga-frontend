@@ -3,12 +3,10 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Users, GitMerge, FileText, Activity, PieChart as PieChartIcon, Flame, Share2, ListTodo } from "lucide-react";
+import { ArrowLeft, Users, Activity, Flame, Share2, ListTodo } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TeamEvaluation } from "@/features/lecturer/components/project-detail/team-evaluation";
 import { ProjectHeatmap } from "@/features/lecturer/components/project-detail/project-heatmap";
 import { ProjectInteractionGraph } from "@/features/lecturer/components/project-detail/project-interaction-graph";
 import { EarlyWarningAlerts } from "@/features/lecturer/components/project-detail/charts/early-warning-alerts";

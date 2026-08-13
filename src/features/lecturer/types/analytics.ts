@@ -156,6 +156,8 @@ export interface HeatmapDay {
   totalActivities: number;
 }
 
+export type HeatmapData = HeatmapDay;
+
 export interface HeatmapResponse {
   courseId: string;
   teamId: string;
