@@ -120,9 +120,8 @@ export const getNavigationConfig = (
           {
             title: "Cá nhân & Nhóm",
             items: [
-              { href: `/student/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan nhóm", exact: true },
-              { href: `/student/${courseId}/stats`, icon: <Activity size={18} />, label: "Thống kê dự án", exact: true },
               { href: `/student/${courseId}/projects`, icon: <Network size={18} />, label: "Thông tin Nhóm", exact: true },
+              { href: `/student/${courseId}/stats`, icon: <Activity size={18} />, label: "Thống kê dự án", exact: true },
               { href: `/student/${courseId}/sprints`, icon: <UserCheck size={18} />, label: "Đánh giá chéo", exact: true },
               { href: `/student/${courseId}/jira`, icon: <FolderKanban size={18} />, label: "Jira", exact: true },
               { href: `/student/${courseId}/commits`, icon: <GitCommit size={18} />, label: "Commit", exact: true },

@@ -43,18 +43,22 @@ export type SubmitPeerReviewRequest = {
 
 export type PeerReviewItem = {
   id?: string;
+  sprintId?: string;
+  sprintName?: string;
   reviewerId?: string;
   reviewerName?: string;
   revieweeId?: string;
   revieweeName?: string;
   starRating?: number;
-  criteriaRatings?: { rubricId: string; starRating: number }[];
+  criteriaRatings?: { rubricId: string; criteriaName?: string; starRating: number }[];
   comment?: string;
   createdAt?: string;
+  updatedAt?: string;
 };
 
 export type SprintPeerReviewsResponse = {
   sprintId?: string;
+  sprintName?: string;
   teamId?: string;
   reviews: PeerReviewItem[];
 };
