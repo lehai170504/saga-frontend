@@ -64,16 +64,19 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
       return;
     }
 
+    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
+    const isDueDateChanged = editDueDate !== origDueDate;
+
     const todayStr = getTodayString();
-    if (editDueDate && editDueDate < todayStr) {
+    if (isDueDateChanged && editDueDate && editDueDate < todayStr) {
       toast.error("Hạn hoàn thành công việc không được chọn ngày trước ngày hiện tại thực tế!");
       return;
     }
 
     const isTitleChanged = editTitle.trim() !== (taskToEdit.title || "").trim();
     const isDescriptionChanged = editDescription.trim() !== (taskToEdit.description || "").trim();
-    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
-    const isDueDateChanged = editDueDate !== origDueDate;
+    const origType = (taskToEdit.type || "TASK").toUpperCase();
+    const isIssueTypeChanged = editIssueType.toUpperCase() !== origType;
     const origPriority = taskToEdit.priority?.toUpperCase() || "MEDIUM";
     const isPriorityChanged = editPriority !== origPriority;
 
@@ -95,6 +98,7 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
     const mainPayload: UpdateTaskRequest = {};
     if (isTitleChanged) mainPayload.title = editTitle.trim();
     if (isDescriptionChanged) mainPayload.description = editDescription.trim();
+    if (isIssueTypeChanged) mainPayload.type = editIssueType;
     if (isDueDateChanged) mainPayload.dueDate = editDueDate || null;
     if (isPriorityChanged) mainPayload.priority = editPriority;
 
@@ -102,6 +106,7 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
     if (isComponentsChanged) mainPayload.componentIds = newComponents;
 
     if (Object.keys(mainPayload).length === 0) {
+      toast.info("Không có thông tin nào thay đổi.");
       setIsEditOpen(false);
       setTaskToEdit(null);
       return;
@@ -114,6 +119,18 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
         onSuccess: () => {
           setIsEditOpen(false);
           setTaskToEdit(null);
+          updateTaskMutation.reset();
+        },
+        onError: (err: unknown) => {
+          console.error("Edit task error:", err);
+          const rawMsg = (err as { message?: string })?.message || "";
+          let userMsg = "Không thể cập nhật công việc. Vui lòng thử lại!";
+          if (rawMsg.includes("Jira resource") || rawMsg.includes("no longer accessible")) {
+            userMsg = "Tài nguyên Jira không còn khả dụng hoặc đã ngắt kết nối. Vui lòng kiểm tra lại kết nối Jira trong Cấu hình Dự án!";
+          } else if (rawMsg) {
+            userMsg = rawMsg;
+          }
+          updateTaskMutation.reset();
         },
       }
     );

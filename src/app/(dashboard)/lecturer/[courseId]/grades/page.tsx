@@ -310,7 +310,7 @@ export default function LecturerContributionPage() {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-auto max-h-[calc(100vh-320px)] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-primary/20 hover:[&::-webkit-scrollbar-thumb]:bg-primary/40 [&::-webkit-scrollbar-thumb]:rounded-full">
+              <div className="overflow-auto max-h-[calc(100vh-320px)] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-primary/20 hover:[&::-webkit-scrollbar-thumb]:bg-primary/40 [&::-webkit-scrollbar-thumb]:rounded-full [&>div]:overflow-visible">
                 <Table>
                   <TableHeader className="bg-muted/90 sticky top-0 z-20 shadow-sm backdrop-blur-md">
                     <TableRow>

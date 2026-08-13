@@ -6,6 +6,7 @@ import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
 import { useProjectTasks } from "@/features/projects/hooks/useProjectTasks";
 import { useProjectTraceability } from "@/features/projects/hooks/useTraceability";
+import { getLinkedTaskIds } from "@/features/projects/utils/linkedTasksStorage";
 import { useAuthStore } from "@/stores/authStore";
 import { LayoutGrid, User, Loader2, AlertCircle } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
@@ -54,35 +55,45 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const tasksState = useBoardTasksState(projectId, currentSprintId);
   const { data: traceabilityData } = useProjectTraceability(projectId);
 
+  const [localLinkedTaskIds, setLocalLinkedTaskIds] = React.useState<Set<string>>(() => getLinkedTaskIds(projectId));
+
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setLocalLinkedTaskIds(getLinkedTaskIds(projectId));
+    };
+    window.addEventListener("saga_linked_tasks_updated", handleUpdate);
+    return () => window.removeEventListener("saga_linked_tasks_updated", handleUpdate);
+  }, [projectId]);
+
   const linkedTaskIds = React.useMemo(() => {
-    if (!traceabilityData) return new Set<string>();
+    const ids = new Set<string>(localLinkedTaskIds);
 
-    const ids = new Set<string>();
+    if (!traceabilityData) return ids;
 
-    // Trích xuất từ timeline (nếu có items dạng JIRA_TASK)
-    if (Array.isArray(traceabilityData.timeline)) {
-      traceabilityData.timeline.forEach((item) => {
-        if (item.sourceType === "JIRA_TASK" && item.resourceId) {
-          ids.add(item.resourceId);
-        }
-      });
-    }
-
-    // Trích xuất từ tasks (nếu có)
+    // 1. Trích xuất từ tasks (nếu backend trả mảng tasks có git issues/linked items)
     if (Array.isArray(traceabilityData.tasks)) {
       traceabilityData.tasks.forEach((t) => {
         const hasGithubIssues = Array.isArray(t.githubIssues) && t.githubIssues.length > 0;
-        const rawLinkedIssues = (t as unknown as { linkedIssues?: { items?: unknown[] } }).linkedIssues;
-        const hasLinkedItems = rawLinkedIssues && typeof rawLinkedIssues === "object" && "items" in rawLinkedIssues && Array.isArray(rawLinkedIssues.items) && rawLinkedIssues.items.length > 0;
+        const rawLinkedIssues = (t as unknown as { linkedIssues?: { items?: unknown[] } | unknown[] }).linkedIssues;
+        const hasLinkedItems =
+          rawLinkedIssues &&
+          ((Array.isArray(rawLinkedIssues) && rawLinkedIssues.length > 0) ||
+            (typeof rawLinkedIssues === "object" &&
+              "items" in rawLinkedIssues &&
+              Array.isArray(rawLinkedIssues.items) &&
+              rawLinkedIssues.items.length > 0));
+
         if (hasGithubIssues || hasLinkedItems) {
           const idVal = t.taskId || t.task?.id;
+          const keyVal = t.jiraKey || t.task?.externalKey;
           if (idVal) ids.add(idVal);
+          if (keyVal) ids.add(keyVal);
         }
       });
     }
 
     return ids;
-  }, [traceabilityData]);
+  }, [traceabilityData, localLinkedTaskIds]);
 
   // Load tasks for current sprint
   const { data: tasksData, isLoading: isLoadingTasks, error } = useProjectTasks(projectId, {

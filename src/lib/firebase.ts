@@ -16,13 +16,28 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 let messaging: ReturnType<typeof getMessaging> | null = null;
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-  messaging = getMessaging(app);
+  try {
+    messaging = getMessaging(app);
+  } catch (e) {
+    console.warn("[Firebase] Failed to initialize messaging:", e);
+  }
 }
 
 export const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
 
 export const getFirebaseInstallationId = async () => {
-  if (!messaging) return null;
+  if (typeof window === "undefined" || !messaging) return null;
+
+  // 1. Kiểm tra trình duyệt có hỗ trợ Notification không
+  if (!("Notification" in window)) {
+    return null;
+  }
+
+  // 2. Nếu quyền Notification chưa được cấp (granted) hoặc bị chặn (blocked/denied) -> Bỏ qua lấy token
+  if (Notification.permission !== "granted") {
+    return null;
+  }
+
   try {
     const params = new URLSearchParams({
       apiKey: firebaseConfig.apiKey,
@@ -35,34 +50,44 @@ export const getFirebaseInstallationId = async () => {
     }).toString();
 
     const swUrl = `/firebase-messaging-sw.js?${params}`;
-    console.log("[Firebase] Registering SW with URL:", swUrl);
-    const registration = await navigator.serviceWorker.register(swUrl);
-    console.log("[Firebase] SW Registration successful, state:", registration.active ? 'active' : (registration.installing ? 'installing' : 'waiting'));
+    const registration = await navigator.serviceWorker.register(swUrl).catch((swErr) => {
+      console.warn("[Firebase] ServiceWorker registration warning:", swErr);
+      return null;
+    });
 
-    console.log("[Firebase] Using VAPID Key:", VAPID_PUBLIC_KEY);
+    if (!registration) return null;
+
     if (!VAPID_PUBLIC_KEY) {
-      console.error("[Firebase] VAPID_PUBLIC_KEY is empty! Token subscription will fail.");
+      return null;
     }
 
-    return await getToken(messaging, {
+    const token = await getToken(messaging, {
       vapidKey: VAPID_PUBLIC_KEY,
       serviceWorkerRegistration: registration
+    }).catch(() => {
+      return null;
     });
-  } catch (error) {
-    console.error("An error occurred while retrieving token. ", error);
+
+    return token;
+  } catch {
     return null;
   }
 };
 
 export const getFirebaseToken = async () => {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined" || !messaging) return null;
+
+  if (!("Notification" in window) || Notification.permission !== "granted") {
+    return null;
+  }
+
   try {
-    if (!messaging) return null;
     const vapidKey = VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "";
-    const token = await getToken(messaging, { vapidKey });
+    const token = await getToken(messaging, { vapidKey }).catch(() => {
+      return null;
+    });
     return token;
-  } catch (error) {
-    console.warn("Error getting Firebase FCM Token", error);
+  } catch {
     return null;
   }
 };

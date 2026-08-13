@@ -43,18 +43,22 @@ export type SubmitPeerReviewRequest = {
 
 export type PeerReviewItem = {
   id?: string;
+  sprintId?: string;
+  sprintName?: string;
   reviewerId?: string;
   reviewerName?: string;
   revieweeId?: string;
   revieweeName?: string;
   starRating?: number;
-  criteriaRatings?: { rubricId: string; starRating: number }[];
+  criteriaRatings?: { rubricId: string; criteriaName?: string; starRating: number }[];
   comment?: string;
   createdAt?: string;
+  updatedAt?: string;
 };
 
 export type SprintPeerReviewsResponse = {
   sprintId?: string;
+  sprintName?: string;
   teamId?: string;
   reviews: PeerReviewItem[];
 };
@@ -185,6 +189,8 @@ export type JiraTask = {
   externalKey: string;
   title: string;
   type: string;
+  issueType?: string;
+  issue_type?: string;
   status: string;
   priority: string;
   storyPoint: number;
@@ -214,22 +220,6 @@ export type ProjectTasksResponse = {
   first: boolean;
   last: boolean;
   empty: boolean;
-};
-
-export type ProjectDashboardStatsResponse = {
-  projectId: string;
-  generatedAt: string;
-  tasks: {
-    total: number;
-    completed: number;
-    incomplete: number;
-    completionPercentage: number;
-  };
-  github: {
-    repositoryCount: number;
-    commitCount: number;
-    pullRequestCount: number;
-  };
 };
 
 export * from "./githubIssue";

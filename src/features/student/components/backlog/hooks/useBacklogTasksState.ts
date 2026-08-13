@@ -127,22 +127,26 @@ export function useBacklogTasksState(projectId: string) {
       return;
     }
 
+    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
+    const isDueDateChanged = editDueDate !== origDueDate;
+
     const todayStr = getTodayString();
-    if (editDueDate && editDueDate < todayStr) {
+    if (isDueDateChanged && editDueDate && editDueDate < todayStr) {
       toast.error("Hạn hoàn thành công việc không được chọn ngày trước ngày hiện tại thực tế!");
       return;
     }
 
     const isTitleChanged = editTitle.trim() !== (taskToEdit.title || "").trim();
     const isDescriptionChanged = editDescription.trim() !== (taskToEdit.description || "").trim();
-    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
-    const isDueDateChanged = editDueDate !== origDueDate;
+    const origType = (taskToEdit.type || "TASK").toUpperCase();
+    const isIssueTypeChanged = editIssueType.toUpperCase() !== origType;
     const origPriority = taskToEdit.priority?.toUpperCase() || "MEDIUM";
     const isPriorityChanged = editPriority !== origPriority;
 
     const mainPayload: UpdateTaskRequest = {};
     if (isTitleChanged) mainPayload.title = editTitle.trim();
     if (isDescriptionChanged) mainPayload.description = editDescription.trim();
+    if (isIssueTypeChanged) mainPayload.type = editIssueType;
     if (isDueDateChanged) mainPayload.dueDate = editDueDate || null;
     if (isPriorityChanged) mainPayload.priority = editPriority;
 

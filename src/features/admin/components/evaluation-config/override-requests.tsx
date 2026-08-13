@@ -1,39 +1,51 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, XCircle, Clock, ShieldAlert, AlertTriangle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useGetWeightRequests, useDecideWeightRequest } from "../../hooks/useContributionWeight";
+import { ContributionWeightRequest } from "../../api/contributionWeightApi";
 import { toast } from "sonner";
 
 export function OverrideRequests() {
   const { data: requestsResponse, isLoading: isLoadingRequests } = useGetWeightRequests();
   const decideMutation = useDecideWeightRequest();
 
-  // Handle global page response assuming Page<ContributionWeightRequest>
-  const requests = requestsResponse?.content ?? [];
+  const requests: ContributionWeightRequest[] = Array.isArray(requestsResponse) ? requestsResponse : ((requestsResponse as any)?.content ?? []);
 
-  const handleApprove = (id: string | number) => {
-    const message = window.prompt("Nhập nhận xét (tùy chọn):", "Nhận xét hợp lý, trọng số đã cập nhật");
-    if (message === null) return; // User cancelled
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    requestId: string | number | null;
+    type: "APPROVED" | "REJECTED" | null;
+  }>({ isOpen: false, requestId: null, type: null });
+  const [feedback, setFeedback] = useState("");
 
-    decideMutation.mutate(
-      { requestId: id, data: { decision: "APPROVED", feedbackMessage: message } }
-    );
+  const handleOpenDialog = (id: string | number, type: "APPROVED" | "REJECTED") => {
+    setConfirmDialog({ isOpen: true, requestId: id, type });
+    setFeedback(type === "APPROVED" ? "Nhận xét hợp lý, trọng số đã cập nhật" : "");
   };
 
-  const handleReject = (id: string | number) => {
-    const message = window.prompt("Nhập nhận xét từ chối (bắt buộc):", "");
-    if (message === null) return; // User cancelled
-    if (!message) {
+  const handleSubmitDecision = () => {
+    if (!confirmDialog.requestId || !confirmDialog.type) return;
+
+    if (confirmDialog.type === "REJECTED" && !feedback.trim()) {
       toast.error("Vui lòng nhập lý do từ chối!");
       return;
     }
 
     decideMutation.mutate(
-      { requestId: id, data: { decision: "REJECTED", feedbackMessage: message } }
+      { requestId: confirmDialog.requestId, data: { decision: confirmDialog.type, feedbackMessage: feedback } },
+      {
+        onSuccess: () => {
+          setConfirmDialog({ isOpen: false, requestId: null, type: null });
+          setFeedback("");
+        }
+      }
     );
   };
 
@@ -77,47 +89,69 @@ export function OverrideRequests() {
                 {pendingRequests.map(req => (
                   <Card key={req.requestId} className="rounded-2xl border-border bg-card/40 backdrop-blur-xl shadow-sm hover:border-primary/30 transition-colors">
                     <CardContent className="p-5 flex flex-col lg:flex-row gap-6">
-                      <div className="flex-1 space-y-3">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="default" className="rounded-md px-2 py-0.5 text-xs shrink-0">
-                            Sửa Trọng Số Slices
-                          </Badge>
-                          {req.course && (
-                            <span className="text-sm font-bold text-primary flex items-center gap-1">
-                              <BookOpen className="w-3 h-3" />
-                              {req.course.courseCode} - {req.course.courseName}
-                            </span>
-                          )}
-                          <span className="text-xs text-muted-foreground ml-auto">
+                      <div className="flex-1 space-y-5">
+                        <div className="flex items-start justify-between flex-wrap gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black text-lg">
+                              {req.lecturerName?.charAt(0) || "G"}
+                            </div>
+                            <div>
+                              <p className="text-sm font-black text-foreground">{req.lecturerName || "Giảng viên"}</p>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <Badge variant="secondary" className="rounded-md px-1.5 py-0 text-[10px] uppercase font-bold text-primary bg-primary/10">
+                                  Thay đổi Trọng số
+                                </Badge>
+                                {req.courseCode && (
+                                  <span className="text-xs font-bold text-muted-foreground flex items-center gap-1">
+                                    <BookOpen className="w-3 h-3" />
+                                    {req.courseCode} - {req.courseName}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded-lg">
                             {new Date(req.createdAt).toLocaleString('vi-VN')}
                           </span>
                         </div>
 
-                        <div>
-                          <p className="text-xs font-bold text-muted-foreground">Người yêu cầu:</p>
-                          <p className="text-sm font-medium">{req.requestedBy?.fullName || "Giảng viên"}</p>
+                        <div className="space-y-2">
+                          <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Trọng số đề xuất</p>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            {[
+                              { label: 'Code', value: req.proposedCodeWeight },
+                              { label: 'Document', value: req.proposedDocumentWeight },
+                              { label: 'Design', value: req.proposedDesignWeight },
+                              { label: 'Testing', value: req.proposedTestingWeight }
+                            ].map(item => (
+                              <div key={item.label} className="flex flex-col bg-background/50 border border-border/60 p-3 rounded-2xl">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase">{item.label}</span>
+                                <span className="text-lg font-black text-foreground">
+                                  {item.value != null ? Number(item.value).toFixed(1).replace(/\.0$/, '') : 0}%
+                                </span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
 
-                        <div>
-                          <p className="text-xs font-bold text-muted-foreground">Chi tiết thay đổi đề xuất:</p>
-                          <p className="text-sm text-foreground bg-muted/50 p-2 rounded-lg mt-1 font-mono border border-border/50">
-                            Code: {req.proposedCodeWeight}%, Doc: {req.proposedDocumentWeight}%, Design: {req.proposedDesignWeight}%, Testing: {req.proposedTestingWeight}%
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-                            <AlertTriangle className="w-3 h-3 text-primary" /> Lý do:
-                          </p>
-                          <p className="text-sm text-foreground italic bg-primary/5 p-2 rounded-lg mt-1 border border-primary/20 text-primary">{req.reason}</p>
-                        </div>
+                        {req.reason && (
+                          <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 flex gap-3 items-start">
+                            <div className="p-2.5 bg-amber-500/10 text-amber-600 dark:text-amber-500 rounded-xl shrink-0">
+                              <AlertTriangle className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold text-amber-600 dark:text-amber-500 uppercase tracking-widest mb-1">Lý do thay đổi</p>
+                              <p className="text-sm font-medium text-foreground leading-relaxed">{req.reason}</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex flex-row lg:flex-col justify-end lg:justify-center gap-3 shrink-0 lg:border-l lg:border-border/50 lg:pl-6">
-                        <Button onClick={() => handleApprove(req.requestId)} disabled={decideMutation.isPending} className="bg-success hover:bg-emerald-700 text-white font-bold rounded-xl h-10 w-full lg:w-32">
+                        <Button onClick={() => handleOpenDialog(req.requestId, "APPROVED")} disabled={decideMutation.isPending} className="bg-success hover:bg-emerald-700 text-white font-bold rounded-xl h-10 w-full lg:w-32">
                           <CheckCircle2 className="w-4 h-4 mr-2" /> Phê duyệt
                         </Button>
-                        <Button onClick={() => handleReject(req.requestId)} disabled={decideMutation.isPending} variant="outline" className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20 font-bold rounded-xl h-10 w-full lg:w-32">
+                        <Button onClick={() => handleOpenDialog(req.requestId, "REJECTED")} disabled={decideMutation.isPending} variant="outline" className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20 font-bold rounded-xl h-10 w-full lg:w-32">
                           <XCircle className="w-4 h-4 mr-2" /> Từ chối
                         </Button>
                       </div>
@@ -142,14 +176,14 @@ export function OverrideRequests() {
                           <Badge variant="outline" className="rounded-md px-2 py-0.5 text-xs text-muted-foreground shrink-0">
                             Trọng Số Slices
                           </Badge>
-                          {req.course && (
+                          {req.courseCode && (
                             <span className="text-sm font-bold text-muted-foreground flex items-center gap-1">
                               <BookOpen className="w-3 h-3" />
-                              {req.course.courseCode} - {req.course.courseName}
+                              {req.courseCode} - {req.courseName}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground">{req.requestedBy?.fullName || "Giảng viên"} • {new Date(req.createdAt).toLocaleString('vi-VN')}</p>
+                        <p className="text-xs text-muted-foreground">{req.lecturerName || "Giảng viên"} • {new Date(req.createdAt).toLocaleString('vi-VN')}</p>
                       </div>
                       <div>
                         {req.status === "APPROVED" ? (
@@ -166,6 +200,49 @@ export function OverrideRequests() {
           )}
         </>
       )}
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmDialog.isOpen} onOpenChange={(isOpen) => !isOpen && setConfirmDialog({ ...confirmDialog, isOpen: false })}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {confirmDialog.type === "APPROVED" ? "Phê duyệt yêu cầu" : "Từ chối yêu cầu"}
+            </DialogTitle>
+            <DialogDescription>
+              {confirmDialog.type === "APPROVED"
+                ? "Bạn có chắc chắn muốn phê duyệt yêu cầu thay đổi trọng số này? Bạn có thể để lại nhận xét bên dưới."
+                : "Vui lòng cung cấp lý do từ chối yêu cầu này. Lý do này sẽ được gửi đến giảng viên."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="feedback" className={confirmDialog.type === "REJECTED" ? "text-destructive font-bold" : "font-bold"}>
+                Nhận xét {confirmDialog.type === "REJECTED" ? "(bắt buộc)" : "(tùy chọn)"}
+              </Label>
+              <Textarea
+                id="feedback"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder={confirmDialog.type === "REJECTED" ? "Nhập lý do từ chối..." : "Nhập nhận xét..."}
+                className="col-span-3 min-h-[100px] rounded-xl"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" className="rounded-xl font-bold" onClick={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}>
+              Hủy
+            </Button>
+            <Button
+              type="button"
+              className={`rounded-xl font-bold ${confirmDialog.type === "REJECTED" ? "bg-destructive text-white hover:bg-destructive/90" : "bg-success text-white hover:bg-emerald-700"}`}
+              onClick={handleSubmitDecision}
+              disabled={decideMutation.isPending}
+            >
+              Xác nhận {confirmDialog.type === "APPROVED" ? "Phê duyệt" : "Từ chối"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

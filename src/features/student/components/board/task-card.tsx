@@ -10,19 +10,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, Loader2, MoreVertical, GitFork } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Calendar, Loader2, MoreVertical } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { formatDueDate, getTypeIcon } from "./board-helpers";
 import { CardStoryPointPicker } from "./card-story-point-picker";
 import { TaskPriorityDropdown } from "./task-priority-dropdown";
 import { TaskAssigneeDropdown } from "./task-assignee-dropdown";
+
+import { GithubDevelopmentPopover, GithubBadgeTriggerButton } from "./github-development-popover";
+import { shouldIgnoreTaskCardClick } from "./utils/popoverCloseGuard";
 
 interface TaskCardProps {
   task: JiraTask;
@@ -45,7 +42,6 @@ export function TaskCard({
   isPendingMove,
   isDraggingThis,
   canAct,
-  isGitLinked = false,
   teamMembers,
   onDragStart,
   onDragEnd,
@@ -55,20 +51,20 @@ export function TaskCard({
 }: TaskCardProps) {
   const dueDateInfo = getTaskDueDateInfo(task.dueDate, task.status);
 
-  // Check if git issue is linked from task props or explicit flag
-  const hasGitLinked =
-    isGitLinked ||
-    ((task as unknown as { githubIssues?: unknown[] }).githubIssues &&
-      ((task as unknown as { githubIssues?: unknown[] }).githubIssues?.length || 0) > 0) ||
-    ((task as unknown as { linkedIssues?: unknown[] }).linkedIssues &&
-      ((task as unknown as { linkedIssues?: unknown[] }).linkedIssues?.length || 0) > 0);
+
 
   return (
     <Card
       draggable={!isPendingMove && canAct}
       onDragStart={(e) => canAct && onDragStart(e, task)}
       onDragEnd={onDragEnd}
-      onClick={onClick}
+      onClick={(e) => {
+        if (shouldIgnoreTaskCardClick()) {
+          e.stopPropagation();
+          return;
+        }
+        onClick();
+      }}
       className={`rounded-2xl border transition-all duration-300 p-4 flex flex-col justify-between min-h-[140px] ${
         isPendingMove
           ? "opacity-60 bg-muted/40 border-dashed border-primary/50 cursor-wait animate-pulse"
@@ -122,20 +118,27 @@ export function TaskCard({
           ) : null}
         </div>
 
-        <div className="space-y-1 mt-2.5">
-          <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Hạn hoàn thành</span>
-          {dueDateInfo ? (
-            <div>
-              <Badge variant="outline" className={`rounded-xl text-[10px] py-0.5 px-2 flex items-center gap-1 border w-fit ${dueDateInfo.badgeStyle}`}>
-                <Calendar size={11} className={dueDateInfo.iconColorStyle} />
-                <span>{dueDateInfo.badgeLabel}</span>
-              </Badge>
-            </div>
-          ) : (
-            <p className="text-xs text-foreground font-semibold">
-              {formatDueDate(task.dueDate ?? undefined)}
-            </p>
-          )}
+        <div className="flex items-end justify-between gap-2 mt-2.5">
+          <div className="space-y-1">
+            <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Hạn hoàn thành</span>
+            {dueDateInfo ? (
+              <div>
+                <Badge variant="outline" className={`rounded-xl text-[10px] py-0.5 px-2 flex items-center gap-1 border w-fit ${dueDateInfo.badgeStyle}`}>
+                  <Calendar size={11} className={dueDateInfo.iconColorStyle} />
+                  <span>{dueDateInfo.badgeLabel}</span>
+                </Badge>
+              </div>
+            ) : (
+              <p className="text-xs text-foreground font-semibold">
+                {formatDueDate(task.dueDate ?? undefined)}
+              </p>
+            )}
+          </div>
+
+          {/* GitHub Badge đối diện Hạn hoàn thành */}
+          <GithubDevelopmentPopover projectId={projectId} taskId={task.id}>
+            <GithubBadgeTriggerButton projectId={projectId} taskId={task.id} />
+          </GithubDevelopmentPopover>
         </div>
       </div>
 
@@ -163,32 +166,9 @@ export function TaskCard({
           </span>
         </div>
 
-        {/* Right: Story Point Picker -> Git Issue Linked Icon -> Priority Dropdown -> Assignee Avatar Dropdown */}
+        {/* Right: Story Point Picker -> Priority Dropdown -> Assignee Avatar Dropdown */}
         <div className="flex items-center gap-2 shrink-0">
           <CardStoryPointPicker projectId={projectId} task={task} />
-
-          {hasGitLinked && (
-            <TooltipProvider delayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onClick();
-                    }}
-                    className="p-1 rounded-lg text-muted-foreground/80 hover:text-foreground hover:bg-muted/60 transition-all cursor-pointer shrink-0 flex items-center justify-center"
-                    title="Đã liên kết GitHub Issue"
-                  >
-                    <GitFork size={15} className="rotate-90 text-foreground/80 hover:text-primary" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="rounded-xl text-xs font-semibold px-2.5 py-1 bg-foreground text-background shadow-xl border border-border/20">
-                  Đã liên kết GitHub Issue (Bấm để xem)
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
 
           <TaskPriorityDropdown projectId={projectId} task={task} />
           <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} />
