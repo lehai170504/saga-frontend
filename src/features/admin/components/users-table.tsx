@@ -87,7 +87,7 @@ export const columns: ColumnDef<UserProfileResponse>[] = [
               : "bg-muted text-muted-foreground"
             }`}
         >
-          {status === "ACTIVE" ? "Hoạt động" : status === "PENDING" ? "Chờ duyệt" : status === "SUSPENDED" ? "Bị đình chỉ" : "Vô hiệu hóa"}
+          {status === "ACTIVE" ? "Hoạt động" : status === "PENDING" ? "Chờ duyệt" : "Vô hiệu hóa"}
         </span>
       );
     },
@@ -160,7 +160,6 @@ export function UsersTable({
               <SelectItem value="all">Tất cả vai trò</SelectItem>
               <SelectItem value="STUDENT">Sinh viên</SelectItem>
               <SelectItem value="LECTURER">Giảng viên</SelectItem>
-              <SelectItem value="ADMIN">Quản trị viên</SelectItem>
             </SelectContent>
           </Select>
           <Select
@@ -174,7 +173,6 @@ export function UsersTable({
               <SelectItem value="all">Tất cả trạng thái</SelectItem>
               <SelectItem value="ACTIVE">Hoạt động</SelectItem>
               <SelectItem value="INACTIVE">Vô hiệu hóa</SelectItem>
-              <SelectItem value="SUSPENDED">Đình chỉ</SelectItem>
               <SelectItem value="PENDING">Chờ duyệt</SelectItem>
             </SelectContent>
           </Select>

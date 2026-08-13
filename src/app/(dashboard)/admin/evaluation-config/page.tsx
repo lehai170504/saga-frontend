@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, AlertTriangle, ClipboardCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AlertTriangle, ClipboardCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
 import { OverrideRequests } from "@/features/admin/components/evaluation-config/override-requests";
@@ -29,16 +28,7 @@ export default function EvaluationConfigPage() {
         description="Thiết lập các ngưỡng cảnh báo của AI, cấu hình Bộ khung hệ số chuẩn (SE) và quản lý yêu cầu kiểm duyệt toàn hệ thống."
         workspace="Workspace Quản trị"
       >
-        <div className="flex justify-end w-full md:w-auto">
-          <Button
-            onClick={handleSaveAll}
-            disabled={isSaving}
-            className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
-          >
-            <Save className={`w-4 h-4 mr-2 ${isSaving ? "animate-pulse" : ""}`} />
-            {isSaving ? "Đang lưu..." : "Lưu tất cả Chính sách"}
-          </Button>
-        </div>
+
       </PageHeader>
 
       <Tabs defaultValue="ai-warnings" value={activeTab} onValueChange={setActiveTab} className="w-full">
