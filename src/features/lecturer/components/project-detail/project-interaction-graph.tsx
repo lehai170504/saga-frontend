@@ -1,16 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Share2, Users, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-import { useTeamInteractions } from "@/features/lecturer/hooks/useAnalytics";
+import { useStudentInteractions, useTeamMembers } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string; teamId: string }) {
-  const { data: interactionData, isLoading } = useTeamInteractions(courseId, teamId);
+  const { data: members, isLoading: isLoadingMembers } = useTeamMembers(courseId, teamId);
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
-  // Generate dynamic nodes based on interactionData
+  useEffect(() => {
+    if (members?.content && members.content.length > 0 && !selectedStudentId) {
+      setSelectedStudentId(members.content[0].studentId);
+    }
+  }, [members, selectedStudentId]);
+
+  const { data: interactionData, isLoading: isLoadingGraph } = useStudentInteractions(
+    courseId, 
+    teamId, 
+    selectedStudentId
+  );
+  
+  const isLoading = isLoadingMembers || isLoadingGraph;
+
   const projectNodes = React.useMemo(() => {
     if (!interactionData?.nodes) return [];
     const total = interactionData.nodes.length;
@@ -21,7 +43,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
       const x = 50 + radius * Math.cos(angle);
       const y = 50 + radius * Math.sin(angle);
       
-      const interactions = interactionData.edges?.filter(e => e.from === n.studentId || e.to === n.studentId).length || 0;
+      const interactions = n.degree || 0;
       
       return {
         id: n.studentId,
@@ -39,10 +61,10 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
   const projectEdges = React.useMemo(() => {
     if (!interactionData?.edges) return [];
     return interactionData.edges.map(e => ({
-      source: e.from,
-      target: e.to,
-      width: Math.max(1, e.weight),
-      type: "collab"
+      source: e.fromStudentId,
+      target: e.toStudentId,
+      width: Math.max(1, e.sourceCount || 1),
+      type: e.sourceType
     }));
   }, [interactionData]);
 
@@ -70,14 +92,19 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
         <Card className="rounded-[2rem] border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden h-fit">
           <CardContent className="p-6 space-y-6">
             <div className="space-y-3">
-              <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Tìm kiếm</h3>
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                <Input
-                  placeholder="Tìm thành viên..."
-                  className="pl-9 bg-background/50 border-border/50"
-                />
-              </div>
+              <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Chọn Sinh Viên (Trung tâm)</h3>
+              <Select value={selectedStudentId} onValueChange={setSelectedStudentId} disabled={!members || isLoadingMembers}>
+                <SelectTrigger className="w-full bg-background/50 border-border/50">
+                  <SelectValue placeholder="Chọn sinh viên..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {members?.content?.map((m: any) => (
+                    <SelectItem key={m.studentId} value={m.studentId}>
+                      {m.fullName} ({m.studentCode})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-3">
@@ -85,19 +112,19 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
               <div className="space-y-2 text-sm font-medium">
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
                   <div className="w-4 h-1 bg-primary rounded-full" />
-                  <span>Commits & Push</span>
+                  <span>Phối hợp (Commits/Tasks)</span>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-4 h-1 border-b-2 border-dashed border-success/20" />
-                  <span>PR Reviews</span>
+                  <div className="w-4 h-1 bg-success rounded-full" />
+                  <span>Review Code</span>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="w-4 h-1 border-b-2 border-dotted border-primary/20" />
-                  <span>Comments</span>
+                  <div className="w-4 h-1 border-b-[3px] border-dotted border-primary" />
+                  <span>Bình luận (Comments)</span>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer transition-colors">
                   <div className="w-4 h-1 bg-destructive rounded-full" />
-                  <span>Issue Assignment</span>
+                  <span>Giao việc (Assignment)</span>
                 </div>
               </div>
             </div>
@@ -110,14 +137,17 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
 
           <CardContent className="p-0 h-full w-full relative">
-            {/* Fake SVG Graph */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+            {/* SVG Graph for Edges */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none drop-shadow-sm">
               <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                  <polygon points="0 0, 10 3.5, 0 7" fill="hsl(var(--muted-foreground))" opacity={0.5} />
+                <marker id="arrowhead-collab" markerWidth="10" markerHeight="7" refX="28" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="var(--primary)" />
                 </marker>
-                <marker id="arrowhead-toxic" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                  <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" opacity={0.8} />
+                <marker id="arrowhead-review" markerWidth="10" markerHeight="7" refX="28" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="var(--success)" />
+                </marker>
+                <marker id="arrowhead-assignment" markerWidth="10" markerHeight="7" refX="28" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="var(--destructive)" />
                 </marker>
               </defs>
               {projectEdges.map((edge, i) => {
@@ -126,12 +156,13 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                 if (!source || !target) return null;
 
                 let strokeDasharray = "";
-                let stroke = "#6366f1"; // collab (indigo)
-                let marker = "url(#arrowhead)";
+                let stroke = "var(--primary)"; // collab
+                let marker = "url(#arrowhead-collab)";
 
-                if (edge.type === "review") { stroke = "#10b981"; } // review (emerald)
-                if (edge.type === "ghost") { stroke = "#f59e0b"; strokeDasharray = "4 4"; } // ghost (amber)
-                if (edge.type === "toxic") { stroke = "#ef4444"; marker = "url(#arrowhead-toxic)"; } // toxic (red)
+                if (edge.type === "REVIEWED") { stroke = "var(--success)"; marker = "url(#arrowhead-review)"; } // review
+                if (edge.type === "COMMENTED_ON") { strokeDasharray = "4 4"; } // comments
+                if (edge.type === "ASSIGNED_TO") { stroke = "var(--destructive)"; marker = "url(#arrowhead-assignment)"; } // assignment
+                if (edge.type === "COLLABORATED_WITH") { stroke = "var(--primary)"; } // collab
 
                 return (
                   <line
@@ -141,10 +172,10 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                     x2={`${target.x}%`}
                     y2={`${target.y}%`}
                     stroke={stroke}
-                    strokeWidth={edge.width}
+                    strokeWidth={Math.max(1.5, edge.width)}
                     strokeDasharray={strokeDasharray}
                     markerEnd={marker}
-                    className={edge.type === "toxic" ? "opacity-70" : "opacity-40"}
+                    className={edge.type === "ASSIGNED_TO" ? "opacity-100" : "opacity-80"}
                   />
                 );
               })}
@@ -212,16 +243,16 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                       const otherNode = projectNodes.find(n => n.id === (isSource ? edge.target : edge.source));
 
                       const getActionText = () => {
-                        if (edge.type === "toxic") return isSource ? "Cãi vã với" : "Bị toxic bởi";
-                        if (edge.type === "review") return isSource ? "Review code của" : "Được review bởi";
-                        if (edge.type === "ghost") return isSource ? "Bơ tin nhắn của" : "Bị bơ bởi";
-                        return isSource ? "Hỗ trợ" : "Được hỗ trợ bởi";
+                        if (edge.type === "ASSIGNED_TO") return isSource ? "Giao task cho" : "Được giao task bởi";
+                        if (edge.type === "REVIEWED") return isSource ? "Review code của" : "Được review bởi";
+                        if (edge.type === "COMMENTED_ON") return isSource ? "Bình luận bài của" : "Được bình luận bởi";
+                        return isSource ? "Phối hợp với" : "Được phối hợp bởi";
                       };
 
                       const getBadgeColor = () => {
-                        if (edge.type === "toxic") return "bg-destructive/10 text-destructive border-destructive/20";
-                        if (edge.type === "ghost") return "bg-warning/10 text-warning border-warning/20";
-                        if (edge.type === "review") return "bg-success/10 text-success border-success/20";
+                        if (edge.type === "ASSIGNED_TO") return "bg-destructive/10 text-destructive border-destructive/20";
+                        if (edge.type === "REVIEWED") return "bg-success/10 text-success border-success/20";
+                        if (edge.type === "COMMENTED_ON") return "bg-primary/10 text-primary border-primary/20";
                         return "bg-primary/10 text-primary border-primary/20";
                       };
 
@@ -237,8 +268,10 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                   </div>
                 </div>
 
-                <Button className="w-full rounded-xl font-bold h-10">
-                  Xem Profile Chi Tiết
+                <Button asChild className="w-full rounded-xl font-bold h-10 hover-lift">
+                  <Link href={`/lecturer/${courseId}/students/${activeSelectedNode.id}`}>
+                    Xem Profile Chi Tiết
+                  </Link>
                 </Button>
               </div>
             ) : (

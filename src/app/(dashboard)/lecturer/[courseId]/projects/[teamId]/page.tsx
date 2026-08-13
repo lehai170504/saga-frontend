@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjectHeatmap } from "@/features/lecturer/components/project-detail/project-heatmap";
 import { ProjectInteractionGraph } from "@/features/lecturer/components/project-detail/project-interaction-graph";
+import { ProjectBurndownChart } from "@/features/lecturer/components/project-detail/project-burndown-chart";
 import { EarlyWarningAlerts } from "@/features/lecturer/components/project-detail/charts/early-warning-alerts";
 import { SprintVelocityBar } from "@/features/lecturer/components/project-detail/charts/sprint-velocity-bar";
 import { useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
@@ -60,27 +61,30 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
 
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
         {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
-          <TabsList className="flex flex-wrap w-full md:w-auto h-auto rounded-xl bg-muted/50 p-1 mb-6 gap-1">
-            <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+          <TabsList className="flex w-full max-w-full overflow-x-auto justify-start !h-auto rounded-xl bg-muted/50 p-1 mb-6 gap-1 [&::-webkit-scrollbar]:hidden">
+            <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
             </TabsTrigger>
-            <TabsTrigger value="tasks" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+            <TabsTrigger value="tasks" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <ListTodo className="w-4 h-4 mr-2" /> Công việc (Jira)
             </TabsTrigger>
-            <TabsTrigger value="commits" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+            <TabsTrigger value="commits" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <GitCommit className="w-4 h-4 mr-2" /> Lịch sử Commit (Github)
             </TabsTrigger>
-            <TabsTrigger value="issues" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+            <TabsTrigger value="issues" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
             </TabsTrigger>
-            <TabsTrigger value="traceability" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+            <TabsTrigger value="traceability" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
             </TabsTrigger>
-            <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+            <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
             </TabsTrigger>
-            <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none">
+            <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
+            </TabsTrigger>
+            <TabsTrigger value="burndown" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+              <Activity className="w-4 h-4 mr-2" /> Sprint Burndown
             </TabsTrigger>
             
           </TabsList>
@@ -200,6 +204,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
 
             <TabsContent value="interaction" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ProjectInteractionGraph courseId={courseId} teamId={projectDetail.id} />
+            </TabsContent>
+
+            <TabsContent value="burndown" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <ProjectBurndownChart courseId={courseId} teamId={projectDetail.id} />
             </TabsContent>
 
             {projectDetail.projectId && (

@@ -50,9 +50,15 @@ export const analyticsApi = {
     );
   },
 
-  getTeamInteractions: async (courseId: string, teamId: string) => {
+  getStudentInteractions: async (courseId: string, teamId: string, studentId: string) => {
     return axiosInstance.get<never, TeamInteraction>(
-      `/api/v1/courses/${courseId}/teams/${teamId}/interactions`
+      `/api/v1/courses/${courseId}/teams/${teamId}/students/${studentId}/interactions`
+    );
+  },
+
+  getSprintBurndown: async (courseId: string, teamId: string, sprintId: string) => {
+    return axiosInstance.get<never, any>(
+      `/api/v1/courses/${courseId}/teams/${teamId}/sprints/${sprintId}/burndown`
     );
   },
 
