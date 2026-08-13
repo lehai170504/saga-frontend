@@ -99,7 +99,7 @@ export function KanbanColumn({
               isPendingMove={!!pendingTransitions[task.id]}
               isDraggingThis={draggedTask?.id === task.id}
               canAct={canActOnTask(task)}
-              isGitLinked={linkedTaskIds?.has(task.id)}
+              isGitLinked={Boolean(linkedTaskIds?.has(task.id) || (task.externalKey && linkedTaskIds?.has(task.externalKey)))}
               teamMembers={teamMembers}
               onDragStart={onDragStart}
               onDragEnd={onDragEnd}

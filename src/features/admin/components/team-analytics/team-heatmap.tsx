@@ -39,7 +39,8 @@ export function TeamHeatmap({ data, isLoading }: TeamHeatmapProps) {
       // Handle map/dictionary format
       return Object.entries(data).map(([date, commits]) => ({
         date,
-        commits: Number(commits) || 0
+        commits: Number(commits) || 0,
+        totalActivities: Number(commits) || 0,
       }));
     }
     return [];

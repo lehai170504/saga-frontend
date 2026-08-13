@@ -6,7 +6,7 @@ import { useTaskTraceability } from "../hooks/useTraceability";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Search, User, GitPullRequest, GitCommit, CircleDot } from "lucide-react";
+import { FileText, Search, User, CircleDot } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -47,7 +47,9 @@ function TaskTraceabilityDetails({ projectId, taskId }: { projectId: string; tas
     return <Skeleton className="h-32 w-full mt-4 rounded-xl" />;
   }
 
-  if (!traceability || (traceability.githubIssues.length === 0)) {
+  const githubIssues = traceability?.githubIssues || [];
+
+  if (!traceability || githubIssues.length === 0) {
     return null;
   }
 
@@ -57,16 +59,16 @@ function TaskTraceabilityDetails({ projectId, taskId }: { projectId: string; tas
         <CircleDot size={16} /> Liên kết GitHub
       </h4>
       
-      {traceability.githubIssues.length > 0 && (
+      {githubIssues.length > 0 && (
         <div className="space-y-2">
-          {traceability.githubIssues.map((issue) => (
+          {githubIssues.map((issue) => (
             <div key={issue.issueId} className="flex items-center justify-between p-3 border border-border bg-card/50 rounded-xl shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3">
                 <CircleDot size={16} className={issue.state?.toLowerCase() === 'closed' ? 'text-purple-500' : 'text-emerald-500'} />
                 <div className="flex flex-col">
                   <span className="text-sm font-bold text-foreground leading-tight">{issue.title}</span>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="outline" className="text-[10px] font-mono py-0 h-4 bg-background">#{issue.number}</Badge>
+                    <Badge variant="outline" className="text-[10px] font-mono py-0 h-4 bg-background">#{issue.number ?? issue.githubIssueId ?? 0}</Badge>
                     <span className="text-[10px] font-bold text-muted-foreground uppercase">{issue.state}</span>
                   </div>
                 </div>
