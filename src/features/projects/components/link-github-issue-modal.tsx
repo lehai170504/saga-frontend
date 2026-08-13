@@ -49,10 +49,13 @@ export function LinkGithubIssueModal({
     : (issuesPage as unknown as GithubIssue[]) || [];
 
   const handleLink = (issue: GithubIssue) => {
-    setLinkingIssueId(issue.issueId);
-    const idempotencyKey = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `link-${issue.issueId}`;
+    const targetIssueId = issue.id || issue.issueId || "";
+    if (!targetIssueId) return;
+
+    setLinkingIssueId(targetIssueId);
+    const idempotencyKey = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `link-${targetIssueId}`;
     linkIssue(
-      { issueId: issue.issueId, idempotencyKey },
+      { issueId: targetIssueId, idempotencyKey },
       {
         onSettled: () => setLinkingIssueId(null),
         onSuccess: () => onOpenChange(false),
@@ -123,13 +126,17 @@ export function LinkGithubIssueModal({
               Không tìm thấy GitHub Issue nào phù hợp.
             </div>
           ) : (
-            issuesList.map((issue) => {
-              const isAlreadyLinked = linkedIssueIds.includes(issue.issueId);
-              const isLinking = linkingIssueId === issue.issueId;
+            issuesList.map((issue, idx) => {
+              const curIssueId = issue.id || issue.issueId || "";
+              const num = issue.issueNumber ?? issue.githubIssueNumber ?? 0;
+              const repoFullName = issue.repository?.fullName || issue.repositoryName || "";
+              const issueUrl = issue.htmlUrl || (repoFullName ? `https://github.com/${repoFullName}/issues/${num}` : "#");
+              const isAlreadyLinked = linkedIssueIds.includes(curIssueId);
+              const isLinking = linkingIssueId === curIssueId;
 
               return (
                 <div
-                  key={issue.issueId}
+                  key={curIssueId || `issue-key-${idx}`}
                   className="p-3.5 rounded-2xl border border-border/40 bg-card/40 hover:bg-card/80 transition-all flex items-center justify-between gap-3"
                 >
                   <div className="space-y-1 min-w-0">
@@ -142,18 +149,20 @@ export function LinkGithubIssueModal({
                             : "border-muted text-muted-foreground bg-muted/20"
                         }`}
                       >
-                        <CircleDot className="size-3 mr-1 inline" /> #{issue.githubIssueNumber} {issue.state}
+                        <CircleDot className="size-3 mr-1 inline" /> #{num} {issue.state}
                       </Badge>
-                      <span className="text-[11px] font-semibold text-muted-foreground/80 truncate max-w-[200px]">
-                        {issue.repositoryName}
-                      </span>
+                      {repoFullName && (
+                        <span className="text-[11px] font-semibold text-muted-foreground/80 truncate max-w-[200px]">
+                          {repoFullName}
+                        </span>
+                      )}
                     </div>
 
                     <h4 className="text-xs font-bold text-foreground truncate">{issue.title}</h4>
 
-                    {issue.htmlUrl && (
+                    {issueUrl && issueUrl !== "#" && (
                       <a
-                        href={issue.htmlUrl}
+                        href={issueUrl}
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-1 text-[10px] font-bold text-primary hover:underline"

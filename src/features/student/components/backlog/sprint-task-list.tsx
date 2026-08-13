@@ -22,6 +22,8 @@ interface SprintTaskListProps {
   onDeleteSprint: (sprintId: string) => void;
   onOpenEditTask: (task: JiraTask) => void;
   onOpenDeleteTask: (task: JiraTask) => void;
+  onStartSprint?: (sprintId: string) => void;
+  onCloseSprint?: (sprintId: string) => void;
 }
 
 export function SprintTaskList({
@@ -39,11 +41,14 @@ export function SprintTaskList({
   onDeleteSprint,
   onOpenEditTask,
   onOpenDeleteTask,
+  onStartSprint,
+  onCloseSprint,
 }: SprintTaskListProps) {
   return (
     <div className="space-y-3">
       <SprintHeaderCard
         sprint={sprint}
+        sprintTasks={sprintTasks}
         isExpanded={isExpanded}
         onToggleExpand={onToggleExpand}
         taskCount={sprintTasks.length}
@@ -51,6 +56,8 @@ export function SprintTaskList({
         onOpenCreateTask={onOpenCreateTask}
         onOpenEditSprint={onOpenEditSprint}
         onDeleteSprint={onDeleteSprint}
+        onStartSprint={onStartSprint}
+        onCloseSprint={onCloseSprint}
       />
 
       {isExpanded && (
@@ -96,7 +103,7 @@ interface UnassignedBacklogSectionProps {
   canActOnTask: (task: JiraTask) => boolean;
   teamMembers: Array<{ studentId: string; fullName: string }>;
   onSelectTask: (task: JiraTask) => void;
-  onOpenCreateTask: (sprintId: null) => void;
+  onOpenCreateSprint: () => void;
   onOpenEditTask: (task: JiraTask) => void;
   onOpenDeleteTask: (task: JiraTask) => void;
 }
@@ -109,7 +116,7 @@ export function UnassignedBacklogSection({
   canActOnTask,
   teamMembers,
   onSelectTask,
-  onOpenCreateTask,
+  onOpenCreateSprint,
   onOpenEditTask,
   onOpenDeleteTask,
 }: UnassignedBacklogSectionProps) {
@@ -117,7 +124,7 @@ export function UnassignedBacklogSection({
     <div className="space-y-3 pt-4">
       <div
         onClick={onToggleExpand}
-        className="flex items-center justify-between p-4 rounded-2xl bg-card/60 border border-border/30 hover:border-border transition-all duration-200 cursor-pointer"
+        className="flex items-center justify-between p-4 rounded-2xl bg-muted/50 dark:bg-muted/40 border border-border/80 dark:border-border/70 hover:border-border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
       >
         <div className="flex items-center gap-3">
           <button type="button" className="p-1 rounded-lg text-muted-foreground shrink-0">
@@ -136,12 +143,12 @@ export function UnassignedBacklogSection({
           variant="outline"
           onClick={(e) => {
             e.stopPropagation();
-            onOpenCreateTask(null);
+            onOpenCreateSprint();
           }}
           className="h-8 rounded-xl font-bold text-xs border-border/40 hover:bg-muted/50 flex items-center gap-1.5 cursor-pointer"
         >
           <Plus size={12} />
-          Tạo công việc
+          Tạo Sprint
         </Button>
       </div>
 

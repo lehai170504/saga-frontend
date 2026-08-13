@@ -148,6 +148,7 @@ interface EditSprintModalProps {
   onEditEndDateChange: (val: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   isPending: boolean;
+  isAutoStart?: boolean;
 }
 
 export function TimelineEditSprintModal({
@@ -163,14 +164,19 @@ export function TimelineEditSprintModal({
   onEditEndDateChange,
   onSubmit,
   isPending,
+  isAutoStart = false,
 }: EditSprintModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
         <DialogHeader className="pb-4 border-b border-border/40">
-          <DialogTitle className="text-lg font-bold text-foreground">Chỉnh sửa Sprint</DialogTitle>
+          <DialogTitle className="text-lg font-bold text-foreground">
+            {isAutoStart ? "Cập nhật thời gian & Bắt đầu Sprint" : "Chỉnh sửa Sprint"}
+          </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Cấu hình thông tin Sprint và đồng bộ trực tiếp với dự án Jira của nhóm.
+            {isAutoStart
+              ? "Vui lòng chọn thời gian bắt đầu và kết thúc để kích hoạt khởi động Sprint này."
+              : "Cấu hình thông tin Sprint và đồng bộ trực tiếp với dự án Jira của nhóm."}
           </DialogDescription>
         </DialogHeader>
 
@@ -205,11 +211,12 @@ export function TimelineEditSprintModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="edit-start-date" className="text-sm font-bold text-foreground">
-                Ngày bắt đầu
+                Ngày bắt đầu <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="edit-start-date"
                 type="datetime-local"
+                required={isAutoStart}
                 value={editStartDate}
                 onChange={(e) => onEditStartDateChange(e.target.value)}
                 className="rounded-xl border-border/50 bg-background/80 h-11 cursor-pointer"
@@ -218,11 +225,12 @@ export function TimelineEditSprintModal({
 
             <div className="space-y-1.5">
               <Label htmlFor="edit-end-date" className="text-sm font-bold text-foreground">
-                Ngày kết thúc
+                Ngày kết thúc <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="edit-end-date"
                 type="datetime-local"
+                required={isAutoStart}
                 value={editEndDate}
                 onChange={(e) => onEditEndDateChange(e.target.value)}
                 className="rounded-xl border-border/50 bg-background/80 h-11 cursor-pointer"
@@ -248,8 +256,10 @@ export function TimelineEditSprintModal({
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Đang lưu...
+                  {isAutoStart ? "Đang lưu & Bắt đầu..." : "Đang lưu..."}
                 </>
+              ) : isAutoStart ? (
+                "Lưu & Bắt đầu Sprint"
               ) : (
                 "Cập nhật"
               )}

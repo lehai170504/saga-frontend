@@ -18,7 +18,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
         </Link>
         <div>
           <h1 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Cấu hình Đánh giá Nhóm</h1>
-          <h2 className="text-2xl font-extrabold text-foreground">Lớp {courseId}</h2>
+
         </div>
       </div>
 

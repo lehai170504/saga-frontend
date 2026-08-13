@@ -19,6 +19,7 @@ interface KanbanColumnProps {
   pendingTransitions: Record<string, string>;
   projectId: string;
   canActOnTask: (task: JiraTask) => boolean;
+  linkedTaskIds?: Set<string>;
   teamMembers: Array<{ studentId: string; fullName: string }>;
   onDragOver: (e: React.DragEvent, columnId: string) => void;
   onDragLeave: () => void;
@@ -39,6 +40,7 @@ export function KanbanColumn({
   pendingTransitions,
   projectId,
   canActOnTask,
+  linkedTaskIds,
   teamMembers,
   onDragOver,
   onDragLeave,
@@ -50,33 +52,42 @@ export function KanbanColumn({
   onOpenDeleteTask,
   onOpenCreateTask,
 }: KanbanColumnProps) {
+  const isOver = dragOverColumn === column.id;
+
   return (
     <div
       onDragOver={(e) => onDragOver(e, column.id)}
       onDragLeave={onDragLeave}
       onDrop={(e) => onDrop(e, column.id)}
-      className={`flex flex-col gap-4 p-4 rounded-3xl border transition-all duration-200 min-w-[250px] ${
-        dragOverColumn === column.id
-          ? `border-primary/60 ${column.color} ring-2 ring-primary/30 scale-[1.01] shadow-lg`
-          : `border-border/30 ${column.color}`
+      className={`rounded-[2rem] p-4 transition-all duration-300 min-h-[500px] border flex flex-col justify-between ${
+        column.color
+      } ${
+        isOver
+          ? "ring-2 ring-primary/40 border-primary/50 bg-primary/[0.02] shadow-xl scale-[1.01]"
+          : "hover:border-border/60"
       }`}
     >
-      {/* Column Header */}
-      <div className="flex items-center justify-between border-b border-border/20 pb-2">
-        <div className="flex items-center gap-2">
-          <span className={`w-2.5 h-2.5 rounded-full ${column.dotColor}`} />
-          <h4 className="text-sm font-extrabold text-foreground">{column.title}</h4>
+      <div className="space-y-3">
+        {/* Header */}
+        <div className="flex items-center justify-between px-1 pb-2 border-b border-border/20">
+          <div className="flex items-center gap-2">
+            <div className={`h-2.5 w-2.5 rounded-full ${column.dotColor}`} />
+            <h4 className="text-xs font-black text-foreground tracking-wide uppercase">
+              {column.title}
+            </h4>
+          </div>
+          <Badge
+            variant="secondary"
+            className="rounded-full px-2.5 py-0.5 text-[10px] font-extrabold bg-muted/60 text-muted-foreground border-border/20"
+          >
+            {columnTasks.length}
+          </Badge>
         </div>
-        <Badge variant="outline" className="rounded-full bg-background/60 font-bold border-border/20 px-2 py-0.5 text-xs text-muted-foreground">
-          {columnTasks.length}
-        </Badge>
-      </div>
 
-      {/* Column Task Cards */}
-      <div className="flex-1 space-y-3 overflow-y-auto max-h-[70vh] pr-1">
+        {/* List of Task Cards */}
         {columnTasks.length === 0 ? (
-          <div className="h-32 border border-dashed border-border/20 rounded-2xl flex flex-col items-center justify-center text-muted-foreground/30">
-            <ClipboardList size={24} className="mb-1" />
+          <div className="py-12 border border-dashed border-border/20 rounded-2xl flex flex-col items-center justify-center text-muted-foreground/40 space-y-1 bg-background/20">
+            <ClipboardList size={24} className="stroke-[1.5]" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Trống</span>
           </div>
         ) : (
@@ -88,6 +99,7 @@ export function KanbanColumn({
               isPendingMove={!!pendingTransitions[task.id]}
               isDraggingThis={draggedTask?.id === task.id}
               canAct={canActOnTask(task)}
+              isGitLinked={linkedTaskIds?.has(task.id)}
               teamMembers={teamMembers}
               onDragStart={onDragStart}
               onDragEnd={onDragEnd}

@@ -10,7 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, Loader2, MoreVertical } from "lucide-react";
+import { Calendar, Loader2, MoreVertical, GitFork } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { JiraTask } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { formatDueDate, getTypeIcon } from "./board-helpers";
@@ -24,6 +30,7 @@ interface TaskCardProps {
   isPendingMove: boolean;
   isDraggingThis: boolean;
   canAct: boolean;
+  isGitLinked?: boolean;
   teamMembers: Array<{ studentId: string; fullName: string }>;
   onDragStart: (e: React.DragEvent, task: JiraTask) => void;
   onDragEnd: () => void;
@@ -38,6 +45,7 @@ export function TaskCard({
   isPendingMove,
   isDraggingThis,
   canAct,
+  isGitLinked = false,
   teamMembers,
   onDragStart,
   onDragEnd,
@@ -46,6 +54,14 @@ export function TaskCard({
   onOpenDelete,
 }: TaskCardProps) {
   const dueDateInfo = getTaskDueDateInfo(task.dueDate, task.status);
+
+  // Check if git issue is linked from task props or explicit flag
+  const hasGitLinked =
+    isGitLinked ||
+    ((task as unknown as { githubIssues?: unknown[] }).githubIssues &&
+      ((task as unknown as { githubIssues?: unknown[] }).githubIssues?.length || 0) > 0) ||
+    ((task as unknown as { linkedIssues?: unknown[] }).linkedIssues &&
+      ((task as unknown as { linkedIssues?: unknown[] }).linkedIssues?.length || 0) > 0);
 
   return (
     <Card
@@ -118,7 +134,6 @@ export function TaskCard({
           ) : (
             <p className="text-xs text-foreground font-semibold">
               {formatDueDate(task.dueDate ?? undefined)}
-
             </p>
           )}
         </div>
@@ -148,9 +163,33 @@ export function TaskCard({
           </span>
         </div>
 
-        {/* Right: Story Point Picker + Priority Dropdown + Assignee Avatar Dropdown */}
+        {/* Right: Story Point Picker -> Git Issue Linked Icon -> Priority Dropdown -> Assignee Avatar Dropdown */}
         <div className="flex items-center gap-2 shrink-0">
           <CardStoryPointPicker projectId={projectId} task={task} />
+
+          {hasGitLinked && (
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClick();
+                    }}
+                    className="p-1 rounded-lg text-muted-foreground/80 hover:text-foreground hover:bg-muted/60 transition-all cursor-pointer shrink-0 flex items-center justify-center"
+                    title="Đã liên kết GitHub Issue"
+                  >
+                    <GitFork size={15} className="rotate-90 text-foreground/80 hover:text-primary" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="rounded-xl text-xs font-semibold px-2.5 py-1 bg-foreground text-background shadow-xl border border-border/20">
+                  Đã liên kết GitHub Issue (Bấm để xem)
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
           <TaskPriorityDropdown projectId={projectId} task={task} />
           <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} />
         </div>

@@ -9,40 +9,71 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, ChevronRight, Calendar, Plus, MoreHorizontal } from "lucide-react";
-import { Sprint } from "@/features/projects/types";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ChevronDown, ChevronRight, Calendar, MoreHorizontal } from "lucide-react";
+import { JiraTask, Sprint } from "@/features/projects/types";
 import { formatSprintDates } from "./backlog-helpers";
 
 interface SprintHeaderCardProps {
   sprint: Sprint;
+  sprintTasks?: JiraTask[];
   isExpanded: boolean;
   onToggleExpand: () => void;
   taskCount: number;
   isLeader: boolean;
-  onOpenCreateTask: (sprintId: string) => void;
+  onOpenCreateTask?: (sprintId: string) => void;
   onOpenEditSprint: (sprint: Sprint) => void;
   onDeleteSprint: (sprintId: string) => void;
   onStartSprint?: (sprintId: string) => void;
-  onCompleteSprint?: (sprintId: string) => void;
+  onCloseSprint?: (sprintId: string) => void;
 }
 
 export function SprintHeaderCard({
   sprint,
+  sprintTasks = [],
   isExpanded,
   onToggleExpand,
   taskCount,
   isLeader,
-  onOpenCreateTask,
   onOpenEditSprint,
   onDeleteSprint,
+  onStartSprint,
+  onCloseSprint,
 }: SprintHeaderCardProps) {
   const isStateActive = sprint.state === "active" || sprint.state === "ACTIVE";
   const isStateClosed = sprint.state === "closed" || sprint.state === "CLOSED";
 
+  // Calculate Story Points for 4 status categories
+  const totalSP = sprintTasks.reduce((sum, t) => sum + (t.storyPoint || 0), 0);
+  let todoSP = 0;
+  let inProgressSP = 0;
+  let inReviewSP = 0;
+  let doneSP = 0;
+
+  sprintTasks.forEach((t) => {
+    const sp = t.storyPoint || 0;
+    const st = (t.status || "").toUpperCase();
+
+    if (st === "DONE" || st === "CLOSED" || st === "RESOLVED" || st === "COMPLETED") {
+      doneSP += sp;
+    } else if (st === "IN_REVIEW" || st === "TESTING" || st === "REVIEW") {
+      inReviewSP += sp;
+    } else if (st === "IN_PROGRESS" || st === "IN_DEV") {
+      inProgressSP += sp;
+    } else {
+      todoSP += sp;
+    }
+  });
+
   return (
     <div
       onClick={onToggleExpand}
-      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-card/80 border border-border/40 hover:border-border transition-all duration-200 cursor-pointer"
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-muted/60 dark:bg-muted/50 border border-border/80 dark:border-border/70 hover:border-border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
     >
       {/* Left: Accordion Chevron + Sprint Name + State Badge + Date */}
       <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -84,17 +115,81 @@ export function SprintHeaderCard({
         </Badge>
       </div>
 
-      {/* Right Controls: Create task in sprint button + Actions dropdown */}
-      <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto" onClick={(e) => e.stopPropagation()}>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => onOpenCreateTask(sprint.sprintId)}
-          className="h-8 rounded-xl font-bold text-xs border-border/40 hover:bg-muted/50 flex items-center gap-1.5 cursor-pointer"
-        >
-          <Plus size={12} />
-          Tạo công việc
-        </Button>
+      {/* Right Controls: Story Points Stats Badges + Start/Close sprint button + Actions dropdown */}
+      <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto" onClick={(e) => e.stopPropagation()}>
+        {/* Story Points Stats Badges */}
+        <div className="flex items-center gap-1">
+          <TooltipProvider delayDuration={100}>
+            {/* Cần làm (To Do) SP */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="h-6 px-2 min-w-[24px] rounded-md bg-slate-500/25 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 text-xs font-extrabold flex items-center justify-center cursor-default select-none border border-slate-500/20 transition-all hover:scale-105">
+                  {todoSP}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="rounded-xl px-3 py-1.5 text-xs font-semibold bg-foreground text-background shadow-xl border border-border/20">
+                Cần làm: {todoSP} trên {totalSP} (điểm SP)
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Đang làm (In Progress) SP */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="h-6 px-2 min-w-[24px] rounded-md bg-blue-600/25 dark:bg-blue-600/50 text-blue-700 dark:text-blue-200 text-xs font-extrabold flex items-center justify-center cursor-default select-none border border-blue-500/30 transition-all hover:scale-105">
+                  {inProgressSP}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="rounded-xl px-3 py-1.5 text-xs font-semibold bg-foreground text-background shadow-xl border border-border/20">
+                Đang làm: {inProgressSP} trên {totalSP} (điểm SP)
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Đang xem xét (In Review) SP */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="h-6 px-2 min-w-[24px] rounded-md bg-purple-600/25 dark:bg-purple-600/50 text-purple-700 dark:text-purple-200 text-xs font-extrabold flex items-center justify-center cursor-default select-none border border-purple-500/30 transition-all hover:scale-105">
+                  {inReviewSP}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="rounded-xl px-3 py-1.5 text-xs font-semibold bg-foreground text-background shadow-xl border border-border/20">
+                Đang xem xét: {inReviewSP} trên {totalSP} (điểm SP)
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Đã xong (Done) SP */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="h-6 px-2 min-w-[24px] rounded-md bg-emerald-600/25 dark:bg-emerald-600/50 text-emerald-700 dark:text-emerald-200 text-xs font-extrabold flex items-center justify-center cursor-default select-none border border-emerald-500/30 transition-all hover:scale-105">
+                  {doneSP}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="rounded-xl px-3 py-1.5 text-xs font-semibold bg-foreground text-background shadow-xl border border-border/20">
+                Đã xong: {doneSP} trên {totalSP} (điểm SP)
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        {isLeader && !isStateClosed && (
+          isStateActive ? (
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => onCloseSprint?.(sprint.sprintId)}
+              className="h-8 rounded-xl font-bold text-xs bg-destructive hover:bg-destructive/90 text-white shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              Đóng Sprint
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={() => onStartSprint?.(sprint.sprintId)}
+              className="h-8 rounded-xl font-bold text-xs bg-primary hover:bg-primary/90 text-white shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              Bắt đầu
+            </Button>
+          )
+        )}
 
         {isLeader && (
           <DropdownMenu>

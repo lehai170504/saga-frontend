@@ -41,7 +41,7 @@ export function BacklogTaskRow({
   return (
     <div
       onClick={() => onSelectTask(task)}
-      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-card border border-border/40 hover:border-primary/30 hover:shadow-md transition-all duration-200 cursor-pointer group"
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-card dark:bg-card/90 border border-border/70 dark:border-border/60 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
     >
       {/* Left Info: Type icon + Key + Title */}
       <div className="flex items-center gap-3 min-w-0 flex-1">

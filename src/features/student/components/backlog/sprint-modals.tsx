@@ -140,6 +140,7 @@ interface EditSprintModalProps {
   onEditSprintEndDateChange: (val: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   isPending: boolean;
+  isAutoStart?: boolean;
 }
 
 export function EditSprintModal({
@@ -155,16 +156,19 @@ export function EditSprintModal({
   onEditSprintEndDateChange,
   onSubmit,
   isPending,
+  isAutoStart = false,
 }: EditSprintModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] rounded-[2rem] p-6 border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl">
         <DialogHeader className="pb-4 border-b border-border/40 space-y-2">
           <DialogTitle className="text-base font-extrabold text-foreground leading-snug">
-            Chỉnh sửa Sprint
+            {isAutoStart ? "Cập nhật thời gian & Bắt đầu Sprint" : "Chỉnh sửa Sprint"}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Cập nhật thông tin của Sprint trực tiếp trên Jira.
+            {isAutoStart
+              ? "Vui lòng chọn thời gian bắt đầu và kết thúc để kích hoạt khởi động Sprint này."
+              : "Cập nhật thông tin của Sprint trực tiếp trên Jira."}
           </DialogDescription>
         </DialogHeader>
 
@@ -185,17 +189,18 @@ export function EditSprintModal({
             <Textarea
               value={editSprintGoalInput}
               onChange={(e) => onEditSprintGoalChange(e.target.value)}
-              placeholder="Mô tả mục tiêu của Sprint..."
-              className="rounded-xl min-h-[80px] bg-background/50 border-border/40 text-xs p-4"
+              placeholder="Nhập mục tiêu của Sprint..."
+              rows={2}
+              className="rounded-xl bg-background/50 border-border/40 text-xs px-4 py-2.5 resize-none"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày bắt đầu</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày bắt đầu {isAutoStart && "*"}</label>
               <Input
                 type="date"
-                min={getTodayString()}
+                required={isAutoStart}
                 value={editSprintStartDateInput}
                 onChange={(e) => onEditSprintStartDateChange(e.target.value)}
                 className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
@@ -203,10 +208,10 @@ export function EditSprintModal({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày kết thúc</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Ngày kết thúc {isAutoStart && "*"}</label>
               <Input
                 type="date"
-                min={editSprintStartDateInput || getTodayString()}
+                required={isAutoStart}
                 value={editSprintEndDateInput}
                 onChange={(e) => onEditSprintEndDateChange(e.target.value)}
                 className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4 cursor-pointer"
@@ -229,7 +234,7 @@ export function EditSprintModal({
               className="rounded-xl font-bold cursor-pointer h-10 px-5 text-xs bg-primary text-primary-foreground hover:bg-primary/95 flex items-center gap-1.5"
             >
               {isPending && <Loader2 className="h-3 w-3 animate-spin" />}
-              Lưu thay đổi
+              {isAutoStart ? "Lưu & Bắt đầu Sprint" : "Cập nhật"}
             </Button>
           </div>
         </form>
