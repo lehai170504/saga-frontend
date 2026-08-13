@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { Command } from "cmdk";
@@ -203,7 +203,7 @@ export function GlobalCommandPalette() {
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                       <BarChart3 className="w-4 h-4 text-primary" />
                     </div>
-                    Tổng quan nhóm (Team Overview)
+                    Lựa chọn khóa học (Course Selection)
                   </Command.Item>
                   <Command.Item
                     onSelect={() => runCommand(() => router.push("/student/burndown"))}

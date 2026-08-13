@@ -64,8 +64,11 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
       return;
     }
 
+    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
+    const isDueDateChanged = editDueDate !== origDueDate;
+
     const todayStr = getTodayString();
-    if (editDueDate && editDueDate < todayStr) {
+    if (isDueDateChanged && editDueDate && editDueDate < todayStr) {
       toast.error("Hạn hoàn thành công việc không được chọn ngày trước ngày hiện tại thực tế!");
       return;
     }
@@ -74,8 +77,6 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
     const isDescriptionChanged = editDescription.trim() !== (taskToEdit.description || "").trim();
     const origType = (taskToEdit.type || "TASK").toUpperCase();
     const isIssueTypeChanged = editIssueType.toUpperCase() !== origType;
-    const origDueDate = taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0] : "";
-    const isDueDateChanged = editDueDate !== origDueDate;
     const origPriority = taskToEdit.priority?.toUpperCase() || "MEDIUM";
     const isPriorityChanged = editPriority !== origPriority;
 

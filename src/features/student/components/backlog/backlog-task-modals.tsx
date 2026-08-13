@@ -74,7 +74,7 @@ export function BacklogCreateTaskModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={onSubmit} className="space-y-4 pt-4">
+        <form onSubmit={onSubmit} noValidate className="space-y-4 pt-4">
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Tiêu đề công việc *</label>
             <Input
@@ -254,7 +254,7 @@ export function BacklogEditTaskModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={onSubmit} className="space-y-4 pt-4">
+        <form onSubmit={onSubmit} noValidate className="space-y-4 pt-4">
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Tiêu đề công việc *</label>
             <Input

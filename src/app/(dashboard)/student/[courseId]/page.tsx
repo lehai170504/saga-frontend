@@ -1,10 +1,6 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import React from "react";
-import { StudentDashboardView } from "@/features/student/components/student-dashboard-view";
-
-export default function OverviewDashboardPage({ params }: { params: Promise<{ courseId: string }> }) {
-  const { courseId } = React.use(params);
-
-  return <StudentDashboardView courseId={courseId} />;
+export default async function OverviewDashboardPage({ params }: { params: Promise<{ courseId: string }> }) {
+  const { courseId } = await params;
+  redirect(`/student/${courseId}/projects`);
 }
