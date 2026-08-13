@@ -26,10 +26,10 @@ export function AboutContent() {
               Câu chuyện của SAGA
             </motion.div>
             <motion.h1 variants={fadeUp} className="text-4xl md:text-6xl font-black tracking-tight text-foreground leading-tight">
-              Sinh ra từ nỗi đau <br /> của những đêm <span className="text-primary">chạy deadline</span>.
+              Sứ mệnh <span className="text-primary">minh bạch hóa</span> <br /> đánh giá đồ án.
             </motion.h1>
             <motion.p variants={fadeUp} className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed max-w-2xl">
-              Chúng tôi từng là những sinh viên mệt mỏi vì phải gánh team, và cũng từng bất lực nhìn điểm số cuối kỳ được chia cào bằng một cách đầy cảm tính. SAGA ra đời để chấm dứt điều đó.
+              Là sinh viên, chúng tôi hiểu rõ sự bất công khi điểm số bị cào bằng bởi những bài Peer Review cảm tính, và sự mệt mỏi khi phải đối mặt với vấn nạn Free-rider. SAGA ra đời để chấm dứt điều đó.
             </motion.p>
           </motion.div>
 
@@ -80,10 +80,10 @@ export function AboutContent() {
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Thực trạng &quot;Hộp Đen&quot;</h2>
             <div className="space-y-4">
               <p className="text-muted-foreground leading-relaxed">
-                Trong hầu hết các đồ án đại học, giảng viên chỉ nhìn thấy <strong>kết quả cuối cùng (sản phẩm)</strong> mà không thể theo dõi <strong>quá trình (ai làm gì, làm bao nhiêu)</strong>. Việc đánh giá phụ thuộc hoàn toàn vào những buổi trình bày chớp nhoáng hoặc các phiếu đánh giá chéo (peer-review) đầy cảm tính, cả nể.
+                Trong hầu hết các đồ án đại học, giảng viên chỉ nhìn thấy <strong>kết quả cuối cùng (sản phẩm)</strong> mà không thể theo dõi <strong>quá trình (ai làm gì, làm bao nhiêu)</strong>. Việc đánh giá phụ thuộc hoàn toàn vào những buổi trình bày chớp nhoáng hoặc các bài Peer Review đầy cảm tính, cả nể.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Hệ lụy là: Sinh viên chăm chỉ bị vắt kiệt sức (Bus Factor = 1), còn những thành viên &quot;free-rider&quot; vẫn ung dung nhận điểm cao. Một môi trường thiếu minh bạch sẽ bào mòn động lực sáng tạo.
+                Hệ lụy là: Một vài cá nhân phải gánh toàn bộ khối lượng công việc, còn những thành viên &quot;Free-rider&quot; vẫn ung dung nhận điểm cao. Môi trường thiếu minh bạch này đang bào mòn động lực sáng tạo của sinh viên.
               </p>
             </div>
           </motion.div>
@@ -175,44 +175,7 @@ export function AboutContent() {
         </motion.div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-24 px-6 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl font-bold text-foreground mb-4">Đội ngũ Phát triển</h2>
-            <p className="text-muted-foreground">Những người đứng sau những dòng code của SAGA.</p>
-          </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          >
-            {[
-              { name: "Lê Hoàng Hải", role: "Fullstack Developer", initials: "HH", color: "from-blue-500 to-cyan-500" },
-              { name: "Nguyễn Văn A", role: "UI/UX Designer", initials: "VA", color: "from-emerald-500 to-teal-500" },
-              { name: "Trần Thị B", role: "Backend Developer", initials: "TB", color: "from-purple-500 to-pink-500" },
-              { name: "Phạm Văn C", role: "Project Manager", initials: "VC", color: "from-amber-500 to-orange-500" },
-            ].map((member, i) => (
-              <motion.div variants={fadeUp} key={i} className="flex flex-col items-center text-center group">
-                <div className={`w-32 h-32 rounded-full mb-6 flex items-center justify-center text-3xl font-black text-white bg-gradient-to-br ${member.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                  {member.initials}
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-1">{member.name}</h3>
-                <p className="text-sm text-muted-foreground">{member.role}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-center">
