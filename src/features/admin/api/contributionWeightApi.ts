@@ -2,23 +2,20 @@ import axiosInstance from "@/lib/axios";
 import { Page } from "@/types/pagination";
 
 export type ContributionWeightRequest = {
-  requestId: number;
-  requestedBy: {
-    userId: number;
-    fullName: string;
-  };
+  requestId: string;
+  courseId: string;
+  courseCode: string;
+  courseName: string;
+  lecturerId: string;
+  lecturerName: string;
   reason: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
-  proposedCodeWeight: number;
-  proposedDocumentWeight: number;
-  proposedDesignWeight: number;
-  proposedTestingWeight: number;
+  proposedCodeWeight?: number;
+  proposedDocumentWeight?: number;
+  proposedDesignWeight?: number;
+  proposedTestingWeight?: number;
   createdAt: string;
-  course?: {
-    courseId: number;
-    courseCode: string;
-    courseName: string;
-  };
+  resolvedAt: string | null;
 };
 
 export type WeightRequestsResponse = {
@@ -53,7 +50,7 @@ export type RequestCourseWeightPayload = {
 
 export const contributionWeightApi = {
   getWeightRequests: async (status?: string) => {
-    return axiosInstance.get<never, Page<ContributionWeightRequest>>(
+    return axiosInstance.get<never, ContributionWeightRequest[]>(
       `/api/v1/courses/contribution-slice-weight-requests`,
       {
         params: { status }
