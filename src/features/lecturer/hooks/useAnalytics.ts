@@ -59,11 +59,19 @@ export const useTeamMembers = (courseId: string, teamId: string) => {
   });
 };
 
-export const useTeamInteractions = (courseId: string, teamId: string) => {
+export const useStudentInteractions = (courseId: string, teamId: string, studentId: string) => {
   return useQuery({
-    queryKey: ["teamInteractions", courseId, teamId],
-    queryFn: () => analyticsApi.getTeamInteractions(courseId, teamId),
-    enabled: !!courseId && !!teamId,
+    queryKey: ["studentInteractions", courseId, teamId, studentId],
+    queryFn: () => analyticsApi.getStudentInteractions(courseId, teamId, studentId),
+    enabled: !!courseId && !!teamId && !!studentId,
+  });
+};
+
+export const useSprintBurndown = (courseId: string, teamId: string, sprintId: string) => {
+  return useQuery({
+    queryKey: ["sprintBurndown", courseId, teamId, sprintId],
+    queryFn: () => analyticsApi.getSprintBurndown(courseId, teamId, sprintId),
+    enabled: !!courseId && !!teamId && !!sprintId,
   });
 };
 

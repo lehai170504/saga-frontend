@@ -193,7 +193,7 @@ export default function LecturerContributionPage() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
+    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-x-hidden bg-background">
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
 
         {/* Header Section */}
@@ -204,7 +204,7 @@ export default function LecturerContributionPage() {
               Quyết định Điểm Thành phần
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Đánh Giá Phần Trăm Đóng Góp
+             Bảng điểm
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi % đóng góp của sinh viên dựa trên Task/Commit và thực hiện ghi đè (override) nếu cần thiết.</p>
           </div>
@@ -310,9 +310,9 @@ export default function LecturerContributionPage() {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-auto max-h-[calc(100vh-320px)] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-primary/20 hover:[&::-webkit-scrollbar-thumb]:bg-primary/40 [&::-webkit-scrollbar-thumb]:rounded-full [&>div]:overflow-visible">
                 <Table>
-                  <TableHeader className="bg-muted/30">
+                  <TableHeader className="bg-muted/90 sticky top-0 z-20 shadow-sm backdrop-blur-md">
                     <TableRow>
                       <TableHead className="w-[100px] font-bold text-muted-foreground">Mã SV</TableHead>
                       <TableHead className="font-bold text-muted-foreground min-w-[150px]">Họ và Tên</TableHead>
