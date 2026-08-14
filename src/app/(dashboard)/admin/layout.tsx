@@ -11,10 +11,8 @@ export default function AdminLayout({
 }) {
   return (
     <RouteGuard allowedRoles={["ADMIN"]}>
-      <div className="min-h-screen bg-background">
-        <main className="w-full">{children}</main>
-        <GlobalCommandPalette />
-      </div>
+      {children}
+      <GlobalCommandPalette />
     </RouteGuard>
   );
 }

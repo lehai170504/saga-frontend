@@ -16,27 +16,27 @@ export default function StudentJiraPage({ params }: { params: Promise<{ courseId
       {/* Tab Switcher Panel */}
       <div className="px-6 pt-6 bg-background">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-[550px] grid-cols-3 rounded-2xl bg-muted/40 p-1 border border-border/10 h-11">
-            <TabsTrigger 
-              value="board" 
-              className="rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 text-muted-foreground/80 hover:text-foreground hover:bg-background/20 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm cursor-pointer h-full"
+          <TabsList className="mb-6 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5 gap-2">
+            <TabsTrigger
+              value="board"
+              className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2"
             >
               <Kanban size={14} />
               Board công việc
             </TabsTrigger>
-            <TabsTrigger 
-              value="backlog" 
-              className="rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 text-muted-foreground/80 hover:text-foreground hover:bg-background/20 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm cursor-pointer h-full"
+            <TabsTrigger
+              value="backlog"
+              className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2"
             >
               <Layers size={14} />
-              Backlog
+              Backlog (Tasks)
             </TabsTrigger>
-            <TabsTrigger 
-              value="timeline" 
-              className="rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 text-muted-foreground/80 hover:text-foreground hover:bg-background/20 data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm cursor-pointer h-full"
+            <TabsTrigger
+              value="timeline"
+              className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2"
             >
               <Milestone size={14} />
-              Timeline / Sprints
+              Roadmap & Timeline
             </TabsTrigger>
           </TabsList>
 

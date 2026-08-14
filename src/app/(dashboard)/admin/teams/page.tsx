@@ -26,7 +26,7 @@ export default function TeamsManagementPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Quản lý Nhóm & Dự án"
         description="Xem danh sách toàn bộ các nhóm và dự án đang thực hiện trên hệ thống SAGA."
@@ -34,13 +34,13 @@ export default function TeamsManagementPage() {
       />
 
       <Tabs defaultValue="teams" className="w-full">
-        <TabsList className="mb-6 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5">
-          <TabsTrigger value="teams" className="rounded-xl px-6 py-2.5 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <Network className="w-4 h-4 mr-2" />
+        <TabsList className="mb-6 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5 gap-2">
+          <TabsTrigger value="teams" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
+            <Network className="w-4 h-4" />
             Danh sách Nhóm (Teams)
           </TabsTrigger>
-          <TabsTrigger value="projects" className="rounded-xl px-6 py-2.5 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <FolderGit2 className="w-4 h-4 mr-2" />
+          <TabsTrigger value="projects" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
+            <FolderGit2 className="w-4 h-4" />
             Danh sách Dự án (Projects)
           </TabsTrigger>
         </TabsList>

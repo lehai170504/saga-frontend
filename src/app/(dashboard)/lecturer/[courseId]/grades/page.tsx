@@ -194,7 +194,7 @@ export default function LecturerContributionPage() {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-x-hidden bg-background">
-      <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-4">

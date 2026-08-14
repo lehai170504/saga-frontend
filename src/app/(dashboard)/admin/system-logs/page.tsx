@@ -18,7 +18,7 @@ export default function SystemLogsPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Nhật ký Hệ thống (Audit Logs)"
         description="Theo dõi tất cả các thay đổi về cấu hình, tích hợp API và hoạt động của Admin."

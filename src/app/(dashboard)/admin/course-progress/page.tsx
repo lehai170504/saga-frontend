@@ -16,7 +16,7 @@ export default function CourseProgressPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Tiến độ Khóa học"
         description="Theo dõi số lượng sinh viên, nhóm, dự án và tiến trình đánh giá chéo của toàn bộ các khóa học."
