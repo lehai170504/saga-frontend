@@ -9,6 +9,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectDashboardStats } from "@/features/projects/hooks/useProjectDashboardStats";
 import { StudentBurndownTab } from "./stats/student-burndown-tab";
+import { StudentOverviewActivityTab } from "./stats/student-overview-activity-tab";
+import { StudentHeatmapTab } from "./stats/student-heatmap-tab";
+import { StudentInteractionTab } from "./stats/student-interaction-tab";
 import {
   CheckCircle2,
   CheckSquare,
@@ -21,6 +24,11 @@ import {
   BarChart3,
   Layers,
   Flame,
+  Zap,
+  Crown,
+  UserCheck,
+  Sparkles,
+  Network,
 } from "lucide-react";
 import {
   PieChart,
@@ -44,6 +52,17 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
   const teamId = myTeamData?.teamId || "";
+
+  const userRole = myTeamData?.roleInTeam || "MEMBER";
+  const isLeader = userRole === "LEADER";
+
+  // Members list for interaction tab
+  const membersList = (myTeamData?.members?.content || []).map((m: any) => ({
+    studentId: m.studentId,
+    fullName: m.fullName,
+    studentCode: m.studentCode,
+    roleInTeam: m.roleInTeam,
+  }));
 
   const { data: stats, isLoading: isLoadingStats } = useProjectDashboardStats(projectId);
 
@@ -76,12 +95,12 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
- <div className="p-6 max-w-[1400px] mx-auto space-y-6 "> 
+      <div className="p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
         
         {/* Header */}
         <PageHeader
           title="Thống kê Tiến độ Dự án"
-          description="Tổng quan tiến độ thực hiện công việc (Jira), chỉ số đóng góp mã nguồn (GitHub) và biểu đồ Burndown của nhóm"
+          description="Tổng quan tiến độ thực hiện công việc (Jira), chỉ số đóng góp mã nguồn (GitHub), biểu đồ Burndown, tổng quan hoạt động, biểu đồ nhiệt và mạng tương tác"
         />
 
         {isLoadingTeam ? (
@@ -100,24 +119,71 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
             </p>
           </Card>
         ) : (
-          <Tabs defaultValue="overall" className="w-full space-y-6">
-            <TabsList className="bg-muted/60 p-1.5 rounded-2xl border border-border/50 h-auto gap-1.5">
-              <TabsTrigger
-                value="overall"
-                className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
-              >
-                <BarChart3 size={16} />
-                <span>Tổng quan & Đóng góp</span>
-              </TabsTrigger>
+          <div className="space-y-6">
+            {/* Role Permission Scope Info Banner */}
+            <div className="p-3.5 rounded-2xl bg-card/60 border border-border/50 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <div className={`p-2 rounded-xl shrink-0 ${isLeader ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" : "bg-primary/10 text-primary border border-primary/20"}`}>
+                  {isLeader ? <Crown size={16} /> : <UserCheck size={16} />}
+                </div>
+                <div>
+                  <span className="font-extrabold text-foreground">
+                    {isLeader ? "Chế độ Trưởng nhóm (Leader View)" : "Chế độ Thành viên (Member Personal View)"}
+                  </span>
+                  <p className="text-[11px] font-medium text-muted-foreground leading-snug">
+                    {isLeader
+                      ? "Bạn có quyền LEADER — Hệ thống đang tổng hợp và hiển thị biểu đồ chỉ số hoạt động của toàn bộ nhóm."
+                      : "Bạn đang ở vai trò Thành viên — Hệ thống tự động phân quyền hiển thị thông số và biểu đồ hoạt động cá nhân của bạn."}
+                  </p>
+                </div>
+              </div>
+              <Badge variant="outline" className={`shrink-0 font-extrabold text-[10px] px-3 py-1 rounded-xl border ${isLeader ? "bg-amber-500/10 text-amber-500 border-amber-500/30" : "bg-primary/10 text-primary border-primary/30"}`}>
+                {isLeader ? "Dữ liệu Toàn nhóm" : "Dữ liệu Cá nhân"}
+              </Badge>
+            </div>
 
-              <TabsTrigger
-                value="burndown"
-                className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
-              >
-                <Flame size={16} className="text-primary" />
-                <span>Biểu đồ Burndown</span>
-              </TabsTrigger>
-            </TabsList>
+            <Tabs defaultValue="overall" className="w-full space-y-6">
+              <TabsList className="bg-muted/60 p-1.5 rounded-2xl border border-border/50 h-auto gap-1.5 flex-wrap">
+                <TabsTrigger
+                  value="overall"
+                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
+                >
+                  <BarChart3 size={16} />
+                  <span>Tổng quan & Đóng góp</span>
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="burndown"
+                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
+                >
+                  <Flame size={16} className="text-primary" />
+                  <span>Biểu đồ Burndown</span>
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="overview"
+                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
+                >
+                  <Zap size={16} className="text-amber-500" />
+                  <span>Tổng quan Hoạt động</span>
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="heatmap"
+                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
+                >
+                  <Sparkles size={16} className="text-rose-500" />
+                  <span>Biểu đồ Nhiệt (Heatmap)</span>
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="interaction"
+                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
+                >
+                  <Network size={16} className="text-purple-500" />
+                  <span>Mạng Tương tác</span>
+                </TabsTrigger>
+              </TabsList>
 
             {/* Tab 1: Overall Stats */}
             <TabsContent value="overall" className="space-y-6 outline-none">
@@ -356,7 +422,27 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
             <TabsContent value="burndown" className="outline-none">
               <StudentBurndownTab courseId={courseId || ""} teamId={teamId} />
             </TabsContent>
+
+            {/* Tab 3: Overview Activity Chart */}
+            <TabsContent value="overview" className="outline-none">
+              <StudentOverviewActivityTab courseId={courseId || ""} teamId={teamId} />
+            </TabsContent>
+
+            {/* Tab 4: Heatmap Chart */}
+            <TabsContent value="heatmap" className="outline-none">
+              <StudentHeatmapTab courseId={courseId || ""} teamId={teamId} />
+            </TabsContent>
+
+            {/* Tab 5: Interaction Graph Chart */}
+            <TabsContent value="interaction" className="outline-none">
+              <StudentInteractionTab
+                courseId={courseId || ""}
+                teamId={teamId}
+                teamMembers={membersList}
+              />
+            </TabsContent>
           </Tabs>
+          </div>
         )}
       </div>
     </div>
