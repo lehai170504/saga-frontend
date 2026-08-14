@@ -16,7 +16,7 @@ export function OverrideRequests() {
   const { data: requestsResponse, isLoading: isLoadingRequests } = useGetWeightRequests();
   const decideMutation = useDecideWeightRequest();
 
-  const requests: ContributionWeightRequest[] = Array.isArray(requestsResponse) ? requestsResponse : ((requestsResponse as any)?.content ?? []);
+  const requests: ContributionWeightRequest[] = Array.isArray(requestsResponse) ? requestsResponse : ((requestsResponse as unknown as { content?: ContributionWeightRequest[] })?.content ?? []);
 
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;

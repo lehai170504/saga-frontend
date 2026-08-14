@@ -1,4 +1,3 @@
-import React from "react";
 import { ProjectDetailClient } from "./project-detail-client";
 import { Metadata } from "next";
 

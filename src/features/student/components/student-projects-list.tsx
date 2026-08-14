@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { FolderKanban, Crown, Plus, Loader2, Settings, Users, Activity, AlertTriangle, FileText, Code, Palette, CheckSquare, Award, AlertCircle, ChevronDown, ChevronUp, Clock, TrendingUp } from "lucide-react";
+import { FolderKanban, Crown, Plus, Loader2, Settings, Users, Activity, AlertTriangle, FileText, Code, Palette, AlertCircle, ChevronDown, ChevronUp, Clock, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -101,7 +101,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
 
-      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
+      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 ">
 
         {/* Header Section */}
         <PageHeader
@@ -159,11 +159,10 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                     <Button
                       onClick={() => setShowScores(!showScores)}
                       variant={showScores ? "secondary" : "outline"}
-                      className={`w-full sm:w-auto h-12 px-6 rounded-xl font-bold transition-all duration-300 ${
-                        showScores
+                      className={`w-full sm:w-auto h-12 px-6 rounded-xl font-bold transition-all duration-300 ${showScores
                           ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground border-border/80"
                           : "border-border/60 hover:bg-muted text-foreground bg-background"
-                      }`}
+                        }`}
                     >
                       <Activity size={18} className="mr-2 text-primary" strokeWidth={3} />
                       {showScores ? "Ẩn điểm" : "Xem điểm"}
@@ -328,10 +327,10 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                       const isExpanded = !!expandedSprints[member.studentId];
                       const warnings = member.warnings || [];
                       const hasWarnings = warnings.length > 0;
-                      
+
                       return (
-                        <div 
-                          key={member.studentId} 
+                        <div
+                          key={member.studentId}
                           className="glass-panel rounded-[2rem] border border-border/50 bg-card/40 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
                         >
                           {/* Card Header */}
@@ -347,7 +346,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">MSSV: {member.studentCode}</p>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-center gap-3 self-end sm:self-auto">
                               <div className="text-right">
                                 <p className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/75">Tỷ lệ đóng góp cuối</p>
@@ -364,13 +363,12 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                             {hasWarnings && (
                               <div className="space-y-2">
                                 {warnings.map((w, idx) => (
-                                  <div 
-                                    key={idx} 
-                                    className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${
-                                      w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
+                                  <div
+                                    key={idx}
+                                    className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
                                         ? "bg-destructive/10 border-destructive/20 text-destructive"
                                         : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
-                                    }`}
+                                      }`}
                                   >
                                     <AlertTriangle size={15} className="shrink-0 mt-0.5" />
                                     <div>

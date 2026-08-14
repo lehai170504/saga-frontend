@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,31 +10,23 @@ import { useAdminBroadcast } from "@/features/notifications/hooks/useNotificatio
 import { Loader2, Send } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const broadcastSchema = z.object({
-  title: z.string().min(1, "Tiêu đề không được để trống").max(200, "Tiêu đề quá dài"),
-  message: z.string().min(1, "Nội dung không được để trống").max(1000, "Nội dung quá dài"),
-  actionUrl: z.string().optional(),
-  type: z.string().optional(),
-  audience: z.enum(["STUDENTS", "LECTURERS", "ALL_USERS"], {
-    required_error: "Vui lòng chọn đối tượng nhận thông báo",
-  }),
-});
+import { broadcastSchema, BroadcastFormValues } from "@/features/admin/schemas/broadcastSchema";
 
 export default function AdminBroadcastPage() {
   const { mutateAsync: sendBroadcast, isPending } = useAdminBroadcast();
 
-  const form = useForm<z.infer<typeof broadcastSchema>>({
+  const form = useForm<BroadcastFormValues>({
     resolver: zodResolver(broadcastSchema),
     defaultValues: {
       title: "",
       message: "",
       actionUrl: "",
       type: "SYSTEM",
-      audience: "ALL_USERS",
+      audience: "ALL",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof broadcastSchema>) => {
+  const onSubmit = async (values: BroadcastFormValues) => {
     try {
       await sendBroadcast({
         title: values.title,
@@ -57,9 +48,9 @@ export default function AdminBroadcastPage() {
   };
 
   const audienceList = [
-    { id: "ALL_USERS", label: "Tất cả mọi người (ALL_USERS)" },
-    { id: "STUDENTS", label: "Sinh viên (STUDENTS)" },
-    { id: "LECTURERS", label: "Giảng viên (LECTURERS)" },
+    { id: "ALL", label: "Tất cả mọi người (ALL)" },
+    { id: "STUDENT", label: "Sinh viên (STUDENT)" },
+    { id: "LECTURER", label: "Giảng viên (LECTURER)" },
   ];
 
   return (

@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import { getFirebaseInstallationId } from '@/lib/firebase';
 import { notificationApi } from '@/features/notifications/api/notificationApi';
 
+let isRegisteringFirebase = false;
+
 export function useAuth() {
 
   const setUser = useAuthStore((state) => state.setUser);
@@ -24,15 +26,14 @@ export function useAuth() {
       } catch (err: unknown) {
 
         if ((err as { status?: number })?.status === 401) {
-          return { user: null, csrf: null }; // Return gracefully if 401
+          return { user: null, csrf: null };
         }
         throw err;
       }
     },
-    staleTime: Infinity, // Don't refetch automatically to prevent redundant calls
+    staleTime: Infinity,
   });
 
-  // Sync React Query state to Zustand
   useEffect(() => {
     if (!isLoading && !isFetching) {
       setUser(data?.user ?? null);
@@ -40,37 +41,45 @@ export function useAuth() {
       setInitializing(false);
 
       if (data?.user && data?.csrf) {
-        // Register Firebase Installation ID safely
-        getFirebaseInstallationId().then(async (fid) => {
-          if (fid) {
-            try {
-              const res = await notificationApi.registerFirebaseInstallation(fid);
-              if (res && res.id) {
-                localStorage.setItem("saga_firebase_registration_id", res.id);
+        const regId = localStorage.getItem("saga_firebase_registration_id");
+        if (!regId && !isRegisteringFirebase) {
+          isRegisteringFirebase = true;
+          getFirebaseInstallationId().then(async (fid) => {
+            if (fid) {
+              try {
+                const res = await notificationApi.registerFirebaseInstallation(fid);
+                if (res && res.id) {
+                  localStorage.setItem("saga_firebase_registration_id", res.id);
+                }
+              } catch (err) {
+                console.warn("Firebase installation registration warning:", err);
+
+                if ((err as { status?: number })?.status === 409) {
+                  localStorage.setItem("saga_firebase_registration_id", fid);
+                }
+              } finally {
+                isRegisteringFirebase = false;
               }
-            } catch (err) {
-              // Gracefully handle duplicate registration (409) or temporary server errors
-              console.warn("Firebase installation registration warning:", err);
+            } else {
+              isRegisteringFirebase = false;
             }
-          }
-        });
+          });
+        }
       }
     }
   }, [data, isLoading, isFetching, setUser, setCsrf, setInitializing]);
 
   const logout = async () => {
-    // We intentionally do not clear Zustand / React Query here.
-    // The backend redirect back to /logout/callback will clear them.
+
 
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
 
     try {
-      // Try to revoke Firebase Installation Registration before logging out
       const regId = localStorage.getItem("saga_firebase_registration_id");
       const fid = await getFirebaseInstallationId();
       const targetId = regId || fid;
       if (targetId) {
-        await notificationApi.revokeFirebaseInstallation(targetId).catch(() => {});
+        await notificationApi.revokeFirebaseInstallation(targetId).catch(() => { });
         localStorage.removeItem("saga_firebase_registration_id");
       }
 

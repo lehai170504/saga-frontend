@@ -45,6 +45,123 @@ export type TeamSprintsResponse = {
   sprints: Sprint[];
 };
 
+export interface BurndownPoint {
+  date: string;
+  idealRemaining: number;
+  actualRemaining: number;
+  doneCount: number;
+}
+
+export interface BurndownChartResponse {
+  courseId: string;
+  teamId: string;
+  sprintId: string;
+  sprintName: string;
+  startDate: string;
+  endDate: string;
+  totalScope: number;
+  points: BurndownPoint[];
+}
+
+export interface OverviewDayActivity {
+  date: string;
+  commits: number;
+  peerReviews: number;
+  comments: number;
+  documents: number;
+  tasks: number;
+  totalActivities: number;
+  totalScore: number;
+}
+
+export interface OverviewTotals {
+  commits: number;
+  peerReviews: number;
+  comments: number;
+  documents: number;
+  tasks: number;
+  totalActivities: number;
+  totalScore: number;
+}
+
+export interface OverviewActivityResponse {
+  courseId: string;
+  teamId: string;
+  startDate: string;
+  endDate: string;
+  days: OverviewDayActivity[];
+  totals: OverviewTotals;
+}
+
+export interface HeatmapCell {
+  date: string;
+  commits: number;
+  peerReviews: number;
+  comments: number;
+  documents: number;
+  tasks: number;
+  totalActivities: number;
+  totalScore: number;
+}
+
+export interface HeatmapStudentRow {
+  studentId: string;
+  studentCode: string;
+  fullName: string;
+  commits: number;
+  peerReviews: number;
+  comments: number;
+  documents: number;
+  tasks: number;
+  totalActivities: number;
+  totalScore: number;
+  cells: HeatmapCell[];
+}
+
+export interface HeatmapDaySummary {
+  date: string;
+  commits: number;
+  peerReviews: number;
+  comments: number;
+  documents: number;
+  tasks: number;
+  totalActivities: number;
+  totalScore: number;
+}
+
+export interface HeatmapChartResponse {
+  courseId: string;
+  teamId: string;
+  studentId?: string;
+  startDate: string;
+  endDate: string;
+  students: HeatmapStudentRow[];
+  days: HeatmapDaySummary[];
+}
+
+export interface InteractionNode {
+  studentId: string;
+  studentCode: string;
+  fullName: string;
+  degree: number;
+}
+
+export interface InteractionEdge {
+  fromStudentId: string;
+  toStudentId: string;
+  sourceType: "REVIEWED" | "COMMENTED_ON" | "ASSIGNED_TO" | "COLLABORATED_WITH" | string;
+  sourceCount: number;
+  directed: boolean;
+}
+
+export interface StudentInteractionResponse {
+  courseId: string;
+  teamId: string;
+  studentId: string;
+  nodes: InteractionNode[];
+  edges: InteractionEdge[];
+}
+
 export type ReviewCandidate = {
   studentId: string;
   fullName: string;

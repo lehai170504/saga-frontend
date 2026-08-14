@@ -2,14 +2,16 @@
 
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { TeamsTable } from "@/features/admin/components/teams-table";
-import { ProjectsTable } from "@/features/admin/components/projects-table";
+import { TeamsTable } from "@/features/admin/components/teams/teams-table";
+import { ProjectsTable } from "@/features/admin/components/projects/projects-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAdminTeams } from "@/features/admin/hooks/useTeams";
 import { useAdminProjects } from "@/features/admin/hooks/useProjects";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Network, FolderGit2 } from "lucide-react";
+import { Network, FolderGit2, Layers } from "lucide-react";
+import { ProjectTypesTable } from "@/features/admin/components/project-types/project-types-table";
+import { useProjectTypes } from "@/features/admin/hooks/useProjectTypes";
 
 export default function TeamsManagementPage() {
   const [teamPage, setTeamPage] = useState(0);
@@ -25,8 +27,10 @@ export default function TeamsManagementPage() {
     size: 20,
   });
 
+  const { data: projectTypes, isLoading: isLoadingTypes } = useProjectTypes();
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 ">
       <PageHeader
         title="Quản lý Nhóm & Dự án"
         description="Xem danh sách toàn bộ các nhóm và dự án đang thực hiện trên hệ thống SAGA."
@@ -34,14 +38,18 @@ export default function TeamsManagementPage() {
       />
 
       <Tabs defaultValue="teams" className="w-full">
-        <TabsList className="mb-6 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5">
-          <TabsTrigger value="teams" className="rounded-xl px-6 py-2.5 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+        <TabsList className="bg-card border border-border/50 rounded-[2rem] w-full p-2 grid grid-cols-1 lg:grid-cols-3 gap-2 h-auto lg:h-14">
+          <TabsTrigger value="teams" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
             <Network className="w-4 h-4 mr-2" />
-            Danh sách Nhóm (Teams)
+            Nhóm (Teams)
           </TabsTrigger>
-          <TabsTrigger value="projects" className="rounded-xl px-6 py-2.5 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger value="projects" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
             <FolderGit2 className="w-4 h-4 mr-2" />
-            Danh sách Dự án (Projects)
+            Dự án (Projects)
+          </TabsTrigger>
+          <TabsTrigger value="project-types" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
+            <Layers className="w-4 h-4 mr-2" />
+            Loại Dự án
           </TabsTrigger>
         </TabsList>
 
@@ -90,6 +98,28 @@ export default function TeamsManagementPage() {
                   totalElements={projectsData?.totalElements || 0}
                   onPageChange={setProjectPage}
                 />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="project-types" className="mt-0 outline-none">
+          <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden">
+            <CardContent className="p-6">
+              {isLoadingTypes ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 justify-end mb-4">
+                    <Skeleton className="h-10 w-32 rounded-xl" />
+                  </div>
+                  <div className="rounded-2xl border border-border overflow-hidden">
+                    <Skeleton className="h-12 w-full rounded-none border-b border-border" />
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <Skeleton key={i} className="h-16 w-full rounded-none border-b border-border/50" />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <ProjectTypesTable data={projectTypes || []} />
               )}
             </CardContent>
           </Card>

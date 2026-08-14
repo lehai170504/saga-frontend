@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Mail, User, ShieldCheck, Camera, Key, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { Mail, User, ShieldCheck, Camera, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { PersonalIntegrationPanel } from "@/features/integrations/components/personal-integration-panel";
 
@@ -71,33 +71,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }, 1000);
   };
 
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-
-  const handleChangePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      toast.error("Vui lòng điền đầy đủ thông tin mật khẩu!");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error("Mật khẩu mới không khớp!");
-      return;
-    }
-    setIsChangingPassword(true);
-    setTimeout(() => {
-      setIsChangingPassword(false);
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      toast.success("Đổi mật khẩu thành công!");
-    }, 1500);
-  };
-
   // Reset form nếu đóng modal hoặc hủy
   const handleCancel = () => {
     setName(user?.fullName || "");
@@ -129,9 +102,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             <TabsList className="flex flex-row sm:flex-col h-auto w-full bg-transparent p-4 sm:pt-0 gap-2 items-stretch justify-start overflow-x-auto">
               <TabsTrigger value="profile" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
                 <User className="w-4 h-4 mr-2" /> Hồ sơ
-              </TabsTrigger>
-              <TabsTrigger value="security" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
-                <ShieldCheck className="w-4 h-4 mr-2" /> Bảo mật
               </TabsTrigger>
               {user.applicationRole === "STUDENT" && (
                 <TabsTrigger value="settings" className="justify-start px-4 py-2.5 rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none font-semibold">
@@ -248,81 +218,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   )}
                 </div>
               </div>
-            </TabsContent>
-
-            <TabsContent value="security" className="mt-0 space-y-4">
-              <form onSubmit={handleChangePassword} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label className="text-muted-foreground text-xs font-bold">Mật khẩu hiện tại</Label>
-                  <div className="relative flex items-center">
-                    <Key className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type={showOldPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={oldPassword}
-                      onChange={(e) => setOldPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 bg-background border border-border focus-visible:ring-ring rounded-xl text-sm transition-all"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowOldPassword(!showOldPassword)}
-                      className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                    >
-                      {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className="text-muted-foreground text-xs font-bold">Mật khẩu mới</Label>
-                  <div className="relative flex items-center">
-                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type={showNewPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 bg-background border border-border focus-visible:ring-ring rounded-xl text-sm transition-all"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                    >
-                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className="text-muted-foreground text-xs font-bold">Xác nhận mật khẩu mới</Label>
-                  <div className="relative flex items-center">
-                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type={showNewPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pl-9 pr-10 h-11 bg-background border border-border focus-visible:ring-ring rounded-xl text-sm transition-all"
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isChangingPassword}
-                  className="w-full h-11 mt-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
-                >
-                  {isChangingPassword ? (
-                    <>
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                      Đang xử lý...
-                    </>
-                  ) : (
-                    "Cập nhật mật khẩu"
-                  )}
-                </Button>
-              </form>
             </TabsContent>
 
             {user.applicationRole === "STUDENT" && (

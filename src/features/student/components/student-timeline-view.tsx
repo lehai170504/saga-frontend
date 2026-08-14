@@ -249,7 +249,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
-      <div className="relative p-6 max-w-[1200px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-600">
+ <div className="relative p-6 max-w-[1200px] mx-auto space-y-8 "> 
         <PageHeader
           title="Timeline Tiến Độ"
           description={

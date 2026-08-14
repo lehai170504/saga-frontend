@@ -47,25 +47,25 @@ export function SprintVelocityChart({ data, isLoading }: SprintVelocityChartProp
           data={chartData}
           margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
           <XAxis
             dataKey="sprintName"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 500 }}
+            tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 500 }}
             dy={10}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 500 }}
+            tick={{ fill: 'var(--muted-foreground)', fontSize: 12, fontWeight: 500 }}
             dx={-10}
           />
           <Tooltip
-            cursor={{ fill: 'hsl(var(--muted))', opacity: 0.4 }}
+            cursor={{ fill: 'var(--muted)', opacity: 0.4 }}
             contentStyle={{
-              backgroundColor: 'hsl(var(--card))',
-              borderColor: 'hsl(var(--border))',
+              backgroundColor: 'var(--card)',
+              borderColor: 'var(--border)',
               borderRadius: '12px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
             }}
@@ -78,14 +78,15 @@ export function SprintVelocityChart({ data, isLoading }: SprintVelocityChartProp
           <Bar
             dataKey="currentPlannedPoints"
             name="Điểm Kế hoạch"
-            fill="hsl(var(--muted-foreground))"
+            fill="var(--color-blue-500)"
+            fillOpacity={0.6}
             radius={[4, 4, 0, 0]}
             maxBarSize={50}
           />
           <Bar
             dataKey="completedPoints"
             name="Điểm Hoàn thành"
-            fill="hsl(var(--primary))"
+            fill="var(--color-emerald-500)"
             radius={[4, 4, 0, 0]}
             maxBarSize={50}
           />

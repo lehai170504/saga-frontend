@@ -11,7 +11,7 @@ export default function NotFound() {
       <div className="absolute top-[20%] left-[20%] w-[30rem] h-[30rem] bg-primary/20 rounded-full blur-[8rem] opacity-50 mix-blend-screen" />
       <div className="absolute bottom-[20%] right-[20%] w-[30rem] h-[30rem] bg-secondary/20 rounded-full blur-[8rem] opacity-50 mix-blend-screen" />
 
-      <Card className="relative z-10 max-w-lg w-full border border-border/50 shadow-2xl rounded-[2rem] bg-card/60 backdrop-blur-3xl animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <Card className="relative z-10 max-w-lg w-full border border-border/50 shadow-2xl rounded-[2rem] bg-card/60 backdrop-blur-3xl animate-in fade-in slide-in-from-bottom-4 duration-500">
         <CardHeader className="text-center space-y-6 pt-12 pb-4">
           <div className="mx-auto w-28 h-28 bg-primary/10 rounded-3xl flex items-center justify-center text-primary shadow-inner border border-primary/20 backdrop-blur-md transition-transform duration-500 hover:scale-110">
             <SearchX size={56} className="opacity-80" />

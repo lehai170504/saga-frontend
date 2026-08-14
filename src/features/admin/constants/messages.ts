@@ -33,5 +33,13 @@ export const ADMIN_MESSAGES = {
     UPDATE_ERROR: "Có lỗi xảy ra khi cập nhật",
     DELETE_SUCCESS: "Xóa lớp học thành công",
     DELETE_ERROR: "Có lỗi xảy ra khi xóa",
+  },
+  PROJECT_TYPE: {
+    CREATE_SUCCESS: "Tạo Loại dự án thành công!",
+    CREATE_ERROR: "Có lỗi xảy ra khi tạo Loại dự án.",
+    UPDATE_SUCCESS: "Cập nhật Loại dự án thành công!",
+    UPDATE_ERROR: "Có lỗi xảy ra khi cập nhật Loại dự án.",
+    DELETE_SUCCESS: "Xóa Loại dự án thành công!",
+    DELETE_ERROR: "Có lỗi xảy ra khi xóa Loại dự án.",
   }
 } as const;

@@ -5,8 +5,17 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ClassNetworkGraph } from "@/features/lecturer/components/class-network-graph";
-import { SlicingPieChart } from "./charts/slicing-pie-chart";
-import { RetroSkillRadar } from "./charts/retro-skill-radar";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const SlicingPieChart = dynamic(
+  () => import("./charts/slicing-pie-chart").then(m => m.SlicingPieChart),
+  { ssr: false, loading: () => <Skeleton className="w-full h-[400px] rounded-2xl" /> }
+);
+const RetroSkillRadar = dynamic(
+  () => import("./charts/retro-skill-radar").then(m => m.RetroSkillRadar),
+  { ssr: false, loading: () => <Skeleton className="w-full h-[400px] rounded-2xl" /> }
+);
 
 interface TeamEvaluationProps {
   courseId: string;

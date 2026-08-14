@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { projectApi, ProjectFilterParams } from "../api/projectApi";
+import { projectApi, ProjectFilterParams, UpdateGroupWeightPayload } from "../api/projectApi";
 import { toast } from "sonner";
 import { ADMIN_MESSAGES } from "../constants/messages";
 
@@ -48,7 +48,7 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ teamId, data }: { teamId: string; data: { name: string } }) =>
+    mutationFn: ({ teamId, data }: { teamId: string; data: { name: string; projectTypeId: string; description?: string } }) =>
       projectApi.createProject(teamId, data),
     onSuccess: () => {
       toast.success(ADMIN_MESSAGES.PROJECT.CREATE_SUCCESS);
@@ -57,6 +57,22 @@ export const useCreateProject = () => {
     onError: (error: unknown) => {
       const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || ADMIN_MESSAGES.PROJECT.CREATE_ERROR;
       toast.error(errorMessage);
+    },
+  });
+};
+
+export const useUpdateGroupWeights = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ projectId, data }: { projectId: string; data: UpdateGroupWeightPayload }) => projectApi.updateGroupWeights(projectId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "teams"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "project", variables.projectId] });
+      toast.success("Cập nhật trọng số nhóm thành công");
+    },
+    onError: () => {
+      toast.error("Cập nhật trọng số thất bại");
     },
   });
 };

@@ -18,7 +18,7 @@ export function SemesterCards() {
   const activeSemesterId = activeSemesterData?.semesterId;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+ <div className="space-y-8 "> 
       <PageHeader
         title="Danh mục Học kỳ"
         description="Quản lý danh sách các học kỳ trong hệ thống."

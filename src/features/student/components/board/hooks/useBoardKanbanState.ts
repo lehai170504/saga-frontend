@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { JiraTask } from "@/features/projects/types";
-import { TaskTransition } from "@/features/projects/api/taskApi";
+import { TaskTransition, taskApi } from "@/features/projects/api/taskApi";
 import { useTransitionTask } from "@/features/projects/hooks/useProjectTasks";
 
 export function useBoardKanbanState(projectId: string, tasks: JiraTask[]) {
@@ -75,13 +75,8 @@ export function useBoardKanbanState(projectId: string, tasks: JiraTask[]) {
     const targetNameStr = targetNames.join(", ");
 
     try {
-      const resp = await fetch(`/api/v1/projects/${projectId}/tasks/${taskId}/transitions`);
-      if (!resp.ok) {
-        toast.error("Không thể lấy thông tin chuyển trạng thái từ Jira.");
-        return;
-      }
-      const data = await resp.json();
-      const transitions: TaskTransition[] = data.transitions || data || [];
+      const data = await taskApi.getTaskTransitions(projectId, taskId);
+      const transitions: TaskTransition[] = Array.isArray(data) ? data : (data as { transitions?: TaskTransition[] })?.transitions || [];
 
       const match = transitions.find((t) => {
         const name = (t.name || "").toLowerCase();

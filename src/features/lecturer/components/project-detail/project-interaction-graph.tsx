@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Share2, Users, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Share2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -51,18 +50,14 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
   const { data: members, isLoading: isLoadingMembers } = useTeamMembers(courseId, teamId);
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
-  useEffect(() => {
-    if (members?.content && members.content.length > 0 && !selectedStudentId) {
-      setSelectedStudentId(members.content[0].studentId);
-    }
-  }, [members, selectedStudentId]);
+  const activeStudentId = selectedStudentId || (members?.content?.[0]?.studentId ?? "");
 
   const { data: interactionData, isLoading: isLoadingGraph } = useStudentInteractions(
-    courseId, 
-    teamId, 
-    selectedStudentId
+    courseId,
+    teamId,
+    activeStudentId
   );
-  
+
   const isLoading = isLoadingMembers || isLoadingGraph;
 
   const [selectedNode, setSelectedNode] = useState<any>(null);
@@ -88,7 +83,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
       const x = centerX + radius * Math.cos(angle);
       const y = centerY + radius * Math.sin(angle);
       const interactions = n.degree || 0;
-      
+
       return {
         id: n.studentId,
         type: 'custom',

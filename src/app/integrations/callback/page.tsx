@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ExternalLink, LogOut } from "lucide-react";
 import { consumeIntegrationCallback } from "@/features/integrations/api/personalIntegrationApi";
 import { toast } from "sonner";
 
@@ -95,13 +95,33 @@ function IntegrationCallbackContent() {
           return;
         }
 
+        const errMsg = error?.message || "";
+        if (
+          errMsg.toLowerCase().includes("already linked") ||
+          errMsg.toLowerCase().includes("provider identity")
+        ) {
+          setMessage("Tài khoản đã được liên kết bởi Sinh viên khác");
+          setErrorDetails(
+            "Tài khoản GitHub/Jira này hiện đang được liên kết với một sinh viên khác trong hệ thống. Trình duyệt của bạn đang nhớ phiên đăng nhập cũ."
+          );
+          return;
+        }
+
         setMessage("Lỗi kết nối tích hợp.");
         setErrorDetails(
-          error?.message ||
-          "Kết quả kết nối đã hết hạn, đã được sử dụng hoặc không hợp lệ."
+          errMsg || "Kết quả kết nối đã hết hạn, đã được sử dụng hoặc không hợp lệ."
         );
       });
   }, [router, searchParams]);
+
+  const isAlreadyLinkedError =
+    errorDetails?.toLowerCase().includes("liên kết với một sinh viên khác") ||
+    errorDetails?.toLowerCase().includes("already linked");
+
+  const handleGoBack = () => {
+    const redirectBack = typeof window !== "undefined" ? sessionStorage.getItem("integration_redirect_back") : null;
+    router.replace(redirectBack || "/student/settings");
+  };
 
   return (
     <div className="relative z-10 max-w-md w-full rounded-[2rem] border border-border/50 bg-card/45 backdrop-blur-xl shadow-xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 text-center">
@@ -111,18 +131,44 @@ function IntegrationCallbackContent() {
             <AlertCircle className="h-8 w-8" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl font-extrabold tracking-tight text-foreground">{message}</h2>
-            <p className="text-xs font-medium text-muted-foreground line-clamp-3">{errorDetails}</p>
+            <h2 className="text-lg font-extrabold tracking-tight text-foreground">{message}</h2>
+            <p className="text-xs font-medium text-muted-foreground leading-relaxed">{errorDetails}</p>
           </div>
-          <div className="pt-2">
+
+          {isAlreadyLinkedError && (
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-left space-y-2 text-xs">
+              <p className="font-bold text-amber-600 dark:text-amber-400">💡 Hướng dẫn khắc phục:</p>
+              <ol className="list-decimal list-inside space-y-1 text-muted-foreground font-medium">
+                <li>Bấm nút <strong>Đăng xuất GitHub</strong> bên dưới để xóa session cũ.</li>
+                <li>Đăng nhập lại bằng tài khoản GitHub <strong>cá nhân của bạn</strong>.</li>
+                <li>Thực hiện lại thao tác liên kết.</li>
+              </ol>
+            </div>
+          )}
+
+          <div className="space-y-2.5 pt-2">
+            {isAlreadyLinkedError && (
+              <a
+                href="https://github.com/logout"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full h-11 rounded-xl font-bold bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center gap-2 transition-all shadow-sm"
+              >
+                <LogOut size={16} />
+                <span>Đăng xuất GitHub (Mở tab mới)</span>
+                <ExternalLink size={14} className="opacity-80" />
+              </a>
+            )}
+
             <button
-              onClick={() => {
-                const redirectBack = typeof window !== "undefined" ? sessionStorage.getItem("integration_redirect_back") : null;
-                router.replace(redirectBack || "/student/settings");
-              }}
-              className="w-full h-11 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-[0.98]"
+              onClick={handleGoBack}
+              className={`w-full h-11 rounded-xl font-bold transition-all shadow-sm active:scale-[0.98] ${
+                isAlreadyLinkedError
+                  ? "bg-muted hover:bg-muted/80 text-foreground"
+                  : "bg-primary hover:bg-primary/90 text-primary-foreground"
+              }`}
             >
-              Quay lại
+              Quay lại Cài đặt
             </button>
           </div>
         </div>

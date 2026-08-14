@@ -1,5 +1,4 @@
 import axiosInstance from "@/lib/axios";
-import { Page } from "@/types/pagination";
 
 export type ContributionWeightRequest = {
   requestId: string;

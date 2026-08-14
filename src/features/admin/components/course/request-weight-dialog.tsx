@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Loader2, Settings2 } from "lucide-react";
 
 import {
@@ -19,18 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRequestCourseWeightChange } from "../../hooks/useContributionWeight";
+import { requestWeightSchema, RequestWeightFormValues } from "../../schemas/requestWeightSchema";
 
-const formSchema = z.object({
-  codeWeight: z.coerce.number().min(0).max(100),
-  documentWeight: z.coerce.number().min(0).max(100),
-  designWeight: z.coerce.number().min(0).max(100),
-  reason: z.string().min(5, "Lý do phải có ít nhất 5 ký tự"),
-}).refine((data) => data.codeWeight + data.documentWeight + data.designWeight === 100, {
-  message: "Tổng trọng số phải bằng 100%",
-  path: ["codeWeight"],
-});
 
-type FormValues = z.infer<typeof formSchema>;
 
 interface RequestWeightDialogProps {
   courseId: string;
@@ -50,8 +40,8 @@ export function RequestWeightDialog({
   const [open, setOpen] = useState(false);
   const { mutateAsync: requestWeightChange, isPending } = useRequestCourseWeightChange();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RequestWeightFormValues>({
+    resolver: zodResolver(requestWeightSchema),
     defaultValues: {
       codeWeight: currentCodeWeight,
       documentWeight: currentDocumentWeight,
@@ -60,7 +50,7 @@ export function RequestWeightDialog({
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: RequestWeightFormValues) => {
     requestWeightChange({
       courseId,
       data: {

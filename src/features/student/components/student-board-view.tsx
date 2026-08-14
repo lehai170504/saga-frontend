@@ -136,7 +136,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const isLoading = isLoadingTeam || isLoadingSprints;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+ <div className="space-y-8 "> 
       <PageHeader
         title="Board công việc Jira"
         description="Xem danh sách công việc và phân loại theo bảng Kanban trực quan từ dự án Jira."

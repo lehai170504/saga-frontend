@@ -96,7 +96,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
+ <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 "> 
         {/* Navigation / Back Button */}
         <div className="flex items-center justify-between">
           <Link

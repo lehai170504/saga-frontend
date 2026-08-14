@@ -64,7 +64,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+ <div className="space-y-8 "> 
       <PageHeader
         title="Tất cả Thông báo"
         description="Xem lại toàn bộ lịch sử thông báo, cập nhật từ hệ thống, Jira và đánh giá."

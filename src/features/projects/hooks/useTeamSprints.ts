@@ -62,6 +62,14 @@ export const useProjectSprints = (projectId: string) => {
   });
 };
 
+export const useBurndown = (courseId: string, teamId: string, sprintId: string) => {
+  return useQuery({
+    queryKey: ["burndown", courseId, teamId, sprintId],
+    queryFn: () => sprintApi.getBurndown(courseId, teamId, sprintId),
+    enabled: !!courseId && !!teamId && !!sprintId,
+  });
+};
+
 export const useCreateSprint = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({

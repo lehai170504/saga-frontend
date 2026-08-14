@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseDialog } from "@/features/courses/components/edit-course-dialog";
 import { CourseStudentsTable } from "@/features/courses/components/course-students-table";
-import { CourseWeightsConfig } from "@/features/admin/components/course-weights-config";
+import { CourseWeightsConfig } from "@/features/admin/components/course/course-weights-config";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -41,7 +41,7 @@ export default function CourseDetailPage() {
       await deleteCourse(courseId);
       toast.success("Đã xóa khóa học thành công!");
       setOpenDelete(false);
-      router.push("/master-data/courses");
+      router.push("/admin/education");
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xóa khóa học");
       console.error(error);
@@ -50,7 +50,7 @@ export default function CourseDetailPage() {
 
   if (isError) {
     return (
-      <div className="space-y-8 animate-in fade-in-50 duration-500 max-w-5xl mx-auto w-full pb-10">
+      <div className="space-y-8 -50 max-w-5xl mx-auto w-full pb-10">
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
@@ -140,16 +140,16 @@ export default function CourseDetailPage() {
         </div>
       ) : course ? (
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full max-w-2xl grid-cols-3 rounded-2xl mb-8 p-1 bg-muted/50 border border-border/50">
-            <TabsTrigger value="overview" className="rounded-xl font-semibold flex items-center gap-2">
+          <TabsList className="mb-8 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5 gap-2">
+            <TabsTrigger value="overview" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
               <BookOpen className="w-4 h-4" />
               Tổng quan
             </TabsTrigger>
-            <TabsTrigger value="students" className="rounded-xl font-semibold flex items-center gap-2">
+            <TabsTrigger value="students" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
               <Users className="w-4 h-4" />
               Danh sách Sinh viên
             </TabsTrigger>
-            <TabsTrigger value="evaluation" className="rounded-xl font-semibold flex items-center gap-2">
+            <TabsTrigger value="evaluation" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
               <Scale className="w-4 h-4" />
               Trọng số Đánh giá
             </TabsTrigger>

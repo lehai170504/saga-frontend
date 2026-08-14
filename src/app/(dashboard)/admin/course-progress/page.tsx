@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { CourseProgressTable } from "@/features/admin/components/course-progress-table";
+import { CourseProgressTable } from "@/features/admin/components/course/course-progress-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAdminCourseProgress } from "@/features/admin/hooks/useCourseProgress";
@@ -16,7 +16,7 @@ export default function CourseProgressPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 ">
       <PageHeader
         title="Tiến độ Khóa học"
         description="Theo dõi số lượng sinh viên, nhóm, dự án và tiến trình đánh giá chéo của toàn bộ các khóa học."

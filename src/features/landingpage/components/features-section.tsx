@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { AlertTriangle, Users, Clock, ShieldAlert, GitBranch, Database, BarChart3, Activity } from "lucide-react";
+import { AlertTriangle, Users, Clock, ShieldAlert, GitBranch, BarChart3, Activity } from "lucide-react";
 import { fadeUp, staggerContainer, scaleUp } from "./animations";
 
 export function FeaturesSection() {
