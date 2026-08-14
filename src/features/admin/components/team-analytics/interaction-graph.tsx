@@ -27,15 +27,15 @@ interface InteractionGraphProps {
 // Custom Node for better styling with Tailwind
 const CustomNode = ({ data }: { data: { label: string; group?: string } }) => {
   return (
-    <div className="px-4 py-2 shadow-md rounded-2xl bg-card border-2 border-primary/20 flex flex-col items-center justify-center min-w-[120px]">
-      <Handle type="target" position={Position.Top} className="w-2 h-2 bg-primary/50 border-none" />
-      <div className="font-bold text-sm text-foreground text-center">{data.label}</div>
+    <div className="px-4 py-3 shadow-md rounded-2xl bg-gradient-to-br from-card to-primary/5 border-2 border-primary/20 flex flex-col items-center justify-center min-w-[120px] backdrop-blur-xl hover:border-primary/50 transition-colors">
+      <Handle type="target" position={Position.Top} className="w-2 h-2 bg-primary border-none" />
+      <div className="font-bold text-sm text-primary text-center">{data.label}</div>
       {data.group && (
-        <div className="text-[10px] uppercase font-extrabold text-muted-foreground mt-1 tracking-wider bg-muted px-2 py-0.5 rounded-full">
+        <div className="text-[10px] uppercase font-extrabold text-emerald-600 dark:text-emerald-400 mt-1.5 tracking-wider bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
           {data.group}
         </div>
       )}
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2 bg-primary/50 border-none" />
+      <Handle type="source" position={Position.Bottom} className="w-2 h-2 bg-primary border-none" />
     </div>
   );
 };
@@ -81,17 +81,17 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
       label: edge.sourceCount > 1 ? edge.sourceCount.toString() : undefined,
       animated: true,
       style: {
-        stroke: 'hsl(var(--primary))',
+        stroke: 'var(--primary)',
         strokeWidth: Math.max(1, Math.min(edge.sourceCount, 4)),
-        opacity: 0.6
+        opacity: 0.7
       },
-      labelStyle: { fill: 'hsl(var(--foreground))', fontWeight: 700, fontSize: 12 },
-      labelBgStyle: { fill: 'hsl(var(--background))', fillOpacity: 0.8 },
+      labelStyle: { fill: 'var(--foreground)', fontWeight: 700, fontSize: 12 },
+      labelBgStyle: { fill: 'var(--background)', fillOpacity: 0.8 },
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 15,
         height: 15,
-        color: 'hsl(var(--primary))',
+        color: 'var(--primary)',
       },
     }));
 
@@ -138,7 +138,7 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
       >
         <MiniMap
           className="rounded-xl border border-border shadow-sm !bg-card"
-          nodeColor="hsl(var(--primary))"
+          nodeColor="var(--primary)"
           maskColor="rgba(0, 0, 0, 0.1)"
         />
         <Controls className="!bg-card border-border shadow-sm rounded-xl overflow-hidden" />

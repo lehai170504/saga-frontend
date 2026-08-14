@@ -13,13 +13,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Network, GraduationCap, FolderGit2, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Network, GraduationCap, FolderGit2, MoreHorizontal, PieChart, Plus } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/shared/DataState";
 import { AdminTeamResponse } from "../../api/teamApi";
 import { CreateProjectModal } from "../projects/create-project-modal";
-import { ProjectDetailsModal } from "../projects/project-details-modal";
-import { TeamEvaluationAction } from "./team-evaluation-action";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface TeamsTableProps {
   data: AdminTeamResponse[];
@@ -70,18 +76,57 @@ export const columns: ColumnDef<AdminTeamResponse>[] = [
   {
     id: "actions",
     cell: ({ row }) => (
-      <div className="flex justify-end pr-2 gap-2 items-center">
-        <TeamEvaluationAction courseId={row.original.course.id} teamId={row.original.id} teamName={row.original.name} />
-        {!row.original.project ? (
-          <CreateProjectModal teamId={row.original.id} />
-        ) : (
-          <ProjectDetailsModal projectId={row.original.project.id} />
-        )}
-        <Link href={`/admin/courses/${row.original.course.id}`}>
-          <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary">
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        </Link>
+      <div className="flex justify-end pr-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 rounded-xl hover:bg-primary/10 hover:text-primary">
+              <span className="sr-only">Mở menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="rounded-2xl w-48">
+            <DropdownMenuLabel className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">Thao tác</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-border/50" />
+
+            <Link href={`/admin/teams/${row.original.id}?courseId=${row.original.course.id}`} className="block">
+              <DropdownMenuItem className="cursor-pointer rounded-xl font-bold text-indigo-600 focus:text-indigo-700 focus:bg-indigo-50 py-2.5">
+                <PieChart className="mr-2 h-4 w-4" />
+                Phân tích nhóm
+              </DropdownMenuItem>
+            </Link>
+
+            {!row.original.project ? (
+              <CreateProjectModal
+                teamId={row.original.id}
+                trigger={
+                  <DropdownMenuItem
+                    className="cursor-pointer rounded-xl font-medium py-2.5"
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <Plus className="mr-2 h-4 w-4 text-emerald-500" />
+                    Tạo dự án
+                  </DropdownMenuItem>
+                }
+              />
+            ) : (
+              <Link href={`/admin/projects/${row.original.project.id}`} className="block">
+                <DropdownMenuItem className="cursor-pointer rounded-xl font-medium py-2.5">
+                  <FolderGit2 className="mr-2 h-4 w-4 text-emerald-500" />
+                  Chi tiết dự án
+                </DropdownMenuItem>
+              </Link>
+            )}
+
+            <DropdownMenuSeparator className="bg-border/50" />
+
+            <Link href={`/admin/courses/${row.original.course.id}`} className="block">
+              <DropdownMenuItem className="cursor-pointer rounded-xl font-medium text-muted-foreground py-2.5">
+                <GraduationCap className="mr-2 h-4 w-4" />
+                Xem khóa học
+              </DropdownMenuItem>
+            </Link>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     ),
   },

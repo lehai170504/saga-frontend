@@ -2,14 +2,13 @@
 
 import React, { useState } from "react";
 import { Activity, AlertTriangle, ShieldCheck, Clock } from "lucide-react";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { useAuditLogs } from "@/features/admin/hooks/useAuditLogs";
 import { AuditLogsTable } from "@/features/admin/components/system/audit-logs-table";
 
-export default function SystemLogsPage() {
+export function SystemLogsView() {
   const [page, setPage] = useState(0);
 
   const { data: logsData, isLoading } = useAuditLogs({
@@ -18,18 +17,10 @@ export default function SystemLogsPage() {
   });
 
   return (
-    <div className="space-y-8 ">
-      <PageHeader
-        title="Nhật ký Hệ thống (Audit Logs)"
-        description="Theo dõi tất cả các thay đổi về cấu hình, tích hợp API và hoạt động của Admin."
-        workspace="Workspace Quản trị"
-      >
-      </PageHeader>
-
-      {/* Stats cards to make the page look more like a Dashboard */}
+    <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
-          title="Tổng sự kiện (Hệ thống)"
+          title="Tổng sự kiện"
           value={isLoading ? <Skeleton className="h-8 w-16" /> : (logsData?.totalElements?.toString() || "0")}
           icon={<Activity className="w-4 h-4 text-primary" />}
         />

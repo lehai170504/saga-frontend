@@ -1,29 +1,18 @@
 "use client";
 
 import {
-  BookOpen, FileText, Users, Calendar, HelpCircle,
+  BookOpen, Users, Calendar, HelpCircle,
   Network, ShieldCheck, ArrowRight, Settings, CheckCircle2,
   Server
 } from "lucide-react";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 
-export default function AdminGuidePage() {
+export function AdminGuideView() {
   return (
- <div className="space-y-8 pb-10"> 
-      <PageHeader
-        title="Hướng dẫn Quản trị viên"
-        description="Tài liệu vận hành hệ thống SAGA toàn diện dành riêng cho Admin."
-        workspace="Workspace Quản trị"
-      >
-        <div className="flex items-center gap-2 text-sm text-success bg-success/10 dark:bg-emerald-950/30 font-medium px-4 py-2 rounded-xl border border-success/20">
-          <CheckCircle2 className="w-4 h-4" /> Phiên bản 1.2
-        </div>
-      </PageHeader>
-
+    <div className="space-y-6">
       <Tabs defaultValue="overview" className="w-full">
         <div className="overflow-x-auto pb-2 custom-scrollbar">
           <TabsList className="bg-card/40 backdrop-blur-xl border border-border/50 p-1.5 rounded-2xl h-auto min-w-max">
@@ -151,10 +140,6 @@ export default function AdminGuidePage() {
                   <p className="text-sm text-muted-foreground">
                     Hệ thống hiện tại hoạt động độc lập và yêu cầu Admin tự quản lý dữ liệu. Khi có lớp mới hoặc sinh viên chuyển lớp, Admin cần vào trang <strong>Dữ liệu Học vụ</strong> để thêm mới hoặc cập nhật thông tin tương ứng.
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-primary bg-primary/10 dark:bg-blue-950/30 p-2 rounded-lg border border-primary/20">
-                    <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>Mẹo: Hãy đảm bảo email của sinh viên và giảng viên chính xác để hệ thống phân quyền đúng.</span>
-                  </div>
                 </div>
               </div>
             </CardContent>
@@ -182,11 +167,6 @@ export default function AdminGuidePage() {
                   Mỗi khi sinh viên push code, tạo Pull Request trên GitHub, hoặc hoàn thành Task trên Jira, hệ thống sẽ ánh xạ thành <strong>cổ phần đóng góp (Slices)</strong> và vẽ các đường liên kết trên <strong>Mạng tương tác</strong>. Admin không cần can thiệp quá trình này, nhưng cần nhắc sinh viên liên kết đúng tài khoản hệ thống.
                 </p>
               </div>
-
-              <h3 className="font-bold text-foreground">Xử lý khi sai Giảng viên phụ trách</h3>
-              <p className="text-muted-foreground text-sm">
-                Nếu có sự thay đổi về Giảng viên phụ trách, Admin có thể vào mục <strong>Quản lý Lớp PBL</strong>, tìm lớp tương ứng, bấm vào <strong>Chỉnh sửa</strong> và gán lại Email của Giảng viên mới <Badge variant="secondary">Cập nhật thủ công</Badge>.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -227,20 +207,6 @@ export default function AdminGuidePage() {
                     <span className="text-[10px] text-muted-foreground block">(Toàn quyền)</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 p-4 border-b border-border/50 items-center hover:bg-muted/30 transition-colors">
-                  <div className="font-semibold text-foreground flex items-center gap-2">
-                    <FileText size={16} className="text-primary" /> Giảng viên
-                  </div>
-                  <div className="text-center text-success">
-                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
-                    <span className="text-[10px] text-muted-foreground block">(Các lớp phụ trách)</span>
-                  </div>
-                  <div className="text-center text-success">
-                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
-                    <span className="text-[10px] text-muted-foreground block">(Kiểm duyệt & Chốt điểm)</span>
-                  </div>
-                  <div className="text-center text-muted-foreground">-</div>
-                </div>
                 <div className="grid grid-cols-4 p-4 items-center hover:bg-muted/30 transition-colors">
                   <div className="font-semibold text-foreground flex items-center gap-2">
                     <Users size={16} className="text-primary" /> Sinh viên
@@ -277,32 +243,9 @@ export default function AdminGuidePage() {
             <CardContent className="p-6">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="faq-1" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Sinh viên khiếu nại Biểu đồ nhiệt không hiển thị hoạt động?</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    <strong>Nguyên nhân:</strong> Sinh viên chưa liên kết tài khoản GitHub/Jira đúng với Email trường, hoặc chưa commit vào nhánh mặc định của Repository.<br />
-                    <strong>Cách giải quyết:</strong> Hướng dẫn sinh viên vào menu <span className="font-semibold text-foreground">Cài đặt</span> để kiểm tra trạng thái liên kết. Sau khi liên kết đúng, hệ thống sẽ tự động đồng bộ lại dữ liệu trong lần chạy tiếp theo (khoảng 30 phút).
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="faq-2" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Giảng viên không thấy danh sách khóa học được phân công?</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    <strong>Nguyên nhân:</strong> Quá trình thiết lập khóa học bị thiếu thông tin giảng viên, hoặc giảng viên đăng nhập bằng email không khớp với dữ liệu học vụ.<br />
-                    <strong>Cách giải quyết:</strong> Admin vào mục <span className="font-semibold text-foreground">Khóa học</span>, tìm khóa học bị thiếu và cập nhật lại thông tin bằng email chính xác của giảng viên.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="faq-3" className="border-border px-1">
                   <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Hệ thống báo &quot;Lỗi rate limit API từ GitHub&quot;, tôi cần làm gì?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    Trường hợp này xảy ra khi hệ thống xử lý lượng lớn dữ liệu commit/PR cùng một lúc. Bạn không cần can thiệp thủ công; Background Worker của SAGA được thiết kế để tự động backoff và thử lại sau 15-30 phút. Bạn có thể theo dõi tiến trình trong mục <span className="font-semibold text-foreground">Nhật ký Hệ thống</span>.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="faq-4" className="border-border px-1">
-                  <AccordionTrigger className="text-foreground font-semibold hover:text-primary transition-colors text-base py-4">Cách khắc phục khi trang dữ liệu tải chậm?</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-4">
-                    Trường hợp trang tải chậm hoặc treo thường do khối lượng dữ liệu truy xuất lớn. Vui lòng làm mới (F5) trang. Nếu vấn đề vẫn tiếp diễn, bạn có thể kiểm tra tab <strong>Network</strong> hoặc liên hệ với bộ phận kỹ thuật để tối ưu hóa hệ thống.
+                    Trường hợp này xảy ra khi hệ thống xử lý lượng lớn dữ liệu commit/PR cùng một lúc. Bạn không cần can thiệp thủ công; Background Worker của SAGA được thiết kế để tự động backoff và thử lại sau 15-30 phút.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

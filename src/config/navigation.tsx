@@ -2,19 +2,16 @@ import React from "react";
 import {
   BarChart3,
   Network,
-  Calendar,
   Users,
   ArrowLeft,
   BookOpen,
   GraduationCap,
-  Logs,
   Link2,
   Settings2,
   UserCheck,
   GitCommit,
   Activity,
   FolderKanban,
-  Layers,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -48,28 +45,22 @@ export const getNavigationConfig = (
           ],
         },
         {
-          title: "Quản lý Cốt lõi",
+          title: "Quản lý Đào tạo",
           items: [
-            { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
-            { href: "/admin/teams", icon: <Network size={18} />, label: "Nhóm & Dự án" },
+            { href: "/admin/education", icon: <BookOpen size={18} />, label: "Dữ liệu Đào tạo", matchPaths: ["/admin/education", "/admin/courses"] },
           ],
         },
         {
-          title: "Dữ liệu Danh mục",
+          title: "Người dùng & Nhóm",
           items: [
-            { href: "/master-data/project-types", icon: <Layers size={18} />, label: "Loại dự án" },
-            { href: "/master-data/subjects", icon: <BookOpen size={18} />, label: "Môn học" },
-            { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học" },
-            { href: "/master-data/semesters", icon: <Calendar size={18} />, label: "Học kỳ" },
-            { href: "/master-data/courses", icon: <GraduationCap size={18} />, label: "Khóa học (Lớp PBL)", matchPaths: ["/admin/courses"] },
+            { href: "/admin/users", icon: <Users size={18} />, label: "Người dùng" },
+            { href: "/admin/teams", icon: <Network size={18} />, label: "Nhóm & Dự án", matchPaths: ["/admin/teams", "/admin/projects"] },
           ],
         },
         {
           title: "Hệ thống",
           items: [
-            { href: "/admin/evaluation-config", icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
-            { href: "/admin/system-logs", icon: <Logs size={18} />, label: "Nhật ký hệ thống" },
-            { href: "/admin/guide", icon: <BookOpen size={18} />, label: "Hướng dẫn" },
+            { href: "/admin/settings", icon: <Settings2 size={18} />, label: "Cài đặt & Hệ thống" },
           ],
         },
       ];

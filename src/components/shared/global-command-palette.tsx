@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Command } from "cmdk";
 import { useRouter, usePathname } from "next/navigation";
 import {
-  Search, Users, Activity, Settings, RefreshCw, FileText, Logs, HelpCircle,
+  Search, Users, Activity, Settings, RefreshCw, FileText, HelpCircle,
   BarChart3, BookOpen, Network, Calendar, UserCheck, Link2, ArrowLeft
 } from "lucide-react";
 import { toast } from "sonner";
@@ -84,23 +84,23 @@ export function GlobalCommandPalette() {
                   </Command.Item>
 
                   <Command.Item
-                    onSelect={() => runCommand(() => router.push("/admin/academic-data"))}
+                    onSelect={() => runCommand(() => router.push("/admin/education"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                       <FileText className="w-4 h-4 text-primary" />
                     </div>
-                    Dữ liệu Học vụ (Academic Data)
+                    Dữ liệu Đào tạo (Education Data)
                   </Command.Item>
 
                   <Command.Item
-                    onSelect={() => runCommand(() => router.push("/admin/system-logs"))}
+                    onSelect={() => runCommand(() => router.push("/admin/settings"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground mt-1"
                   >
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Logs className="w-4 h-4 text-primary" />
+                      <Settings className="w-4 h-4 text-primary" />
                     </div>
-                    Nhật ký Hệ thống (System Logs)
+                    Cài đặt Hệ thống (Settings)
                   </Command.Item>
                 </Command.Group>
 
@@ -133,7 +133,7 @@ export function GlobalCommandPalette() {
 
                 <Command.Group heading="Hỗ trợ (Support)">
                   <Command.Item
-                    onSelect={() => runCommand(() => router.push("/admin/guide"))}
+                    onSelect={() => runCommand(() => router.push("/admin/settings"))}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-foreground hover:bg-muted cursor-pointer transition-colors aria-selected:bg-muted aria-selected:text-foreground"
                   >
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">

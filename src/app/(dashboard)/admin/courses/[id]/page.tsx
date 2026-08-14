@@ -41,7 +41,7 @@ export default function CourseDetailPage() {
       await deleteCourse(courseId);
       toast.success("Đã xóa khóa học thành công!");
       setOpenDelete(false);
-      router.push("/master-data/courses");
+      router.push("/admin/education");
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xóa khóa học");
       console.error(error);

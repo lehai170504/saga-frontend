@@ -29,7 +29,7 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
       message: "",
       actionUrl: "",
       type: "SYSTEM",
-      audience: "ALL_USERS",
+      audience: "ALL",
     },
   });
 
@@ -56,9 +56,9 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
   };
 
   const audienceList = [
-    { id: "ALL_USERS", label: "Tất cả mọi người (ALL_USERS)" },
-    { id: "STUDENTS", label: "Sinh viên (STUDENTS)" },
-    { id: "LECTURERS", label: "Giảng viên (LECTURERS)" },
+    { id: "ALL", label: "Tất cả mọi người (ALL)" },
+    { id: "STUDENT", label: "Sinh viên (STUDENT)" },
+    { id: "LECTURER", label: "Giảng viên (LECTURER)" },
   ];
 
   return (

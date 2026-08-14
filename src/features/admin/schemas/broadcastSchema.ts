@@ -5,7 +5,7 @@ export const broadcastSchema = z.object({
   message: z.string().min(1, "Nội dung không được để trống").max(1000, "Nội dung quá dài"),
   actionUrl: z.string().optional(),
   type: z.string().optional(),
-  audience: z.enum(["STUDENTS", "LECTURERS", "ALL_USERS"], {
+  audience: z.enum(["STUDENT", "LECTURER", "ALL"], {
     required_error: "Vui lòng chọn đối tượng nhận thông báo",
   }),
 });

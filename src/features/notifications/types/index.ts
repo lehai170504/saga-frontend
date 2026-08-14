@@ -45,7 +45,7 @@ export interface UnreadCountResponse {
 export interface AdminBroadcastRequest {
   title: string;
   message: string;
-  actionUrl?: string;
+  actionUrl?: string | null;
   type?: string;
   audience?: string;
 }
