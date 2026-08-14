@@ -23,6 +23,24 @@ export type TeamSprintsResponse = {
   sprints: Sprint[];
 };
 
+export interface BurndownPoint {
+  date: string;
+  idealRemaining: number;
+  actualRemaining: number;
+  doneCount: number;
+}
+
+export interface BurndownChartResponse {
+  courseId: string;
+  teamId: string;
+  sprintId: string;
+  sprintName: string;
+  startDate: string;
+  endDate: string;
+  totalScope: number;
+  points: BurndownPoint[];
+}
+
 export type ReviewCandidate = {
   studentId: string;
   fullName: string;

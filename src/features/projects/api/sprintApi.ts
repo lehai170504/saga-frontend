@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { TeamSprintsResponse, SprintCandidatesResponse, TeamRubricResponse, Sprint, PeerReviewItem, SprintPeerReviewsResponse } from "../types";
+import { TeamSprintsResponse, SprintCandidatesResponse, TeamRubricResponse, Sprint, PeerReviewItem, SprintPeerReviewsResponse, BurndownChartResponse } from "../types";
 
 export const sprintApi = {
   getTeamSprints: async (teamId: string) => {
@@ -18,6 +18,12 @@ export const sprintApi = {
       });
     }
     return res;
+  },
+
+  getBurndown: async (courseId: string, teamId: string, sprintId: string) => {
+    return axiosInstance.get<never, BurndownChartResponse>(
+      `/api/v1/courses/${courseId}/teams/${teamId}/sprints/${sprintId}/burndown`
+    );
   },
 
 
