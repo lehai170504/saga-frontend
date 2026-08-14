@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Users, Activity, Flame, Share2, ListTodo } from "lucide-react";
+import { ArrowLeft, Users, Activity, Flame, Share2, ListTodo, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,10 +20,37 @@ import { ProjectIssuesView } from "@/features/lecturer/components/project-detail
 import { ProjectDashboardStats } from "@/features/lecturer/components/project-detail/project-dashboard-stats";
 import { ProjectTraceabilityView } from "@/features/lecturer/components/project-detail/project-traceability-view";
 import { GitCommit, CircleDot, Waypoints } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ courseId: string, teamId: string }> }) {
   const { courseId, teamId } = React.use(params);
   const [activeTab, setActiveTab] = useState("overview");
+
+  const tabValues = ["overview", "tasks", "commits", "issues", "traceability", "heatmap", "interaction", "burndown"];
+
+  const handlePrevTab = () => {
+    const idx = tabValues.indexOf(activeTab);
+    if (idx > 0) setActiveTab(tabValues[idx - 1]);
+  };
+
+  const handleNextTab = () => {
+    const idx = tabValues.indexOf(activeTab);
+    if (idx < tabValues.length - 1) setActiveTab(tabValues[idx + 1]);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const container = document.getElementById('tabs-list-container');
+      const activeTrigger = container?.querySelector('[data-state="active"]');
+      if (container && activeTrigger) {
+        const containerRect = container.getBoundingClientRect();
+        const triggerRect = activeTrigger.getBoundingClientRect();
+        const offset = (triggerRect.left + triggerRect.width / 2) - (containerRect.left + containerRect.width / 2);
+        container.scrollBy({ left: offset, behavior: 'smooth' });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [activeTab]);
 
   // Fetch real data
   const { data: teamDetail, isLoading: isLoadingMembers } = useTeamDetail(courseId, teamId);
@@ -61,7 +88,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
 
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
         {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
-          <TabsList className="flex w-full max-w-full overflow-x-auto justify-start !h-auto rounded-xl bg-muted/50 p-1 mb-6 gap-1 [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center gap-2 mb-6">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-xl shrink-0 bg-muted/50 border-none hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors"
+              onClick={handlePrevTab}
+              disabled={tabValues.indexOf(activeTab) === 0}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+
+            <TabsList className="flex w-full max-w-full overflow-x-auto justify-start !h-auto rounded-xl bg-muted/50 p-1 gap-1 [&::-webkit-scrollbar]:hidden scroll-smooth" id="tabs-list-container">
             <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
             </TabsTrigger>
@@ -86,8 +124,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             <TabsTrigger value="burndown" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
               <Activity className="w-4 h-4 mr-2" /> Sprint Burndown
             </TabsTrigger>
-            
           </TabsList>
+
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-xl shrink-0 bg-muted/50 border-none hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors"
+              onClick={handleNextTab}
+              disabled={tabValues.indexOf(activeTab) === tabValues.length - 1}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
         )}
 
         <TabsContent value="overview" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
