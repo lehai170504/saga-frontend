@@ -3,10 +3,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Loader2, BookOpen, Calendar, Clock } from "lucide-react";
+import { ArrowRight, Loader2, BookOpen, AlertCircle } from "lucide-react";
 import { useSemesters } from "@/features/semesters/hooks/useSemesters";
 import { useCourses } from "@/features/courses/hooks/useCourses";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ApiError } from "@/lib/axios";
 import {
   Select,
   SelectContent,
@@ -20,7 +21,7 @@ export default function StudentSelectionPage() {
   const { user } = useAuth();
   const [selectedSemester, setSelectedSemester] = useState<string>("");
 
-  const { data: semestersPage, isLoading: isLoadingSemesters } = useSemesters({ size: 50 });
+  const { data: semestersPage, isLoading: isLoadingSemesters, error: semestersError } = useSemesters({ size: 50 });
   const semesters = useMemo(() => semestersPage?.content || [], [semestersPage?.content]);
 
   useEffect(() => {
@@ -29,11 +30,16 @@ export default function StudentSelectionPage() {
     }
   }, [semesters, selectedSemester]);
 
-  const { data: coursesPage, isLoading: isLoadingCourses } = useCourses({
+  const { data: coursesPage, isLoading: isLoadingCourses, error: coursesError } = useCourses({
     semesterId: selectedSemester,
     size: 100
   });
   const courses = coursesPage?.content || [];
+
+  const isAccountInactive =
+    (user?.accountStatus && user.accountStatus !== "ACTIVE") ||
+    (semestersError instanceof ApiError && (semestersError.errorName === "ACCOUNT_STATUS_ACCESS_DENIED" || semestersError.status === 403)) ||
+    (coursesError instanceof ApiError && (coursesError.errorName === "ACCOUNT_STATUS_ACCESS_DENIED" || coursesError.status === 403));
 
   const handleConfirmCardSelection = (courseId: string) => {
     router.push(`/student/${courseId}`);
@@ -113,121 +119,109 @@ export default function StudentSelectionPage() {
         <div className="absolute left-0 bottom-0 translate-y-1/3 -translate-x-1/4 w-64 h-64 bg-primary/10 rounded-full blur-[60px] opacity-50 pointer-events-none" />
       </div>
 
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Left Column: Courses */}
-        <div className="xl:col-span-2 flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
-            <h2 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-primary/10 text-primary">
-                <BookOpen size={20} strokeWidth={2.5} />
-              </div>
-              Lớp học của bạn
-            </h2>
-
-            {courses.length > 0 && (
-              <span className="text-xs font-bold uppercase tracking-wider bg-muted px-4 py-2 rounded-full text-muted-foreground border border-border/50">
-                {courses.length} Lớp học
-              </span>
-            )}
+      {/* Account Inactive / Access Warning Banner */}
+      {isAccountInactive && (
+        <div className="p-6 rounded-[2.5rem] bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-sm font-semibold flex items-start sm:items-center gap-4 shadow-sm animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-500 shrink-0">
+            <AlertCircle size={22} />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {isLoadingCourses ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-[220px] w-full rounded-[2rem] bg-muted/40 animate-pulse border border-border/30" />
-              ))
-            ) : courses.length === 0 ? (
-              <div className="col-span-full py-20 flex flex-col items-center justify-center text-center space-y-5 bg-card/50 border border-border/40 rounded-[2.5rem] border-dashed shadow-sm">
-                <div className="w-20 h-20 bg-muted/50 rounded-[2rem] flex items-center justify-center text-muted-foreground border border-border/50">
-                  <BookOpen size={32} strokeWidth={1.5} />
-                </div>
-                <div className="space-y-2 max-w-md">
-                  <h3 className="text-2xl font-extrabold text-foreground tracking-tight">Chưa có môn học nào</h3>
-                  <p className="text-sm md:text-base text-muted-foreground font-medium">
-                    Không tìm thấy lớp học nào trong học kỳ này. Bạn thử chọn một học kỳ khác xem sao nhé.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              courses.map((course) => {
-                const status = getSemesterStatus(selectedSemester);
-                return (
-                  <Card
-                    key={course.id}
-                    onClick={() => handleConfirmCardSelection(course.id)}
-                    className="group overflow-hidden bg-background border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-pointer rounded-[2rem] flex flex-col"
-                  >
-                    <CardContent className="p-0 flex flex-col h-full">
-                      {/* Header: Status and Subject Code */}
-                      <div className="p-6 pb-4 flex items-start justify-between gap-4 bg-muted/20 group-hover:bg-primary/5 transition-colors duration-300 border-b border-border/40">
-                        <span className="text-xs font-black text-primary tracking-widest uppercase bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/10 shadow-sm">
-                          {course.subject.subjectCode}
-                        </span>
-                        {status === "active" ? (
-                          <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-emerald-500/20">
-                            Đang diễn ra
-                          </span>
-                        ) : status === "upcoming" ? (
-                          <span className="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-amber-500/20">
-                            Sắp diễn ra
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-extrabold text-muted-foreground bg-muted px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-border/50">
-                            Đã kết thúc
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Body: Subject Name */}
-                      <div className="p-6 pt-5 flex-1 bg-card">
-                        <h3 className="text-lg md:text-xl font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                          {course.subject.name}
-                        </h3>
-                      </div>
-
-                      {/* Footer: Class Name & Action */}
-                      <div className="px-6 py-5 border-t border-border/50 flex items-center justify-between mt-auto bg-card">
-                        <div className="flex items-center text-muted-foreground gap-3">
-                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center border border-border/50">
-                            <span className="text-[10px] font-black text-foreground">{course.clazz.name.charAt(0)}</span>
-                          </div>
-                          <span className="text-sm font-semibold">Lớp {course.clazz.name}</span>
-                        </div>
-                        <div className="w-9 h-9 rounded-full bg-background border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 shadow-sm">
-                          <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })
-            )}
+          <div className="space-y-1">
+            <h4 className="font-extrabold text-base text-foreground">Tài khoản chưa ở trạng thái hoạt động</h4>
+            <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+              Tài khoản của bạn hiện ở trạng thái chưa kích hoạt hoặc chưa được xếp vào môn học/nhóm nào. Vui lòng xác nhận qua email hoặc liên hệ Quản trị viên hoặc Giảng viên để được kích hoạt và tham gia môn học.
+            </p>
           </div>
         </div>
+      )}
 
-        {/* Right Column: Schedule / Quick Stats (Placeholder to fill space nicely) */}
-        <div className="xl:col-span-1 flex flex-col gap-6">
-          <h2 className="text-xl font-black tracking-tight text-foreground flex items-center gap-3 px-2">
+      {/* Main Content Area */}
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
+          <h2 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-3">
             <div className="p-2 rounded-xl bg-primary/10 text-primary">
-              <Calendar size={18} strokeWidth={2.5} />
+              <BookOpen size={20} strokeWidth={2.5} />
             </div>
-            Lịch trình & Nhiệm vụ
+            Lớp học của bạn
           </h2>
 
-          <Card className="rounded-[2rem] border-border/60 shadow-sm bg-card/50 overflow-hidden flex-1 min-h-[350px]">
-            <CardContent className="p-8 flex flex-col items-center justify-center h-full text-center space-y-4">
+          {courses.length > 0 && (
+            <span className="text-xs font-bold uppercase tracking-wider bg-muted px-4 py-2 rounded-full text-muted-foreground border border-border/50">
+              {courses.length} Lớp học
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoadingCourses ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-[220px] w-full rounded-[2rem] bg-muted/40 animate-pulse border border-border/30" />
+            ))
+          ) : courses.length === 0 ? (
+            <div className="col-span-full py-20 flex flex-col items-center justify-center text-center space-y-5 bg-card/50 border border-border/40 rounded-[2.5rem] border-dashed shadow-sm">
               <div className="w-20 h-20 bg-muted/50 rounded-[2rem] flex items-center justify-center text-muted-foreground border border-border/50">
-                <Clock size={32} strokeWidth={1.5} />
+                <BookOpen size={32} strokeWidth={1.5} />
               </div>
-              <div className="space-y-2 max-w-[250px]">
-                <h3 className="text-lg font-bold text-foreground">Chưa có nhiệm vụ</h3>
-                <p className="text-sm text-muted-foreground font-medium">
-                  Bạn đang rảnh rỗi! Không có lịch học hay bài tập nào sắp đến hạn trong tuần này.
+              <div className="space-y-2 max-w-md">
+                <h3 className="text-2xl font-extrabold text-foreground tracking-tight">Chưa có môn học nào</h3>
+                <p className="text-sm md:text-base text-muted-foreground font-medium">
+                  Không tìm thấy lớp học nào trong học kỳ này. Bạn thử chọn một học kỳ khác xem sao nhé.
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          ) : (
+            courses.map((course) => {
+              const status = getSemesterStatus(selectedSemester);
+              return (
+                <Card
+                  key={course.id}
+                  onClick={() => handleConfirmCardSelection(course.id)}
+                  className="group overflow-hidden bg-background border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-pointer rounded-[2rem] flex flex-col"
+                >
+                  <CardContent className="p-0 flex flex-col h-full">
+                    {/* Header: Status and Subject Code */}
+                    <div className="p-6 pb-4 flex items-start justify-between gap-4 bg-muted/20 group-hover:bg-primary/5 transition-colors duration-300 border-b border-border/40">
+                      <span className="text-xs font-black text-primary tracking-widest uppercase bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/10 shadow-sm">
+                        {course.subject.subjectCode}
+                      </span>
+                      {status === "active" ? (
+                        <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-emerald-500/20">
+                          Đang diễn ra
+                        </span>
+                      ) : status === "upcoming" ? (
+                        <span className="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-amber-500/20">
+                          Sắp diễn ra
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-extrabold text-muted-foreground bg-muted px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-border/50">
+                          Đã kết thúc
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Body: Subject Name */}
+                    <div className="p-6 pt-5 flex-1 bg-card">
+                      <h3 className="text-lg md:text-xl font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                        {course.subject.name}
+                      </h3>
+                    </div>
+
+                    {/* Footer: Class Name & Action */}
+                    <div className="px-6 py-5 border-t border-border/50 flex items-center justify-between mt-auto bg-card">
+                      <div className="flex items-center text-muted-foreground gap-3">
+                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center border border-border/50">
+                          <span className="text-[10px] font-black text-foreground">{course.clazz.name.charAt(0)}</span>
+                        </div>
+                        <span className="text-sm font-semibold">Lớp {course.clazz.name}</span>
+                      </div>
+                      <div className="w-9 h-9 rounded-full bg-background border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 shadow-sm">
+                        <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
         </div>
       </div>
     </div>
