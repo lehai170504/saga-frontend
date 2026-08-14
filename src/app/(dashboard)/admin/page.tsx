@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   const { data: stats, isLoading } = useSystemStats();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Quản trị Hệ thống"
         description="Quản lý Dữ liệu Học thuật và Trạng thái Tích hợp API."

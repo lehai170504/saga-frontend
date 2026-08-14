@@ -140,16 +140,16 @@ export default function CourseDetailPage() {
         </div>
       ) : course ? (
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full max-w-2xl grid-cols-3 rounded-2xl mb-8 p-1 bg-muted/50 border border-border/50">
-            <TabsTrigger value="overview" className="rounded-xl font-semibold flex items-center gap-2">
+          <TabsList className="mb-8 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5 gap-2">
+            <TabsTrigger value="overview" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
               <BookOpen className="w-4 h-4" />
               Tổng quan
             </TabsTrigger>
-            <TabsTrigger value="students" className="rounded-xl font-semibold flex items-center gap-2">
+            <TabsTrigger value="students" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
               <Users className="w-4 h-4" />
               Danh sách Sinh viên
             </TabsTrigger>
-            <TabsTrigger value="evaluation" className="rounded-xl font-semibold flex items-center gap-2">
+            <TabsTrigger value="evaluation" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
               <Scale className="w-4 h-4" />
               Trọng số Đánh giá
             </TabsTrigger>
