@@ -75,23 +75,23 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
     });
 
     const edges: Edge[] = (data.edges || []).map((edge, i) => ({
-      id: `e${edge.from}-${edge.to}-${i}`,
-      source: edge.from,
-      target: edge.to,
-      label: edge.weight > 1 ? edge.weight.toString() : undefined,
+      id: `e${edge.fromStudentId}-${edge.toStudentId}-${i}`,
+      source: edge.fromStudentId,
+      target: edge.toStudentId,
+      label: edge.sourceCount > 1 ? edge.sourceCount.toString() : undefined,
       animated: true,
       style: {
-        stroke: 'hsl(var(--primary))',
-        strokeWidth: Math.max(1, Math.min(edge.weight, 4)),
+        stroke: 'var(--primary)',
+        strokeWidth: Math.max(1, Math.min(edge.sourceCount, 4)),
         opacity: 0.6
       },
-      labelStyle: { fill: 'hsl(var(--foreground))', fontWeight: 700, fontSize: 12 },
-      labelBgStyle: { fill: 'hsl(var(--background))', fillOpacity: 0.8 },
+      labelStyle: { fill: 'var(--foreground)', fontWeight: 700, fontSize: 12 },
+      labelBgStyle: { fill: 'var(--background)', fillOpacity: 0.8 },
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 15,
         height: 15,
-        color: 'hsl(var(--primary))',
+        color: 'var(--primary)',
       },
     }));
 
@@ -138,7 +138,8 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
       >
         <MiniMap
           className="rounded-xl border border-border shadow-sm !bg-card"
-          nodeColor="hsl(var(--primary))"
+          style={{ width: 150, height: 100 }}
+          nodeColor="var(--primary)"
           maskColor="rgba(0, 0, 0, 0.1)"
         />
         <Controls className="!bg-card border-border shadow-sm rounded-xl overflow-hidden" />

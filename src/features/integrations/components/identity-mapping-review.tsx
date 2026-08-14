@@ -1,24 +1,16 @@
 "use client";
 
 import { useIdentityMappings, useReviewIdentityMapping } from "../hooks/useIdentityMappings";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, XCircle } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Loader2, CheckCircle2, XCircle, Link as LinkIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const statusColors: Record<string, string> = {
-  ACTIVE: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-  DISCONNECTED: "bg-muted text-muted-foreground border-muted-foreground/20",
-  PENDING_REVIEW: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-  REJECTED: "bg-destructive/10 text-destructive border-destructive/20",
+const statusColors: Record<string, { bg: string, text: string, border: string, label: string }> = {
+  ACTIVE: { bg: "bg-success/10", text: "text-success", border: "border-success/20", label: "Đã liên kết" },
+  DISCONNECTED: { bg: "bg-muted", text: "text-muted-foreground", border: "border-muted-foreground/20", label: "Ngắt kết nối" },
+  PENDING_REVIEW: { bg: "bg-warning/10", text: "text-warning", border: "border-warning/20", label: "Chờ duyệt" },
+  REJECTED: { bg: "bg-destructive/10", text: "text-destructive", border: "border-destructive/20", label: "Từ chối" },
 };
 
 export function IdentityMappingReview({ studentId }: { studentId: string }) {
@@ -27,16 +19,16 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center p-8">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
+      <div className="flex justify-center items-center p-8 bg-background/50 backdrop-blur-md rounded-[1.5rem] border border-border/50">
+        <Loader2 className="animate-spin h-6 w-6 text-primary" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center text-destructive p-4">
-        Đã có lỗi xảy ra khi tải danh sách ánh xạ danh tính.
+      <div className="text-center text-xs text-destructive p-4 bg-destructive/5 rounded-[1.5rem] border border-destructive/20">
+        Lỗi tải tài khoản liên kết.
       </div>
     );
   }
@@ -49,79 +41,72 @@ export function IdentityMappingReview({ studentId }: { studentId: string }) {
     reviewMapping({ mappingId, data: { action: "REJECT" } });
   };
 
-  const hasPendingReview = mappings?.some(m => m.status === "PENDING_REVIEW") || false;
-
   return (
-    <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden">
-      <CardHeader className="bg-muted/30 pb-4">
-        <CardTitle className="text-xl font-bold flex items-center gap-2">
-          Duyệt Ánh Xạ Danh Tính (Identity Mapping)
-        </CardTitle>
-        <CardDescription className="mt-1.5">
-          Quản lý các tài khoản Jira/GitHub được ánh xạ tới sinh viên này.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pt-6">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="font-bold">Nền tảng</TableHead>
-              <TableHead className="font-bold">Tài khoản (Email)</TableHead>
-              <TableHead className="font-bold">Trạng thái</TableHead>
-              {hasPendingReview && <TableHead className="font-bold">Hành động</TableHead>}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {mappings && mappings.length > 0 ? (
-              mappings.map((mapping, idx) => (
-                <TableRow key={idx} className="hover:bg-muted/30">
-                  <TableCell className="font-medium">{mapping.provider}</TableCell>
-                  <TableCell>
-                    {mapping.displayName} <span className="text-muted-foreground">({mapping.email})</span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={`${statusColors[mapping.status] || "bg-muted"} font-bold`}>
-                      {mapping.status}
-                    </Badge>
-                  </TableCell>
-                  {hasPendingReview && (
-                    <TableCell>
-                      {mapping.status === "PENDING_REVIEW" && (
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="rounded-xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600"
-                            onClick={() => handleApprove((mapping as { id?: string }).id || "unknown")}
-                            disabled={isPending}
-                          >
-                            <CheckCircle2 className="mr-1.5 h-4 w-4" /> Duyệt
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => handleReject((mapping as { id?: string }).id || "unknown")}
-                            disabled={isPending}
-                          >
-                            <XCircle className="mr-1.5 h-4 w-4" /> Từ chối
-                          </Button>
-                        </div>
-                      )}
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={hasPendingReview ? 4 : 3} className="text-center h-24 text-muted-foreground">
-                  Sinh viên chưa liên kết tài khoản nào.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col h-full">
+      <h3 className="font-bold text-[11px] uppercase tracking-wider text-muted-foreground/80 mb-3 flex items-center gap-1.5 shrink-0">
+        <LinkIcon size={12} /> Tài khoản Liên kết
+      </h3>
+      
+      <div className="space-y-2.5 flex-1">
+        {mappings && mappings.length > 0 ? (
+          mappings.map((mapping, idx) => {
+            const statusStyle = statusColors[mapping.status] || statusColors.DISCONNECTED;
+            const isPendingStatus = mapping.status === "PENDING_REVIEW";
+
+            return (
+              <div key={idx} className={cn("group flex flex-col gap-2 p-3 rounded-2xl border transition-all duration-300", isPendingStatus ? "bg-warning/10 border-warning/30 shadow-sm" : "bg-background/60 backdrop-blur-sm border-border/50 shadow-sm hover:border-primary/30")}>
+                
+                {/* Account Info Row */}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 overflow-hidden">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                      <LinkIcon size={14} />
+                    </div>
+                    <div className="truncate">
+                      <p className="text-sm font-bold text-foreground truncate leading-none mb-1">{mapping.displayName}</p>
+                      <p className="text-[10px] text-muted-foreground truncate leading-none">{mapping.email}</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className={cn("text-[10px] font-bold shrink-0 px-1.5 py-0", statusStyle.bg, statusStyle.text, statusStyle.border)}>
+                    {statusStyle.label}
+                  </Badge>
+                </div>
+
+                {/* Actions Row (Only visible if pending) */}
+                {isPendingStatus && (
+                  <div className="flex items-center gap-2 pt-1 border-t border-warning/10">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-7 text-[10px] rounded-lg border-success/30 text-success bg-success/5 hover:bg-success hover:text-white transition-colors"
+                      onClick={() => handleApprove((mapping as { id?: string }).id || "unknown")}
+                      disabled={isPending}
+                    >
+                      <CheckCircle2 className="mr-1.5 h-3 w-3" /> Duyệt
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-7 text-[10px] rounded-lg border-destructive/30 text-destructive bg-destructive/5 hover:bg-destructive hover:text-white transition-colors"
+                      onClick={() => handleReject((mapping as { id?: string }).id || "unknown")}
+                      disabled={isPending}
+                    >
+                      <XCircle className="mr-1.5 h-3 w-3" /> Chặn
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div className="flex flex-col items-center justify-center py-6 text-center">
+            <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center mb-2 border border-border/50">
+              <LinkIcon size={14} className="text-muted-foreground" />
+            </div>
+            <p className="text-xs text-muted-foreground italic">Chưa có tài khoản liên kết</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

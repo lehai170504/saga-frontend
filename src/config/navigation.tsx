@@ -82,19 +82,23 @@ export const getNavigationConfig = (
             ],
           },
           {
-            title: "Quản lý Khóa học",
+            title: "Workspace",
             items: [
-              { href: `/lecturer/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan khóa", exact: true },
-              { href: `/lecturer/${courseId}/students`, icon: <Users size={18} />, label: "Sinh viên" },
-              { href: `/lecturer/${courseId}/projects`, icon: <Network size={18} />, label: "Quản lý nhóm" },
+              { href: `/lecturer/${courseId}`, icon: <BarChart3 size={18} />, label: "Tổng quan Lớp", exact: true },
             ],
           },
           {
-            title: "Đánh giá & Điểm số",
+            title: "Quản lý Lớp học",
+            items: [
+              { href: `/lecturer/${courseId}/students`, icon: <Users size={18} />, label: "Sinh viên & Dự án" },
+              { href: `/lecturer/${courseId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm" },
+            ],
+          },
+          {
+            title: "Công cụ Đánh giá",
             items: [
               { href: `/lecturer/${courseId}/peer-reviews`, icon: <UserCheck size={18} />, label: "Đánh giá chéo" },
-              { href: `/lecturer/${courseId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
-            { href: `/lecturer/${courseId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
+              { href: `/lecturer/${courseId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
             ],
           },
         ];

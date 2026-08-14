@@ -27,10 +27,12 @@ import { courseApi } from "@/features/courses/api/courseApi";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export default function LecturerContributionPage() {
   const params = useParams();
   const courseId = params.courseId as string;
+  const { user } = useAuth();
 
   // Fetch Danh sách Sinh viên & Lọc ra các Nhóm (Teams)
   const { data: studentsData, isLoading: isLoadingTeams } = useQuery({
@@ -66,8 +68,15 @@ export default function LecturerContributionPage() {
     }
   }, [realTeams, selectedTeamId]);
 
-  // Hooks gọi API (Không cần sprintId nữa theo Swagger mới)
-  const { data: apiData, isLoading } = useContributionEvaluation(selectedTeamId);
+  // Check if selected team has a project
+  const hasProject = useMemo(() => {
+    if (!studentsData?.studentsWithTeam?.content || !selectedTeamId) return false;
+    const teamStudents = studentsData.studentsWithTeam.content.filter(s => s.team?.teamId === selectedTeamId);
+    return teamStudents.length > 0 && !!teamStudents[0].team?.projectId;
+  }, [studentsData, selectedTeamId]);
+
+  // Hooks gọi API (Không cần sprintId nữa theo Swagger mới). Chỉ gọi khi có project.
+  const { data: apiData, isLoading } = useContributionEvaluation(selectedTeamId, hasProject);
   const overrideMutation = useOverrideContribution();
 
   // State local để quản lý Override (vì API chưa có, ta dùng state giả lập UI)
@@ -143,23 +152,13 @@ export default function LecturerContributionPage() {
       [studentId]: {
         studentId,
         adjustmentPercentage,
+        proposedPercentage: newFinalPercentage,
         note: prev[studentId]?.note || ""
       }
     }));
   };
 
-  const handleNoteChange = (studentId: string, note: string) => {
-    setLocalAdjustments(prev => ({
-      ...prev,
-      [studentId]: {
-        studentId,
-        adjustmentPercentage: prev[studentId]?.adjustmentPercentage || 0,
-        note
-      }
-    }));
-  };
-
-  const handleSaveOverride = () => {
+  const handleSaveOverride = async () => {
     const adjustments = Object.values(localAdjustments);
     if (adjustments.length === 0) {
       toast.error("Không có thay đổi nào để lưu!");
@@ -170,26 +169,28 @@ export default function LecturerContributionPage() {
       return;
     }
 
-    overrideMutation.mutate({
-      teamId: selectedTeamId,
-      data: {
-        reason: overrideReason,
-        overrideType: "TEAM_CONTRIBUTION_OVERRIDE",
-        adjustments
-      }
-    }, {
-      onSuccess: () => {
-        toast.success("Đã lưu quyết định ghi đè thành công!");
-        setLocalAdjustments({});
-        setOverrideReason("");
-      },
-      onError: () => {
-        // Fallback giả lập thành công khi backend chưa sẵn sàng
-        toast.success("(MOCK) Đã lưu quyết định ghi đè thành công!");
-        setLocalAdjustments({});
-        setOverrideReason("");
-      }
-    });
+    try {
+      // Vì API thiết kế 1 request / 1 sinh viên, nên phải Promise.all
+      await Promise.all(
+        adjustments.map((adj) =>
+          overrideMutation.mutateAsync({
+            teamId: selectedTeamId,
+            data: {
+              studentId: adj.studentId,
+              proposedPercentage: adj.proposedPercentage / 100, // API expect decimal (0.1 = 10%)
+              reason: overrideReason,
+              lecturerId: user?.localProfileId
+            }
+          })
+        )
+      );
+      toast.success("Đã lưu quyết định ghi đè thành công!");
+      setLocalAdjustments({});
+      setOverrideReason("");
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra khi lưu ghi đè. Vui lòng thử lại!");
+    }
   };
 
   return (
@@ -215,9 +216,13 @@ export default function LecturerContributionPage() {
               Xuất Excel (FAP Format)
             </Button>
             <Button
-              className="rounded-xl h-10 font-bold bg-primary hover:bg-primary/90 transition-all duration-300"
+              className={`rounded-xl h-10 font-bold transition-all duration-300 ${
+                overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-70 hover:bg-muted'
+                  : 'bg-success hover:bg-success/90 text-white shadow-md shadow-success/20'
+              }`}
               onClick={handleSaveOverride}
-              disabled={overrideMutation.isPending || Object.keys(localAdjustments).length === 0}
+              disabled={overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()}
             >
               {overrideMutation.isPending ? (
                 <span className="flex items-center"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" /> Đang lưu...</span>
@@ -267,18 +272,20 @@ export default function LecturerContributionPage() {
 
             {/* Lý do Override Chung */}
             {Object.keys(localAdjustments).length > 0 && (
-              <div className="p-4 bg-primary/5 border-b border-primary/10 animate-in slide-in-from-top-2">
+              <div className={`p-5 border-b animate-in slide-in-from-top-2 transition-colors duration-300 ${!overrideReason.trim() ? 'bg-destructive/10 border-destructive/20' : 'bg-success/10 border-success/20'}`}>
                 <div className="flex items-start gap-4">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary mt-1">
-                    <Filter size={18} />
+                  <div className={`p-2.5 rounded-xl mt-0.5 ${!overrideReason.trim() ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'}`}>
+                    <AlertTriangle size={20} />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <label className="text-sm font-bold text-foreground">Lý do chung cho quyết định ghi đè của Nhóm này <span className="text-destructive">*</span></label>
+                    <label className={`text-sm font-bold uppercase tracking-wider ${!overrideReason.trim() ? 'text-destructive' : 'text-success'}`}>
+                      Lý do bắt buộc cho quyết định ghi đè của Nhóm này *
+                    </label>
                     <Input
                       placeholder="Ví dụ: Nhóm có thành viên nghỉ ốm dài hạn..."
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
-                      className="bg-background rounded-xl border-primary/20 focus-visible:ring-primary"
+                      className={`bg-background rounded-xl border-2 h-11 focus-visible:ring-0 ${!overrideReason.trim() ? 'border-destructive/40 focus-visible:border-destructive placeholder:text-destructive/50' : 'border-success/40 focus-visible:border-success'}`}
                     />
                   </div>
                 </div>
@@ -323,8 +330,7 @@ export default function LecturerContributionPage() {
                       <TableHead className="text-center font-bold text-muted-foreground">% Design</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
-                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-r border-primary/10 min-w-[140px]">% GV Chốt</TableHead>
-                      <TableHead className="font-bold text-muted-foreground min-w-[200px]">Ghi chú cá nhân</TableHead>
+                      <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -376,7 +382,7 @@ export default function LecturerContributionPage() {
                             </TableCell>
 
                             {/* Manual Override Score */}
-                            <TableCell className="text-center bg-primary/5 border-r border-primary/10 relative px-2">
+                            <TableCell className="text-center bg-primary/5 px-2">
                               <div className="relative">
                                 <Input
                                   type="number"
@@ -400,17 +406,6 @@ export default function LecturerContributionPage() {
                                   Chênh lệch: {adjustment.adjustmentPercentage > 0 ? '+' : ''}{adjustment.adjustmentPercentage.toFixed(1)}%
                                 </div>
                               )}
-                            </TableCell>
-
-                            {/* Notes */}
-                            <TableCell className="p-2">
-                              <Input
-                                placeholder="Lý do cá nhân (bắt buộc nếu sửa)..."
-                                value={adjustment?.note || ""}
-                                onChange={(e) => handleNoteChange(student.studentId, e.target.value)}
-                                disabled={!isOverridden}
-                                className={`bg-transparent ${isOverridden ? 'border-primary/30 bg-background focus-visible:ring-primary' : 'border-transparent opacity-50'}`}
-                              />
                             </TableCell>
                           </TableRow>
                         );

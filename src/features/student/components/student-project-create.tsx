@@ -111,7 +111,7 @@ export function StudentProjectCreate() {
       return;
     }
 
-    createProject({ name: projectName }, {
+    createProject({ name: projectName, courseId: courseId || "", projectTypeId: "default" }, {
       onSuccess: () => {
         refetch();
       }

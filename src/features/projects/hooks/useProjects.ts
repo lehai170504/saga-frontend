@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { projectApi } from "../api/projectApi";
-import { CreateTeamProjectRequest } from "../types";
+import { CreateTeamProjectRequest, UpdateProjectGroupWeightsRequest } from "../types";
 import { toast } from "sonner";
 import { PROJECT_MESSAGES } from "../constants/messages";
 
@@ -33,6 +33,28 @@ export const useUpdateProjectDetail = (projectId: string) => {
     },
     onError: (err: Error | Record<string, unknown>) => {
       toast.error((err as Error).message || PROJECT_MESSAGES.UPDATE.ERROR);
+    }
+  });
+};
+
+export const useProjectTypes = () => {
+  return useQuery({
+    queryKey: ["project-types"],
+    queryFn: () => projectApi.getProjectTypes(),
+  });
+};
+
+export const useUpdateProjectGroupWeights = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateProjectGroupWeightsRequest) =>
+      projectApi.updateProjectGroupWeights(projectId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-detail", projectId] });
+      toast.success("Cập nhật trọng số nhóm thành công");
+    },
+    onError: (err: Error | Record<string, unknown>) => {
+      toast.error((err as Error).message || "Lỗi khi cập nhật trọng số nhóm");
     }
   });
 };

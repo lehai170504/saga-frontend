@@ -45,13 +45,15 @@ export interface ContributionEvaluationResponse {
 export interface ContributionAdjustment {
   studentId: string;
   adjustmentPercentage: number;
+  proposedPercentage: number; // added this to store absolute value
   note: string;
 }
 
 export interface ContributionOverrideRequest {
+  studentId: string;
+  proposedPercentage: number;
   reason: string;
-  overrideType: "TEAM_CONTRIBUTION_OVERRIDE";
-  adjustments: ContributionAdjustment[];
+  lecturerId?: string;
 }
 
 export interface CourseContributionWeightResponse {

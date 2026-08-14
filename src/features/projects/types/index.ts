@@ -1,11 +1,33 @@
 export type CreateTeamProjectRequest = {
   name: string;
+  description?: string;
+  projectTypeId: string;
+  courseId: string;
+};
+
+export type ProjectType = {
+  projectTypeId: string;
+  code: string;
+  name: string;
+  description: string;
+  criteriaConfig: string;
 };
 
 export type ProjectResponse = {
-  id: string;
-  teamId: string;
+  id?: string;
+  projectId?: string;
+  teamId?: string;
   name: string;
+  description?: string;
+  projectType?: ProjectType;
+};
+
+export type UpdateProjectGroupWeightsRequest = {
+  groupId: string;
+  codeWeight: number;
+  documentWeight: number;
+  designWeight: number;
+  note?: string;
 };
 
 export type Sprint = {

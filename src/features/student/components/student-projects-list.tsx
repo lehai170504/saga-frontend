@@ -69,7 +69,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     }
 
     createProjectMutation.mutate(
-      { name: projectName },
+      { name: projectName, courseId: courseId || "", projectTypeId: "default" },
       {
         onSuccess: () => {
           setIsDialogOpen(false);

@@ -123,6 +123,62 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
     return "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20";
   };
 
+  const getStatusIndicatorColor = (status: string) => {
+    if (!status) return "bg-slate-500";
+    const s = status.toLowerCase();
+    if (s.includes("done") || s.includes("completed") || s.includes("resolved") || s.includes("closed") || s.includes("hoàn thành")) {
+      return "bg-emerald-500";
+    }
+    if (s.includes("progress") || s.includes("doing") || s.includes("đang làm") || s.includes("active")) {
+      return "bg-blue-500";
+    }
+    if (s.includes("review") || s.includes("test")) {
+      return "bg-purple-500";
+    }
+    if (s.includes("block") || s.includes("bug") || s.includes("cancel") || s.includes("fail")) {
+      return "bg-destructive";
+    }
+    return "bg-slate-500";
+  };
+
+  const getColumnColor = (status: string) => {
+    if (!status) return "border-t-slate-500 bg-slate-500/5";
+    const s = status.toLowerCase();
+    if (s.includes("done") || s.includes("completed") || s.includes("resolved") || s.includes("closed") || s.includes("hoàn thành")) {
+      return "border-t-emerald-500 bg-emerald-500/5";
+    }
+    if (s.includes("progress") || s.includes("doing") || s.includes("đang làm") || s.includes("active")) {
+      return "border-t-blue-500 bg-blue-500/5";
+    }
+    if (s.includes("review") || s.includes("test")) {
+      return "border-t-purple-500 bg-purple-500/5";
+    }
+    if (s.includes("block") || s.includes("bug") || s.includes("cancel") || s.includes("fail")) {
+      return "border-t-destructive bg-destructive/5";
+    }
+    return "border-t-slate-500 bg-slate-500/5";
+  };
+
+  const groupedTasks = React.useMemo(() => {
+    const groups: Record<string, typeof tasks> = {};
+    tasks.forEach(task => {
+      const status = task.status || "To Do";
+      if (!groups[status]) groups[status] = [];
+      groups[status].push(task);
+    });
+    
+    const orderScore = (status: string) => {
+      const s = status.toLowerCase().replace(/_/g, " ");
+      if (s.includes("to do") || s.includes("todo") || s.includes("backlog") || s.includes("open") || s.includes("mới")) return 1;
+      if (s.includes("progress") || s.includes("doing") || s.includes("active")) return 2;
+      if (s.includes("review") || s.includes("test")) return 3;
+      if (s.includes("done") || s.includes("completed") || s.includes("closed") || s.includes("hoàn thành")) return 4;
+      return 5;
+    };
+
+    return Object.entries(groups).sort((a, b) => orderScore(a[0]) - orderScore(b[0]));
+  }, [tasks]);
+
   return (
     <Card className="rounded-[2rem] border-border bg-card/40 backdrop-blur-xl shadow-lg">
       <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
@@ -174,96 +230,84 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-muted/50">
-              <TableRow>
-                <TableHead className="pl-6">Mã (Key)</TableHead>
-                <TableHead>Tiêu đề</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead>Point</TableHead>
-                <TableHead>Người phụ trách</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="pl-6"><Skeleton className="h-5 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-48" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-10" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
-                  </TableRow>
-                ))
-              ) : tasks.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                    Không tìm thấy công việc nào.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                tasks.map((task) => (
-                  <TableRow
-                    key={task.id}
-                    className="group hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedTaskId(task.id)}
-                  >
-                    <TableCell className="pl-6 font-medium whitespace-nowrap text-muted-foreground">
-                      {task.externalKey}
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-medium text-foreground max-w-[300px] truncate" title={task.title}>
-                        {task.title}
-                      </div>
-                      {task.labels && task.labels.length > 0 && (
-                        <div className="flex gap-1 mt-1 flex-wrap max-w-[300px]">
-                          {task.labels.map(label => (
-                            <span key={label} className="text-[10px] px-1.5 py-0.5 rounded-sm bg-primary/10 text-primary whitespace-nowrap">
-                              {label}
-                            </span>
-                          ))}
+      <CardContent className="p-6 overflow-x-auto min-h-[500px]">
+        {isLoading ? (
+          <div className="flex gap-4 w-full">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="flex-1 min-w-[260px] bg-muted/20 rounded-2xl p-3 border border-border/50 gap-4">
+                <Skeleton className="h-8 w-1/2 rounded-lg" />
+                <Skeleton className="h-32 w-full rounded-xl mt-4" />
+                <Skeleton className="h-32 w-full rounded-xl mt-4" />
+              </div>
+            ))}
+          </div>
+        ) : tasks.length === 0 ? (
+          <div className="flex h-64 items-center justify-center text-muted-foreground border border-dashed rounded-2xl bg-muted/10">
+            Không tìm thấy công việc nào phù hợp với bộ lọc.
+          </div>
+        ) : (
+          <div className="flex gap-4 items-start pb-4 w-full min-w-max md:min-w-0 h-full">
+            {groupedTasks.map(([status, groupTasks]) => (
+              <div key={status} className={`flex flex-col flex-1 min-w-[280px] md:min-w-[250px] max-w-[350px] rounded-2xl p-3 border border-border/50 border-t-4 shadow-sm ${getColumnColor(status)}`}>
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${getStatusIndicatorColor(status)}`} />
+                    <h3 className="font-bold text-sm uppercase text-foreground">{status}</h3>
+                  </div>
+                  <Badge variant="secondary" className="font-bold bg-background shadow-sm text-muted-foreground">
+                    {groupTasks.length}
+                  </Badge>
+                </div>
+                
+                <div className="flex flex-col gap-3">
+                  {groupTasks.map(task => (
+                    <Card 
+                      key={task.id} 
+                      className="rounded-xl border-border/50 bg-background hover:border-primary/40 hover:shadow-md transition-all cursor-pointer group"
+                      onClick={() => setSelectedTaskId(task.id)}
+                    >
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="font-bold text-xs text-muted-foreground uppercase">{task.externalKey}</span>
+                          {task.storyPoint !== undefined && task.storyPoint !== null && (
+                            <div className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-muted text-[10px] font-bold">
+                              {task.storyPoint}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={`font-bold whitespace-nowrap ${getStatusColor(task.status)}`}>
-                        {task.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 rounded-full bg-muted text-xs font-bold">
-                        {task.storyPoint ?? "-"}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {task.assignee ? (
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-7 w-7 border shadow-sm">
-                            <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
-                              {task.assignee.fullName.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm font-medium hidden md:inline-block truncate max-w-[120px]">
-                            {task.assignee.fullName}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <div className="flex items-center justify-center h-7 w-7 rounded-full border border-dashed bg-muted/30">
-                            <User size={12} />
+                        <p className="font-semibold text-sm leading-snug text-foreground group-hover:text-primary transition-colors">
+                          {task.title}
+                        </p>
+                        {task.labels && task.labels.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {task.labels.map(label => (
+                              <span key={label} className="text-[9px] px-1.5 py-0.5 rounded-sm bg-primary/10 text-primary font-bold">
+                                {label}
+                              </span>
+                            ))}
                           </div>
-                          <span className="text-sm hidden md:inline-block">Unassigned</span>
+                        )}
+                        <div className="pt-3 flex items-center justify-between border-t border-border/50 mt-2">
+                          {task.assignee ? (
+                            <Avatar className="h-6 w-6 border shadow-sm" title={task.assignee.fullName}>
+                              <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
+                                {task.assignee.fullName.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                          ) : (
+                            <div className="flex items-center justify-center h-6 w-6 rounded-full border border-dashed bg-muted/30" title="Chưa phân công">
+                              <User size={10} className="text-muted-foreground" />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
 
       <Sheet open={!!selectedTaskId} onOpenChange={(open) => !open && setSelectedTaskId(null)}>
