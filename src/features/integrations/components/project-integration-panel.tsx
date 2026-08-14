@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useProjectIntegrations,
   useDeleteProjectJiraIntegration,
@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
+import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw, GitBranch } from "lucide-react";
 import { API_BASE_URL } from "@/lib/axios";
 
 const getStatusBadgeClass = (status: string) => {
@@ -41,6 +41,23 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
     repoName?: string;
   } | null>(null);
 
+  const [selectedRepoId, setSelectedRepoId] = useState<number | null>(null);
+
+  const jira = projectIntegration?.jira;
+  const isJiraConnected = !!jira && jira.status !== "DISCONNECTED";
+  const githubRepositories = projectIntegration?.githubRepositories || [];
+
+  // Auto select first repo when repos load or selection invalid
+  useEffect(() => {
+    if (githubRepositories.length > 0) {
+      if (!selectedRepoId || !githubRepositories.some((r) => r.repositoryId === selectedRepoId)) {
+        setSelectedRepoId(githubRepositories[0].repositoryId);
+      }
+    }
+  }, [githubRepositories, selectedRepoId]);
+
+  const activeRepo = githubRepositories.find((r) => r.repositoryId === selectedRepoId) || githubRepositories[0];
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -56,10 +73,6 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
       </div>
     );
   }
-
-  const jira = projectIntegration?.jira;
-  const isJiraConnected = !!jira && jira.status !== "DISCONNECTED";
-  const githubRepositories = projectIntegration?.githubRepositories || [];
 
   const handleConnectJira = () => {
     if (typeof window !== "undefined") {
@@ -147,55 +160,79 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                 </CardTitle>
                 <CardDescription className="mt-1.5">Kết nối với các GitHub Repository để phân tích code.</CardDescription>
               </div>
+              {githubRepositories.length > 0 && (
+                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-bold px-3 py-1">
+                  Đã nối {githubRepositories.length} Repo
+                </Badge>
+              )}
             </div>
           </CardHeader>
           <CardContent className="pt-6 flex-1 flex flex-col justify-between">
             {githubRepositories.length > 0 ? (
               <div className="space-y-4">
-                <div className="space-y-3">
-                  {githubRepositories.map((repo) => (
-                    <div key={repo.repositoryId} className="flex items-center justify-between p-3 border border-border/50 rounded-xl gap-2">
+                {/* Repository Dropdown Tab Selector */}
+                <div className="flex items-center justify-between gap-3 p-2 bg-muted/40 rounded-xl border border-border/50">
+                  <span className="text-xs font-bold text-muted-foreground shrink-0 flex items-center gap-1.5 pl-1">
+                    <GitBranch size={14} className="text-primary" /> Chọn Repo:
+                  </span>
+                  <select
+                    value={activeRepo?.repositoryId || ""}
+                    onChange={(e) => setSelectedRepoId(Number(e.target.value))}
+                    className="h-9 px-3 rounded-lg bg-background border border-border/60 text-xs font-extrabold text-foreground outline-none cursor-pointer hover:border-primary transition-all max-w-[170px] truncate"
+                  >
+                    {githubRepositories.map((r) => (
+                      <option key={r.repositoryId} value={r.repositoryId}>
+                        {r.fullName} ({r.status})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Active Selected Repository Box */}
+                {activeRepo && (
+                  <div className="p-4 border border-border/50 rounded-2xl bg-card/60 backdrop-blur-md space-y-3 shadow-sm">
+                    <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-sm truncate" title={repo.fullName}>{repo.fullName}</p>
+                        <p className="font-extrabold text-sm text-foreground truncate" title={activeRepo.fullName}>
+                          {activeRepo.fullName}
+                        </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className={`text-[10px] uppercase font-extrabold px-2 py-0.5 ${getStatusBadgeClass(repo.status)}`}>
-                            {repo.status}
+                          <Badge variant="outline" className={`text-[10px] uppercase font-extrabold px-2 py-0.5 ${getStatusBadgeClass(activeRepo.status)}`}>
+                            {activeRepo.status}
                           </Badge>
-                          <span className="text-[10px] text-muted-foreground">Branch: {repo.defaultBranch}</span>
+                          <span className="text-[10px] text-muted-foreground font-semibold">Branch: {activeRepo.defaultBranch}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-1 shrink-0">
-                        {(repo.status === "DISCONNECTED" || repo.status === "DEGRADED") && (
+                        {(activeRepo.status === "DISCONNECTED" || activeRepo.status === "DEGRADED") && (
                           <Button
                             variant="ghost"
                             size="icon"
                             title="Kết nối lại"
                             className="text-primary hover:text-primary hover:bg-primary/10 rounded-full shrink-0 cursor-pointer"
-                            onClick={() => reconnectGithubRepo(repo.repositoryId)}
+                            onClick={() => reconnectGithubRepo(activeRepo.repositoryId)}
                             disabled={isReconnecting}
                           >
                             {isReconnecting ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
                           </Button>
                         )}
 
-
-                        {repo.status !== "DISCONNECTED" && (
+                        {activeRepo.status !== "DISCONNECTED" && (
                           <Button
                             variant="ghost"
                             size="icon"
                             className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full shrink-0 cursor-pointer"
-                            onClick={() => setDeleteConfirm({ type: "GITHUB", repoId: repo.repositoryId, repoName: repo.fullName })}
+                            onClick={() => setDeleteConfirm({ type: "GITHUB", repoId: activeRepo.repositoryId, repoName: activeRepo.fullName })}
                             disabled={isDeletingGithubRepo}
                           >
                             <Trash2 size={16} />
                           </Button>
                         )}
-
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
 
                 <Button onClick={handleInstallGithub} variant="outline" className="w-full rounded-xl font-bold mt-2 border-dashed border-2 cursor-pointer">
                   <Plus className="mr-2 h-4 w-4" /> Thêm Repository khác

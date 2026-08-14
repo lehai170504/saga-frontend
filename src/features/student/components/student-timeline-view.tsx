@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useProjectSprints, useCreateSprint, useStartSprint, useCloseSprint, useUpdateSprint, useDeleteSprint } from "@/features/projects/hooks/useTeamSprints";
-import { StudentSprintTasksPanel } from "./student-sprint-tasks-panel";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Sprint } from "@/features/projects/types";
@@ -50,9 +49,8 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const [sprintToDelete, setSprintToDelete] = useState<Sprint | null>(null);
   const [deleteIdempotencyKey, setDeleteIdempotencyKey] = useState("");
 
-  // Tasks list side sheet states
-  const [selectedSprintForTasks, setSelectedSprintForTasks] = useState<Sprint | null>(null);
-  const [isTasksOpen, setIsTasksOpen] = useState(false);
+  // Expanded sprint state for inline dropdown
+  const [expandedSprintId, setExpandedSprintId] = useState<string | null>(null);
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
@@ -313,14 +311,15 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
               <TimelineCard
                 key={sprint.sprintId}
                 sprint={sprint}
+                projectId={projectId}
                 isLeader={isLeader}
                 isStarting={startingSprintId === sprint.sprintId}
                 isClosing={closingSprintId === sprint.sprintId}
                 isAnyMutating={startSprintMutation.isPending || closeSprintMutation.isPending}
-                onClick={() => {
-                  setSelectedSprintForTasks(sprint);
-                  setIsTasksOpen(true);
-                }}
+                isExpanded={expandedSprintId === sprint.sprintId}
+                onToggleExpand={() =>
+                  setExpandedSprintId((prev) => (prev === sprint.sprintId ? null : sprint.sprintId))
+                }
                 onStartSprint={handleStartSprint}
                 onCloseSprint={handleCloseSprint}
                 onOpenEdit={handleOpenEdit}
@@ -375,20 +374,6 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
         onConfirmDelete={handleDeleteSprint}
         isPending={deleteSprintMutation.isPending}
       />
-
-      {selectedSprintForTasks && (
-        <StudentSprintTasksPanel
-          isOpen={isTasksOpen}
-          onClose={() => {
-            setIsTasksOpen(false);
-            setSelectedSprintForTasks(null);
-          }}
-          projectId={projectId}
-          sprintId={selectedSprintForTasks.sprintId}
-          sprintName={selectedSprintForTasks.sprintName}
-          sprintGoal={selectedSprintForTasks.goal}
-        />
-      )}
     </div>
   );
 }

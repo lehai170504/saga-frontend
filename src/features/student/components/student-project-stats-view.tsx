@@ -153,22 +153,6 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
                 </TabsTrigger>
 
                 <TabsTrigger
-                  value="burndown"
-                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
-                >
-                  <Flame size={16} className="text-primary" />
-                  <span>Biểu đồ Burndown</span>
-                </TabsTrigger>
-
-                <TabsTrigger
-                  value="overview"
-                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
-                >
-                  <Zap size={16} className="text-amber-500" />
-                  <span>Tổng quan Hoạt động</span>
-                </TabsTrigger>
-
-                <TabsTrigger
                   value="heatmap"
                   className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
                 >
@@ -418,17 +402,7 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
               )}
             </TabsContent>
 
-            {/* Tab 2: Burndown Chart */}
-            <TabsContent value="burndown" className="outline-none">
-              <StudentBurndownTab courseId={courseId || ""} teamId={teamId} />
-            </TabsContent>
-
-            {/* Tab 3: Overview Activity Chart */}
-            <TabsContent value="overview" className="outline-none">
-              <StudentOverviewActivityTab courseId={courseId || ""} teamId={teamId} />
-            </TabsContent>
-
-            {/* Tab 4: Heatmap Chart */}
+            {/* Tab 2: Heatmap Chart */}
             <TabsContent value="heatmap" className="outline-none">
               <StudentHeatmapTab courseId={courseId || ""} teamId={teamId} />
             </TabsContent>

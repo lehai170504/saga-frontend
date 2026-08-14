@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { FolderKanban, Crown, Plus, Loader2, Settings, Users, Activity, AlertTriangle, FileText, Code, Palette, AlertCircle, ChevronDown, ChevronUp, Clock, TrendingUp } from "lucide-react";
+import { FolderKanban, Crown, Plus, Loader2, Settings, Users, Activity, AlertTriangle, FileText, Code, Palette, AlertCircle, ChevronDown, ChevronUp, Clock, TrendingUp, Zap, BarChart3 } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -16,6 +16,8 @@ import { useCourse } from "@/features/courses/hooks/useCourses";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useContributionEvaluation } from "@/features/lecturer/hooks/useContribution";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { StudentOverviewActivityTab } from "@/features/student/components/stats/student-overview-activity-tab";
 
 const truncateDecimal = (val: number | undefined | null, decimals: number = 2): string => {
   if (val === undefined || val === null || isNaN(val)) {
@@ -105,10 +107,10 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
 
         {/* Header Section */}
         <PageHeader
-          title="Thông tin Nhóm"
+          title="Tổng quan Dự án"
           description={
             courseData
-              ? `Xem thông tin chi tiết và không gian làm việc của nhóm trong Khóa học ${courseData.courseCode || ""}`
+              ? `Xem tổng quan hoạt động đóng góp, thông tin nhóm và các thành viên trong Khóa học ${courseData.courseCode || ""}`
               : "Đang tải dữ liệu khóa học..."
           }
         />
@@ -129,7 +131,32 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
             <p className="text-sm text-muted-foreground mt-2">Bạn chưa tham gia vào nhóm nào trong khóa học này.</p>
           </div>
         ) : (
-          <div className="space-y-8">
+          <Tabs defaultValue="overview" className="w-full space-y-6">
+            <TabsList className="bg-card/60 border border-border/50 p-1.5 rounded-2xl h-auto backdrop-blur-xl shadow-sm inline-flex gap-2">
+              <TabsTrigger
+                value="overview"
+                className="rounded-xl px-5 py-2.5 font-bold text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Zap size={16} />
+                <span>Tổng quan Hoạt động</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="team"
+                className="rounded-xl px-5 py-2.5 font-bold text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Users size={16} />
+                <span>Thông tin Nhóm & Thành viên</span>
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Tab 1: Overview Activity Graph */}
+            <TabsContent value="overview" className="focus-visible:outline-none space-y-6 mt-0">
+              <StudentOverviewActivityTab courseId={courseId || ""} teamId={activeTeamId} />
+            </TabsContent>
+
+            {/* Tab 2: Team Info & Members */}
+            <TabsContent value="team" className="focus-visible:outline-none space-y-8 mt-0">
+              <div className="space-y-8">
             {/* Hero Card for Group Info */}
             <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 shadow-lg shadow-primary/10 rounded-[2rem] p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden group">
               {/* Decorative background element */}
@@ -168,7 +195,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                       {showScores ? "Ẩn điểm" : "Xem điểm"}
                     </Button>
 
-                    <Link href={`/student/${courseId}/projects/create`}>
+                    <Link href={`/student/${courseId}/config`}>
                       <Button className="w-full sm:w-auto h-12 px-6 rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_6px_25px_rgba(234,88,12,0.4)]">
                         <Settings size={18} className="mr-2" strokeWidth={3} />
                         Cấu hình Dự án
@@ -500,9 +527,10 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                 )}
               </div>
             )}
-
           </div>
-        )}
+        </TabsContent>
+      </Tabs>
+    )}
 
       </div>
     </div>
