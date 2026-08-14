@@ -19,10 +19,13 @@ export function InteractionGraphView({ courseId, teamId }: InteractionGraphViewP
 
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
+  // Tự động chọn sinh viên đầu tiên nếu chưa chọn ai (giống bên Lecturer)
+  const activeStudentId = selectedStudentId || (members?.length > 0 ? members[0].studentId : "");
+
   const { data, isLoading } = useStudentInteractions(
     courseId,
     teamId,
-    selectedStudentId
+    activeStudentId
   );
 
   return (
@@ -39,11 +42,11 @@ export function InteractionGraphView({ courseId, teamId }: InteractionGraphViewP
             <Skeleton className="h-10 w-full rounded-xl" />
           ) : (
             <Select
-              value={selectedStudentId}
+              value={activeStudentId}
               onValueChange={setSelectedStudentId}
             >
-              <SelectTrigger className="w-full rounded-xl h-10">
-                <SelectValue placeholder="Chọn thành viên" />
+              <SelectTrigger className="w-full rounded-xl h-10 bg-background/50 border-border/50">
+                <SelectValue placeholder="Chọn sinh viên trung tâm..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {members.map((member: TeamMemberResponse) => (
@@ -60,15 +63,30 @@ export function InteractionGraphView({ courseId, teamId }: InteractionGraphViewP
         </div>
       </div>
 
-      <div className="p-6 flex-1 bg-muted/5">
-        {!selectedStudentId ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground border border-dashed border-border/50 rounded-2xl bg-card">
+      {/* Legend */}
+      <div className="px-6 py-3 border-b border-border/50 bg-muted/20">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium text-muted-foreground">
+          <div className="flex items-center gap-2"><div className="w-4 h-1.5 bg-primary rounded-full" /> Phối hợp (Commits/Tasks)</div>
+          <div className="flex items-center gap-2"><div className="w-4 h-1.5 bg-success rounded-full" /> Review Code</div>
+          <div className="flex items-center gap-2"><div className="w-4 h-1.5 border-b-[3px] border-dotted border-primary" /> Bình luận (Comments)</div>
+          <div className="flex items-center gap-2"><div className="w-4 h-1.5 bg-destructive rounded-full" /> Giao việc (Assignment)</div>
+        </div>
+      </div>
+
+      <div className="p-6 flex-1 bg-muted/5 relative min-h-[400px]">
+        {/* Lưới nền (Grid Pattern) */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+
+        {!activeStudentId ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground border border-dashed border-border/50 rounded-2xl bg-card relative z-10">
             <User className="w-12 h-12 mb-4 opacity-50" />
-            <p className="font-bold text-lg">Chưa chọn thành viên</p>
-            <p className="text-[13px] font-medium opacity-80 mt-1">Vui lòng chọn một thành viên để xem sơ đồ tương tác của họ.</p>
+            <p className="font-bold text-lg">Chưa có thành viên nào</p>
+            <p className="text-[13px] font-medium opacity-80 mt-1">Nhóm này hiện chưa có sinh viên, không thể vẽ đồ thị.</p>
           </div>
         ) : (
-          <InteractionGraph data={data} isLoading={isLoading} />
+          <div className="relative z-10 w-full h-full">
+            <InteractionGraph data={data} isLoading={isLoading} activeStudentId={activeStudentId} />
+          </div>
         )}
       </div>
     </div>
