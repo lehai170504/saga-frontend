@@ -40,7 +40,7 @@ export function HeroSection() {
           >
             Chấm dứt Free-rider.<br />
             <span className="text-primary">
-              Đánh giá công bằng nhờ dữ liệu thật.
+              Đánh giá công bằng với Slicing Pie.
             </span>
           </motion.h1>
 
@@ -52,7 +52,7 @@ export function HeroSection() {
             transition={{ delay: 0.1 }}
             className="text-lg text-muted-foreground mb-8 max-w-xl font-medium leading-relaxed"
           >
-            Hệ thống tự động tổng hợp dữ liệu từ Jira và GitHub, kết hợp mô hình Slicing Pie để tính toán tỷ lệ đóng góp của từng sinh viên một cách minh bạch và khách quan nhất.
+            Hệ thống tự động tổng hợp dữ liệu từ Jira và GitHub, kết hợp AI cảnh báo rủi ro và mô hình Dynamic Equity để tính toán tỷ lệ đóng góp (Slices) minh bạch, khách quan nhất.
           </motion.p>
 
           {/* Buttons */}
@@ -87,90 +87,18 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
-            className="absolute inset-0 rounded-full blur-[20px] opacity-30 bg-primary/20"
+            className="absolute inset-0 rounded-full blur-[30px] opacity-20 bg-primary/30"
           />
           <motion.img
-            src="/images/abstract_data_network.png"
-            alt="Data Network"
-            className="absolute w-[80%] h-[80%] object-cover rounded-3xl shadow-2xl border border-border/50"
+            src="/images/saga_hero_dashboard.png"
+            alt="SAGA Dashboard Mockup"
+            className="absolute w-[90%] h-[90%] object-cover rounded-3xl shadow-[0_0_50px_rgba(2,132,199,0.2)] border border-border/50"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.1 }}
-            style={{ filter: 'drop-shadow(0 0 40px rgba(0,0,0,0.5))' }}
           />
 
-          {/* Central SAGA Dashboard Snippet */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="absolute z-20 w-72 bg-card border border-border rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden"
-          >
-            <div className="bg-muted/50 border-b border-border px-4 py-3 flex items-center justify-between">
-              <span className="text-xs font-bold text-foreground">Tỷ lệ đóng góp (Slicing Pie)</span>
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-              </span>
-            </div>
-            <div className="p-4 flex flex-col gap-3">
-              {[
-                { name: "Lê Hoàng Hải", val: 45, color: "bg-primary" },
-                { name: "Trần Thị B", val: 30, color: "bg-emerald-500" },
-                { name: "Nguyễn Văn A", val: 25, color: "bg-amber-500" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground uppercase">{item.name.charAt(0)}</div>
-                  <div className="flex-1">
-                    <div className="flex justify-between mb-1">
-                      <span className="text-xs font-semibold text-foreground">{item.name}</span>
-                      <span className="text-[10px] font-bold">{item.val}%</span>
-                    </div>
-                    <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                      <motion.div className={`h-full ${item.color}`} initial={{ width: 0 }} animate={{ width: `${item.val}%` }} transition={{ duration: 1.5, delay: 0.5 + i * 0.2 }} />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
 
-          {/* Top Left: GitHub Realistic Snippet */}
-          <motion.div
-            variants={float} initial="hidden" animate="visible" transition={{ delay: 0.4 }}
-            className="absolute top-[10%] left-0 z-30 bg-card border border-border p-3 rounded-xl shadow-xl flex gap-3 w-60 hover:-translate-y-1 transition-transform"
-          >
-            <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center shrink-0">
-              <GitBranch className="w-4 h-4 text-foreground" />
-            </div>
-            <div className="flex flex-col gap-1 w-full">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-muted-foreground">main</span>
-                <span className="text-[9px] text-muted-foreground">Vừa xong</span>
-              </div>
-              <span className="text-xs font-bold text-foreground truncate">Merged PR #142</span>
-              <span className="text-[10px] text-success font-medium">+342 lines, -12 lines</span>
-            </div>
-          </motion.div>
-
-          {/* Bottom Right: Jira Realistic Snippet */}
-          <motion.div
-            variants={float} initial="hidden" animate="visible" transition={{ delay: 0.6 }}
-            className="absolute bottom-[15%] right-0 z-30 bg-card border border-border p-3 rounded-xl shadow-xl flex gap-3 w-56 hover:-translate-y-1 transition-transform"
-          >
-            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-              <Layout className="w-4 h-4 text-blue-500" />
-            </div>
-            <div className="flex flex-col gap-1 w-full">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase">Saga-45</span>
-              </div>
-              <span className="text-xs font-bold text-foreground truncate">Landing page redesign</span>
-              <div className="mt-1">
-                <span className="inline-block px-2 py-0.5 bg-success/15 text-success text-[9px] font-bold rounded uppercase">Done</span>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

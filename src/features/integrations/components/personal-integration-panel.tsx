@@ -5,12 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle } from "lucide-react";
-import { API_BASE_URL } from "@/lib/axios";
+import { API_BASE_URL, ApiError } from "@/lib/axios";
+import { useAuthStore } from "@/stores/authStore";
 
 export function PersonalIntegrationPanel() {
   const { data, isLoading, error } = usePersonalIntegrations();
   const { mutate: deleteJira, isPending: isDeletingJira } = useDeleteJiraIntegration();
   const { mutate: deleteGithub, isPending: isDeletingGithub } = useDeleteGithubIntegration();
+  const user = useAuthStore((s) => s.user);
 
   if (isLoading) {
     return (
@@ -20,15 +22,16 @@ export function PersonalIntegrationPanel() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="text-center text-destructive p-4">
-        Đã có lỗi xảy ra khi tải thông tin kết nối.
-      </div>
-    );
-  }
+  // Check if account is not active or access was denied due to account status
+  const isAccountInactive =
+    (user?.accountStatus && user.accountStatus !== "ACTIVE") ||
+    (error instanceof ApiError &&
+      (error.errorName === "ACCOUNT_STATUS_ACCESS_DENIED" ||
+        error.message?.toLowerCase().includes("not active") ||
+        error.status === 403));
 
-  const connections = data?.connections || [];
+  // Allow graceful fallback if API returns error (e.g. 403/404 or uninitialized profile)
+  const connections = (data && !error) ? (data.connections || []) : [];
   const jiraConnection = connections.find((c) => c.provider === "JIRA" && c.status === "ACTIVE");
   const githubConnection = connections.find((c) => c.provider === "GITHUB" && c.status === "ACTIVE");
 
@@ -52,6 +55,17 @@ export function PersonalIntegrationPanel() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {(error || isAccountInactive) && (
+        <div className="col-span-full p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-semibold flex items-center gap-2.5">
+          <AlertCircle size={18} className="shrink-0 text-amber-500" />
+          <span>
+            {isAccountInactive
+              ? "Tài khoản của bạn chưa ở trạng thái hoạt động. Vui lòng xác nhận qua email hoặc liên hệ Quản trị viên hoặc Giảng viên để được xác minh và kích hoạt tài khoản."
+              : "Tài khoản của bạn chưa được phân vào môn học/nhóm nào. Vui lòng liên hệ giảng viên hoặc quản trị viên để tham gia môn học trước khi cài đặt tích hợp."}
+          </span>
+        </div>
+      )}
+
       {/* Jira Card */}
       <Card className="rounded-3xl border-border/50 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-border transition-all duration-300">
         <CardHeader className="bg-muted/30 pb-4">
@@ -96,7 +110,11 @@ export function PersonalIntegrationPanel() {
           ) : (
             <div className="text-center py-4 flex-1 flex flex-col items-center justify-center">
               <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-              <Button onClick={handleConnectJira} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white mt-auto">
+              <Button
+                onClick={handleConnectJira}
+                disabled={!!error || isAccountInactive}
+                className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white mt-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <Plus className="mr-2 h-4 w-4" /> Liên kết với Jira
               </Button>
             </div>
@@ -148,7 +166,11 @@ export function PersonalIntegrationPanel() {
           ) : (
             <div className="text-center py-4 flex-1 flex flex-col items-center justify-center">
               <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-              <Button onClick={handleConnectGithub} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white mt-auto">
+              <Button
+                onClick={handleConnectGithub}
+                disabled={!!error || isAccountInactive}
+                className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white mt-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <Plus className="mr-2 h-4 w-4" /> Liên kết với GitHub
               </Button>
             </div>

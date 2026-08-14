@@ -13,13 +13,13 @@ export function HowItWorksSection() {
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
             className="text-3xl md:text-5xl font-black tracking-tight text-foreground mb-6"
           >
-            Tích hợp <span className="text-primary">Không chạm</span>
+            Đồng bộ <span className="text-primary">Tự động</span>
           </motion.h2>
           <motion.p
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
             className="text-muted-foreground font-medium text-lg leading-relaxed"
           >
-            SAGA hoạt động ngầm. Không cài đặt phức tạp, không đổi thói quen. Chỉ cần code và kéo thả task.
+            Không cần phải nhập liệu thủ công. SAGA tự động lấy dữ liệu từ các công cụ bạn đang dùng hàng ngày (Jira, GitHub) để tính điểm đóng góp theo thời gian thực.
           </motion.p>
         </div>
 
