@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Download, Activity, AlertTriangle, ShieldCheck, Clock } from "lucide-react";
+import { Activity, AlertTriangle, ShieldCheck, Clock } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { useAuditLogs } from "@/features/admin/hooks/useAuditLogs";
@@ -19,15 +18,12 @@ export default function SystemLogsPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Nhật ký Hệ thống (Audit Logs)"
         description="Theo dõi tất cả các thay đổi về cấu hình, tích hợp API và hoạt động của Admin."
         workspace="Workspace Quản trị"
       >
-        <Button variant="outline" className="rounded-xl h-12 shadow-sm text-foreground bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/80">
-          <Download className="mr-2 h-4 w-4" /> Xuất Log (CSV)
-        </Button>
       </PageHeader>
 
       {/* Stats cards to make the page look more like a Dashboard */}

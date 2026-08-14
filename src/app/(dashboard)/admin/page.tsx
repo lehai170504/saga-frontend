@@ -6,24 +6,21 @@ import {
   Users,
   GraduationCap,
   Network,
-  Activity,
   Server,
-  Clock,
-  GitCommit,
   CheckCircle2,
-  Database
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { GraphProcessingChart } from "@/features/admin/components/graph-processing-chart";
 import { SystemAnomalyChart } from "@/features/admin/components/system-anomaly-chart";
 import { useSystemStats } from "@/features/admin/hooks/useSystemStats";
 import { IntegrationHealthCards } from "@/features/admin/components/integration-health-cards";
+import { RecentActivityFeed } from "@/features/admin/components/recent-activity-feed";
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useSystemStats();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Quản trị Hệ thống"
         description="Quản lý Dữ liệu Học thuật và Trạng thái Tích hợp API."
@@ -143,79 +140,7 @@ export default function AdminDashboard() {
         <IntegrationHealthCards />
 
         {/* Activity Feed Card */}
-        <Card className="rounded-2xl shadow-sm border-border">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Clock className="h-5 w-5 text-muted-foreground" />
-              Nhật ký Hệ thống gần đây
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex gap-4">
-                    <Skeleton className="h-10 w-10 rounded-full shrink-0" />
-                    <div className="space-y-2 w-full mt-1">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-3 w-24" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-6 pl-2">
-                <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-destructive/10 text-destructive flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <GitCommit className="h-4 w-4" />
-                  </div>
-                  <div className="pt-1.5">
-                    <p className="text-sm text-foreground">
-                      <span className="font-bold text-destructive">Tiến trình MSR</span> vừa quét và đánh dấu 15 <span className="font-bold">Task Ảo</span> do thiếu liên kết Code (Task-Code Linkage).
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 font-medium">Vừa xong</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <Activity className="h-4 w-4" />
-                  </div>
-                  <div className="pt-1.5">
-                    <p className="text-sm text-foreground">
-                      <span className="font-bold text-primary">Process Mining</span> ghi nhận hiện tượng <span className="font-bold">Cày Deadline (Burst)</span> tăng 25% ở nhóm các lớp sáng thứ 2.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 font-medium">15 phút trước</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <Network className="h-4 w-4" />
-                  </div>
-                  <div className="pt-1.5">
-                    <p className="text-sm text-foreground">
-                      <span className="font-bold text-primary">SNA Module</span> đã hoàn tất tính toán <span className="font-bold">Độ bao phủ cộng tác</span> cho 32 đồ thị lớp học mới.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 font-medium">5 giờ trước</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 items-start relative before:absolute before:left-5 before:top-10 before:h-[calc(100%+1.5rem)] before:w-[2px] before:bg-border/60 last:before:hidden">
-                  <div className="h-10 w-10 rounded-full bg-success/10 text-success flex items-center justify-center shrink-0 z-10 ring-4 ring-card">
-                    <Database className="h-4 w-4" />
-                  </div>
-                  <div className="pt-1.5">
-                    <p className="text-sm text-foreground">
-                      <span className="font-bold text-success">Quản trị viên</span> vừa nhập dữ liệu và cấu trúc <strong>1,248 sinh viên</strong> vào hệ thống đồ thị.
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1 font-medium">1 ngày trước</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <RecentActivityFeed />
       </div>
     </div>
   );

@@ -16,8 +16,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StudentProfilePage({ params }: { params: Promise<{ courseId: string, studentId: string }> }) {
   const { courseId, studentId } = React.use(params);
-  const [note, setNote] = useState("");
-  const [savedNotes, setSavedNotes] = useState<{ id: number, text: string, time: string, author: string }[]>([]);
 
   const { data: studentsResponse, isLoading: isLoadingBasicInfo } = useCourseStudents(courseId);
   const studentInfo = React.useMemo(() => {
@@ -48,13 +46,13 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
     status: "Active" // Backend doesn't return accountStatus in course students yet, assume Active
   };
 
-  const RADAR_DATA = aggregate ? [
-    { subject: 'Code', A: aggregate.codeContributionScore || 0, fullMark: 100 },
-    { subject: 'Tài liệu', A: aggregate.documentContributionScore || 0, fullMark: 100 },
-    { subject: 'Thiết kế', A: aggregate.designContributionScore || 0, fullMark: 100 },
-    { subject: 'Peer Review', A: aggregate.peerReviewScore || 0, fullMark: 5 },
-    { subject: 'Task', A: aggregate.taskContributionScore || 0, fullMark: 100 },
-  ] : [];
+  const RADAR_DATA = [
+    { subject: 'Code', A: aggregate?.codeContributionScore || 0, fullMark: 100 },
+    { subject: 'Tài liệu', A: aggregate?.documentContributionScore || 0, fullMark: 100 },
+    { subject: 'Thiết kế', A: aggregate?.designContributionScore || 0, fullMark: 100 },
+    { subject: 'Peer Review', A: aggregate?.peerReviewScore || 0, fullMark: 5 },
+    { subject: 'Task', A: aggregate?.taskContributionScore || 0, fullMark: 100 },
+  ];
 
   const TIMELINE = activitiesData?.activities?.content?.map(activity => ({
     type: activity.type.toLowerCase(),
@@ -63,18 +61,11 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
     link: "#"
   })) || [];
 
-  const handleSaveNote = () => {
-    if (!note.trim()) return;
-    setSavedNotes([
-      { id: Date.now(), text: note, time: new Date().toLocaleDateString('vi-VN'), author: "You" },
-      ...savedNotes
-    ]);
-    setNote("");
-  };
+
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full bg-background overflow-hidden">
-      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
@@ -139,7 +130,7 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
 
           {/* Left Column: Stats & Radar Chart */}
           <div className="space-y-6">
@@ -263,46 +254,6 @@ export default function StudentProfilePage({ params }: { params: Promise<{ cours
               <Button variant="outline" className="w-full mt-6 rounded-xl border-dashed">
                 Xem toàn bộ lịch sử
               </Button>
-            </CardContent>
-          </Card>
-
-          {/* Right Column: Instructor Notes */}
-          <Card className="lg:col-span-1 rounded-[2rem] border-border/50 bg-card shadow-sm overflow-hidden flex flex-col">
-            <CardContent className="p-6 flex-1 flex flex-col">
-              <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-6 flex items-center gap-2">
-                <Edit3 size={16} /> Ghi chú Giảng viên (Thủ công)
-              </h3>
-
-              <div className="flex-1 flex flex-col justify-end space-y-6">
-
-                {/* Note Feed */}
-                <div className="space-y-4 flex-1 max-h-[300px] overflow-y-auto pr-2">
-                  {savedNotes.map((n) => (
-                    <div key={n.id} className="bg-muted/30 p-4 rounded-xl border border-border/50 space-y-2">
-                      <p className="text-sm text-foreground font-medium">{n.text}</p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span className="font-bold">{n.author}</span>
-                        <span>{n.time}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Input Area */}
-                <div className="space-y-3 pt-4 border-t border-border/50">
-                  <Textarea
-                    placeholder="Nhập ghi chú cho sinh viên này (vd: Bạn này thuyết trình tốt, điểm mềm cao...)"
-                    className="min-h-[100px] rounded-xl bg-background border-border/50 resize-none"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                  />
-                  <Button className="w-full rounded-xl font-bold" onClick={handleSaveNote}>
-                    <Send size={16} className="mr-2" /> Lưu Ghi Chú
-                  </Button>
-                  <p className="text-xs text-center text-muted-foreground">Ghi chú này chỉ hiển thị với Giảng viên và trợ giảng.</p>
-                </div>
-
-              </div>
             </CardContent>
           </Card>
 

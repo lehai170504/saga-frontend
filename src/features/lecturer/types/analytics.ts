@@ -137,12 +137,15 @@ export interface InteractionNode {
   studentId: string;
   studentCode: string;
   fullName: string;
+  degree?: number;
 }
 
 export interface InteractionEdge {
-  from: string;
-  to: string;
-  weight: number;
+  fromStudentId: string;
+  toStudentId: string;
+  sourceType: string;
+  sourceCount: number;
+  directed: boolean;
 }
 
 export interface TeamInteraction {

@@ -86,7 +86,7 @@ export default function LecturerDashboard({ params }: { params: Promise<{ course
   const { courseId } = React.use(params);
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      <div className="relative p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="relative p-6 max-w-[1600px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 relative z-10 pt-4">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/50 border border-border/50 text-muted-foreground text-xs font-semibold backdrop-blur-md">

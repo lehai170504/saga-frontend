@@ -9,7 +9,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
   const { courseId } = use(params);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-4 mb-2">
         <Link href={`/lecturer/${courseId}`}>
           <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted">
@@ -18,7 +18,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
         </Link>
         <div>
           <h1 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Cấu hình Đánh giá Nhóm</h1>
-          <h2 className="text-2xl font-extrabold text-foreground">Lớp {courseId}</h2>
+
         </div>
       </div>
 

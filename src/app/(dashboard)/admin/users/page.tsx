@@ -8,6 +8,16 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useUsers, useToggleUserStatus } from "@/features/admin/hooks/useUsers";
 import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function UsersManagementPage() {
   const [keyword, setKeyword] = useState("");
@@ -15,6 +25,9 @@ export default function UsersManagementPage() {
   const [role, setRole] = useState("all");
   const [accountStatus, setAccountStatus] = useState("all");
   const [page, setPage] = useState(0);
+
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<{ id: string, status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING" } | null>(null);
 
   const { data: usersData, isLoading } = useUsers({
     keyword: debouncedKeyword || undefined,
@@ -26,13 +39,19 @@ export default function UsersManagementPage() {
 
   const { mutateAsync: toggleStatus } = useToggleUserStatus();
 
-  const handleToggleStatus = async (userId: string, currentStatus: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING") => {
-    const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+  const handleToggleStatus = (userId: string, currentStatus: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING") => {
+    setSelectedUser({ id: userId, status: currentStatus });
+    setIsAlertOpen(true);
+  };
+
+  const confirmToggleStatus = async () => {
+    if (!selectedUser) return;
+    const newStatus = selectedUser.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
     try {
-      await toggleStatus({ id: userId, status: newStatus });
-      toast.success(`Đã cập nhật trạng thái người dùng thành công.`);
-    } catch {
-      toast.error("Có lỗi xảy ra khi cập nhật trạng thái.");
+      await toggleStatus({ id: selectedUser.id, status: newStatus });
+    } finally {
+      setIsAlertOpen(false);
+      setSelectedUser(null);
     }
   };
 
@@ -52,7 +71,7 @@ export default function UsersManagementPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Phân quyền Người dùng (RBAC)"
         description="Quản lý danh sách người dùng trên hệ thống SAGA. Admin có thể xem vai trò, cấp hoặc thu hồi quyền truy cập của từng tài khoản."
@@ -91,6 +110,25 @@ export default function UsersManagementPage() {
           )}
         </CardContent>
       </Card>
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận thay đổi trạng thái</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn {selectedUser?.status === "ACTIVE" ? "vô hiệu hóa (Inactive)" : "kích hoạt (Active)"} tài khoản này không? Hành động này sẽ ảnh hưởng đến khả năng truy cập hệ thống của người dùng.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Hủy bỏ</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmToggleStatus}
+              className={`rounded-xl ${selectedUser?.status === "ACTIVE" ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+            >
+              Xác nhận
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

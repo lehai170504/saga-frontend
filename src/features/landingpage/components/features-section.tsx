@@ -53,10 +53,10 @@ export function FeaturesSection() {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-foreground text-sm">Đánh giá cảm tính</h3>
-                  <span className="text-[10px] text-destructive bg-destructive/10 px-2 py-0.5 rounded font-bold">Lỗ hổng</span>
+                  <h3 className="font-bold text-foreground text-sm">Peer Review cảm tính</h3>
+                  <span className="text-[10px] text-destructive bg-destructive/10 px-2 py-0.5 rounded font-bold">Lỗi</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Bỏ phiếu kín cuối kỳ dẫn đến cào bằng điểm số, không phản ánh đúng nỗ lực cá nhân.</p>
+                <p className="text-xs text-muted-foreground">Đánh giá chéo cuối kỳ thường mang tính nể nang, cào bằng điểm số, không phản ánh đúng năng lực.</p>
               </div>
             </motion.div>
 
@@ -67,24 +67,24 @@ export function FeaturesSection() {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-foreground text-sm">Gánh team (Bus Factor)</h3>
+                  <h3 className="font-bold text-foreground text-sm">Vấn nạn Free-rider</h3>
                   <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded font-bold">Phổ biến</span>
                 </div>
-                <p className="text-xs text-muted-foreground">1-2 cá nhân ôm 90% lượng code, trong khi các thành viên khác lại &quot;free-ride&quot;.</p>
+                <p className="text-xs text-muted-foreground">Vài cá nhân gánh toàn bộ source code trên GitHub, trong khi thành viên khác nghiễm nhiên hưởng điểm chung.</p>
               </div>
             </motion.div>
 
             {/* Alert 3 */}
-            <motion.div variants={scaleUp} className="bg-card border border-warning/20 shadow-xl rounded-2xl p-5 flex gap-4 w-full md:w-[90%] md:mr-auto hover:-translate-x-2 transition-transform duration-300">
-              <div className="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center shrink-0">
-                <Clock className="w-5 h-5 text-warning" />
+            <motion.div variants={scaleUp} className="bg-card border border-amber-500/20 shadow-xl rounded-2xl p-5 flex gap-4 w-full md:w-[90%] md:mr-auto hover:-translate-x-2 transition-transform duration-300">
+              <div className="w-10 h-10 bg-amber-500/10 rounded-full flex items-center justify-center shrink-0">
+                <Clock className="w-5 h-5 text-amber-500" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-foreground text-sm">Trễ tiến độ ngầm</h3>
-                  <span className="text-[10px] text-warning bg-warning/10 px-2 py-0.5 rounded font-bold">Rủi ro</span>
+                  <h3 className="font-bold text-foreground text-sm">Blocker ngầm</h3>
+                  <span className="text-[10px] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded font-bold">Cảnh báo</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Blockers không được báo cáo kịp thời, tạo &quot;nợ kỹ thuật&quot; tích tụ cuối Sprint.</p>
+                <p className="text-xs text-muted-foreground">Task trên Jira không được báo cáo kịp thời, dẫn đến trễ deadline và nợ kỹ thuật (Technical Debt).</p>
               </div>
             </motion.div>
           </motion.div>
@@ -165,9 +165,9 @@ export function FeaturesSection() {
               </div>
             </div>
             <div className="p-8 flex-1 flex flex-col justify-center">
-              <h3 className="text-xl font-bold text-foreground mb-2">Đồng bộ Thời gian thực</h3>
+              <h3 className="text-xl font-bold text-foreground mb-2">Tự động đồng bộ</h3>
               <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                Kết nối trực tiếp GitHub & Jira, cập nhật dữ liệu từng giây.
+                Kết nối trực tiếp GitHub & Jira, tự động cập nhật dữ liệu từng giây.
               </p>
             </div>
           </motion.div>
@@ -186,50 +186,14 @@ export function FeaturesSection() {
                   </div>
                   <span className="text-sm font-bold text-destructive">Cảnh báo rủi ro</span>
                 </div>
-                <div className="text-xs text-muted-foreground">Phát hiện tình trạng &quot;Bus Factor&quot; cao trong Sprint 3.</div>
+                <div className="text-xs text-muted-foreground">Phát hiện thành viên có dấu hiệu &quot;Free-rider&quot; trong Sprint 3.</div>
               </div>
             </div>
             <div className="p-8 flex-1 flex flex-col justify-center">
-              <h3 className="text-xl font-bold text-foreground mb-2">Hệ thống Cảnh báo sớm</h3>
+              <h3 className="text-xl font-bold text-foreground mb-2">Cảnh báo sớm bằng AI</h3>
               <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                Phát hiện &quot;gánh team&quot; và cảnh báo rủi ro dự án ngay lập tức.
+                Phát hiện Free-rider và gửi cảnh báo rủi ro dự án ngay lập tức.
               </p>
-            </div>
-          </motion.div>
-
-          {/* Feature 4: Traceability (Span 2) */}
-          <motion.div
-            variants={scaleUp}
-            className="md:col-span-2 bg-card border border-border shadow-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-primary/50 transition-colors duration-500 relative"
-          >
-            <div className="p-8 md:w-1/2 flex flex-col justify-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                <Database className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="text-2xl font-bold text-foreground mb-3">Minh bạch Dữ liệu 100%</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed">
-                Mọi điểm số đều có bằng chứng từ Commits và Tasks, loại bỏ hoàn toàn cảm tính.
-              </p>
-            </div>
-            <div className="md:w-1/2 bg-muted/30 p-8 flex items-center justify-center relative overflow-hidden">
-              {/* Mini Mockup: Data Table */}
-              <div className="w-full bg-background border border-border rounded-xl shadow-xl flex flex-col overflow-hidden group-hover:-translate-x-2 transition-transform duration-500">
-                <div className="h-8 bg-muted/50 border-b border-border flex items-center px-4 gap-4 text-[10px] font-bold text-muted-foreground uppercase">
-                  <div className="flex-1">Task</div>
-                  <div className="w-16 text-right">Points</div>
-                </div>
-                <div className="p-2 space-y-2">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex items-center gap-4 px-2 py-1 rounded bg-muted/30">
-                      <div className="flex-1 flex items-center gap-2">
-                        <div className="w-4 h-4 bg-blue-500/20 rounded flex items-center justify-center text-[8px] text-blue-500">J</div>
-                        <div className="h-2 w-16 bg-muted-foreground/20 rounded-full" />
-                      </div>
-                      <div className="w-16 text-right text-xs font-bold">5</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </motion.div>
         </motion.div>

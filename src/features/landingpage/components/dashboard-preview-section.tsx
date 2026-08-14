@@ -68,12 +68,12 @@ export function DashboardPreviewSection() {
                   <div className="flex-1 flex flex-col justify-center gap-4">
                     {[
                       { name: "Lê Hoàng Hải", val: 35, color: "bg-blue-500" },
-                      { name: "Nguyễn Văn A", val: 28, color: "bg-emerald-500" },
-                      { name: "Trần Thị B", val: 22, color: "bg-amber-500" },
-                      { name: "Phạm Văn C", val: 15, color: "bg-purple-500" },
+                      { name: "Trần Đức Trung", val: 28, color: "bg-emerald-500" },
+                      { name: "Bùi Phan Nhật Minh", val: 22, color: "bg-amber-500" },
+                      { name: "Bùi Đăng Khoa", val: 15, color: "bg-purple-500" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-24 text-sm font-medium text-muted-foreground truncate">{item.name}</div>
+                        <div className="w-40 text-sm font-medium text-muted-foreground truncate">{item.name}</div>
                         <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
                           <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.val}%` }} />
                         </div>
@@ -102,7 +102,7 @@ export function DashboardPreviewSection() {
                         <td className="px-4 py-3 text-right text-muted-foreground">2 phút trước</td>
                       </tr>
                       <tr className="hover:bg-muted/30">
-                        <td className="px-4 py-3 font-medium text-foreground">Nguyễn Văn A</td>
+                        <td className="px-4 py-3 font-medium text-foreground">Trần Đức Trung</td>
                         <td className="px-4 py-3"><span className="bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded text-xs font-semibold">Jira</span></td>
                         <td className="px-4 py-3 text-muted-foreground truncate max-w-[200px]">Moved SAGA-45 to Done</td>
                         <td className="px-4 py-3 text-right text-muted-foreground">15 phút trước</td>

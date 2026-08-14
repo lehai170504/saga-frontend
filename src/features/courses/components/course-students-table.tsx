@@ -154,8 +154,8 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
       </div>
 
       <Tabs defaultValue="with-team" className="w-full" onValueChange={() => setPage(0)}>
-        <TabsList className="grid w-full max-w-md grid-cols-2 rounded-2xl mb-6 p-1 bg-muted/50 border border-border/50">
-          <TabsTrigger value="with-team" className="rounded-xl font-semibold flex items-center gap-2">
+        <TabsList className="mb-6 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5 gap-2">
+          <TabsTrigger value="with-team" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
             <Users className="w-4 h-4" />
             Đã có nhóm
             {data && (
@@ -164,7 +164,7 @@ export function CourseStudentsTable({ courseId, courseClassName }: CourseStudent
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="without-team" className="rounded-xl font-semibold flex items-center gap-2">
+          <TabsTrigger value="without-team" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
             <UserX className="w-4 h-4" />
             Chưa có nhóm
             {data && (

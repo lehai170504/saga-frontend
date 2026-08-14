@@ -3,15 +3,19 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, AlertTriangle, ClipboardCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AlertTriangle, ClipboardCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
 import { OverrideRequests } from "@/features/admin/components/evaluation-config/override-requests";
+import { useGetWeightRequests } from "@/features/admin/hooks/useContributionWeight";
 
 export default function EvaluationConfigPage() {
   const [activeTab, setActiveTab] = useState("ai-warnings");
   const [isSaving, setIsSaving] = useState(false);
+
+  const { data: requestsResponse } = useGetWeightRequests();
+  const requests = Array.isArray(requestsResponse) ? requestsResponse : ((requestsResponse as any)?.content ?? []);
+  const hasPendingRequests = requests.some((r: any) => r.status === "PENDING");
 
   const handleSaveAll = () => {
     setIsSaving(true);
@@ -23,32 +27,25 @@ export default function EvaluationConfigPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <PageHeader
         title="Chính sách Đánh giá Toàn hệ thống"
         description="Thiết lập các ngưỡng cảnh báo của AI, cấu hình Bộ khung hệ số chuẩn (SE) và quản lý yêu cầu kiểm duyệt toàn hệ thống."
         workspace="Workspace Quản trị"
       >
-        <div className="flex justify-end w-full md:w-auto">
-          <Button
-            onClick={handleSaveAll}
-            disabled={isSaving}
-            className="rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[160px]"
-          >
-            <Save className={`w-4 h-4 mr-2 ${isSaving ? "animate-pulse" : ""}`} />
-            {isSaving ? "Đang lưu..." : "Lưu tất cả Chính sách"}
-          </Button>
-        </div>
+
       </PageHeader>
 
       <Tabs defaultValue="ai-warnings" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex flex-col lg:flex-row w-full lg:w-auto h-auto lg:h-12 rounded-xl bg-muted/50 p-1 mb-8 gap-1">
-          <TabsTrigger value="ai-warnings" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6">
-            <AlertTriangle className="w-4 h-4 mr-2" /> Ngưỡng Cảnh báo AI
+        <TabsList className="mb-8 h-auto rounded-2xl bg-muted/50 border border-border/50 p-1.5 gap-2">
+          <TabsTrigger value="ai-warnings" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
+            <AlertTriangle className="w-4 h-4" /> Ngưỡng Cảnh báo AI
           </TabsTrigger>
-          <TabsTrigger value="requests" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-10 lg:h-full px-4 sm:px-6 relative">
-            <ClipboardCheck className="w-4 h-4 mr-2" /> Yêu cầu Kiểm duyệt
-            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
+          <TabsTrigger value="requests" className="relative rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
+            <ClipboardCheck className="w-4 h-4" /> Yêu cầu Kiểm duyệt
+            {hasPendingRequests && (
+              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
+            )}
           </TabsTrigger>
         </TabsList>
 
