@@ -22,20 +22,21 @@ import { AlertCircle } from "lucide-react";
 interface InteractionGraphProps {
   data?: TeamInteraction;
   isLoading: boolean;
+  activeStudentId?: string;
 }
 
 // Custom Node for better styling with Tailwind
-const CustomNode = ({ data }: { data: { label: string; group?: string } }) => {
+const CustomNode = ({ data }: { data: { label: string; group?: string; isSelected?: boolean } }) => {
   return (
-    <div className="px-4 py-3 shadow-md rounded-2xl bg-gradient-to-br from-card to-primary/5 border-2 border-primary/20 flex flex-col items-center justify-center min-w-[120px] backdrop-blur-xl hover:border-primary/50 transition-colors">
-      <Handle type="target" position={Position.Top} className="w-2 h-2 bg-primary border-none" />
-      <div className="font-bold text-sm text-primary text-center">{data.label}</div>
+    <div className={`px-4 py-3 shadow-md rounded-2xl flex flex-col items-center justify-center min-w-[120px] backdrop-blur-xl transition-all duration-300 ${data.isSelected ? 'bg-primary text-primary-foreground scale-110 ring-4 ring-primary/30 border-transparent' : 'bg-gradient-to-br from-card to-primary/5 border-2 border-primary/20 hover:border-primary/50'}`}>
+      <Handle type="target" position={Position.Top} className="w-2 h-2 opacity-0" />
+      <div className={`font-bold text-sm text-center ${data.isSelected ? 'text-white' : 'text-primary'}`}>{data.label}</div>
       {data.group && (
-        <div className="text-[10px] uppercase font-extrabold text-emerald-600 dark:text-emerald-400 mt-1.5 tracking-wider bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
+        <div className={`text-[10px] uppercase font-extrabold mt-1.5 tracking-wider px-2.5 py-0.5 rounded-full ${data.isSelected ? 'bg-white/20 text-white/90' : 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10'}`}>
           {data.group}
         </div>
       )}
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2 bg-primary border-none" />
+      <Handle type="source" position={Position.Bottom} className="w-2 h-2 opacity-0" />
     </div>
   );
 };
@@ -44,7 +45,7 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
+export function InteractionGraph({ data, isLoading, activeStudentId }: InteractionGraphProps) {
   // Convert API data to React Flow format with a circular layout
   const { initialNodes, initialEdges } = useMemo(() => {
     if (!data || !data.nodes || data.nodes.length === 0) {
@@ -66,37 +67,49 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
       const nodeLabel = rawNode.fullName || rawNode.name || rawNode.label || "Unknown";
       const nodeGroup = rawNode.studentCode || rawNode.group;
 
+      const isSelected = String(nodeId) === activeStudentId;
+
       return {
         id: String(nodeId),
         type: 'custom',
         position: { x, y },
-        data: { label: nodeLabel, group: nodeGroup },
+        data: { label: nodeLabel, group: nodeGroup, isSelected },
       };
     });
 
-    const edges: Edge[] = (data.edges || []).map((edge, i) => ({
-      id: `e${edge.fromStudentId}-${edge.toStudentId}-${i}`,
-      source: edge.fromStudentId,
-      target: edge.toStudentId,
-      label: edge.sourceCount > 1 ? edge.sourceCount.toString() : undefined,
-      animated: true,
-      style: {
-        stroke: 'var(--primary)',
-        strokeWidth: Math.max(1, Math.min(edge.sourceCount, 4)),
-        opacity: 0.7
-      },
-      labelStyle: { fill: 'var(--foreground)', fontWeight: 700, fontSize: 12 },
-      labelBgStyle: { fill: 'var(--background)', fillOpacity: 0.8 },
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-        width: 15,
-        height: 15,
-        color: 'var(--primary)',
-      },
-    }));
+    const edges: Edge[] = (data.edges || []).map((edge, i) => {
+      // Determine stroke color and style based on edge type
+      const type = edge.sourceType || "COLLABORATED_WITH";
+      let stroke = 'var(--primary)';
+      let strokeDasharray: string | undefined = undefined;
+
+      if (type === "REVIEWED") { stroke = 'var(--success)'; }
+      else if (type === "COMMENTED_ON") { strokeDasharray = "5 5"; }
+      else if (type === "ASSIGNED_TO") { stroke = 'var(--destructive)'; }
+      else { stroke = 'var(--primary)'; } // COLLABORATED_WITH
+
+      return {
+        id: `e${edge.fromStudentId}-${edge.toStudentId}-${i}`,
+        source: edge.fromStudentId,
+        target: edge.toStudentId,
+        animated: false,
+        style: {
+          stroke: stroke,
+          strokeWidth: Math.max(1.5, Math.min(edge.sourceCount || 1, 4)),
+          strokeDasharray: strokeDasharray,
+          opacity: 0.8
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 15,
+          height: 15,
+          color: stroke,
+        },
+      };
+    });
 
     return { initialNodes: nodes, initialEdges: edges };
-  }, [data]);
+  }, [data, activeStudentId]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
