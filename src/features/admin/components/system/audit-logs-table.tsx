@@ -13,87 +13,99 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Network, GraduationCap, FolderGit2, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { ChevronLeft, ChevronRight, Clock, Database, CodeSquare } from "lucide-react";
 import { EmptyState } from "@/components/shared/DataState";
-import { AdminTeamResponse } from "../api/teamApi";
-import { CreateProjectModal } from "./create-project-modal";
-import { ProjectDetailsModal } from "./project-details-modal";
-import { TeamEvaluationAction } from "./team-evaluation-action";
+import { AuditLogResponse } from "../../api/auditLogApi";
+import { Badge } from "@/components/ui/badge";
 
-interface TeamsTableProps {
-  data: AdminTeamResponse[];
+interface AuditLogsTableProps {
+  data: AuditLogResponse[];
   pageIndex: number;
   totalPages: number;
   totalElements: number;
   onPageChange: (page: number) => void;
 }
 
-export const columns: ColumnDef<AdminTeamResponse>[] = [
+export const columns: ColumnDef<AuditLogResponse>[] = [
   {
-    accessorKey: "name",
-    header: "Tên Nhóm",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Network className="w-4 h-4 text-primary" />
-        </div>
-        <span className="font-semibold text-foreground">{row.original.name}</span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "course",
-    header: "Thuộc Khóa Học",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-1">
+    accessorKey: "timestamp",
+    header: "Thời Gian",
+    cell: ({ row }) => {
+      let formattedDate = row.original.timestamp;
+      try {
+        const date = new Date(row.original.timestamp);
+        formattedDate = date.toLocaleString("vi-VN", {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      } catch (e) {
+        console.error(e);
+      }
+
+      return (
         <div className="flex items-center gap-2">
-          <GraduationCap className="w-4 h-4 text-emerald-500" />
-          <span className="font-medium text-[13px]">{row.original.course.name}</span>
+          <Clock className="w-4 h-4 text-muted-foreground" />
+          <span className="font-medium text-[13px] text-foreground">{formattedDate}</span>
         </div>
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ml-6">
-          {row.original.course.courseCode}
+      );
+    },
+  },
+  {
+    accessorKey: "action",
+    header: "Hành Động",
+    cell: ({ row }) => {
+      const actionStr = row.original.action || "";
+      const actionUpper = actionStr.toUpperCase();
+
+      let variant: "default" | "secondary" | "destructive" | "outline" = "default";
+      let colorClass = "bg-primary/10 text-primary border-primary/20"; // default blue-ish
+
+      if (actionUpper.includes("CREATE") || actionUpper.includes("ADD") || actionUpper.includes("SYNC")) {
+        colorClass = "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20";
+        variant = "secondary";
+      } else if (actionUpper.includes("DELETE") || actionUpper.includes("REMOVE") || actionUpper.includes("DISABLE")) {
+        colorClass = "bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20";
+        variant = "secondary";
+      } else if (actionUpper.includes("UPDATE") || actionUpper.includes("EDIT")) {
+        colorClass = "bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20";
+        variant = "secondary";
+      }
+
+      return (
+        <div className="flex items-center gap-2">
+          <CodeSquare className="w-4 h-4 text-muted-foreground opacity-50" />
+          <Badge variant={variant} className={`font-bold tracking-wider text-[10px] ${colorClass}`}>
+            {actionUpper}
+          </Badge>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "targetEntity",
+    header: "Đối Tượng (Target)",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2 max-w-[300px]">
+        <Database className="w-4 h-4 text-indigo-400 shrink-0" />
+        <span className="font-medium text-[13px] text-muted-foreground truncate" title={row.original.targetEntity}>
+          {row.original.targetEntity || "N/A"}
         </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "project",
-    header: "Dự Án Đang Làm",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <FolderGit2 className="w-4 h-4 text-indigo-500" />
-        <span className="font-medium text-[13px] text-foreground">{row.original.project?.name || "Chưa chọn dự án"}</span>
-      </div>
-    ),
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => (
-      <div className="flex justify-end pr-2 gap-2 items-center">
-        <TeamEvaluationAction courseId={row.original.course.id} teamId={row.original.id} teamName={row.original.name} />
-        {!row.original.project ? (
-          <CreateProjectModal teamId={row.original.id} />
-        ) : (
-          <ProjectDetailsModal projectId={row.original.project.id} />
-        )}
-        <Link href={`/admin/courses/${row.original.course.id}`}>
-          <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary">
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        </Link>
       </div>
     ),
   },
 ];
 
-export function TeamsTable({
+export function AuditLogsTable({
   data,
   pageIndex,
   totalPages,
   totalElements,
   onPageChange,
-}: TeamsTableProps) {
+}: AuditLogsTableProps) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
@@ -104,7 +116,7 @@ export function TeamsTable({
   if (data.length === 0) {
     return (
       <EmptyState
-        message="Hiện tại hệ thống chưa có dữ liệu nhóm nào."
+        message="Hiện tại hệ thống chưa có bản ghi nhật ký nào."
       />
     );
   }
@@ -152,7 +164,7 @@ export function TeamsTable({
         <div className="text-sm text-muted-foreground font-medium flex items-center gap-4">
           <span>Trang {pageIndex + 1} / {totalPages || 1}</span>
           <span className="w-1 h-1 rounded-full bg-border"></span>
-          <span className="text-foreground">Tổng: {totalElements} nhóm</span>
+          <span className="text-foreground">Tổng: {totalElements} logs</span>
         </div>
         <div className="flex items-center gap-2">
           <Button

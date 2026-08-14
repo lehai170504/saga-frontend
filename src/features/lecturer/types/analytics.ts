@@ -189,3 +189,18 @@ export interface SprintVelocityResponse {
   teamId: string;
   sprints: SprintVelocity[];
 }
+
+export interface SprintBurndownPoint {
+  date: string;
+  idealRemaining: number;
+  actualRemaining: number;
+  doneCount: number;
+}
+
+export interface SprintBurndownResponse {
+  courseId: string;
+  teamId: string;
+  sprintId: string;
+  points: SprintBurndownPoint[];
+  totalScope: number;
+}

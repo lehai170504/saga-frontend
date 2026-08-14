@@ -23,7 +23,7 @@ import { ProfileModal } from "@/features/user/components/profile-modal";
 import { MobileMenuButton } from "@/components/layout/mobile-buttons";
 import { useNotificationsList, useUnreadCount, useMarkAsRead } from "@/features/notifications/hooks/useNotifications";
 import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush";
-import { BroadcastModal } from "@/features/admin/components/broadcast-modal";
+import { BroadcastModal } from "@/features/admin/components/system/broadcast-modal";
 import { Megaphone } from "lucide-react";
 
 import { formatNotificationRelativeTime } from "@/features/notifications/utils/formatTime";

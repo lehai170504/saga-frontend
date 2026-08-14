@@ -130,6 +130,7 @@ export function useBoardTasksState(projectId: string, currentSprintId: string) {
           } else if (rawMsg) {
             userMsg = rawMsg;
           }
+          toast.error(userMsg);
           updateTaskMutation.reset();
         },
       }

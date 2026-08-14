@@ -91,7 +91,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   }));
 
   return (
-    <div className="p-6 space-y-6 min-h-screen bg-background text-foreground animate-in fade-in duration-300">
+ <div className="p-6 space-y-6 min-h-screen bg-background text-foreground "> 
       <PageHeader
         title="Quản lý Backlog Jira"
         description="Lập kế hoạch công việc, phân chia Sprint và quản lý danh mục công việc của dự án."

@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, GitCommit, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, Edit3, Send, FileText } from "lucide-react";
+import { User, GitCommit, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
-import { Textarea } from "@/components/ui/textarea";
 import { IdentityMappingReview } from "@/features/integrations/components/identity-mapping-review";
 
 import { useStudentProgress, useStudentActivities, useStudentContributionDetail, useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";

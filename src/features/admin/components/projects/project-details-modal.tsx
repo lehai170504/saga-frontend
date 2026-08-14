@@ -23,10 +23,11 @@ import {
   Save,
   Info
 } from "lucide-react";
-import { useProjectDetail, useProjectStats, useUpdateProject } from "../hooks/useProjects";
+import { useProjectDetail, useProjectStats, useUpdateProject } from "../../hooks/useProjects";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Progress } from "@/components/ui/progress";
+import { UpdateGroupWeightsModal } from "./update-group-weights-modal";
 
 interface ProjectDetailsModalProps {
   projectId: string;
@@ -82,19 +83,22 @@ export function ProjectDetailsModal({ projectId, trigger }: ProjectDetailsModalP
             </DialogTitle>
 
             {project && !isEditing && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="rounded-xl hover:bg-muted/50"
-                onClick={() => {
-                  setName(project.name);
-                  setDescription(project.description || "");
-                  setIsEditing(true);
-                }}
-              >
-                <Edit2 className="w-4 h-4 mr-2" />
-                Sửa thông tin
-              </Button>
+              <div className="flex items-center gap-2">
+                <UpdateGroupWeightsModal project={project} />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-xl hover:bg-muted/50"
+                  onClick={() => {
+                    setName(project.name);
+                    setDescription(project.description || "");
+                    setIsEditing(true);
+                  }}
+                >
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Sửa thông tin
+                </Button>
+              </div>
             )}
           </div>
         </DialogHeader>

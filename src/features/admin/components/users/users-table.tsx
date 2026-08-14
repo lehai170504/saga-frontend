@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Search, GraduationCap, Presentation, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { EmptyState } from "@/components/shared/DataState";
-import { UserProfileResponse } from "../api/userApi";
+import { UserProfileResponse } from "../../api/userApi";
 
 interface UsersTableProps {
   data: UserProfileResponse[];

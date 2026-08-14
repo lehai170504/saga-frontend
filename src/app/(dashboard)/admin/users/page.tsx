@@ -2,12 +2,11 @@
 
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { UsersTable } from "@/features/admin/components/users-table";
+import { UsersTable } from "@/features/admin/components/users/users-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useUsers, useToggleUserStatus } from "@/features/admin/hooks/useUsers";
 import { useDebounce } from "use-debounce";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -71,7 +70,7 @@ export default function UsersManagementPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 ">
       <PageHeader
         title="Phân quyền Người dùng (RBAC)"
         description="Quản lý danh sách người dùng trên hệ thống SAGA. Admin có thể xem vai trò, cấp hoặc thu hồi quyền truy cập của từng tài khoản."

@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseDialog } from "@/features/courses/components/edit-course-dialog";
 import { CourseStudentsTable } from "@/features/courses/components/course-students-table";
-import { CourseWeightsConfig } from "@/features/admin/components/course-weights-config";
+import { CourseWeightsConfig } from "@/features/admin/components/course/course-weights-config";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -50,7 +50,7 @@ export default function CourseDetailPage() {
 
   if (isError) {
     return (
-      <div className="space-y-8 animate-in fade-in-50 duration-500 max-w-5xl mx-auto w-full pb-10">
+      <div className="space-y-8 -50 max-w-5xl mx-auto w-full pb-10">
         <div className="flex items-center gap-4">
           <Button
             variant="outline"

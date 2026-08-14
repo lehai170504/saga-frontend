@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { TeamsTable } from "@/features/admin/components/teams-table";
-import { ProjectsTable } from "@/features/admin/components/projects-table";
+import { TeamsTable } from "@/features/admin/components/teams/teams-table";
+import { ProjectsTable } from "@/features/admin/components/projects/projects-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAdminTeams } from "@/features/admin/hooks/useTeams";
@@ -26,7 +26,7 @@ export default function TeamsManagementPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 ">
       <PageHeader
         title="Quản lý Nhóm & Dự án"
         description="Xem danh sách toàn bộ các nhóm và dự án đang thực hiện trên hệ thống SAGA."

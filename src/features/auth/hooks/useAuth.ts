@@ -54,7 +54,7 @@ export function useAuth() {
               } catch (err) {
                 console.warn("Firebase installation registration warning:", err);
 
-                if ((err as any)?.status === 409) {
+                if ((err as { status?: number })?.status === 409) {
                   localStorage.setItem("saga_firebase_registration_id", fid);
                 }
               } finally {

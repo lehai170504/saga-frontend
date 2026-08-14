@@ -3,9 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, GitBranch, PlayCircle, Layout } from "lucide-react";
+import { ArrowRight, PlayCircle } from "lucide-react";
 import { API_BASE_URL } from "@/lib/axios";
-import { fadeUp, scaleUp, float } from "./animations";
+import { fadeUp, scaleUp } from "./animations";
 
 export function HeroSection() {
   return (

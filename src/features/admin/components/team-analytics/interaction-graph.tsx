@@ -75,14 +75,14 @@ export function InteractionGraph({ data, isLoading }: InteractionGraphProps) {
     });
 
     const edges: Edge[] = (data.edges || []).map((edge, i) => ({
-      id: `e${edge.from}-${edge.to}-${i}`,
-      source: edge.from,
-      target: edge.to,
-      label: edge.weight > 1 ? edge.weight.toString() : undefined,
+      id: `e${edge.fromStudentId}-${edge.toStudentId}-${i}`,
+      source: edge.fromStudentId,
+      target: edge.toStudentId,
+      label: edge.sourceCount > 1 ? edge.sourceCount.toString() : undefined,
       animated: true,
       style: {
         stroke: 'hsl(var(--primary))',
-        strokeWidth: Math.max(1, Math.min(edge.weight, 4)),
+        strokeWidth: Math.max(1, Math.min(edge.sourceCount, 4)),
         opacity: 0.6
       },
       labelStyle: { fill: 'hsl(var(--foreground))', fontWeight: 700, fontSize: 12 },

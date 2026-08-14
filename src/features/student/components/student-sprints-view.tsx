@@ -41,7 +41,7 @@ export function StudentSprintsView({ courseId }: StudentSprintsViewProps) {
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
 
-      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">
+ <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 "> 
         <PageHeader
           title="Đánh giá chéo"
           description={

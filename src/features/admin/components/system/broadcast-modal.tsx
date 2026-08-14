@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,16 +10,9 @@ import { useAdminBroadcast } from "@/features/notifications/hooks/useNotificatio
 import { Loader2, Send, Radio } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { broadcastSchema, BroadcastFormValues } from "../../schemas/broadcastSchema";
 
-const broadcastSchema = z.object({
-  title: z.string().min(1, "Tiêu đề không được để trống").max(200, "Tiêu đề quá dài"),
-  message: z.string().min(1, "Nội dung không được để trống").max(1000, "Nội dung quá dài"),
-  actionUrl: z.string().optional(),
-  type: z.string().optional(),
-  audience: z.enum(["STUDENTS", "LECTURERS", "ALL_USERS"], {
-    required_error: "Vui lòng chọn đối tượng nhận thông báo",
-  }),
-});
+
 
 interface BroadcastModalProps {
   isOpen: boolean;
@@ -30,7 +22,7 @@ interface BroadcastModalProps {
 export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
   const { mutateAsync: sendBroadcast, isPending } = useAdminBroadcast();
 
-  const form = useForm<z.infer<typeof broadcastSchema>>({
+  const form = useForm<BroadcastFormValues>({
     resolver: zodResolver(broadcastSchema),
     defaultValues: {
       title: "",
@@ -41,7 +33,7 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof broadcastSchema>) => {
+  const onSubmit = async (values: BroadcastFormValues) => {
     try {
       await sendBroadcast({
         title: values.title,

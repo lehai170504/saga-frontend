@@ -8,7 +8,8 @@ import {
   EarlyWarningsResponse,
   TeamInteraction,
   HeatmapResponse,
-  SprintVelocityResponse
+  SprintVelocityResponse,
+  SprintBurndownResponse
 } from "../types/analytics";
 
 export const analyticsApi = {
@@ -57,7 +58,7 @@ export const analyticsApi = {
   },
 
   getSprintBurndown: async (courseId: string, teamId: string, sprintId: string) => {
-    return axiosInstance.get<never, any>(
+    return axiosInstance.get<never, SprintBurndownResponse>(
       `/api/v1/courses/${courseId}/teams/${teamId}/sprints/${sprintId}/burndown`
     );
   },

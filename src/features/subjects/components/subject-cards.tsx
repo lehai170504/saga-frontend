@@ -16,7 +16,7 @@ export function SubjectCards() {
   const isAdmin = user?.applicationRole === "ADMIN";
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+ <div className="space-y-8 "> 
       <PageHeader
         title="Danh mục Môn học"
         description="Quản lý danh sách các môn học trong hệ thống."

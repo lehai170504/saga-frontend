@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useIntegrationHealth } from "../hooks/useSystemStats";
+import { useIntegrationHealth } from "../../hooks/useSystemStats";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { GitBranch, KanbanSquare, CheckCircle2, RefreshCw, Box } from "lucide-react";
 import { format } from "date-fns";
@@ -62,7 +62,7 @@ export function IntegrationHealthCards() {
               </p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {health.jira.connectionStatuses.length > 0 ? (
-                  health.jira.connectionStatuses.map((cs, idx) => (
+                  health.jira.connectionStatuses.map((cs: { status: string; count: number }, idx: number) => (
                     <span key={idx} className={`text-xs px-2 py-0.5 rounded-md font-medium ${cs.status === 'ACTIVE' || cs.status === 'CONNECTED' ? 'bg-success/10 text-success' : 'bg-amber-500/10 text-amber-500'}`}>
                       {cs.count} {cs.status}
                     </span>
@@ -79,7 +79,7 @@ export function IntegrationHealthCards() {
               <p className="text-xs text-muted-foreground">Webhooks:</p>
               <div className="flex gap-1">
                 {health.jira.webhookReceiptStatuses.length > 0 ? (
-                  health.jira.webhookReceiptStatuses.map((ws, idx) => (
+                  health.jira.webhookReceiptStatuses.map((ws: { status: string; count: number }, idx: number) => (
                     <span key={idx} className={`text-xs px-2 py-0.5 rounded-md font-medium ${ws.status === 'RECEIVED' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
                       {ws.count} {ws.status}
                     </span>
@@ -135,7 +135,7 @@ export function IntegrationHealthCards() {
               </p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {health.gitHub.installationStatuses.length > 0 ? (
-                  health.gitHub.installationStatuses.map((is, idx) => (
+                  health.gitHub.installationStatuses.map((is: { status: string; count: number }, idx: number) => (
                     <span key={idx} className={`text-xs px-2 py-0.5 rounded-md font-medium ${is.status === 'ACTIVE' ? 'bg-success/10 text-success' : 'bg-amber-500/10 text-amber-500'}`}>
                       {is.count} {is.status}
                     </span>

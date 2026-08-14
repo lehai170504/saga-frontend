@@ -8,12 +8,23 @@ import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjectHeatmap } from "@/features/lecturer/components/project-detail/project-heatmap";
-import { ProjectInteractionGraph } from "@/features/lecturer/components/project-detail/project-interaction-graph";
-import { ProjectBurndownChart } from "@/features/lecturer/components/project-detail/project-burndown-chart";
 import { EarlyWarningAlerts } from "@/features/lecturer/components/project-detail/charts/early-warning-alerts";
-import { SprintVelocityBar } from "@/features/lecturer/components/project-detail/charts/sprint-velocity-bar";
 import { useTeamDetail } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import dynamic from "next/dynamic";
+
+const ProjectInteractionGraph = dynamic(
+  () => import("@/features/lecturer/components/project-detail/project-interaction-graph").then(m => m.ProjectInteractionGraph),
+  { ssr: false, loading: () => <Skeleton className="w-full h-[500px] rounded-[2rem]" /> }
+);
+const ProjectBurndownChart = dynamic(
+  () => import("@/features/lecturer/components/project-detail/project-burndown-chart").then(m => m.ProjectBurndownChart),
+  { ssr: false, loading: () => <Skeleton className="w-full h-[400px] rounded-[2rem]" /> }
+);
+const SprintVelocityBar = dynamic(
+  () => import("@/features/lecturer/components/project-detail/charts/sprint-velocity-bar").then(m => m.SprintVelocityBar),
+  { ssr: false, loading: () => <Skeleton className="w-full h-[400px] rounded-[2rem]" /> }
+);
 import { ProjectTaskList } from "@/features/projects/components/project-task-list";
 import { ProjectCommitsView } from "@/features/lecturer/components/project-detail/project-commits-view";
 import { ProjectIssuesView } from "@/features/lecturer/components/project-detail/project-issues-view";
@@ -72,7 +83,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
   };
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+ <div className="p-6 max-w-[1600px] mx-auto space-y-6 "> 
       <div className="flex flex-col gap-4">
         <Link href={`/lecturer/${courseId}`} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors w-fit">
           <ArrowLeft size={16} />
@@ -100,31 +111,31 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ course
             </Button>
 
             <TabsList className="flex w-full max-w-full overflow-x-auto justify-start !h-auto rounded-xl bg-muted/50 p-1 gap-1 [&::-webkit-scrollbar]:hidden scroll-smooth" id="tabs-list-container">
-            <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
-            </TabsTrigger>
-            <TabsTrigger value="tasks" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <ListTodo className="w-4 h-4 mr-2" /> Công việc (Jira)
-            </TabsTrigger>
-            <TabsTrigger value="commits" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <GitCommit className="w-4 h-4 mr-2" /> Lịch sử Commit (Github)
-            </TabsTrigger>
-            <TabsTrigger value="issues" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
-            </TabsTrigger>
-            <TabsTrigger value="traceability" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
-            </TabsTrigger>
-            <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
-            </TabsTrigger>
-            <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
-            </TabsTrigger>
-            <TabsTrigger value="burndown" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Activity className="w-4 h-4 mr-2" /> Sprint Burndown
-            </TabsTrigger>
-          </TabsList>
+              <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
+              </TabsTrigger>
+              <TabsTrigger value="tasks" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <ListTodo className="w-4 h-4 mr-2" /> Công việc (Jira)
+              </TabsTrigger>
+              <TabsTrigger value="commits" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <GitCommit className="w-4 h-4 mr-2" /> Lịch sử Commit (Github)
+              </TabsTrigger>
+              <TabsTrigger value="issues" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
+              </TabsTrigger>
+              <TabsTrigger value="traceability" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
+              </TabsTrigger>
+              <TabsTrigger value="heatmap" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
+              </TabsTrigger>
+              <TabsTrigger value="interaction" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
+              </TabsTrigger>
+              <TabsTrigger value="burndown" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Activity className="w-4 h-4 mr-2" /> Sprint Burndown
+              </TabsTrigger>
+            </TabsList>
 
             <Button
               variant="outline"

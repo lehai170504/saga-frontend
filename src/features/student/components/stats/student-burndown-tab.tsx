@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -40,7 +40,7 @@ interface StudentBurndownTabProps {
 
 export function StudentBurndownTab({ courseId, teamId }: StudentBurndownTabProps) {
   const { data: sprintsData, isLoading: isLoadingSprints } = useTeamSprints(teamId);
-  const sprints = sprintsData?.sprints || [];
+  const sprints = useMemo(() => sprintsData?.sprints || [], [sprintsData?.sprints]);
 
   const [selectedSprintId, setSelectedSprintId] = useState<string>("");
 
@@ -212,24 +212,22 @@ export function StudentBurndownTab({ courseId, teamId }: StudentBurndownTabProps
                   Thực tế còn lại
                 </span>
                 <div
-                  className={`p-2.5 rounded-xl ${
-                    isBehind
-                      ? "bg-rose-500/10 text-rose-500"
-                      : "bg-emerald-500/10 text-emerald-500"
-                  }`}
+                  className={`p-2.5 rounded-xl ${isBehind
+                    ? "bg-rose-500/10 text-rose-500"
+                    : "bg-emerald-500/10 text-emerald-500"
+                    }`}
                 >
                   <TrendingDown size={18} />
                 </div>
               </div>
               <div className="mt-4">
                 <div
-                  className={`text-3xl font-black tracking-tight ${
-                    isBehind
-                      ? "text-rose-500"
-                      : isAhead
+                  className={`text-3xl font-black tracking-tight ${isBehind
+                    ? "text-rose-500"
+                    : isAhead
                       ? "text-emerald-500"
                       : "text-foreground"
-                  }`}
+                    }`}
                 >
                   {currentActual}
                 </div>
@@ -349,15 +347,15 @@ export function StudentBurndownTab({ courseId, teamId }: StudentBurndownTabProps
                         fontWeight: "bold",
                         boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
                       }}
-                      formatter={(val: any, name: any) => [
+                      formatter={(val: number | string | readonly (string | number)[] | undefined, name: string | number | undefined) => [
                         `${val ?? 0} task`,
                         name === "idealRemaining"
                           ? "Lý tưởng còn lại"
                           : name === "actualRemaining"
-                          ? "Thực tế còn lại"
-                          : "Đã hoàn thành",
+                            ? "Thực tế còn lại"
+                            : "Đã hoàn thành",
                       ]}
-                      labelFormatter={(label: any) => `Ngày: ${label}`}
+                      labelFormatter={(label: React.ReactNode) => `Ngày: ${label}`}
                     />
                     <Legend
                       verticalAlign="top"

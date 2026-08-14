@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { useAuditLogs } from "@/features/admin/hooks/useAuditLogs";
-import { AuditLogsTable } from "@/features/admin/components/audit-logs-table";
+import { AuditLogsTable } from "@/features/admin/components/system/audit-logs-table";
 
 export default function SystemLogsPage() {
   const [page, setPage] = useState(0);
@@ -18,7 +18,7 @@ export default function SystemLogsPage() {
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 ">
       <PageHeader
         title="Nhật ký Hệ thống (Audit Logs)"
         description="Theo dõi tất cả các thay đổi về cấu hình, tích hợp API và hoạt động của Admin."

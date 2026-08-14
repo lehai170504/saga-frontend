@@ -13,92 +13,91 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, GraduationCap, Users, Network, GitCommit, UserCheck, ArrowRight } from "lucide-react";
-import { EmptyState } from "@/components/shared/DataState";
-import { AdminCourseProgressResponse } from "../api/courseProgressApi";
+import { ChevronLeft, ChevronRight, FolderGit2, GraduationCap, GitBranch, KanbanSquare, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { EmptyState } from "@/components/shared/DataState";
+import { AdminProjectResponse } from "../../api/projectApi";
+import { Badge } from "@/components/ui/badge";
+import { ProjectDetailsModal } from "./project-details-modal";
 
-interface CourseProgressTableProps {
-  data: AdminCourseProgressResponse[];
+interface ProjectsTableProps {
+  data: AdminProjectResponse[];
   pageIndex: number;
   totalPages: number;
   totalElements: number;
   onPageChange: (page: number) => void;
 }
 
-export const columns: ColumnDef<AdminCourseProgressResponse>[] = [
+export const columns: ColumnDef<AdminProjectResponse>[] = [
   {
-    accessorKey: "course",
-    header: "Khóa Học",
+    accessorKey: "name",
+    header: "Tên Dự Án",
     cell: ({ row }) => (
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
-            <GraduationCap className="w-4 h-4 text-emerald-500" />
+          <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center shrink-0">
+            <FolderGit2 className="w-4 h-4 text-indigo-500" />
           </div>
-          <span className="font-semibold text-foreground line-clamp-1 max-w-[200px]" title={row.original.courseName}>
-            {row.original.courseName}
-          </span>
+          <span className="font-semibold text-foreground">{row.original.name}</span>
         </div>
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ml-11">
-          {row.original.courseCode}
+        {row.original.description && (
+          <span className="text-[11px] text-muted-foreground ml-11 line-clamp-1 max-w-[200px]">
+            {row.original.description}
+          </span>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "course",
+    header: "Thuộc Khóa Học",
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <GraduationCap className="w-4 h-4 text-emerald-500" />
+          <span className="font-medium text-[13px]">{row.original.course.name}</span>
+        </div>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ml-6">
+          {row.original.course.courseCode}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "lecturer",
-    header: "Giảng viên",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 text-[10px] font-bold border border-primary/20">
-          {row.original.lecturer?.fullName?.charAt(0) || "G"}
+    accessorKey: "integrations",
+    header: "Trạng thái Tích hợp",
+    cell: ({ row }) => {
+      const jiraStatus = row.original.jira?.connectionStatus;
+      const ghRepoCount = row.original.gitHub?.repositoryCount || 0;
+      const ghActiveCount = row.original.gitHub?.activeRepositoryCount || 0;
+
+      return (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <KanbanSquare className="w-4 h-4 text-blue-500" />
+            <Badge
+              variant={jiraStatus === "CONNECTED" || jiraStatus === "ACTIVE" ? "default" : "secondary"}
+              className={jiraStatus === "CONNECTED" || jiraStatus === "ACTIVE" ? "bg-emerald-500 hover:bg-emerald-600 text-[10px]" : "text-[10px]"}
+            >
+              {jiraStatus || "NOT_CONNECTED"}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <GitBranch className="w-4 h-4 text-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">
+              {ghActiveCount} / {ghRepoCount} Repos Active
+            </span>
+          </div>
         </div>
-        <span className="font-medium text-[13px] text-foreground truncate max-w-[120px]" title={row.original.lecturer?.fullName}>
-          {row.original.lecturer?.fullName || "Chưa phân công"}
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "stats",
-    header: "Tổng quan Sĩ số & Nhóm",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-2">
-          <Users className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-foreground">{row.original.studentCount} Sinh viên</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Network className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-foreground">{row.original.teamCount} Nhóm • {row.original.projectCount} Dự án</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "sprints",
-    header: "Tiến trình (Sprints & ĐGC)",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-2">
-          <GitCommit className="w-3.5 h-3.5 text-blue-500" />
-          <span className="text-xs font-medium">
-            <span className="text-foreground">{row.original.activeSprintCount} đang chạy</span> / <span className="text-muted-foreground">{row.original.sprintCount} Sprints</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <UserCheck className="w-3.5 h-3.5 text-indigo-500" />
-          <span className="text-xs font-medium text-foreground">{row.original.peerReviewCount} Lượt đánh giá chéo</span>
-        </div>
-      </div>
-    ),
+      );
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => (
-      <div className="flex justify-end pr-2">
-        <Link href={`/admin/courses/${row.original.courseId}`}>
+      <div className="flex justify-end pr-2 gap-2 items-center">
+        <ProjectDetailsModal projectId={row.original.id} />
+        <Link href={`/admin/courses/${row.original.course.id}`}>
           <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary">
             <ArrowRight className="w-4 h-4" />
           </Button>
@@ -108,13 +107,13 @@ export const columns: ColumnDef<AdminCourseProgressResponse>[] = [
   },
 ];
 
-export function CourseProgressTable({
+export function ProjectsTable({
   data,
   pageIndex,
   totalPages,
   totalElements,
   onPageChange,
-}: CourseProgressTableProps) {
+}: ProjectsTableProps) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
@@ -125,7 +124,7 @@ export function CourseProgressTable({
   if (data.length === 0) {
     return (
       <EmptyState
-        message="Hiện tại hệ thống chưa có dữ liệu tiến độ khóa học nào."
+        message="Hiện tại hệ thống chưa có dữ liệu dự án nào."
       />
     );
   }
@@ -173,7 +172,7 @@ export function CourseProgressTable({
         <div className="text-sm text-muted-foreground font-medium flex items-center gap-4">
           <span>Trang {pageIndex + 1} / {totalPages || 1}</span>
           <span className="w-1 h-1 rounded-full bg-border"></span>
-          <span className="text-foreground">Tổng: {totalElements} khóa học</span>
+          <span className="text-foreground">Tổng: {totalElements} dự án</span>
         </div>
         <div className="flex items-center gap-2">
           <Button

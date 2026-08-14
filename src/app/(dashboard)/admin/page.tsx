@@ -10,17 +10,17 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { GraphProcessingChart } from "@/features/admin/components/graph-processing-chart";
-import { SystemAnomalyChart } from "@/features/admin/components/system-anomaly-chart";
+import { GraphProcessingChart } from "@/features/admin/components/dashboard/graph-processing-chart";
+import { SystemAnomalyChart } from "@/features/admin/components/dashboard/system-anomaly-chart";
 import { useSystemStats } from "@/features/admin/hooks/useSystemStats";
-import { IntegrationHealthCards } from "@/features/admin/components/integration-health-cards";
-import { RecentActivityFeed } from "@/features/admin/components/recent-activity-feed";
+import { IntegrationHealthCards } from "@/features/admin/components/dashboard/integration-health-cards";
+import { RecentActivityFeed } from "@/features/admin/components/dashboard/recent-activity-feed";
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useSystemStats();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 ">
       <PageHeader
         title="Quản trị Hệ thống"
         description="Quản lý Dữ liệu Học thuật và Trạng thái Tích hợp API."

@@ -14,6 +14,7 @@ import {
   GitCommit,
   Activity,
   FolderKanban,
+  Layers,
 } from "lucide-react";
 
 export type NavItemType = {
@@ -56,6 +57,7 @@ export const getNavigationConfig = (
         {
           title: "Dữ liệu Danh mục",
           items: [
+            { href: "/master-data/project-types", icon: <Layers size={18} />, label: "Loại dự án" },
             { href: "/master-data/subjects", icon: <BookOpen size={18} />, label: "Môn học" },
             { href: "/master-data/classes", icon: <Network size={18} />, label: "Lớp học" },
             { href: "/master-data/semesters", icon: <Calendar size={18} />, label: "Học kỳ" },
@@ -94,7 +96,7 @@ export const getNavigationConfig = (
             items: [
               { href: `/lecturer/${courseId}/peer-reviews`, icon: <UserCheck size={18} />, label: "Đánh giá chéo" },
               { href: `/lecturer/${courseId}/grades`, icon: <GraduationCap size={18} />, label: "Bảng điểm tổng hợp" },
-            { href: `/lecturer/${courseId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
+              { href: `/lecturer/${courseId}/evaluation-config`, icon: <Settings2 size={18} />, label: "Cấu hình Đánh giá" },
             ],
           },
         ];

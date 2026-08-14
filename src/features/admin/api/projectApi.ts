@@ -56,6 +56,19 @@ export interface CreateProjectResponse {
   id: string;
   teamId: string;
   name: string;
+  projectType?: {
+    projectTypeId: string;
+    code: string;
+    name: string;
+  };
+}
+
+export interface UpdateGroupWeightPayload {
+  groupId: string;
+  codeWeight: number;
+  documentWeight: number;
+  designWeight: number;
+  note?: string;
 }
 
 export const projectApi = {
@@ -71,7 +84,10 @@ export const projectApi = {
   getProjectStats: (projectId: string) => {
     return axiosInstance.get<never, ProjectStatsResponse>(`/api/projects/${projectId}/dashboard-stats`);
   },
-  createProject: (teamId: string, data: { name: string }) => {
+  createProject: (teamId: string, data: { name: string; projectTypeId: string; description?: string }) => {
     return axiosInstance.post<never, CreateProjectResponse>(`/api/teams/${teamId}/projects`, data);
+  },
+  updateGroupWeights: (projectId: string, data: UpdateGroupWeightPayload) => {
+    return axiosInstance.put<never, void>(`/api/projects/${projectId}/group-weights`, data);
   }
 };

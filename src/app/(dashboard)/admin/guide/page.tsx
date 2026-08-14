@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function AdminGuidePage() {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+ <div className="space-y-8 pb-10"> 
       <PageHeader
         title="Hướng dẫn Quản trị viên"
         description="Tài liệu vận hành hệ thống SAGA toàn diện dành riêng cho Admin."

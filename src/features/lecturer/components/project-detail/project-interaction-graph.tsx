@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Share2, Users, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Share2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -19,18 +18,14 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
   const { data: members, isLoading: isLoadingMembers } = useTeamMembers(courseId, teamId);
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
-  useEffect(() => {
-    if (members?.content && members.content.length > 0 && !selectedStudentId) {
-      setSelectedStudentId(members.content[0].studentId);
-    }
-  }, [members, selectedStudentId]);
+  const activeStudentId = selectedStudentId || (members?.content?.[0]?.studentId ?? "");
 
   const { data: interactionData, isLoading: isLoadingGraph } = useStudentInteractions(
-    courseId, 
-    teamId, 
-    selectedStudentId
+    courseId,
+    teamId,
+    activeStudentId
   );
-  
+
   const isLoading = isLoadingMembers || isLoadingGraph;
 
   const projectNodes = React.useMemo(() => {
@@ -42,9 +37,9 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
       const radius = 30; // 30% from center
       const x = 50 + radius * Math.cos(angle);
       const y = 50 + radius * Math.sin(angle);
-      
+
       const interactions = n.degree || 0;
-      
+
       return {
         id: n.studentId,
         name: n.fullName || n.studentCode || "Unknown",
@@ -68,7 +63,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
     }));
   }, [interactionData]);
 
-  const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number,role:string, x: number, y: number, color: string, interactions: number } | null>(null);
+  const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, size: number, role: string, x: number, y: number, color: string, interactions: number } | null>(null);
   const activeSelectedNode = selectedNode || (projectNodes.length > 0 ? projectNodes[0] : null);
 
   return (
@@ -93,12 +88,12 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
           <CardContent className="p-6 space-y-6">
             <div className="space-y-3">
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Chọn Sinh Viên (Trung tâm)</h3>
-              <Select value={selectedStudentId} onValueChange={setSelectedStudentId} disabled={!members || isLoadingMembers}>
+              <Select value={activeStudentId} onValueChange={setSelectedStudentId} disabled={!members || isLoadingMembers}>
                 <SelectTrigger className="w-full bg-background/50 border-border/50">
                   <SelectValue placeholder="Chọn sinh viên..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {members?.content?.map((m: any) => (
+                  {members?.content?.map((m: { studentId: string; fullName: string; studentCode: string }) => (
                     <SelectItem key={m.studentId} value={m.studentId}>
                       {m.fullName} ({m.studentCode})
                     </SelectItem>
