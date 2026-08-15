@@ -4,6 +4,7 @@ import { JiraTask } from "../types";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { TASK_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useProjectTasks = (projectId: string, params?: GetTasksParams) => {
   return useQuery({
@@ -44,9 +45,7 @@ export const useCreateTask = (projectId: string, sprintId?: string) => {
       toast.success(TASK_MESSAGES.CREATE.SUCCESS);
     },
     onError: (err: unknown) => {
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.CREATE.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.CREATE.ERROR));
     }
   });
 };
@@ -93,9 +92,7 @@ export const useUpdateTask = (projectId: string) => {
       toast.success(TASK_MESSAGES.UPDATE.SUCCESS);
     },
     onError: (err: unknown) => {
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.UPDATE.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.UPDATE.ERROR));
     }
   });
 };
@@ -128,9 +125,7 @@ export const useUpdateTaskEstimation = (projectId: string) => {
           queryClient.setQueryData(queryKey, data);
         });
       }
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.UPDATE_ESTIMATION.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.UPDATE_ESTIMATION.ERROR));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
@@ -178,14 +173,12 @@ export const useUpdateTaskAssignee = (projectId: string) => {
       const status = axiosErr?.response?.status;
       const backendMsg = axiosErr?.response?.data?.message || "";
 
-      let userMsg: string = TASK_MESSAGES.UPDATE_ASSIGNEE.ERROR;
+      let fallbackMsg: string = TASK_MESSAGES.UPDATE_ASSIGNEE.ERROR;
       if (errCode === "JIRA_RESOURCE_NOT_FOUND" || status === 409 || backendMsg.includes("Jira resource")) {
-        userMsg = TASK_MESSAGES.UPDATE_ASSIGNEE.NOT_FOUND;
-      } else if (backendMsg) {
-        userMsg = backendMsg;
+        fallbackMsg = TASK_MESSAGES.UPDATE_ASSIGNEE.NOT_FOUND;
       }
 
-      toast.error(userMsg);
+      toast.error(getVietnameseErrorMessage(err, fallbackMsg));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
@@ -229,9 +222,7 @@ export const useUpdateTaskPriority = (projectId: string) => {
           queryClient.setQueryData(queryKey, data);
         });
       }
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.UPDATE_PRIORITY.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.UPDATE_PRIORITY.ERROR));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
@@ -252,9 +243,7 @@ export const useDeleteTask = (projectId: string) => {
       toast.success(TASK_MESSAGES.DELETE.SUCCESS);
     },
     onError: (err: unknown) => {
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.DELETE.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.DELETE.ERROR));
     }
   });
 };
@@ -299,9 +288,7 @@ export const useTransitionTask = (projectId: string) => {
           queryClient.setQueryData(queryKey, data);
         });
       }
-      const axiosErr = err as AxiosError<{ message: string }>;
-      const errMsg = axiosErr?.response?.data?.message || TASK_MESSAGES.TRANSITION.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.TRANSITION.ERROR));
     },
     onSuccess: () => {
       toast.success(TASK_MESSAGES.TRANSITION.SUCCESS);

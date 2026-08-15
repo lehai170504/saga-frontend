@@ -17,6 +17,7 @@ import { KanbanColumn } from "./board/kanban-column";
 import { BoardModalsContainer } from "./board/board-modals-container";
 import { useBoardTasksState } from "./board/hooks/useBoardTasksState";
 import { useBoardKanbanState } from "./board/hooks/useBoardKanbanState";
+import { shouldIgnoreTaskCardClick } from "./board/utils/popoverCloseGuard";
 
 interface StudentBoardViewProps {
   courseId: string;
@@ -215,6 +216,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                     onDragStart={kanbanState.handleDragStart}
                     onDragEnd={() => {}}
                     onTaskClick={(task) => {
+                      if (shouldIgnoreTaskCardClick()) return;
                       tasksState.setSelectedTask(task);
                       tasksState.setIsDetailOpen(true);
                     }}

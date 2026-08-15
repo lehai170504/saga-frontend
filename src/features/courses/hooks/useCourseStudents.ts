@@ -3,6 +3,7 @@ import { ManualAddStudentRequest } from "../types";
 import { courseApi } from "../api/courseApi";
 import { toast } from "sonner";
 import { COURSE_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useAdminImportStudentsTemplate = () => {
   return useMutation({
@@ -12,8 +13,7 @@ export const useAdminImportStudentsTemplate = () => {
       toast.success(COURSE_MESSAGES.IMPORT.SUCCESS_DETAILS(response.createdStudents, response.reusedStudents));
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.IMPORT.ERROR_GENERIC;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, COURSE_MESSAGES.IMPORT.ERROR_GENERIC));
     }
   });
 };
@@ -26,8 +26,7 @@ export const useImportStudents = () => {
       toast.success(COURSE_MESSAGES.IMPORT.SUCCESS);
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.IMPORT.ERROR_GENERIC;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, COURSE_MESSAGES.IMPORT.ERROR_GENERIC));
     }
   });
 };
@@ -114,8 +113,7 @@ export const useAddStudentManual = () => {
       toast.success("Thêm sinh viên thành công");
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Thêm sinh viên thất bại";
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, "Có lỗi xảy ra khi thêm sinh viên. Vui lòng thử lại."));
     }
   });
 };
@@ -128,8 +126,7 @@ export const useRemoveStudent = () => {
       toast.success("Xóa sinh viên thành công");
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Xóa sinh viên thất bại";
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, "Có lỗi xảy ra khi xóa sinh viên. Vui lòng thử lại."));
     }
   });
 };

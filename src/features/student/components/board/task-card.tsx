@@ -58,9 +58,20 @@ export function TaskCard({
       draggable={!isPendingMove && canAct}
       onDragStart={(e) => canAct && onDragStart(e, task)}
       onDragEnd={onDragEnd}
+      onPointerDown={(e) => {
+        if (shouldIgnoreTaskCardClick()) {
+          e.stopPropagation();
+        }
+      }}
+      onMouseDown={(e) => {
+        if (shouldIgnoreTaskCardClick()) {
+          e.stopPropagation();
+        }
+      }}
       onClick={(e) => {
         if (shouldIgnoreTaskCardClick()) {
           e.stopPropagation();
+          e.preventDefault();
           return;
         }
         onClick();

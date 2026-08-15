@@ -16,6 +16,7 @@ import { getTypeIcon } from "./backlog-helpers";
 import { TaskStatusDropdown } from "../board/task-status-dropdown";
 import { TaskPriorityDropdown } from "../board/task-priority-dropdown";
 import { TaskAssigneeDropdown } from "../board/task-assignee-dropdown";
+import { shouldIgnoreTaskCardClick } from "@/features/student/components/board/utils/popoverCloseGuard";
 
 interface BacklogTaskRowProps {
   task: JiraTask;
@@ -40,7 +41,10 @@ export function BacklogTaskRow({
 
   return (
     <div
-      onClick={() => onSelectTask(task)}
+      onClick={() => {
+        if (shouldIgnoreTaskCardClick()) return;
+        onSelectTask(task);
+      }}
       className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-card dark:bg-card/90 border border-border/70 dark:border-border/60 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
     >
       {/* Left Info: Type icon + Key + Title */}
