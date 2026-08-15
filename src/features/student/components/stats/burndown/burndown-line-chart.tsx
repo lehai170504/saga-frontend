@@ -17,7 +17,7 @@ import {
 interface BurndownLineChartProps {
   startDate?: string;
   endDate?: string;
-  chartData: any[];
+  chartData: { date: string, idealRemaining: number, actualRemaining: number }[];
   isBehind: boolean;
 }
 
@@ -89,8 +89,8 @@ export function BurndownLineChart({
                   name === "idealRemaining"
                     ? "Lý tưởng còn lại"
                     : name === "actualRemaining"
-                    ? "Thực tế còn lại"
-                    : "Đã hoàn thành",
+                      ? "Thực tế còn lại"
+                      : "Đã hoàn thành",
                 ]}
                 labelFormatter={(label: React.ReactNode) => `Ngày: ${label}`}
               />

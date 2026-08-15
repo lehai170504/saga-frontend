@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Save, Info, Search, FileSpreadsheet, CheckCircle2, AlertTriangle, Filter, ChevronRight } from "lucide-react";
+import { Save, Info, Search, FileSpreadsheet, CheckCircle2, AlertTriangle, ChevronRight } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -205,7 +205,7 @@ export default function LecturerContributionPage() {
               Quyết định Điểm Thành phần
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-             Bảng điểm
+              Bảng điểm
             </h1>
             <p className="text-muted-foreground font-medium">Theo dõi % đóng góp của sinh viên dựa trên Task/Commit và thực hiện ghi đè (override) nếu cần thiết.</p>
           </div>
@@ -216,11 +216,10 @@ export default function LecturerContributionPage() {
               Xuất Excel (FAP Format)
             </Button>
             <Button
-              className={`rounded-xl h-10 font-bold transition-all duration-300 ${
-                overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()
+              className={`rounded-xl h-10 font-bold transition-all duration-300 ${overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()
                   ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-70 hover:bg-muted'
                   : 'bg-success hover:bg-success/90 text-white shadow-md shadow-success/20'
-              }`}
+                }`}
               onClick={handleSaveOverride}
               disabled={overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()}
             >

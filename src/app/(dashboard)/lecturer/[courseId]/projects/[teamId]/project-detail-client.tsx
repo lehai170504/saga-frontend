@@ -13,6 +13,7 @@ import { projectApi } from "@/features/projects/api/projectApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import dynamic from 'next/dynamic';
+import { LecturerUpdateGroupWeightsModal } from "@/features/lecturer/components/project-detail/lecturer-update-group-weights-modal";
 
 // Lớp 2: Lazy Loading các Component nặng (Dynamic Imports)
 const ProjectHeatmap = dynamic(() => import('@/features/lecturer/components/project-detail/project-heatmap').then(m => m.ProjectHeatmap), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
@@ -126,52 +127,52 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
             </Button>
 
             <TabsList className="flex w-full max-w-full overflow-x-auto justify-start !h-auto rounded-xl bg-muted/50 p-1 gap-1 [&::-webkit-scrollbar]:hidden scroll-smooth" id="tabs-list-container">
-            <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
-            </TabsTrigger>
-            <TabsTrigger 
-              value="tasks" 
-              onMouseEnter={() => import('@/features/projects/components/project-task-list')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <ListTodo className="w-4 h-4 mr-2" /> Công việc (Jira)
-            </TabsTrigger>
-            <TabsTrigger 
-              value="commits" 
-              onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-commits-view')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <GitCommit className="w-4 h-4 mr-2" /> Lịch sử Commit (Github)
-            </TabsTrigger>
-            <TabsTrigger 
-              value="issues" 
-              onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-issues-view')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
-            </TabsTrigger>
-            <TabsTrigger 
-              value="traceability" 
-              onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-traceability-view')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
-            </TabsTrigger>
-            <TabsTrigger 
-              value="heatmap" 
-              onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-heatmap')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
-            </TabsTrigger>
-            <TabsTrigger 
-              value="interaction" 
-              onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-interaction-graph')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
-            </TabsTrigger>
-            <TabsTrigger 
-              value="burndown" 
-              onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-burndown-chart')}
-              className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-              <Activity className="w-4 h-4 mr-2" /> Sprint Burndown
-            </TabsTrigger>
-          </TabsList>
+              <TabsTrigger value="overview" className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Activity className="w-4 h-4 mr-2" /> Tổng quan Nhóm
+              </TabsTrigger>
+              <TabsTrigger
+                value="tasks"
+                onMouseEnter={() => import('@/features/projects/components/project-task-list')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <ListTodo className="w-4 h-4 mr-2" /> Công việc (Jira)
+              </TabsTrigger>
+              <TabsTrigger
+                value="commits"
+                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-commits-view')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <GitCommit className="w-4 h-4 mr-2" /> Lịch sử Commit (Github)
+              </TabsTrigger>
+              <TabsTrigger
+                value="issues"
+                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-issues-view')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <CircleDot className="w-4 h-4 mr-2" /> Issues (Github)
+              </TabsTrigger>
+              <TabsTrigger
+                value="traceability"
+                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-traceability-view')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
+              </TabsTrigger>
+              <TabsTrigger
+                value="heatmap"
+                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-heatmap')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
+              </TabsTrigger>
+              <TabsTrigger
+                value="interaction"
+                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-interaction-graph')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
+              </TabsTrigger>
+              <TabsTrigger
+                value="burndown"
+                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-burndown-chart')}
+                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
+                <Activity className="w-4 h-4 mr-2" /> Sprint Burndown
+              </TabsTrigger>
+            </TabsList>
 
             <Button
               variant="outline"
@@ -189,8 +190,16 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="xl:col-span-1 space-y-6">
               <Card className="rounded-[2rem] shadow-sm border-border bg-card/50 backdrop-blur-sm">
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-lg font-bold">Thông tin dự án</CardTitle>
+                  {projectDetail.projectId && (
+                    <LecturerUpdateGroupWeightsModal
+                      projectId={projectDetail.projectId}
+                      courseId={courseId}
+                      teamId={teamId}
+                      teamName={projectDetail.name}
+                    />
+                  )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {projectDetail.project && projectDetail.project !== "Chưa có dự án" ? (

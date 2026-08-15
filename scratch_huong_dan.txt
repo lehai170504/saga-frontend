@@ -1,0 +1,999 @@
+# SAGA FRONTEND INTEGRATION HANDOFF — CURRENT MAIN
+
+## 0. Auth chung — cực kỳ quan trọng
+
+Backend SAGA dùng **Spring Security session**, không dùng Bearer cho browser business API.
+
+```ts
+fetch(url, {
+  credentials: "include",
+});
+```
+
+Quy tắc:
+
+```text
+GET
+→ credentials: include
+→ không CSRF
+
+POST / PUT / PATCH / DELETE
+→ credentials: include
+→ phải gửi CSRF
+
+Authorization: Bearer ...
+→ KHÔNG dùng cho SAGA browser API
+```
+
+Lấy CSRF trước mutation:
+
+```ts
+async function getCsrf() {
+  const res = await fetch("/api/auth/csrf", {
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("Không lấy được CSRF");
+
+  return res.json();
+}
+```
+
+Ví dụ mutation:
+
+```ts
+async function putJson(path: string, body: unknown) {
+  const csrf = await getCsrf();
+
+  const res = await fetch(path, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      [csrf.headerName]: csrf.token,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw await res.json();
+  }
+
+  return res.json();
+}
+```
+
+Browser chỉ nói chuyện với **SAGA Backend**. Đặc biệt với AI, FE không được giữ AI service token/provider key hay gọi service AI trực tiếp. 
+
+---
+
+# 1. Avatar Google / Cognito
+
+## API FE dùng
+
+```http
+GET /api/auth/me
+```
+
+Response hiện có thêm:
+
+```json
+{
+  "avatarUrl": "https://..."
+}
+```
+
+`avatarUrl` có thể `null`.
+
+### FE rendering
+
+```tsx
+<img
+  src={user.avatarUrl ?? "/images/default-avatar.png"}
+  alt={user.fullName}
+/>
+```
+
+### FE không cần làm
+
+```text
+❌ Không gọi Google API lấy avatar
+❌ Không lấy Google access token
+❌ Không gửi picture URL về Backend
+❌ Không dùng Bearer
+```
+
+Backend tự đồng bộ standard OIDC claim:
+
+```text
+Google picture
+→ Cognito picture
+→ Backend login
+→ avatar_url
+→ /api/auth/me.avatarUrl
+```
+
+Cấu hình Google → Cognito `picture` đã được xác nhận ở console; **runtime logout/login Google → `/api/auth/me.avatarUrl` vẫn cần smoke trước khi gọi production-confirmed**.
+
+---
+
+# 2. Admin Dashboard V1
+
+## 2.1 Anomaly Report
+
+```http
+GET /api/admin/reports/anomalies
+```
+
+Role:
+
+```text
+ADMIN       → 200
+LECTURER    → 403
+STUDENT     → 403
+Anonymous   → 401
+```
+
+GET nên:
+
+```ts
+fetch("/api/admin/reports/anomalies", {
+  credentials: "include",
+});
+```
+
+Semantics hiện tại:
+
+```text
+OVERDUE_TASK
+→ SUPPORTED
+→ count thật
+
+MSR
+→ TBD
+→ count = null
+
+DEADLINE_PROCESS
+→ TBD
+→ count = null
+
+SNA_ISOLATION
+→ TBD
+→ count = null
+```
+
+FE **không được biến `null` thành `0`**. Admin Dashboard contract xác nhận chỉ OVERDUE_TASK có source thật; các signal còn lại phải hiển thị trạng thái chưa hỗ trợ. 
+
+Ví dụ:
+
+```tsx
+if (signal.supportStatus === "TBD") {
+  return <span>Chưa hỗ trợ</span>;
+}
+
+return <span>{signal.count}</span>;
+```
+
+---
+
+## 2.2 Graph Processing
+
+```http
+GET /api/admin/reports/graph-processing
+```
+
+Hiện semantics:
+
+```json
+{
+  "periodDays": 7,
+  "historySupported": false,
+  "points": []
+}
+```
+
+FE phải:
+
+```text
+historySupported = false
+→ show empty/not-supported state
+
+points = []
+→ KHÔNG tự mock chart
+```
+
+Không tạo line chart giả 7 ngày.
+
+Hai Admin Dashboard route này đã source/test confirmed. 
+
+---
+
+# 3. Lecturer Course Dashboard
+
+Dashboard tổng của Lecturer có 4 API:
+
+```http
+GET /api/v1/courses/{courseId}/dashboard/teams-progress
+
+GET /api/v1/courses/{courseId}/dashboard/contribution-summary
+
+GET /api/v1/courses/{courseId}/dashboard/trends
+
+GET /api/v1/courses/{courseId}/dashboard/at-risk-summary
+```
+
+Mapping UI:
+
+| UI                    | API                    |
+| --------------------- | ---------------------- |
+| Tiến độ các Team      | `teams-progress`       |
+| Tổng hợp Contribution | `contribution-summary` |
+| Trend chart           | `trends`               |
+| Cảnh báo              | `at-risk-summary`      |
+
+Auth:
+
+```text
+ADMIN
+→ allowed theo Backend scope
+
+LECTURER
+→ chỉ Course mình giảng dạy
+
+STUDENT
+→ không phải Lecturer Dashboard
+```
+
+Bốn route aggregate đã được triển khai; FE không cần loop N Team rồi tự aggregate. 
+
+### At Risk cực kỳ lưu ý
+
+Hiện Backend chỉ xác nhận:
+
+```text
+OVERDUE_TASK
+```
+
+Không có:
+
+```text
+❌ GHOSTING
+❌ TOXIC_COMMUNICATION
+❌ TECHNICAL_DEBT
+❌ AI risk score
+```
+
+Không mock những signal đó. 
+
+---
+
+# 4. Project Type
+
+## 4.1 Lấy catalog Project Type
+
+```http
+GET /api/project-types
+```
+
+Role:
+
+```text
+ADMIN
+LECTURER
+STUDENT
+```
+
+đều được đọc khi authenticated.
+
+Không CSRF.
+
+Có thể trả:
+
+```json
+[]
+```
+
+nếu production chưa có type nào.
+
+ProjectType là **dynamic catalog**, FE không hardcode:
+
+```text
+design
+research
+tester
+document
+```
+
+những giá trị đó không phải canonical catalog production. ProjectType hiện do ADMIN quản lý. 
+
+Response semantic hiện tại dùng:
+
+```json
+{
+  "projectTypeId": "uuid",
+  "code": "SOFTWARE",
+  "name": "Software Project",
+  "description": "...",
+  "criteriaConfig": "..."
+}
+```
+
+`criteriaConfig` chỉ là metadata.
+
+**Không dùng `criteriaConfig` để FE tự tính điểm.**
+
+---
+
+## 4.2 Admin tạo Project Type
+
+```http
+POST /api/project-types
+```
+
+Role:
+
+```text
+ADMIN only
+```
+
+Cần CSRF.
+
+Body theo DTO Backend/Swagger hiện tại, semantic:
+
+```json
+{
+  "code": "SOFTWARE",
+  "name": "Software Project",
+  "description": "Dự án phát triển phần mềm",
+  "criteriaConfig": null
+}
+```
+
+FE mới nên load ProjectType từ GET thay vì hardcode option.
+
+---
+
+# 5. Create Project bắt buộc Project Type
+
+API hiện hữu:
+
+```http
+POST /api/teams/{teamId}/projects
+```
+
+Khi tạo Project phải gửi:
+
+```json
+{
+  "name": "SAGA",
+  "description": "...",
+  "projectTypeId": "uuid"
+}
+```
+
+Thiếu type:
+
+```text
+PROJECT_TYPE_REQUIRED
+```
+
+FE flow nên là:
+
+```text
+Open Create Project
+        ↓
+GET /api/project-types
+        ↓
+render dropdown
+        ↓
+user chọn type
+        ↓
+POST /api/teams/{teamId}/projects
+```
+
+Không tự chọn type đầu tiên khi catalog rỗng. Project create bắt buộc `projectTypeId`. 
+
+---
+
+# 6. Project + Team Group Weight
+
+Đây là **Project-specific override**:
+
+```http
+PUT /api/projects/{projectId}/group-weights
+```
+
+Role:
+
+```text
+ADMIN
+hoặc
+LECTURER là instructor của Course owning Team
+```
+
+Cần CSRF.
+
+### Scale cực kỳ quan trọng
+
+Project Group Weight dùng:
+
+```json
+{
+  "codeWeight": 0.4,
+  "documentWeight": 0.3,
+  "designWeight": 0.3
+}
+```
+
+Tổng:
+
+```text
+1.0
+```
+
+Không phải `40/30/30`.
+
+Project V1 source xác nhận exact Project+Team config có precedence trước Course-level weights. 
+
+---
+
+# 7. Lecturer chỉnh Course Contribution Weights trực tiếp
+
+Đây là feature mình vừa thêm.
+
+**Khác hoàn toàn Project Group Weight phía trên.**
+
+## GET current Course weights
+
+```http
+GET /api/v1/courses/{courseId}/contribution-slice-weights
+```
+
+Role hiện hành:
+
+```text
+ADMIN
+→ read được
+
+LECTURER
+→ chỉ Course mình giảng dạy
+
+STUDENT
+→ không dùng màn này
+```
+
+GET không CSRF.
+
+---
+
+## PUT Course weights
+
+```http
+PUT /api/v1/courses/{courseId}/contribution-slice-weights
+```
+
+Role:
+
+```text
+LECTURER exact Course instructor → success
+
+LECTURER Course khác → 403
+
+ADMIN → 403 cho direct PUT hiện tại
+
+STUDENT → 403
+```
+
+Cần CSRF.
+
+Actor được Backend lấy từ:
+
+```text
+SagaPrincipal.localProfileId
+```
+
+FE **không gửi**:
+
+```json
+{
+  "lecturerId": "...",
+  "adminId": "..."
+}
+```
+
+### Body
+
+Course weights dùng **0..100**:
+
+```json
+{
+  "codeWeight": 30,
+  "documentWeight": 20,
+  "designWeight": 50
+}
+```
+
+Validation:
+
+```text
+mỗi weight >= 0
+
+code + document + design
+≈ 100
+
+tolerance ±0.01
+```
+
+### Đừng nhầm hai weight system
+
+```text
+PROJECT GROUP WEIGHT
+PUT /api/projects/{projectId}/group-weights
+
+0.4 + 0.3 + 0.3 = 1.0
+```
+
+còn:
+
+```text
+COURSE SLICE WEIGHT
+PUT /api/v1/courses/{courseId}/contribution-slice-weights
+
+40 + 30 + 30 = 100
+```
+
+### Contribution precedence
+
+Backend tính theo:
+
+```text
+Có Project+Team GroupWeight?
+          │
+        YES
+          ↓
+dùng Project GroupWeight
+
+          │ NO
+          ↓
+dùng Course Weight Lecturer cấu hình
+```
+
+Không đổi Contribution formula, Peer Review hay Rubric.
+
+---
+
+## Flow cũ Lecturer request → Admin approve
+
+Các API cũ hiện vẫn tồn tại để backward compatibility:
+
+```http
+POST /api/v1/courses/{courseId}/contribution-slice-weight-requests
+
+GET /api/v1/courses/contribution-slice-weight-requests
+
+PUT /api/v1/courses/contribution-slice-weight-requests/{requestId}/decision
+```
+
+Nhưng với **FE mới**:
+
+```text
+DEPRECATED
+```
+
+Không dùng chúng cho màn Lecturer chỉnh trọng số bình thường.
+
+Official FE flow mới:
+
+```text
+GET current weights
+       ↓
+Lecturer edit
+       ↓
+PUT direct
+       ↓
+GET/refetch
+```
+
+Flow cũ trước đây thật sự là request/Admin decision, nên giữ nó trong Backend không đồng nghĩa FE mới phải tiếp tục dùng. 
+
+---
+
+# 8. Student Progress — MEMBER và LEADER
+
+API:
+
+```http
+GET /api/v1/courses/{courseId}/students/{studentId}/progress
+```
+
+Không CSRF.
+
+### MEMBER
+
+```text
+xem chính mình
+→ 200
+
+xem teammate
+→ 403
+```
+
+### LEADER
+
+```text
+xem chính mình
+→ 200
+
+xem thành viên exact same Team
+→ 200
+
+Team khác
+→ 403
+
+Course khác
+→ 403
+```
+
+### MENTOR
+
+```text
+403
+```
+
+Legacy ambiguous membership:
+
+```text
+nhiều Team trong cùng Course
+→ 409
+→ Backend fail closed
+```
+
+Không pick Team đầu tiên.
+
+### FE rendering
+
+Nếu user là MEMBER:
+
+```ts
+GET /api/v1/courses/${courseId}/students/${me.localProfileId}/progress
+```
+
+Nếu user là LEADER và chọn một teammate:
+
+```ts
+GET /api/v1/courses/${courseId}/students/${studentId}/progress
+```
+
+**Không gửi role hoặc caller ID trong request.**
+
+Backend tự lấy actor từ session.
+
+### Không suy rộng quyền Student
+
+Feature mới này chỉ mở:
+
+```text
+/progress
+```
+
+Không có nghĩa Student được gọi luôn:
+
+```text
+❌ Lecturer Dashboard
+❌ Lecturer early-warning
+❌ Lecturer contribution-detail
+❌ Lecturer activities
+```
+
+---
+
+# 9. AI Agent — Frontend chỉ gọi Backend
+
+AI Agent V1 public có đúng **7 operation**:
+
+```http
+POST /api/v1/ai/conversations
+
+GET /api/v1/ai/conversations
+
+GET /api/v1/ai/conversations/{conversationId}
+
+POST /api/v1/ai/conversations/{conversationId}/messages
+
+POST /api/v1/ai/pending-actions/{actionId}/confirm
+
+POST /api/v1/ai/pending-actions/{actionId}/reject
+
+GET /api/v1/ai/artifacts/{artifactId}/download
+```
+
+Public `/api/v1/ai/**` chạy dưới session + CSRF contract của Backend. Internal tools không phải FE API. 
+
+---
+
+## 9.1 Create conversation
+
+```http
+POST /api/v1/ai/conversations
+```
+
+Cần CSRF.
+
+Ví dụ:
+
+```ts
+const csrf = await getCsrf();
+
+const res = await fetch("/api/v1/ai/conversations", {
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+    [csrf.headerName]: csrf.token,
+  },
+  body: JSON.stringify({
+    title: "Hỏi SAGA AI",
+  }),
+});
+```
+
+---
+
+## 9.2 List conversations
+
+```http
+GET /api/v1/ai/conversations
+```
+
+Không CSRF.
+
+---
+
+## 9.3 Conversation detail
+
+```http
+GET /api/v1/ai/conversations/{conversationId}
+```
+
+Chỉ owner conversation được đọc.
+
+---
+
+## 9.4 Send message
+
+```http
+POST /api/v1/ai/conversations/{conversationId}/messages
+```
+
+Cần CSRF.
+
+FE gửi text theo exact DTO trong Swagger hiện tại.
+
+AI có thể xử lý:
+
+```text
+General chat
+
+Project/task Q&A
+
+Student progress
+
+Contribution
+
+Lecturer progress/contribution
+
+source-backed warnings
+
+traceability
+
+Task create/update proposal
+
+SRS
+
+Commit review
+```
+
+Backend vẫn là business authority. AI Agent architecture xác nhận AI không được đọc DB SAGA trực tiếp, không gọi Jira/GitHub trực tiếp và unknown tool fail closed. 
+
+---
+
+# 10. AI Task Proposal không tự mutate Jira
+
+Đây là điểm FE phải hiểu đúng.
+
+User chat:
+
+```text
+"Tạo task Fix login bug"
+```
+
+AI có thể tạo:
+
+```text
+pending action
+```
+
+Nhưng lúc đó:
+
+```text
+Jira chưa bị sửa
+```
+
+FE render:
+
+```text
+[Confirm]
+[Reject]
+```
+
+### Confirm
+
+```http
+POST /api/v1/ai/pending-actions/{actionId}/confirm
+```
+
+Cần CSRF.
+
+Flow:
+
+```text
+FE confirm
+→ Backend reauthorize user
+→ JiraTaskWriteService
+→ Jira mutation
+→ canonical result
+```
+
+### Reject
+
+```http
+POST /api/v1/ai/pending-actions/{actionId}/reject
+```
+
+Cần CSRF.
+
+```text
+reject
+→ không Jira call
+```
+
+Task create/update của AI là **two-phase**, không auto mutation. 
+
+---
+
+# 11. AI Artifact / SRS
+
+Download:
+
+```http
+GET /api/v1/ai/artifacts/{artifactId}/download
+```
+
+Không CSRF.
+
+Frontend nên tải như blob:
+
+```ts
+const res = await fetch(
+  `/api/v1/ai/artifacts/${artifactId}/download`,
+  {
+    credentials: "include",
+  }
+);
+
+const blob = await res.blob();
+
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+a.href = url;
+a.download = "saga-srs.docx";
+a.click();
+
+URL.revokeObjectURL(url);
+```
+
+Không gọi AI service hoặc HF URL trực tiếp.
+
+AI canonical SRS nằm trong AI durable state; Backend kiểm authorization lại trước download. 
+
+---
+
+# 12. AI Internal API — TUYỆT ĐỐI không gọi từ FE
+
+Không gọi bất kỳ:
+
+```text
+/internal/ai/**
+```
+
+hoặc:
+
+```text
+/internal/backend/v1/agent/**
+```
+
+Không đưa xuống browser:
+
+```text
+❌ SAGA AI service token
+❌ Backend→AI token
+❌ AI→Backend token
+❌ OpenAI key
+❌ Gemini key
+❌ HF secret
+❌ Jira credential
+❌ GitHub credential
+```
+
+Public browser contract chỉ là `/api/v1/ai/**`. 
+
+---
+
+# 13. Error handling chung cho FE
+
+```text
+400
+→ validation/request sai
+→ show lỗi
+→ không retry mù
+
+401
+→ session expired/not login
+→ redirect login
+
+403
+→ role/ownership sai hoặc mutation thiếu CSRF
+→ không đổi role bằng FE
+
+404
+→ resource không tồn tại / không thuộc scope
+
+409
+→ business conflict
+→ hiển thị conflict
+→ không tự chọn dữ liệu khác để workaround
+
+5xx
+→ Backend/provider unavailable
+→ show retry state phù hợp
+```
+
+Đặc biệt:
+
+```text
+403 không có nghĩa "thử Bearer token"
+```
+
+Không bao giờ fallback sang Bearer.
+
+---
+
+# 14. FE checklist theo màn hình
+
+| Màn hình                  | API chính                                                   |
+| ------------------------- | ----------------------------------------------------------- |
+| Header/Profile            | `GET /api/auth/me` → `avatarUrl`                            |
+| Admin Dashboard           | `GET /api/admin/reports/anomalies`                          |
+| Admin Dashboard           | `GET /api/admin/reports/graph-processing`                   |
+| Lecturer Dashboard        | `GET .../dashboard/teams-progress`                          |
+| Lecturer Dashboard        | `GET .../dashboard/contribution-summary`                    |
+| Lecturer Dashboard        | `GET .../dashboard/trends`                                  |
+| Lecturer Dashboard        | `GET .../dashboard/at-risk-summary`                         |
+| Project Type dropdown     | `GET /api/project-types`                                    |
+| Admin Manage Project Type | `POST /api/project-types`                                   |
+| Create Project            | `POST /api/teams/{teamId}/projects`                         |
+| Project Group Weight      | `PUT /api/projects/{projectId}/group-weights`               |
+| Lecturer Course Weights   | `GET /api/v1/courses/{courseId}/contribution-slice-weights` |
+| Lecturer Course Weights   | `PUT /api/v1/courses/{courseId}/contribution-slice-weights` |
+| Student My Progress       | `GET .../students/{studentId}/progress`                     |
+| Leader Member Progress    | cùng `/progress` với member target                          |
+| AI Chat Create            | `POST /api/v1/ai/conversations`                             |
+| AI Chat List              | `GET /api/v1/ai/conversations`                              |
+| AI Chat Detail            | `GET /api/v1/ai/conversations/{id}`                         |
+| AI Send Message           | `POST .../{id}/messages`                                    |
+| AI Confirm Action         | `POST /api/v1/ai/pending-actions/{id}/confirm`              |
+| AI Reject Action          | `POST /api/v1/ai/pending-actions/{id}/reject`               |
+| AI SRS Download           | `GET /api/v1/ai/artifacts/{id}/download`                    |
+
+---
+

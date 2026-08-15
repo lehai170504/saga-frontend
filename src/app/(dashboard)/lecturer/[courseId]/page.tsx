@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { LecturerDashboardClient } from "./lecturer-dashboard-client";
+import { LecturerDashboardClient } from "../../../../features/lecturer/components/lecturer-dashboard-client";
 
 
 export const metadata: Metadata = {

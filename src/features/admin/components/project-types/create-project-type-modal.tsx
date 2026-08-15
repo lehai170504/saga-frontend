@@ -5,8 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ProjectType } from "../../api/projectTypeApi";
-import { useCreateProjectType, useUpdateProjectType } from "../../hooks/useProjectTypes";
+import { useCreateProjectType } from "../../hooks/useProjectTypes";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Layers } from "lucide-react";
 import { projectTypeSchema, ProjectTypeFormValues } from "../../schemas/projectTypeSchema";
@@ -14,14 +13,10 @@ import { projectTypeSchema, ProjectTypeFormValues } from "../../schemas/projectT
 interface CreateProjectTypeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  projectType?: ProjectType | null;
 }
 
-export function CreateProjectTypeModal({ isOpen, onClose, projectType }: CreateProjectTypeModalProps) {
-  const isEditing = !!projectType;
-  const { mutateAsync: createProjectType, isPending: isCreating } = useCreateProjectType();
-  const { mutateAsync: updateProjectType, isPending: isUpdating } = useUpdateProjectType();
-  const isPending = isCreating || isUpdating;
+export function CreateProjectTypeModal({ isOpen, onClose }: CreateProjectTypeModalProps) {
+  const { mutateAsync: createProjectType, isPending } = useCreateProjectType();
 
   const form = useForm<ProjectTypeFormValues>({
     resolver: zodResolver(projectTypeSchema),
@@ -35,34 +30,18 @@ export function CreateProjectTypeModal({ isOpen, onClose, projectType }: CreateP
 
   useEffect(() => {
     if (isOpen) {
-      if (projectType) {
-        form.reset({
-          code: projectType.code,
-          name: projectType.name,
-          description: projectType.description || "",
-          criteriaConfig: projectType.criteriaConfig,
-        });
-      } else {
-        form.reset({
-          code: "",
-          name: "",
-          description: "",
-          criteriaConfig: "[\n  {\n    \"code\": \"example\",\n    \"name\": \"Example\",\n    \"required\": true\n  }\n]",
-        });
-      }
+      form.reset({
+        code: "",
+        name: "",
+        description: "",
+        criteriaConfig: "[\n  {\n    \"code\": \"example\",\n    \"name\": \"Example\",\n    \"required\": true\n  }\n]",
+      });
     }
-  }, [isOpen, projectType, form]);
+  }, [isOpen, form]);
 
   const onSubmit = async (values: ProjectTypeFormValues) => {
     try {
-      if (isEditing && projectType) {
-        await updateProjectType({
-          projectTypeId: projectType.projectTypeId,
-          ...values,
-        });
-      } else {
-        await createProjectType(values);
-      }
+      await createProjectType(values);
       onClose();
     } catch (error) {
       console.error("Failed to save project type", error);
@@ -79,13 +58,11 @@ export function CreateProjectTypeModal({ isOpen, onClose, projectType }: CreateP
                 <Layers className="w-6 h-6 text-primary" />
               </div>
               <DialogTitle className="text-2xl font-bold">
-                {isEditing ? "Cập nhật Loại Dự án" : "Thêm mới Loại Dự án"}
+                Thêm mới Loại Dự án
               </DialogTitle>
             </div>
             <DialogDescription className="text-muted-foreground text-base">
-              {isEditing
-                ? "Chỉnh sửa thông tin và tiêu chí đánh giá của loại dự án này."
-                : "Thêm một loại dự án mới cùng với cấu hình tiêu chí (criteria config) bằng JSON."}
+              Thêm một loại dự án mới cùng với cấu hình tiêu chí (criteria config) bằng JSON.
             </DialogDescription>
           </DialogHeader>
 
@@ -177,7 +154,7 @@ export function CreateProjectTypeModal({ isOpen, onClose, projectType }: CreateP
                   className="rounded-xl h-11 font-semibold px-8"
                   disabled={isPending}
                 >
-                  {isPending ? "Đang lưu..." : isEditing ? "Cập nhật" : "Lưu dữ liệu"}
+                  {isPending ? "Đang lưu..." : "Lưu dữ liệu"}
                 </Button>
               </DialogFooter>
             </form>

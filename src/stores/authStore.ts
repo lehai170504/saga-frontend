@@ -10,6 +10,8 @@ export interface AuthMeResponse {
   applicationRole: ApplicationRole;
   localProfileId: string;
   accountStatus: AccountStatus;
+  avatarUrl?: string | null;
+  avatar?: string | null;
 }
 
 export type CsrfTokenResponse = {

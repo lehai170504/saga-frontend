@@ -265,7 +265,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                   </p>
                 </div>
                 <Avatar className="h-10 w-10 border-2 border-background shadow-md ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300 group-hover:scale-105">
-                  <AvatarImage src="" alt={user?.fullName ?? "User"} />
+                  <AvatarImage src={user?.avatarUrl || user?.avatar || ""} alt={user?.fullName ?? "User"} />
                   <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold text-sm">
                     {user?.fullName?.charAt(0) ?? "?"}
                   </AvatarFallback>

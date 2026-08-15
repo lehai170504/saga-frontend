@@ -5,21 +5,17 @@ import { Settings2, BookOpen, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useAuthStore } from "@/stores/authStore";
-import { useCourseContributionWeights, useRequestCourseContributionWeight } from "../../hooks/useContribution";
+import { useCourseWeights, useUpdateCourseWeights } from "../../hooks/useCourseWeights";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function TemplateSelector({ courseId }: { courseId: string }) {
-  const { user } = useAuthStore();
-  const { data: weightsData, isLoading } = useCourseContributionWeights(courseId);
-  const { mutate: requestOverride, isPending } = useRequestCourseContributionWeight();
+  const { data: weightsData, isLoading } = useCourseWeights(courseId);
+  const { mutate: updateWeights, isPending } = useUpdateCourseWeights(courseId);
 
   const [customCodeWeight, setCustomCodeWeight] = useState<number | null>(null);
   const [customDocumentWeight, setCustomDocumentWeight] = useState<number | null>(null);
   const [customDesignWeight, setCustomDesignWeight] = useState<number | null>(null);
-  const [overrideReason, setOverrideReason] = useState("");
 
   const codeWeight = customCodeWeight ?? (weightsData ? Number(weightsData.codeWeight.toFixed(2)) : 33.33);
   const documentWeight = customDocumentWeight ?? (weightsData ? Number(weightsData.documentWeight.toFixed(2)) : 33.33);
@@ -30,7 +26,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
   const setDesignWeight = (val: number) => setCustomDesignWeight(val);
 
   const totalWeight = (codeWeight + documentWeight + designWeight).toFixed(2);
-  const isValid = Math.abs(parseFloat(totalWeight) - 100) < 0.1;
+  const isValid = parseFloat(totalWeight) === 100;
   const isModified = weightsData && (
     codeWeight !== weightsData.codeWeight ||
     documentWeight !== weightsData.documentWeight ||
@@ -39,23 +35,19 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
 
   const handleSubmit = () => {
     if (!isValid) {
-      toast.error("Tổng trọng số phải bằng xấp xỉ 100%");
+      toast.error("Tổng trọng số phải bằng ĐÚNG 100%");
       return;
     }
-    if (!overrideReason.trim()) {
-      toast.error("Vui lòng nhập lý do để Admin phê duyệt");
-      return;
-    }
-    requestOverride(
-      { courseId, data: { codeWeight, documentWeight, designWeight, reason: overrideReason, lecturerId: user?.localProfileId || "" } },
+
+    updateWeights(
+      { codeWeight, documentWeight, designWeight },
       {
         onSuccess: () => {
-          toast.success("Đã gửi yêu cầu thay đổi trọng số lên Admin thành công!");
-          setOverrideReason("");
+          // Success handled in hook
         },
         onError: (err: Error) => {
           const resErr = err as Error & { response?: { data?: { message?: string } } };
-          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi gửi yêu cầu");
+          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi cập nhật trọng số");
         }
       }
     );
@@ -87,7 +79,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                   <span>Tổng ngân sách điểm Đóng góp (Contribution): 100%</span>
                 </div>
                 <p className="text-sm">
-                  Tổng 3 trọng số phải bằng đúng 100%. Nếu thay đổi hệ số này, phần Đóng góp thực tế của sinh viên sẽ tự động scale dựa trên các loại Task tương ứng. Việc thay đổi cần Admin kiểm duyệt.
+                  Tổng 3 trọng số phải bằng đúng 100%. Nếu thay đổi hệ số này, phần Đóng góp thực tế của sinh viên sẽ tự động scale dựa trên các loại Task tương ứng.
                 </p>
               </div>
 
@@ -107,7 +99,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                       <span className="text-sm font-medium w-6">%</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-bold w-1/3">2. Viết Tài liệu (Docs)</Label>
                     <div className="flex items-center gap-2 w-2/3">
@@ -147,31 +139,16 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                 </div>
               </div>
 
-              {/* Reason for Override */}
+              {/* Save Button */}
               {isModified && (
                 <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 space-y-4 animate-in fade-in slide-in-from-top-4">
-                  <div className="flex items-start gap-2 text-primary">
-                    <Info className="w-5 h-5 shrink-0 mt-0.5" />
-                    <div className="space-y-1">
-                      <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
-                      <p className="text-xs">Hệ số đã thay đổi so với cấu hình gốc. Vui lòng nhập lý do (VD: Đồ án lớp này tập trung mạnh vào AI, nên cần tăng trọng số Lập trình).</p>
-                    </div>
-                  </div>
-
-                  <Textarea
-                    placeholder="Lý do điều chỉnh..."
-                    className="min-h-[100px] border-primary/20 focus-visible:ring-primary/20"
-                    value={overrideReason}
-                    onChange={(e) => setOverrideReason(e.target.value)}
-                  />
-
                   <div className="flex justify-end">
                     <Button
                       onClick={handleSubmit}
-                      disabled={isPending || !overrideReason.trim() || !isValid}
+                      disabled={isPending || !isValid}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                     >
-                      {isPending ? "Đang gửi..." : "Gửi yêu cầu lên Admin"}
+                      {isPending ? "Đang lưu..." : "Lưu cấu hình"}
                     </Button>
                   </div>
                 </div>

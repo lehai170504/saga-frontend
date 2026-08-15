@@ -10,7 +10,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getNavigationConfig } from "@/config/navigation";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 
@@ -76,6 +76,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
         <div className="p-5 border-b border-border/40 lg:hidden relative z-10">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 shrink-0 ring-2 ring-primary/20">
+              <AvatarImage src={user?.avatarUrl ?? "/images/default-avatar.png"} alt={user?.fullName ?? "User"} />
               <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold">
                 {user?.fullName?.charAt(0) ?? "?"}
               </AvatarFallback>

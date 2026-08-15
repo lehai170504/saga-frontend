@@ -15,7 +15,7 @@ import {
 } from "recharts";
 
 interface OverviewTrendChartProps {
-  chartData: any[];
+  chartData: { date: string, totalScore: number }[];
   totalScore: number;
 }
 
@@ -69,8 +69,8 @@ export function OverviewTrendChart({ chartData, totalScore }: OverviewTrendChart
                 fontWeight: "bold",
                 boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
               }}
-              formatter={(val: any) => [`${val ?? 0} điểm`, "Điểm hoạt động"]}
-              labelFormatter={(label: any) => `Ngày: ${label}`}
+              formatter={(val: unknown) => [`${String(val ?? 0)} điểm`, "Điểm hoạt động"]}
+              labelFormatter={(label: unknown) => `Ngày: ${String(label ?? "")}`}
             />
             <Area
               type="monotone"

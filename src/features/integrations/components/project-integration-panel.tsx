@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   useProjectIntegrations,
   useDeleteProjectJiraIntegration,
@@ -46,15 +46,6 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
   const jira = projectIntegration?.jira;
   const isJiraConnected = !!jira && jira.status !== "DISCONNECTED";
   const githubRepositories = projectIntegration?.githubRepositories || [];
-
-  // Auto select first repo when repos load or selection invalid
-  useEffect(() => {
-    if (githubRepositories.length > 0) {
-      if (!selectedRepoId || !githubRepositories.some((r) => r.repositoryId === selectedRepoId)) {
-        setSelectedRepoId(githubRepositories[0].repositoryId);
-      }
-    }
-  }, [githubRepositories, selectedRepoId]);
 
   const activeRepo = githubRepositories.find((r) => r.repositoryId === selectedRepoId) || githubRepositories[0];
 
