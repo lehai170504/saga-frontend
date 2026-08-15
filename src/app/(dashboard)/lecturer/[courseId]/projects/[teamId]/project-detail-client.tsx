@@ -110,6 +110,16 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
             title={`${projectDetail.name}${projectDetail.project && projectDetail.project !== "Chưa có dự án" ? ` - ${projectDetail.project}` : ''}`}
             description="Chi tiết dự án, tiến độ Agile và đánh giá cổ phần Slices của từng thành viên."
           />
+          {projectDetail.projectId && (
+            <div className="flex items-center gap-3 w-full sm:w-auto mt-4 md:mt-0 shrink-0">
+              <LecturerUpdateGroupWeightsModal
+                projectId={projectDetail.projectId}
+                courseId={courseId}
+                teamId={teamId}
+                teamName={projectDetail.name}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -192,14 +202,6 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
               <Card className="rounded-[2rem] shadow-sm border-border bg-card/50 backdrop-blur-sm">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-lg font-bold">Thông tin dự án</CardTitle>
-                  {projectDetail.projectId && (
-                    <LecturerUpdateGroupWeightsModal
-                      projectId={projectDetail.projectId}
-                      courseId={courseId}
-                      teamId={teamId}
-                      teamName={projectDetail.name}
-                    />
-                  )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {projectDetail.project && projectDetail.project !== "Chưa có dự án" ? (

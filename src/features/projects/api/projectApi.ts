@@ -3,7 +3,7 @@ import { CreateTeamProjectRequest, ProjectResponse, GithubBranchesResponse, Gith
 
 export const projectApi = {
   createTeamProject: async (teamId: string, data: CreateTeamProjectRequest) => {
-    return axiosInstance.post<never, ProjectResponse>(`/api/teams/${teamId}/projects`, data);
+    return axiosInstance.post<never, ProjectResponse>(`/api/v1/teams/${teamId}/projects`, data);
   },
   getProjectDetail: async (projectId: string) => {
     return axiosInstance.get<never, ProjectResponse>(`/api/projects/${projectId}`);

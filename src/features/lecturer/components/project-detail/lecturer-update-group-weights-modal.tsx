@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -52,16 +52,16 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
       return;
     }
 
-    if (Math.abs(c + doc + des - 1.0) > 0.01 && Math.abs(c + doc + des - 100) > 0.01) {
-      toast.warning("Lưu ý: Tổng trọng số thường là 1.0 (hoặc 100%). Hãy kiểm tra lại nếu cố ý.");
+    if (Math.abs(c + doc + des - 100) > 0.1) {
+      toast.warning("Lưu ý: Tổng trọng số nên bằng 100%. Hãy kiểm tra lại nếu cố ý.");
     }
 
     updateWeights.mutate(
       {
         groupId: teamId,
-        codeWeight: c,
-        documentWeight: doc,
-        designWeight: des,
+        codeWeight: c / 100,
+        documentWeight: doc / 100,
+        designWeight: des / 100,
         note
       },
       {
@@ -77,8 +77,8 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-xl h-8 border-amber-500/20 text-amber-600 hover:bg-amber-500/10">
-          <Scale className="w-4 h-4 mr-1" />
+        <Button variant="outline" className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-amber-500/20 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+          <Scale className="w-5 h-5" />
           Sửa Trọng số
         </Button>
       </DialogTrigger>
@@ -98,39 +98,48 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Code</label>
-              <Input
-                type="number"
-                step="0.1"
-                min="0"
-                max="1"
-                value={codeWeight}
-                onChange={(e) => setCodeWeight(e.target.value)}
-                className="rounded-xl bg-muted/20 border-border/50 text-center font-bold"
-              />
+              <div className="relative">
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="100"
+                  value={codeWeight}
+                  onChange={(e) => setCodeWeight(e.target.value)}
+                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Document</label>
-              <Input
-                type="number"
-                step="0.1"
-                min="0"
-                max="1"
-                value={documentWeight}
-                onChange={(e) => setDocumentWeight(e.target.value)}
-                className="rounded-xl bg-muted/20 border-border/50 text-center font-bold"
-              />
+              <div className="relative">
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="100"
+                  value={documentWeight}
+                  onChange={(e) => setDocumentWeight(e.target.value)}
+                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Design</label>
-              <Input
-                type="number"
-                step="0.1"
-                min="0"
-                max="1"
-                value={designWeight}
-                onChange={(e) => setDesignWeight(e.target.value)}
-                className="rounded-xl bg-muted/20 border-border/50 text-center font-bold"
-              />
+              <div className="relative">
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="100"
+                  value={designWeight}
+                  onChange={(e) => setDesignWeight(e.target.value)}
+                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
+              </div>
             </div>
           </div>
 
