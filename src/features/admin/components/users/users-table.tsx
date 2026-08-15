@@ -179,7 +179,7 @@ export function UsersTable({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border overflow-hidden bg-card">
+      <div className="rounded-2xl border border-border bg-card overflow-hidden overflow-x-auto">
         <Table>
           <TableHeader className="bg-muted/30">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -221,7 +221,7 @@ export function UsersTable({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex items-center justify-between px-2">
+      <div className="flex flex-col sm:flex-row items-center justify-between px-2 gap-4">
         <div className="text-sm text-muted-foreground font-medium flex items-center gap-4">
           <span>Trang {pageIndex + 1} / {totalPages || 1}</span>
           <span className="w-1 h-1 rounded-full bg-border"></span>

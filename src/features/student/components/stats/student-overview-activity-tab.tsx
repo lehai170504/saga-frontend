@@ -127,14 +127,14 @@ export function StudentOverviewActivityTab({ courseId, teamId }: StudentOverview
           {/* Summary Cards */}
           <OverviewSummaryCards totals={totals} />
 
-          {/* Scoring Rules Explanation Banner */}
-          <OverviewScoringRulesBanner />
-
           {/* Main Chart Section: Activity Score Trend & Activity Counts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <OverviewTrendChart chartData={chartData} totalScore={totals.totalScore} />
             <OverviewBreakdownChart chartData={chartData} totalActivities={totals.totalActivities} />
           </div>
+
+          {/* Scoring Rules Explanation Banner */}
+          <OverviewScoringRulesBanner />
         </>
       )}
     </div>

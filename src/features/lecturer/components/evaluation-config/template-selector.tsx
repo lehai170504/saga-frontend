@@ -5,14 +5,11 @@ import { Settings2, BookOpen, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useAuthStore } from "@/stores/authStore";
 import { useCourseContributionWeights, useUpdateCourseContributionWeights } from "../../hooks/useContribution";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function TemplateSelector({ courseId }: { courseId: string }) {
-  const { user } = useAuthStore();
   const { data: weightsData, isLoading } = useCourseContributionWeights(courseId);
   const { mutate: updateWeights, isPending } = useUpdateCourseContributionWeights();
 

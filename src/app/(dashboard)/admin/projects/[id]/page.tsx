@@ -23,7 +23,7 @@ import { useProjectDetail, useProjectStats, useUpdateProject } from "@/features/
 import { toast } from "sonner";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Progress } from "@/components/ui/progress";
-import { UpdateGroupWeightsModal } from "@/features/admin/components/projects/update-group-weights-modal";
+
 
 export default function AdminProjectDetailsPage() {
   const params = useParams();
@@ -92,7 +92,7 @@ export default function AdminProjectDetailsPage() {
                 <h3 className="text-lg font-bold">Thông tin chung</h3>
                 {!isEditing && (
                   <div className="flex items-center gap-2">
-                    <UpdateGroupWeightsModal project={project} />
+
                     <Button
                       variant="outline"
                       size="sm"
@@ -146,7 +146,7 @@ export default function AdminProjectDetailsPage() {
                       {project.description || "Chưa có mô tả cho dự án này."}
                     </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                     <div className="bg-muted/20 p-4 rounded-2xl">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Nhóm phụ trách</span>
                       <p className="font-semibold text-base mt-1 text-primary">{project.team.teamName}</p>

@@ -3,14 +3,17 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { ArrowLeft, Users, UserCheck, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Users, UserCheck, ShieldAlert, Lock, FolderKanban } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { Badge } from "@/components/ui/badge";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
+import { useProjectDetail } from "@/features/projects/hooks/useProjects";
 import {
   useTeamSprintCandidates,
   useTeamRubric,
   useTeamSprintReviews,
+  useTeamSprints,
 } from "@/features/projects/hooks/useTeamSprints";
 import { RubricCriterion, PeerReviewItem } from "@/features/projects/types";
 
@@ -31,6 +34,8 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
 
   const activeTeamId = myTeamData?.teamId || "";
+  const { data: projectDetail } = useProjectDetail(myTeamData?.project?.id || "");
+  const { data: sprintsData } = useTeamSprints(activeTeamId);
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(
     activeTeamId,
     sprintId || ""
@@ -40,10 +45,21 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
+  const currentSprint = (sprintsData?.sprints || []).find(
+    (s) =>
+      (s.sprintId || (s as unknown as { id?: string }).id || (s as unknown as { sprint_id?: string }).sprint_id) === sprintId
+  );
+
+  const isReviewWindowOpen = () => {
+    if (!currentSprint) return true;
+    if (!currentSprint.endDate) return false;
+    const isClosed = currentSprint.state === "CLOSED" || currentSprint.state === "closed";
+    if (isClosed) return true;
+    const openD = new Date(new Date(currentSprint.endDate).getTime() - 7 * 24 * 60 * 60 * 1000);
+    return new Date() >= openD;
+  };
+
+  const canAccessReview = isReviewWindowOpen();
 
   // Determine criteria with fallbacks (Team -> Default -> Hardcoded standard)
   const getRubricCriteria = (): RubricCriterion[] => {
@@ -82,10 +98,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const criteria = getRubricCriteria();
   const peerReviewState = usePeerReviewState(activeTeamId, sprintId || "", criteria);
 
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
-
   const candidates = candidatesData?.candidates || [];
 
   // Build a map: revieweeId -> PeerReviewItem
@@ -100,11 +112,11 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
         {/* Navigation / Back Button */}
         <div className="flex items-center justify-between">
           <Link
-            href={`/student/${courseId}/sprints`}
+            href={`/student/${courseId}/projects?tab=peer-review`}
             className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors bg-muted/30 hover:bg-muted/50 px-4 py-2.5 rounded-xl border border-border/40 cursor-pointer shadow-sm"
           >
             <ArrowLeft size={16} />
-            Quay lại Sprints
+            Quay lại Đánh giá chéo
           </Link>
         </div>
 
@@ -125,6 +137,27 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
               <Skeleton className="h-24 w-full rounded-2xl bg-muted/40" />
             </div>
           </div>
+        ) : !canAccessReview ? (
+          <div className="text-center p-12 glass-panel rounded-[2rem] border-dashed border-amber-500/30 max-w-lg mx-auto space-y-4">
+            <Lock size={48} className="mx-auto text-amber-500" />
+            <h3 className="text-xl font-bold text-foreground">Đánh giá chéo chưa được mở</h3>
+            <p className="text-sm text-muted-foreground">
+              {currentSprint && currentSprint.endDate
+                ? `Đợt đánh giá chéo cho ${currentSprint.sprintName} sẽ tự động mở từ ngày ${(() => {
+                    const openD = new Date(new Date(currentSprint.endDate).getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return `${String(openD.getDate()).padStart(2, '0')}-${String(openD.getMonth() + 1).padStart(2, '0')}-${openD.getFullYear()}`;
+                  })()} (trước hạn kết thúc Sprint 7 ngày).`
+                : "Sprint này chưa được thiết lập lịch thời gian trên Jira để mở đợt Đánh giá chéo."}
+            </p>
+            <div className="pt-2">
+              <Link
+                href={`/student/${courseId}/projects?tab=peer-review`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-md hover:bg-primary/90 transition-all"
+              >
+                <ArrowLeft size={16} /> Quay lại danh sách Đánh giá chéo
+              </Link>
+            </div>
+          </div>
         ) : !myTeamData ? (
           <div className="text-center p-12 glass-panel rounded-[2rem]">
             <Users size={48} className="mx-auto text-muted-foreground/30 mb-4" />
@@ -136,21 +169,42 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
         ) : (
           <div className="space-y-8">
             {/* Project / Team Info Hero Bar */}
-            <div className="bg-gradient-to-br from-primary/5 via-background to-transparent border border-border/50 rounded-[2rem] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
-                  Nhóm đang đánh giá
-                </p>
-                <h3 className="text-xl font-bold text-foreground">{myTeamData.teamName}</h3>
+            <div className="bg-gradient-to-br from-primary/5 via-background to-transparent border border-border/50 rounded-[2rem] p-6 space-y-4 shadow-sm">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
+                    Nhóm đang đánh giá
+                  </p>
+                  <h3 className="text-2xl font-black text-foreground">{myTeamData.teamName}</h3>
+                </div>
+
+                <div className="space-y-1 sm:text-right">
+                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
+                    Dự án / Đề tài
+                  </p>
+                  <div className="flex flex-wrap items-center sm:justify-end gap-2">
+                    <h3 className="text-base font-extrabold text-foreground">
+                      {projectDetail?.name || myTeamData.project?.name || "Chưa có đề tài"}
+                    </h3>
+                    {projectDetail?.projectType && (
+                      <Badge
+                        variant="outline"
+                        className="bg-primary/10 text-primary border-primary/20 font-extrabold text-[10px] uppercase px-2.5 py-0.5 rounded-full"
+                      >
+                        {projectDetail.projectType.code
+                          ? `${projectDetail.projectType.name} (${projectDetail.projectType.code})`
+                          : projectDetail.projectType.name}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="space-y-1 sm:text-right">
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
-                  Dự án / Đề tài
+
+              {projectDetail?.description && (
+                <p className="text-xs text-foreground/80 font-medium max-w-2xl border-l-2 border-primary/30 pl-3 leading-relaxed">
+                  {projectDetail.description}
                 </p>
-                <h3 className="text-sm font-semibold text-foreground">
-                  {myTeamData.project?.name || "Chưa có đề tài"}
-                </h3>
-              </div>
+              )}
             </div>
 
             {/* Candidates Section */}

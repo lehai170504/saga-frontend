@@ -98,15 +98,6 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
     size
   );
 
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
-
   const isLoading = isLoadingTeam || isLoadingIntegrations || isLoadingBranches || (!!selectedBranch && isLoadingCommits);
 
   const formatDateTime = (dateStr: string) => {

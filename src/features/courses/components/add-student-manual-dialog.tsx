@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, UserPlus } from "lucide-react";
 
@@ -15,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 
 import { addStudentManualSchema, AddStudentManualFormValues } from "../schemas/studentSchema";
 import { useAddStudentManual } from "../hooks/useCourseStudents";
@@ -32,7 +31,6 @@ export function AddStudentManualDialog({ courseId, onSuccess }: AddStudentManual
   const {
     register,
     handleSubmit,
-    control,
     reset,
     formState: { errors },
   } = useForm<AddStudentManualFormValues>({
@@ -41,8 +39,6 @@ export function AddStudentManualDialog({ courseId, onSuccess }: AddStudentManual
       studentCode: "",
       email: "",
       fullName: "",
-      group: "",
-      leader: false,
     },
   });
 
@@ -120,38 +116,7 @@ export function AddStudentManualDialog({ courseId, onSuccess }: AddStudentManual
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="group" className="font-semibold text-foreground/80">
-              Nhóm (Tùy chọn)
-            </Label>
-            <Input
-              id="group"
-              placeholder="VD: Group 1"
-              className={`rounded-xl h-11 ${errors.group ? "border-destructive focus-visible:ring-destructive" : ""
-                }`}
-              {...register("group")}
-            />
-            {errors.group && (
-              <p className="text-xs text-destructive mt-1 font-medium">{errors.group.message}</p>
-            )}
-          </div>
 
-          <div className="flex flex-row items-center justify-between rounded-xl border border-border/50 p-4 bg-muted/20">
-            <div className="space-y-0.5">
-              <Label className="text-base font-semibold">Trưởng nhóm</Label>
-              <p className="text-xs text-muted-foreground">Đánh dấu nếu sinh viên này là trưởng nhóm</p>
-            </div>
-            <Controller
-              name="leader"
-              control={control}
-              render={({ field }) => (
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
-          </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-border/50">
             <Button

@@ -246,3 +246,15 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--border) 80%, white);
 }
+
+/* High Contrast Selection Rules */
+::selection {
+  background-color: oklch(var(--primary) / 0.25);
+  color: inherit;
+}
+
+.bg-primary ::selection,
+.bg-primary::selection {
+  background-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+}

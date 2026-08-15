@@ -92,10 +92,6 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
     }
   }, [isDeleteOpen]);
 
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
-
   const sprints = sprintsData?.sprints || [];
 
   // Sort sprints chronologically by startDate

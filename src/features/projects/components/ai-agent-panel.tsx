@@ -174,7 +174,13 @@ export function AiAgentPanel(props: { projectId?: string }) {
                         {msg.role === 'USER' ? <User size={16} /> : <Bot size={16} />}
                       </div>
                       <div className={`max-w-[75%] space-y-2 ${msg.role === 'USER' ? 'items-end' : 'items-start'}`}>
-                        <div className={`p-4 rounded-2xl text-sm ${msg.role === 'USER' ? 'bg-primary text-primary-foreground rounded-tr-sm' : 'bg-muted rounded-tl-sm'}`}>
+                        <div
+                          className={`p-4 rounded-2xl text-sm leading-relaxed ${
+                            msg.role === 'USER'
+                              ? 'bg-primary text-primary-foreground rounded-tr-sm selection:bg-white/30 selection:text-white'
+                              : 'bg-muted text-foreground rounded-tl-sm selection:bg-primary/25 selection:text-foreground'
+                          }`}
+                        >
                           {msg.content}
                         </div>
 
@@ -227,7 +233,7 @@ export function AiAgentPanel(props: { projectId?: string }) {
                       <User size={16} />
                     </div>
                     <div className="max-w-[75%] space-y-2 items-end">
-                      <div className="p-4 rounded-2xl text-sm bg-primary text-primary-foreground rounded-tr-sm opacity-70">
+                      <div className="p-4 rounded-2xl text-sm bg-primary text-primary-foreground rounded-tr-sm opacity-70 selection:bg-white/30 selection:text-white">
                         {optimisticMessage}
                       </div>
                     </div>

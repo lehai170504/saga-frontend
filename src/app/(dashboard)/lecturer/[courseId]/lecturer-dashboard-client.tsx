@@ -1,11 +1,11 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Users, AlertTriangle, ShieldCheck, Activity, Settings2, ShieldAlert, Zap, Layers, Trophy, HeartPulse, Siren, ArrowUpRight, ArrowDownRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { BroadcastDialog } from "@/features/notifications/components/broadcast-dialog";
-import dynamic from 'next/dynamic';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -45,12 +45,12 @@ const LeaderboardTeamItem = ({ team, courseId, index }: { team: any; courseId: s
     activeSprints.length > 0 ? activeSprints[0].sprintId : null
   );
 
-  const currentSprint = activeSprints.find((s: any) => s.sprintId === selectedSprintId) 
-                     || (activeSprints.length === 1 ? activeSprints[0] : null);
+  const currentSprint = activeSprints.find((s: any) => s.sprintId === selectedSprintId)
+    || (activeSprints.length === 1 ? activeSprints[0] : null);
 
-  const velocity = currentSprint 
-                 ? currentSprint.completedStoryPoints 
-                 : (team.currentSprintCompletedStoryPoints || 0);
+  const velocity = currentSprint
+    ? currentSprint.completedStoryPoints
+    : (team.currentSprintCompletedStoryPoints || 0);
 
   const trend = team.healthStatus || "N/A";
   const trendUp = team.healthStatus !== "AT_RISK" && team.healthStatus !== "CRITICAL";
@@ -118,7 +118,7 @@ export function LecturerDashboardClient({ courseId }: { courseId: string }) {
   // 1. Trends Data -> Area Chart & Total SP
   const { dynamicVelocityData, uniqueTeams } = useMemo(() => {
     const sprints = (trendsData as any)?.sprints || [];
-    
+
     // Extract unique teams
     const teamMap = new Map();
     sprints.forEach((s: any) => {
@@ -170,17 +170,17 @@ export function LecturerDashboardClient({ courseId }: { courseId: string }) {
   // 2. Contribution Summary -> Stats
   const totalTeams = (contribSummary as any)?.teamCount || 0;
   const totalSlices = (contribSummary as any)?.totalSlicesGenerated || 0;
-  
+
   // 3. At Risk Summary -> Stats, Radar Chart, Urgent Alerts, Class Health
   const totalWarnings = (atRiskSummary as any)?.totalWarnings || 0;
   const affectedTeams = (atRiskSummary as any)?.affectedTeams || 0;
 
   const dynamicRiskData = (atRiskSummary as any)?.warningDistribution
     ? Object.entries((atRiskSummary as any).warningDistribution).map(([key, value]) => ({
-        name: key === "OVERDUE_TASK" ? "Quá hạn (Overdue)" : key,
-        value: value as number,
-        color: key === "OVERDUE_TASK" ? "#f59e0b" : "#ef4444"
-      }))
+      name: key === "OVERDUE_TASK" ? "Quá hạn (Overdue)" : key,
+      value: value as number,
+      color: key === "OVERDUE_TASK" ? "#f59e0b" : "#ef4444"
+    }))
     : [];
 
   const dynamicLeaderboard = Array.isArray((teamsProgress as any)?.teams) ? (teamsProgress as any).teams : [];
@@ -189,7 +189,7 @@ export function LecturerDashboardClient({ courseId }: { courseId: string }) {
     // Look up team name from teamsProgress
     const teamObj = (teamsProgress as any)?.teams?.find((t: any) => t.teamId === s.teamId);
     const teamName = teamObj?.teamName || "Nhóm Không Xác Định";
-    
+
     return {
       groupId: s.teamId,
       name: teamName,
@@ -227,8 +227,8 @@ export function LecturerDashboardClient({ courseId }: { courseId: string }) {
             <p className="text-muted-foreground font-medium text-sm">Theo dõi toàn cảnh hiệu suất các nhóm dự án và xử lý rủi ro kịp thời.</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-4 md:mt-0">
-            <BroadcastDialog 
-              courseIds={[courseId]} 
+            <BroadcastDialog
+              courseIds={[courseId]}
               triggerClassName="gap-2 rounded-full h-10 px-5 shadow-md shadow-indigo-500/20 bg-background border border-border/50 text-foreground hover:bg-muted font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto"
             />
             <Link href={`/lecturer/${courseId}/evaluation-config`}>
@@ -346,7 +346,7 @@ export function LecturerDashboardClient({ courseId }: { courseId: string }) {
             </CardHeader>
             <CardContent className="p-6 flex-1 flex flex-col justify-center relative">
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
-              
+
               {isLoading ? (
                 <div className="h-[220px] w-full flex items-center justify-center">
                   <Skeleton className="w-32 h-32 rounded-full" />

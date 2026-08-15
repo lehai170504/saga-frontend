@@ -1,15 +1,15 @@
 import axiosInstance from "@/lib/axios";
-import { CreateTeamProjectRequest, ProjectResponse, GithubBranchesResponse, GithubCommitsResponse, GithubIssuesResponse, ProjectDashboardStatsResponse, ProjectType, UpdateProjectGroupWeightsRequest } from "../types";
+import { CreateTeamProjectRequest, ProjectResponse, ProjectDetailResponse, GithubBranchesResponse, GithubCommitsResponse, GithubIssuesResponse, ProjectDashboardStatsResponse, ProjectType, UpdateProjectGroupWeightsRequest } from "../types";
 
 export const projectApi = {
   createTeamProject: async (teamId: string, data: CreateTeamProjectRequest) => {
     return axiosInstance.post<never, ProjectResponse>(`/api/v1/teams/${teamId}/projects`, data);
   },
   getProjectDetail: async (projectId: string) => {
-    return axiosInstance.get<never, ProjectResponse>(`/api/projects/${projectId}`);
+    return axiosInstance.get<never, ProjectDetailResponse>(`/api/projects/${projectId}`);
   },
   updateProjectDetail: async (projectId: string, data: { name: string; description: string | null; projectTypeId?: string }) => {
-    return axiosInstance.put<never, ProjectResponse>(`/api/projects/${projectId}`, data);
+    return axiosInstance.put<never, ProjectDetailResponse>(`/api/projects/${projectId}`, data);
   },
   getProjectTypes: async () => {
     return axiosInstance.get<never, ProjectType[]>('/api/project-types');

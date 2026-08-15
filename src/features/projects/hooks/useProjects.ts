@@ -10,6 +10,11 @@ export const useCreateTeamProject = (teamId: string) => {
     mutationFn: (data: CreateTeamProjectRequest) => projectApi.createTeamProject(teamId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-projects", teamId] });
+      queryClient.invalidateQueries({ queryKey: ["my-team-members"] });
+      toast.success(PROJECT_MESSAGES.CREATE.SUCCESS);
+    },
+    onError: (err: Error | Record<string, unknown>) => {
+      toast.error((err as Error).message || PROJECT_MESSAGES.CREATE.ERROR);
     },
   });
 };

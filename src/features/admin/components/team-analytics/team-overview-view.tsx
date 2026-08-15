@@ -69,36 +69,36 @@ export function TeamOverviewView({ courseId, teamId }: TeamOverviewViewProps) {
         <div className="grid grid-cols-1 gap-4">
           {evaluation.members.map((member) => (
             <Card key={member.studentId} className="rounded-2xl border-border/50 shadow-sm overflow-hidden bg-card/40">
-              <CardHeader className="py-3 px-4 bg-muted/30 border-b border-border/50 flex flex-row items-center justify-between">
+              <CardHeader className="py-3 px-4 bg-muted/30 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
                     {member.fullName.charAt(0)}
                   </div>
-                  <div>
-                    <CardTitle className="text-base font-bold text-foreground">{member.fullName}</CardTitle>
+                  <div className="break-all sm:break-normal">
+                    <CardTitle className="text-base font-bold text-foreground line-clamp-1">{member.fullName}</CardTitle>
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{member.studentCode}</p>
                   </div>
                 </div>
-                <Badge variant={member.finalContributionPercentage < 50 ? "destructive" : "default"} className="rounded-xl px-3 py-1 text-sm font-bold">
-                  {member.finalContributionPercentage.toFixed(1)}% Tổng
+                <Badge variant={(member.finalContributionPercentage || 0) < 50 ? "destructive" : "default"} className="rounded-xl px-3 py-1 text-sm font-bold self-start sm:self-auto">
+                  {(member.finalContributionPercentage || 0).toFixed(1)}% Tổng
                 </Badge>
               </CardHeader>
               <CardContent className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-semibold">Code</p>
-                  <p className="text-sm font-bold text-blue-500">{member.codeContributionPercentage.toFixed(1)}%</p>
+                  <p className="text-sm font-bold text-blue-500">{(member.codeContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-semibold">Document</p>
-                  <p className="text-sm font-bold text-amber-500">{member.documentContributionPercentage.toFixed(1)}%</p>
+                  <p className="text-sm font-bold text-amber-500">{(member.documentContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-semibold">Design</p>
-                  <p className="text-sm font-bold text-purple-500">{member.designContributionPercentage.toFixed(1)}%</p>
+                  <p className="text-sm font-bold text-purple-500">{(member.designContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-semibold">Testing/Task</p>
-                  <p className="text-sm font-bold text-emerald-500">{member.taskContributionPercentage.toFixed(1)}%</p>
+                  <p className="text-sm font-bold text-emerald-500">{(member.taskContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
               </CardContent>
             </Card>
