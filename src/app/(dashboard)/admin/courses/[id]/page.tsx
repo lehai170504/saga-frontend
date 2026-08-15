@@ -239,7 +239,7 @@ export default function CourseDetailPage() {
                   Trọng số Đánh giá (Contribution Weights)
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
                     <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-3">
                       <Code className="w-6 h-6 text-rose-500" />
@@ -261,12 +261,22 @@ export default function CourseDetailPage() {
                   </div>
 
                   <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-3">
+                      <Layout className="w-6 h-6 text-emerald-500" />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Test</span>
+                    <span className="text-3xl font-black text-emerald-500">
+                      {((course.testContributionWeight || 0)).toFixed(2)}%
+                    </span>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
                     <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-3">
                       <Layout className="w-6 h-6 text-purple-500" />
                     </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Design</span>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Research</span>
                     <span className="text-3xl font-black text-purple-500">
-                      {((course.designContributionWeight || 0)).toFixed(2)}%
+                      {((course.researchContributionWeight || 0)).toFixed(2)}%
                     </span>
                   </div>
                 </div>

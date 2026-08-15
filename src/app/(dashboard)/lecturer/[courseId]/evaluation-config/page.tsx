@@ -1,15 +1,15 @@
-import React, { use } from "react";
+import React from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { TemplateSelector } from "@/features/lecturer/components/evaluation-config/template-selector";
 
-export default function ClassEvaluationConfigPage({ params }: { params: Promise<{ courseId: string }> }) {
-  const { courseId } = use(params);
+export default async function ClassEvaluationConfigPage({ params }: { params: Promise<{ courseId: string }> }) {
+  const { courseId } = await params;
 
   return (
- <div className="space-y-8 "> 
+    <div className="space-y-8 ">
       <div className="flex items-center gap-4 mb-2">
         <Link href={`/lecturer/${courseId}`}>
           <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted">
@@ -27,7 +27,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
         description="Áp dụng Bộ khung hệ số phân bổ ngân sách 100% điểm Đóng góp (Slices) riêng cho lớp học này."
         workspace="Workspace Giảng viên"
       >
-        
+
       </PageHeader>
 
       <div className="mt-4 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">

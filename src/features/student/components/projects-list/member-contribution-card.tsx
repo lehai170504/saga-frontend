@@ -39,8 +39,10 @@ export interface MemberEvaluationItem {
   codeContributionScore: number;
   documentContributionPercentage: number;
   documentContributionScore: number;
-  designContributionPercentage: number;
-  designContributionScore: number;
+  testContributionPercentage: number;
+  testContributionScore: number;
+  researchContributionPercentage: number;
+  researchContributionScore: number;
   warnings?: Array<{ severity: string; code: string; message: string }>;
   sprintBreakdowns?: SprintBreakdownItem[];
 }
@@ -81,9 +83,8 @@ export function MemberContributionCard({
               Tỷ lệ đóng góp cuối
             </p>
             <span
-              className={`text-lg font-black ${
-                member.finalContributionPercentage < 50 ? "text-destructive" : "text-primary"
-              }`}
+              className={`text-lg font-black ${member.finalContributionPercentage < 50 ? "text-destructive" : "text-primary"
+                }`}
             >
               {truncateDecimal(member.finalContributionPercentage)}%
             </span>
@@ -99,11 +100,10 @@ export function MemberContributionCard({
             {warnings.map((w, idx) => (
               <div
                 key={idx}
-                className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${
-                  w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
+                className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
                     ? "bg-destructive/10 border-destructive/20 text-destructive"
                     : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
-                }`}
+                  }`}
               >
                 <AlertTriangle size={15} className="shrink-0 mt-0.5" />
                 <div>
@@ -146,13 +146,13 @@ export function MemberContributionCard({
             <TrendingUp size={13} className="text-primary" />
             Chi tiết đóng góp phân mảnh
           </h5>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Code Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <Code size={13} className="text-blue-500" />
-                  Lập trình (Code)
+                  Code
                 </span>
                 <span className="text-xs font-black text-blue-500">{truncateDecimal(member.codeContributionPercentage)}%</span>
               </div>
@@ -167,12 +167,32 @@ export function MemberContributionCard({
               </p>
             </div>
 
+            {/* Test Contribution */}
+            <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+                  <FileText size={13} className="text-emerald-500" />
+                  Test
+                </span>
+                <span className="text-xs font-black text-emerald-500">{truncateDecimal(member.testContributionPercentage)}%</span>
+              </div>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald-500 rounded-full"
+                  style={{ width: `${Math.min(member.testContributionPercentage || 0, 100)}%` }}
+                />
+              </div>
+              <p className="text-[10px] text-muted-foreground font-semibold">
+                Điểm hoạt động: {truncateDecimal(member.testContributionScore)}
+              </p>
+            </div>
+
             {/* Document Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <FileText size={13} className="text-amber-500" />
-                  Tài liệu (Document)
+                  Docs
                 </span>
                 <span className="text-xs font-black text-amber-500">{truncateDecimal(member.documentContributionPercentage)}%</span>
               </div>
@@ -187,23 +207,23 @@ export function MemberContributionCard({
               </p>
             </div>
 
-            {/* Design Contribution */}
+            {/* Research Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <Palette size={13} className="text-purple-500" />
-                  Thiết kế (Design)
+                  Research
                 </span>
-                <span className="text-xs font-black text-purple-500">{truncateDecimal(member.designContributionPercentage)}%</span>
+                <span className="text-xs font-black text-purple-500">{truncateDecimal(member.researchContributionPercentage)}%</span>
               </div>
               <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-purple-500 rounded-full"
-                  style={{ width: `${Math.min(member.designContributionPercentage || 0, 100)}%` }}
+                  style={{ width: `${Math.min(member.researchContributionPercentage || 0, 100)}%` }}
                 />
               </div>
               <p className="text-[10px] text-muted-foreground font-semibold">
-                Điểm hoạt động: {truncateDecimal(member.designContributionScore)}
+                Điểm hoạt động: {truncateDecimal(member.researchContributionScore)}
               </p>
             </div>
           </div>

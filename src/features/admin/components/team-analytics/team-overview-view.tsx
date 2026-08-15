@@ -83,21 +83,25 @@ export function TeamOverviewView({ courseId, teamId }: TeamOverviewViewProps) {
                   {(member.finalContributionPercentage || 0).toFixed(1)}% Tổng
                 </Badge>
               </CardHeader>
-              <CardContent className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              <CardContent className="p-4 grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-semibold">Code</p>
                   <p className="text-sm font-bold text-blue-500">{(member.codeContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-semibold">Document</p>
+                  <p className="text-xs text-muted-foreground font-semibold">Test</p>
+                  <p className="text-sm font-bold text-emerald-500">{(member.testContributionPercentage || 0).toFixed(1)}%</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground font-semibold">Docs</p>
                   <p className="text-sm font-bold text-amber-500">{(member.documentContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-semibold">Design</p>
-                  <p className="text-sm font-bold text-purple-500">{(member.designContributionPercentage || 0).toFixed(1)}%</p>
+                  <p className="text-xs text-muted-foreground font-semibold">Research</p>
+                  <p className="text-sm font-bold text-purple-500">{(member.researchContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-semibold">Testing/Task</p>
+                  <p className="text-xs text-muted-foreground font-semibold">Task</p>
                   <p className="text-sm font-bold text-emerald-500">{(member.taskContributionPercentage || 0).toFixed(1)}%</p>
                 </div>
               </CardContent>

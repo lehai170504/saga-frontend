@@ -96,10 +96,12 @@ export interface StudentContributionAggregate {
   studentCode: string;
   codeContributionScore: number;
   documentContributionScore: number;
-  designContributionScore: number;
+  testContributionScore: number;
+  researchContributionScore: number;
   codeContributionPercentage: number;
   documentContributionPercentage: number;
-  designContributionPercentage: number;
+  testContributionPercentage: number;
+  researchContributionPercentage: number;
   peerReviewScore: number;
   taskContributionScore: number;
   taskContributionPercentage: number;

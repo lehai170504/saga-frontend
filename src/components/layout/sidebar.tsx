@@ -76,7 +76,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
         <div className="p-5 border-b border-border/40 lg:hidden relative z-10">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 shrink-0 ring-2 ring-primary/20">
-              <AvatarImage src={user?.avatarUrl ?? "/images/default-avatar.png"} alt={user?.fullName ?? "User"} />
+              <AvatarImage src={user?.avatarUrl ?? "https://ui-avatars.com/api/?name=User&background=random"} alt={user?.fullName ?? "User"} />
               <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold">
                 {user?.fullName?.charAt(0) ?? "?"}
               </AvatarFallback>

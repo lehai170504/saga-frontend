@@ -57,8 +57,9 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
 
   const RADAR_DATA = [
     { subject: 'Code', A: aggregate?.codeContributionScore || 0, fullMark: 100 },
+    { subject: 'Test', A: aggregate?.testContributionScore || 0, fullMark: 100 },
     { subject: 'Tài liệu', A: aggregate?.documentContributionScore || 0, fullMark: 100 },
-    { subject: 'Thiết kế', A: aggregate?.designContributionScore || 0, fullMark: 100 },
+    { subject: 'Research', A: aggregate?.researchContributionScore || 0, fullMark: 100 },
     { subject: 'Peer Review', A: aggregate?.peerReviewScore || 0, fullMark: 5 },
     { subject: 'Task', A: aggregate?.taskContributionScore || 0, fullMark: 100 },
   ];
