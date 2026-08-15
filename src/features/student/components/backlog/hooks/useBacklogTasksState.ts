@@ -23,6 +23,7 @@ export function useBacklogTasksState(projectId: string) {
   const [createPriority, setCreatePriority] = useState("MEDIUM");
   const [createDueDate, setCreateDueDate] = useState("");
   const [createAssignee, setCreateAssignee] = useState("UNASSIGNED");
+  const [createLabels, setCreateLabels] = useState("saga:code");
 
   // Edit Task
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -33,6 +34,7 @@ export function useBacklogTasksState(projectId: string) {
   const [editPriority, setEditPriority] = useState("MEDIUM");
   const [editDueDate, setEditDueDate] = useState("");
   const [editAssignee, setEditAssignee] = useState("UNASSIGNED");
+  const [editLabels, setEditLabels] = useState("");
 
   // Delete Task
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -62,6 +64,7 @@ export function useBacklogTasksState(projectId: string) {
     setCreatePriority("MEDIUM");
     setCreateDueDate("");
     setCreateAssignee("UNASSIGNED");
+    setCreateLabels("saga:code");
     setIsCreateOpen(true);
   };
 
@@ -78,6 +81,11 @@ export function useBacklogTasksState(projectId: string) {
       return;
     }
 
+    const parsedLabels = createLabels
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     const payload = {
       title: createTitle.trim(),
       description: createDescription.trim() || undefined,
@@ -85,6 +93,7 @@ export function useBacklogTasksState(projectId: string) {
       priority: createPriority || "MEDIUM",
       dueDate: createDueDate || undefined,
       assigneeId: createAssignee === "UNASSIGNED" ? undefined : createAssignee,
+      labels: parsedLabels.length > 0 ? parsedLabels : undefined,
     };
 
     const idempotencyKey = crypto.randomUUID();
@@ -116,6 +125,7 @@ export function useBacklogTasksState(projectId: string) {
     setEditPriority(task.priority?.toUpperCase() || "MEDIUM");
     setEditDueDate(task.dueDate ? task.dueDate.split("T")[0] : "");
     setEditAssignee(task.assignee?.id || "UNASSIGNED");
+    setEditLabels(task.labels ? task.labels.join(", ") : "");
     setIsEditOpen(true);
   };
 
@@ -143,12 +153,20 @@ export function useBacklogTasksState(projectId: string) {
     const origPriority = taskToEdit.priority?.toUpperCase() || "MEDIUM";
     const isPriorityChanged = editPriority !== origPriority;
 
+    const origLabelsStr = taskToEdit.labels ? taskToEdit.labels.join(", ") : "";
+    const isLabelsChanged = editLabels.trim() !== origLabelsStr.trim();
+    const parsedEditLabels = editLabels
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     const mainPayload: UpdateTaskRequest = {};
     if (isTitleChanged) mainPayload.title = editTitle.trim();
     if (isDescriptionChanged) mainPayload.description = editDescription.trim();
     if (isIssueTypeChanged) mainPayload.type = editIssueType;
     if (isDueDateChanged) mainPayload.dueDate = editDueDate || null;
     if (isPriorityChanged) mainPayload.priority = editPriority;
+    if (isLabelsChanged) mainPayload.labels = parsedEditLabels;
 
     const origAssignee = taskToEdit.assignee?.id || "UNASSIGNED";
     const isAssigneeChanged = editAssignee !== origAssignee;
@@ -232,6 +250,8 @@ export function useBacklogTasksState(projectId: string) {
     setCreateDueDate,
     createAssignee,
     setCreateAssignee,
+    createLabels,
+    setCreateLabels,
     isEditOpen,
     setIsEditOpen,
     taskToEdit,
@@ -247,6 +267,8 @@ export function useBacklogTasksState(projectId: string) {
     setEditDueDate,
     editAssignee,
     setEditAssignee,
+    editLabels,
+    setEditLabels,
     isDeleteOpen,
     setIsDeleteOpen,
     taskToDelete,

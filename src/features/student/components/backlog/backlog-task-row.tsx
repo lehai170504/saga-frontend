@@ -17,6 +17,7 @@ import { TaskStatusDropdown } from "../board/task-status-dropdown";
 import { TaskPriorityDropdown } from "../board/task-priority-dropdown";
 import { TaskAssigneeDropdown } from "../board/task-assignee-dropdown";
 import { shouldIgnoreTaskCardClick } from "@/features/student/components/board/utils/popoverCloseGuard";
+import { getSagaMarkerBadgeStyle, getSagaMarkerDisplayName } from "../board/modals/task-labels-input";
 
 interface BacklogTaskRowProps {
   task: JiraTask;
@@ -74,9 +75,9 @@ export function BacklogTaskRow({
               <Badge
                 key={label}
                 variant="outline"
-                className="rounded-lg text-[9px] py-0 px-1.5 font-bold border-primary/20 bg-primary/5 text-primary/80 truncate max-w-[72px] shrink-0"
+                className={`rounded-lg text-[9px] py-0.5 px-2 font-extrabold border truncate shrink-0 ${getSagaMarkerBadgeStyle(label)}`}
               >
-                {label}
+                {getSagaMarkerDisplayName(label)}
               </Badge>
             ))}
           </div>

@@ -208,6 +208,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         setCreateDueDate={tasksState.setCreateDueDate}
         createAssignee={tasksState.createAssignee}
         setCreateAssignee={tasksState.setCreateAssignee}
+        createLabels={tasksState.createLabels}
+        setCreateLabels={tasksState.setCreateLabels}
         createDescription={tasksState.createDescription}
         setCreateDescription={tasksState.setCreateDescription}
         handleCreateTask={tasksState.handleCreateTask}
@@ -224,6 +226,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         setEditDueDate={tasksState.setEditDueDate}
         editAssignee={tasksState.editAssignee}
         setEditAssignee={tasksState.setEditAssignee}
+        editLabels={tasksState.editLabels}
+        setEditLabels={tasksState.setEditLabels}
         editDescription={tasksState.editDescription}
         setEditDescription={tasksState.setEditDescription}
         handleEditTask={tasksState.handleEditTask}
