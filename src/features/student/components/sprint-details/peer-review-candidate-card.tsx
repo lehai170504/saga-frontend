@@ -5,7 +5,7 @@ import { UserCheck } from "lucide-react";
 import { PeerReviewItem } from "@/features/projects/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { EvaluatingCandidate } from "./hooks/usePeerReviewState";
 
@@ -37,6 +37,7 @@ export function PeerReviewCandidateCard({
               isReviewed ? "border-emerald-500/30" : "border-background shadow-md"
             }`}
           >
+            <AvatarImage src={(candidate.avatarUrl as string) || (candidate as any).avatar || ""} alt={candidate.fullName} />
             <AvatarFallback
               className={`font-bold text-base ${
                 isReviewed

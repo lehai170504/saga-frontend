@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, TrendingUp, Code, FileText, CheckCircle2, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const truncateDecimal = (val: number | undefined | null, decimals: number = 2): string => {
   if (val === undefined || val === null || isNaN(val)) {
@@ -24,6 +25,9 @@ export interface SprintBreakdownItem {
   taskScore: number;
   retrospectiveMultiplier: number;
   adjustedTaskScore: number;
+  sliceScore?: number;
+  sliceContributionPercentage?: number;
+  contributionPercentage?: number;
 }
 
 export interface MemberEvaluationItem {
@@ -34,6 +38,8 @@ export interface MemberEvaluationItem {
   peerReviewScore: number;
   taskContributionScore: number;
   taskContributionPercentage: number;
+  sliceScore?: number;
+  sliceContributionPercentage?: number;
   evidenceCount?: number;
   codeContributionPercentage: number;
   codeContributionScore: number;
@@ -47,6 +53,9 @@ export interface MemberEvaluationItem {
   designContributionScore?: number;
   warnings?: Array<{ severity: string; code: string; message: string }>;
   sprintBreakdowns?: SprintBreakdownItem[];
+  avatarUrl?: string;
+  avatar?: string;
+  email?: string;
 }
 
 interface MemberContributionCardProps {
@@ -60,6 +69,20 @@ export function MemberContributionCard({
   isExpanded,
   onToggleExpand,
 }: MemberContributionCardProps) {
+  const { user: currentUser } = useAuth();
+  const avatarSrc =
+    member.avatarUrl ||
+    member.avatar ||
+    (member as any).picture ||
+    (member as any).photoUrl ||
+    (currentUser &&
+    (currentUser.localProfileId === member.studentId ||
+      currentUser.email === member.email ||
+      currentUser.fullName === member.fullName)
+      ? currentUser.avatarUrl || currentUser.avatar
+      : "") ||
+    "";
+
   const warnings = member.warnings || [];
   const hasWarnings = warnings.length > 0;
 
@@ -69,6 +92,7 @@ export function MemberContributionCard({
       <div className="p-6 bg-muted/20 border-b border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12 border-2 border-background shadow-md">
+            <AvatarImage src={avatarSrc} alt={member.fullName} />
             <AvatarFallback className="bg-primary/10 text-primary font-black text-sm">
               {member.fullName.charAt(0)}
             </AvatarFallback>
@@ -120,7 +144,7 @@ export function MemberContributionCard({
         )}
 
         {/* Summary Metrics Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-muted/10 p-4 rounded-2xl border border-border/30">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-muted/10 p-4 rounded-2xl border border-border/30">
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Đánh giá chéo</span>
             <div className="flex items-center gap-1">
@@ -130,11 +154,19 @@ export function MemberContributionCard({
           </div>
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Điểm Task</span>
-            <p className="text-sm font-extrabold text-foreground">{truncateDecimal(member.taskContributionScore)}</p>
+            <p className="text-sm font-extrabold text-foreground">{truncateDecimal(member.sliceScore ?? member.taskContributionScore)}</p>
           </div>
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tỷ lệ Task</span>
-            <p className="text-sm font-extrabold text-foreground">{truncateDecimal(member.taskContributionPercentage)}%</p>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">% Trước Peer</span>
+            <p className="text-sm font-extrabold text-blue-600 dark:text-blue-400">
+              {truncateDecimal(member.sliceContributionPercentage ?? member.taskContributionPercentage)}%
+            </p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">% Cuối (Đã Peer)</span>
+            <p className="text-sm font-extrabold text-primary">
+              {truncateDecimal(member.finalContributionPercentage ?? member.taskContributionPercentage)}%
+            </p>
           </div>
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Số minh chứng</span>
@@ -154,7 +186,7 @@ export function MemberContributionCard({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <Code size={13} className="text-blue-500" />
-                  Code
+                  Lập trình (Code)
                 </span>
                 <span className="text-xs font-black text-blue-500">{truncateDecimal(member.codeContributionPercentage)}%</span>
               </div>
@@ -194,7 +226,7 @@ export function MemberContributionCard({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <FileText size={13} className="text-amber-500" />
-                  Docs
+                  Tài liệu (Document)
                 </span>
                 <span className="text-xs font-black text-amber-500">{truncateDecimal(member.documentContributionPercentage)}%</span>
               </div>
@@ -246,18 +278,24 @@ export function MemberContributionCard({
 
             {isExpanded && (
               <div className="mt-3 overflow-hidden rounded-2xl border border-border/30 bg-muted/5 divide-y divide-border/30 animate-in slide-in-from-top-2 duration-200">
-                <div className="grid grid-cols-5 p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/80 bg-muted/20">
+                <div className="grid grid-cols-6 p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/80 bg-muted/20">
                   <div className="col-span-2">Sprint</div>
                   <div className="text-center">Điểm Task</div>
+                  <div className="text-center">% Trước Peer</div>
                   <div className="text-center">Hệ số Retro</div>
-                  <div className="text-center">Điểm Sprint</div>
+                  <div className="text-center">% Đóng góp cuối</div>
                 </div>
                 {member.sprintBreakdowns.map((s, sIdx) => (
-                  <div key={sIdx} className="grid grid-cols-5 p-3.5 text-xs items-center font-semibold text-foreground">
+                  <div key={sIdx} className="grid grid-cols-6 p-3.5 text-xs items-center font-semibold text-foreground">
                     <div className="col-span-2 truncate font-bold text-foreground/90">{s.sprintName}</div>
-                    <div className="text-center">{truncateDecimal(s.taskScore)}</div>
+                    <div className="text-center">{truncateDecimal(s.sliceScore ?? s.taskScore)}</div>
+                    <div className="text-center text-blue-600 dark:text-blue-400 font-bold">
+                      {truncateDecimal(s.sliceContributionPercentage ?? s.taskScore)}%
+                    </div>
                     <div className="text-center">x{truncateDecimal(s.retrospectiveMultiplier)}</div>
-                    <div className="text-center font-bold text-primary">{truncateDecimal(s.adjustedTaskScore)}</div>
+                    <div className="text-center font-bold text-primary">
+                      {truncateDecimal(s.contributionPercentage ?? s.adjustedTaskScore)}%
+                    </div>
                   </div>
                 ))}
               </div>

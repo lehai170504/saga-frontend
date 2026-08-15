@@ -118,7 +118,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 {/* Avatar Area */}
                 <div className="relative">
                   <Avatar className="h-24 w-24 border-2 border-border shadow-sm">
-                    <AvatarImage src="" alt={user.fullName} />
+                    <AvatarImage src={user?.avatarUrl || user?.avatar || ""} alt={user.fullName} />
                     <AvatarFallback className="bg-primary/10 text-primary text-3xl font-bold bg-primary/20">
                       {user.fullName?.charAt(0) ?? "?"}
                     </AvatarFallback>

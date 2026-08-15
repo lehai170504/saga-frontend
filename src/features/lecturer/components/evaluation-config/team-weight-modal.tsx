@@ -61,7 +61,7 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
           onSuccess?.();
           onClose();
         },
-        onError: (err: Error | Record<string, unknown>) => {
+        onError: (err: unknown) => {
           const resErr = err as Error & { response?: { data?: { message?: string } } };
           toast.error(resErr?.response?.data?.message || resErr?.message || "Có lỗi xảy ra khi lưu thay đổi");
         },
