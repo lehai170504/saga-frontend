@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft, BookOpen, Users, Calendar, GraduationCap, Percent, Code,
-  FileText, Layout, User, Mail, ShieldCheck, Clock, Trash2, Loader2, Scale
+  FileText, Layout, User, Mail, ShieldCheck, Clock, Trash2, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -13,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseDialog } from "@/features/courses/components/edit-course-dialog";
 import { CourseStudentsTable } from "@/features/courses/components/course-students-table";
-import { CourseWeightsConfig } from "@/features/admin/components/course/course-weights-config";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -149,10 +148,6 @@ export default function CourseDetailPage() {
               <Users className="w-4 h-4" />
               Danh sách Sinh viên
             </TabsTrigger>
-            <TabsTrigger value="evaluation" className="rounded-xl px-8 py-3 font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
-              <Scale className="w-4 h-4" />
-              Trọng số Đánh giá
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="mt-0">
@@ -282,10 +277,6 @@ export default function CourseDetailPage() {
 
           <TabsContent value="students" className="mt-0">
             <CourseStudentsTable courseId={courseId} courseClassName={course.clazz.name} />
-          </TabsContent>
-
-          <TabsContent value="evaluation" className="mt-0">
-            <CourseWeightsConfig courseId={courseId} />
           </TabsContent>
         </Tabs>
       ) : null}

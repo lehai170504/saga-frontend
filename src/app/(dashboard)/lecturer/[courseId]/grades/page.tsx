@@ -27,12 +27,10 @@ import { courseApi } from "@/features/courses/api/courseApi";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export default function LecturerContributionPage() {
   const params = useParams();
   const courseId = params.courseId as string;
-  const { user } = useAuth();
 
   // Fetch Danh sách Sinh viên & Lọc ra các Nhóm (Teams)
   const { data: studentsData, isLoading: isLoadingTeams } = useQuery({
@@ -216,8 +214,8 @@ export default function LecturerContributionPage() {
             </Button>
             <Button
               className={`rounded-xl h-10 font-bold transition-all duration-300 ${overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()
-                  ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-70 hover:bg-muted'
-                  : 'bg-success hover:bg-success/90 text-white shadow-md shadow-success/20'
+                ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-70 hover:bg-muted'
+                : 'bg-success hover:bg-success/90 text-white shadow-md shadow-success/20'
                 }`}
               onClick={handleSaveOverride}
               disabled={overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()}

@@ -187,39 +187,59 @@ export function AdminGuideView() {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="rounded-2xl border border-border overflow-hidden">
-                <div className="grid grid-cols-4 bg-muted/50 p-4 border-b border-border text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                <div className="grid grid-cols-4 bg-muted/50 p-4 border-b border-border text-sm font-bold uppercase tracking-wider text-muted-foreground gap-4">
                   <div>Vai trò (Role)</div>
                   <div className="text-center">Xem Mạng tương tác</div>
-                  <div className="text-center">Đánh giá Thành viên</div>
-                  <div className="text-center">Quản trị Hệ thống</div>
+                  <div className="text-center">Đánh giá / Trọng số</div>
+                  <div className="text-center">Quản tr  ị Hệ thống</div>
                 </div>
-                <div className="grid grid-cols-4 p-4 border-b border-border/50 items-center hover:bg-muted/30 transition-colors">
+
+                {/* ADMIN */}
+                <div className="grid grid-cols-4 p-4 border-b border-border/50 items-center hover:bg-muted/30 transition-colors gap-4">
                   <div className="font-semibold text-foreground flex items-center gap-2">
-                    <ShieldCheck size={16} className="text-primary" /> Admin
+                    <ShieldCheck size={16} className="text-destructive" /> Admin
                   </div>
                   <div className="text-center text-success">
                     <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
-                    <span className="text-[10px] text-muted-foreground block">(Toàn hệ thống)</span>
+                    <span className="text-[10px] text-muted-foreground block mt-1">(Toàn hệ thống)</span>
                   </div>
-                  <div className="text-center text-muted-foreground">-</div>
+                  <div className="text-center text-muted-foreground text-sm">-</div>
                   <div className="text-center text-success">
                     <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
-                    <span className="text-[10px] text-muted-foreground block">(Toàn quyền)</span>
+                    <span className="text-[10px] text-muted-foreground block mt-1">(Toàn quyền)</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 p-4 items-center hover:bg-muted/30 transition-colors">
+
+                {/* LECTURER */}
+                <div className="grid grid-cols-4 p-4 border-b border-border/50 items-center hover:bg-muted/30 transition-colors gap-4">
                   <div className="font-semibold text-foreground flex items-center gap-2">
-                    <Users size={16} className="text-primary" /> Sinh viên
+                    <BookOpen size={16} className="text-amber-500" /> Giảng viên
+                  </div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
+                    <span className="text-[10px] text-muted-foreground block mt-1">(Lớp phụ trách)</span>
+                  </div>
+                  <div className="text-center text-success">
+                    <CheckCircle2 className="w-5 h-5 mx-auto text-success/70" />
+                    <span className="text-[10px] text-muted-foreground block mt-1">(Chỉnh Trọng số Lớp)</span>
+                  </div>
+                  <div className="text-center text-muted-foreground text-sm">-</div>
+                </div>
+
+                {/* STUDENT */}
+                <div className="grid grid-cols-4 p-4 items-center hover:bg-muted/30 transition-colors gap-4">
+                  <div className="font-semibold text-foreground flex items-center gap-2">
+                    <Users size={16} className="text-blue-500" /> Sinh viên
                   </div>
                   <div className="text-center text-success">
                     <CheckCircle2 className="w-5 h-5 mx-auto text-success/50" />
-                    <span className="text-[10px] text-muted-foreground block">(Nhóm của mình)</span>
+                    <span className="text-[10px] text-muted-foreground block mt-1">(Bản thân / Nhóm nếu Leader)</span>
                   </div>
                   <div className="text-center text-success">
                     <CheckCircle2 className="w-5 h-5 mx-auto text-success/50" />
-                    <span className="text-[10px] text-muted-foreground block">(Chấm chéo / Tự đánh giá)</span>
+                    <span className="text-[10px] text-muted-foreground block mt-1">(Chấm chéo / Đánh giá)</span>
                   </div>
-                  <div className="text-center text-muted-foreground">-</div>
+                  <div className="text-center text-muted-foreground text-sm">-</div>
                 </div>
               </div>
             </CardContent>

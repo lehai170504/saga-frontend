@@ -10,7 +10,7 @@ export type ProjectType = {
   code: string;
   name: string;
   description: string;
-  criteriaConfig: string;
+  criteriaConfig: string | null;
 };
 
 export type ProjectResponse = {

@@ -1,8 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { CreateProjectTypeModal } from "./create-project-type-modal";
 import { EmptyState } from "@/components/shared/DataState";
 import { ProjectType } from "../../api/projectTypeApi";
 
@@ -11,24 +8,12 @@ interface ProjectTypesTableProps {
 }
 
 export function ProjectTypesTable({ data }: ProjectTypesTableProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleCreate = () => {
-    setIsModalOpen(true);
-  };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button onClick={handleCreate} className="rounded-xl h-10 px-4 font-semibold shadow-sm">
-          <Plus className="w-4 h-4 mr-2" />
-          Thêm Loại Dự án
-        </Button>
-      </div>
-
       <div className="rounded-2xl border border-border/50 bg-background/50 overflow-hidden">
         {data.length === 0 ? (
-          <EmptyState message="Chưa có loại dự án nào. Hãy nhấn nút thêm mới để tạo loại dự án đầu tiên cho hệ thống." />
+          <EmptyState message="Chưa có loại dự án nào." />
         ) : (
           <Table>
             <TableHeader className="bg-muted/30">
@@ -56,11 +41,6 @@ export function ProjectTypesTable({ data }: ProjectTypesTableProps) {
           </Table>
         )}
       </div>
-
-      <CreateProjectTypeModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
 
     </div>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Clock, Flame, Users, Info, Lock } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function AiWarningRules() {
@@ -20,71 +19,67 @@ export function AiWarningRules() {
             {/* LEFT COLUMN: RULES CONFIGURATION */}
             <div className="xl:col-span-2 space-y-8">
               <div className="flex items-center gap-2 text-primary bg-primary/10 p-3 rounded-lg border border-primary/20 text-sm font-medium">
-                <Lock className="w-4 h-4" /> Ngưỡng AI đã được khóa cứng. Giảng viên cần tạo Yêu cầu Ghi đè nếu muốn nới lỏng.
+                <Lock className="w-4 h-4 shrink-0" /> Hệ thống hiện tại chỉ hỗ trợ Cảnh báo Quá hạn (OVERDUE_TASK). Các tín hiệu khác đang trong quá trình phát triển (TBD).
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Project Level Warning */}
+                {/* Supported Warnings */}
                 <div className="space-y-4">
                   <h3 className="font-bold text-base flex items-center gap-2 text-foreground">
-                    <Users className="w-5 h-5 text-primary" /> Cảnh báo Dự án
+                    <AlertTriangle className="w-5 h-5 text-primary" /> Đã Hỗ trợ (Supported)
                   </h3>
 
                   <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-90">
                     <div className="space-y-2">
                       <Label className="text-sm font-bold flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-primary" /> Ngưỡng &quot;Gánh Team&quot; (Bottleneck)
+                        <Clock className="w-4 h-4 text-destructive" /> OVERDUE_TASK (Task Quá hạn)
                       </Label>
-                      <p className="text-xs text-muted-foreground mb-3">Cảnh báo khi 1-2 thành viên nắm giữ trên mức % tổng Slices của nhóm.</p>
+                      <p className="text-xs text-muted-foreground mb-3">Phát hiện các công việc đã vượt quá thời hạn (deadline) trên hệ thống Jira.</p>
                       <div className="flex items-center gap-3">
-                        <Input type="number" defaultValue={60} disabled className="w-20 text-center font-bold bg-muted" />
-                        <span className="text-sm font-medium">% Tổng Slices</span>
-                      </div>
-                    </div>
-
-                    <div className="h-px w-full bg-border/50 my-2" />
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-bold flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 text-destructive" /> Cảnh báo Trễ Tiến Độ
-                      </Label>
-                      <p className="text-xs text-muted-foreground mb-3">Kích hoạt khi tỷ lệ hoàn thành (Burn-rate) chậm hơn kế hoạch mức % này.</p>
-                      <div className="flex items-center gap-3">
-                        <Input type="number" defaultValue={30} disabled className="w-20 text-center font-bold bg-muted" />
-                        <span className="text-sm font-medium">% Lệch chuẩn</span>
+                        <span className="text-sm font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-md">Hoạt động (Active)</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Member Level Warning */}
+                {/* TBD Warnings */}
                 <div className="space-y-4">
                   <h3 className="font-bold text-base flex items-center gap-2 text-foreground">
-                    <AlertTriangle className="w-5 h-5 text-primary" /> Cảnh báo Cá nhân
+                    <Clock className="w-5 h-5 text-muted-foreground" /> Chưa Hỗ trợ (TBD)
                   </h3>
 
-                  <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-90">
+                  <div className="p-4 rounded-xl border border-border/50 bg-background/50 space-y-4 opacity-70">
                     <div className="space-y-2">
-                      <Label className="text-sm font-bold flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-muted-foreground" /> Ngưỡng &quot;Ghosting&quot; (Biến mất)
+                      <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
+                        <Users className="w-4 h-4" /> MSR (Bottleneck / Gánh Team)
                       </Label>
-                      <p className="text-xs text-muted-foreground mb-3">Cảnh báo nếu sinh viên không phát sinh bất kỳ Slices nào trong khoảng thời gian.</p>
+                      <p className="text-xs text-muted-foreground mb-3">Cảnh báo sự mất cân bằng về lượng đóng góp (Slices) giữa các thành viên.</p>
                       <div className="flex items-center gap-3">
-                        <Input type="number" defaultValue={5} disabled className="w-20 text-center font-bold bg-muted" />
-                        <span className="text-sm font-medium">Ngày liên tục</span>
+                        <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-md">Chưa hỗ trợ (TBD)</span>
                       </div>
                     </div>
 
                     <div className="h-px w-full bg-border/50 my-2" />
 
                     <div className="space-y-2">
-                      <Label className="text-sm font-bold flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 text-destructive" /> Ngưỡng Phá vỡ Cam kết
+                      <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
+                        <AlertTriangle className="w-4 h-4" /> DEADLINE_PROCESS
                       </Label>
-                      <p className="text-xs text-muted-foreground mb-3">Cảnh báo khi Giờ làm thực tế (Actual) vượt qua mức % Giờ dự kiến (Estimate).</p>
+                      <p className="text-xs text-muted-foreground mb-3">Cảnh báo tiến độ tổng thể chậm hơn dự kiến.</p>
                       <div className="flex items-center gap-3">
-                        <Input type="number" defaultValue={200} disabled className="w-20 text-center font-bold bg-muted" />
-                        <span className="text-sm font-medium">% Estimate</span>
+                        <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-md">Chưa hỗ trợ (TBD)</span>
+                      </div>
+                    </div>
+
+                    <div className="h-px w-full bg-border/50 my-2" />
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
+                        <Flame className="w-4 h-4" /> SNA_ISOLATION
+                      </Label>
+                      <p className="text-xs text-muted-foreground mb-3">Cảnh báo thành viên bị cô lập dựa trên sơ đồ Mạng tương tác (Social Network Analysis).</p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-md">Chưa hỗ trợ (TBD)</span>
                       </div>
                     </div>
                   </div>
@@ -97,45 +92,38 @@ export function AiWarningRules() {
               <Card className="rounded-2xl border-border bg-primary/5 shadow-sm h-full">
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-2">
-                    <Info className="w-5 h-5 text-primary" />
-                    <h3 className="font-bold text-lg">Cơ sở Quản trị Rủi ro (Risk Management)</h3>
+                    <Info className="w-5 h-5 text-primary shrink-0" />
+                    <h3 className="font-bold text-lg">Cơ sở Quản trị Rủi ro</h3>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6 text-sm text-muted-foreground pt-4">
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <p><strong className="text-primary text-base">60% &quot;Gánh Team&quot;:</strong></p>
+                      <p><strong className="text-destructive text-base">OVERDUE_TASK:</strong></p>
                       <p className="text-xs leading-relaxed">
-                        Dựa trên khái niệm <strong>Bus Factor</strong> (Rủi ro nhân sự) trong Software Engineering. Scrum yêu cầu <em>Cross-functional Team</em>. Nếu 1 cá nhân ôm đồm &gt;60% khối lượng, dự án có nguy cơ sụp đổ hoàn toàn nếu người đó rời nhóm. Mức 60% là Red Flag cho việc phân chia công việc thất bại.
+                        Cảnh báo Task quá hạn giúp nhận diện ngay các nút thắt (Blocker) trong dự án. Việc trễ hạn liên tục là tín hiệu của việc ước lượng sai (Poor Estimation) hoặc gặp khó khăn về kỹ thuật.
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <p><strong className="text-destructive text-base">30% Trễ tiến độ:</strong></p>
+                      <p><strong className="text-muted-foreground text-base">MSR (TBD):</strong></p>
                       <p className="text-xs leading-relaxed">
-                        Biểu đồ Agile Burndown kỳ vọng đường tiêu thụ (burn) tuyến tính. Độ lệch (deviation) &gt; 30% chứng tỏ nhóm đang gặp Blocker nghiêm trọng chưa giải quyết, hoặc đã đánh giá sai hoàn toàn độ khó của task lúc Sprint Planning.
+                        Dựa trên khái niệm <strong>Bus Factor</strong> (Rủi ro nhân sự) trong Software Engineering. Nếu 1 cá nhân ôm đồm quá nhiều, dự án có nguy cơ sụp đổ hoàn toàn nếu người đó rời nhóm.
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <p><strong className="text-muted-foreground text-base">5 Ngày Ghosting:</strong></p>
+                      <p><strong className="text-muted-foreground text-base">SNA_ISOLATION (TBD):</strong></p>
                       <p className="text-xs leading-relaxed">
-                        Agile yêu cầu <strong>Continuous Integration</strong> và <strong>Daily Standups</strong>. 5 ngày không log time đồng nghĩa sinh viên đã bỏ lỡ 1 tuần làm việc trọn vẹn (Work week). Đây là dấu hiệu sớm nhất của việc xao nhãng hoặc muốn bỏ cuộc (Drop out).
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p><strong className="text-destructive text-base">200% Over-commitment:</strong></p>
-                      <p className="text-xs leading-relaxed">
-                        Theo triết lý Agile, nếu <em>Actual Time {">"} 2x Estimate Time</em>, lỗ hổng nằm ở kỹ năng <strong>Task Breakdown</strong>. Task quá mơ hồ và quá lớn, vi phạm nguyên tắc <em>Predictable Velocity</em> (tốc độ dự đoán) của nhóm.
+                        Phân tích mạng lưới tương tác qua GitHub/Jira để phát hiện các sinh viên không có sự gắn kết với nhóm (Cô lập), nguy cơ cao dẫn đến bỏ cuộc (Drop out).
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-2 pt-4 border-t border-border/50">
-                    <h4 className="font-bold text-foreground">Kết luận</h4>
-                    <p className="text-xs">
-                      Các con số này không phải ngẫu nhiên mà được đúc kết từ thực tiễn Quản trị dự án Agile. Đóng băng các chỉ số này giúp AI của SAGA hoạt động như một <strong>Scrum Master khách quan</strong>, phát tín hiệu cảnh báo chuẩn xác cho mọi dự án trong trường.
+                    <h4 className="font-bold text-foreground">Tuân thủ Quy tắc Backend</h4>
+                    <p className="text-xs text-destructive font-semibold">
+                      Hệ thống SAGA tuyệt đối KHÔNG sử dụng/mock các chỉ số ảo: GHOSTING, TOXIC_COMMUNICATION, TECHNICAL_DEBT, AI_RISK_SCORE.
                     </p>
                   </div>
                 </CardContent>
