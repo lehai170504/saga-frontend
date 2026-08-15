@@ -3,7 +3,7 @@
 import React from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, TrendingUp, Code, FileText, Palette, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, TrendingUp, Code, FileText, CheckCircle2, Search, ChevronDown, ChevronUp } from "lucide-react";
 
 const truncateDecimal = (val: number | undefined | null, decimals: number = 2): string => {
   if (val === undefined || val === null || isNaN(val)) {
@@ -37,10 +37,14 @@ export interface MemberEvaluationItem {
   evidenceCount?: number;
   codeContributionPercentage: number;
   codeContributionScore: number;
+  testContributionPercentage?: number;
+  testContributionScore?: number;
   documentContributionPercentage: number;
   documentContributionScore: number;
-  designContributionPercentage: number;
-  designContributionScore: number;
+  researchContributionPercentage?: number;
+  researchContributionScore?: number;
+  designContributionPercentage?: number;
+  designContributionScore?: number;
   warnings?: Array<{ severity: string; code: string; message: string }>;
   sprintBreakdowns?: SprintBreakdownItem[];
 }
@@ -146,7 +150,7 @@ export function MemberContributionCard({
             <TrendingUp size={13} className="text-primary" />
             Chi tiết đóng góp phân mảnh
           </h5>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Code Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
@@ -164,6 +168,26 @@ export function MemberContributionCard({
               </div>
               <p className="text-[10px] text-muted-foreground font-semibold">
                 Điểm hoạt động: {truncateDecimal(member.codeContributionScore)}
+              </p>
+            </div>
+
+            {/* Test Contribution */}
+            <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-emerald-500" />
+                  Kiểm thử (Test)
+                </span>
+                <span className="text-xs font-black text-emerald-500">{truncateDecimal(member.testContributionPercentage ?? 0)}%</span>
+              </div>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald-500 rounded-full"
+                  style={{ width: `${Math.min(member.testContributionPercentage || 0, 100)}%` }}
+                />
+              </div>
+              <p className="text-[10px] text-muted-foreground font-semibold">
+                Điểm hoạt động: {truncateDecimal(member.testContributionScore ?? 0)}
               </p>
             </div>
 
@@ -187,23 +211,23 @@ export function MemberContributionCard({
               </p>
             </div>
 
-            {/* Design Contribution */}
+            {/* Research Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
-                  <Palette size={13} className="text-purple-500" />
-                  Thiết kế (Design)
+                  <Search size={13} className="text-purple-500" />
+                  Nghiên cứu (Research)
                 </span>
-                <span className="text-xs font-black text-purple-500">{truncateDecimal(member.designContributionPercentage)}%</span>
+                <span className="text-xs font-black text-purple-500">{truncateDecimal(member.researchContributionPercentage ?? member.designContributionPercentage ?? 0)}%</span>
               </div>
               <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-purple-500 rounded-full"
-                  style={{ width: `${Math.min(member.designContributionPercentage || 0, 100)}%` }}
+                  style={{ width: `${Math.min(member.researchContributionPercentage || member.designContributionPercentage || 0, 100)}%` }}
                 />
               </div>
               <p className="text-[10px] text-muted-foreground font-semibold">
-                Điểm hoạt động: {truncateDecimal(member.designContributionScore)}
+                Điểm hoạt động: {truncateDecimal(member.researchContributionScore ?? member.designContributionScore ?? 0)}
               </p>
             </div>
           </div>

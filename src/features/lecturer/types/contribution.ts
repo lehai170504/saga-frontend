@@ -18,11 +18,15 @@ export interface ContributionMember {
   fullName: string;
   studentCode: string;
   codeContributionScore: number;
+  testContributionScore?: number;
   documentContributionScore: number;
-  designContributionScore: number;
+  researchContributionScore?: number;
+  designContributionScore?: number;
   codeContributionPercentage: number;
+  testContributionPercentage?: number;
   documentContributionPercentage: number;
-  designContributionPercentage: number;
+  researchContributionPercentage?: number;
+  designContributionPercentage?: number;
   peerReviewScore: number;
   taskContributionScore: number;
   taskContributionPercentage: number;
