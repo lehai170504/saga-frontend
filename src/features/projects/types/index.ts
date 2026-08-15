@@ -1,25 +1,46 @@
 export type CreateTeamProjectRequest = {
   name: string;
-  description?: string;
   projectTypeId: string;
-  courseId: string;
 };
 
 export type ProjectType = {
   projectTypeId: string;
   code: string;
   name: string;
-  description: string;
-  criteriaConfig: string | null;
+  description?: string;
+  criteriaConfig?: string;
 };
 
 export type ProjectResponse = {
-  id?: string;
-  projectId?: string;
-  teamId?: string;
+  id: string;
+  teamId: string;
   name: string;
-  description?: string;
-  projectType?: ProjectType;
+  projectType: {
+    projectTypeId: string;
+    code: string;
+    name: string;
+  };
+  description?: string | null;
+  projectId?: string;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+};
+
+export type ProjectDetailResponse = {
+  projectId: string;
+  name: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+  team: {
+    teamId: string;
+    teamName: string;
+  };
+  projectType: {
+    projectTypeId: string;
+    code: string;
+    name: string;
+  };
 };
 
 export type UpdateProjectGroupWeightsRequest = {

@@ -4,7 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { FolderKanban, Activity, Settings, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ProjectType } from "@/features/admin/api/projectTypeApi";
+import { Badge } from "@/components/ui/badge";
+import { ProjectType, ProjectResponse, ProjectDetailResponse } from "@/features/projects/types";
+import { ProjectType as AdminProjectType } from "@/features/admin/api/projectTypeApi";
 import { CreateProjectModal } from "./create-project-modal";
 
 interface TeamHeroCardProps {
@@ -12,6 +14,7 @@ interface TeamHeroCardProps {
   projectName?: string;
   projectId?: string;
   courseId?: string;
+  projectDetail?: ProjectDetailResponse | ProjectResponse | null;
   showScores: boolean;
   setShowScores: (show: boolean) => void;
   isDialogOpen: boolean;
@@ -20,7 +23,7 @@ interface TeamHeroCardProps {
   setNewProjectName: (name: string) => void;
   projectTypeId: string;
   setProjectTypeId: (typeId: string) => void;
-  projectTypes?: ProjectType[];
+  projectTypes?: AdminProjectType[] | ProjectType[];
   isPending: boolean;
   handleCreateProject: (e: React.FormEvent) => void;
 }
@@ -30,6 +33,7 @@ export function TeamHeroCard({
   projectName,
   projectId,
   courseId,
+  projectDetail,
   showScores,
   setShowScores,
   isDialogOpen,
@@ -47,18 +51,39 @@ export function TeamHeroCard({
       {/* Decorative background element */}
       <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500 pointer-events-none" />
 
-      <div className="space-y-4 relative z-10">
-        <div className="flex items-center gap-3">
+      <div className="space-y-4 relative z-10 flex-1">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shadow-[0_2px_10px_rgba(234,88,12,0.2)]">
             Nhóm của bạn
           </span>
           <h2 className="text-3xl font-black tracking-tight text-foreground">{teamName}</h2>
         </div>
 
-        <div className="flex items-center gap-3 text-muted-foreground bg-background/60 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 inline-flex shadow-sm">
-          <FolderKanban size={18} className="text-primary" />
-          <span className="font-semibold text-sm">{projectName || "Chưa có đề tài"}</span>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2.5 text-muted-foreground bg-background/60 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 inline-flex shadow-sm">
+            <FolderKanban size={18} className="text-primary shrink-0" />
+            <span className="font-extrabold text-sm text-foreground">
+              {projectDetail?.name || projectName || "Chưa có đề tài"}
+            </span>
+          </div>
+
+          {projectDetail?.projectType && (
+            <Badge
+              variant="outline"
+              className="bg-primary/10 text-primary border-primary/20 font-extrabold text-xs px-3 py-2 rounded-xl shadow-sm"
+            >
+              {projectDetail.projectType.code
+                ? `${projectDetail.projectType.name} (${projectDetail.projectType.code})`
+                : projectDetail.projectType.name}
+            </Badge>
+          )}
         </div>
+
+        {projectDetail?.description && (
+          <p className="text-xs text-foreground/80 font-medium max-w-2xl border-l-2 border-primary/30 pl-3 leading-relaxed">
+            {projectDetail.description}
+          </p>
+        )}
       </div>
 
       <div className="w-full md:w-auto shrink-0 relative z-10 flex flex-wrap items-center gap-3">
@@ -102,7 +127,7 @@ export function TeamHeroCard({
               setProjectName={setNewProjectName}
               projectTypeId={projectTypeId}
               setProjectTypeId={setProjectTypeId}
-              projectTypes={projectTypes}
+              projectTypes={projectTypes as AdminProjectType[]}
               isPending={isPending}
               handleCreateProject={handleCreateProject}
             />

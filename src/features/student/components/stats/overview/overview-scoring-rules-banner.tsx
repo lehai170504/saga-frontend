@@ -13,9 +13,6 @@ export function OverviewScoringRulesBanner() {
           <strong>Quy tắc tính điểm hoạt động (Activity Score):</strong> Commit = <strong>3đ</strong> | Task Jira = <strong>2đ</strong> | Peer Review = <strong>2đ</strong> | Comment = <strong>1đ</strong> | Document = <strong>1đ</strong>.
         </span>
       </div>
-      <Badge variant="outline" className="shrink-0 bg-background text-foreground font-bold text-[10px] px-2.5 py-1 rounded-lg">
-        Tự động quy đổi
-      </Badge>
     </div>
   );
 }

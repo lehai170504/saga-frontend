@@ -54,10 +54,6 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
     };
   }, []);
 
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
-
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
       <div className="p-6 max-w-[1400px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-600">

@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw, GitBranch } from "lucide-react";
 import { API_BASE_URL } from "@/lib/axios";
 
@@ -162,21 +163,47 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
             {githubRepositories.length > 0 ? (
               <div className="space-y-4">
                 {/* Repository Dropdown Tab Selector */}
-                <div className="flex items-center justify-between gap-3 p-2 bg-muted/40 rounded-xl border border-border/50">
+                <div className="flex items-center justify-between gap-2 p-2 bg-muted/40 rounded-xl border border-border/50">
                   <span className="text-xs font-bold text-muted-foreground shrink-0 flex items-center gap-1.5 pl-1">
                     <GitBranch size={14} className="text-primary" /> Chọn Repo:
                   </span>
-                  <select
-                    value={activeRepo?.repositoryId || ""}
-                    onChange={(e) => setSelectedRepoId(Number(e.target.value))}
-                    className="h-9 px-3 rounded-lg bg-background border border-border/60 text-xs font-extrabold text-foreground outline-none cursor-pointer hover:border-primary transition-all max-w-[170px] truncate"
+                  <Select
+                    value={activeRepo?.repositoryId ? String(activeRepo.repositoryId) : ""}
+                    onValueChange={(val) => setSelectedRepoId(Number(val))}
                   >
-                    {githubRepositories.map((r) => (
-                      <option key={r.repositoryId} value={r.repositoryId}>
-                        {r.fullName} ({r.status})
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="h-9 flex-1 min-w-0 max-w-[180px] sm:max-w-[220px] rounded-xl border-border/60 bg-background font-extrabold text-xs shadow-sm cursor-pointer overflow-hidden">
+                      <SelectValue placeholder="Chọn Repository...">
+                        {activeRepo?.fullName}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent
+                      position="popper"
+                      side="bottom"
+                      align="end"
+                      sideOffset={5}
+                      className="rounded-2xl border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl min-w-[280px]"
+                    >
+                      {githubRepositories.map((r) => (
+                        <SelectItem
+                          key={r.repositoryId}
+                          value={String(r.repositoryId)}
+                          className="rounded-xl py-2 px-3 my-0.5"
+                        >
+                          <div className="flex items-center justify-between gap-2.5 w-full">
+                            <span className="font-bold truncate max-w-[185px]" title={r.fullName}>
+                              {r.fullName}
+                            </span>
+                            <Badge
+                              variant="outline"
+                              className={`text-[9px] uppercase font-extrabold px-1.5 py-0.5 shrink-0 ${getStatusBadgeClass(r.status)}`}
+                            >
+                              {r.status}
+                            </Badge>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Active Selected Repository Box */}
