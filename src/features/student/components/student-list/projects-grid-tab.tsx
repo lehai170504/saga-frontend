@@ -3,10 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FolderKanban, Users, ArrowRight } from "lucide-react";
 import { CourseStudent } from "@/features/courses/types";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export interface TeamGroupItem {
   id: string;
@@ -23,6 +24,8 @@ interface ProjectsGridTabProps {
 }
 
 export function ProjectsGridTab({ courseId, isLoadingStudents, teams }: ProjectsGridTabProps) {
+  const { user: currentUser } = useAuth();
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {isLoadingStudents ? (
@@ -66,16 +69,31 @@ export function ProjectsGridTab({ courseId, isLoadingStudents, teams }: Projects
                   </div>
 
                   <div className="flex -space-x-3 overflow-hidden mb-5">
-                    {project.members.slice(0, 5).map((member) => (
-                      <Avatar
-                        key={member.studentId}
-                        className="inline-block border-2 border-background w-10 h-10 transition-transform duration-300 group-hover:translate-x-1"
-                      >
-                        <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">
-                          {member.fullName.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
+                    {project.members.slice(0, 5).map((member) => {
+                      const avatarSrc =
+                        (member as any).avatarUrl ||
+                        (member as any).avatar ||
+                        (member as any).picture ||
+                        (member as any).photoUrl ||
+                        (currentUser &&
+                        (currentUser.localProfileId === member.studentId ||
+                          currentUser.email === (member as any).email ||
+                          currentUser.fullName === member.fullName)
+                          ? currentUser.avatarUrl || currentUser.avatar
+                          : "") ||
+                        "";
+                      return (
+                        <Avatar
+                          key={member.studentId}
+                          className="inline-block border-2 border-background w-10 h-10 transition-transform duration-300 group-hover:translate-x-1"
+                        >
+                          <AvatarImage src={avatarSrc} alt={member.fullName} />
+                          <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">
+                            {member.fullName.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                      );
+                    })}
                     {project.members.length > 5 && (
                       <Avatar className="inline-block border-2 border-background w-10 h-10 transition-transform duration-300 group-hover:translate-x-1">
                         <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">

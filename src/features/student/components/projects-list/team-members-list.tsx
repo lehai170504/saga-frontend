@@ -2,7 +2,8 @@
 
 import React from "react";
 import { Users, Crown } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export interface TeamMemberItem {
   studentId: string;
@@ -10,23 +11,45 @@ export interface TeamMemberItem {
   studentCode: string;
   roleInTeam: string;
   email?: string;
+  avatarUrl?: string;
+  avatar?: string;
 }
 
 interface TeamMembersListProps {
-  sortedMembers: TeamMemberItem[];
+  sortedMembers?: TeamMemberItem[];
+  members?: TeamMemberItem[];
 }
 
-export function TeamMembersList({ sortedMembers }: TeamMembersListProps) {
+export function TeamMembersList({ sortedMembers, members }: TeamMembersListProps) {
+  const { user: currentUser } = useAuth();
+  const rawList = sortedMembers || members || [];
+  if (!rawList || rawList.length === 0) return null;
+
+  const displayList = sortedMembers ? sortedMembers : [...rawList].sort((a, b) => (a.roleInTeam === "LEADER" ? -1 : 1));
+
   return (
-    <div className="space-y-5">
-      <h3 className="text-sm font-extrabold tracking-widest uppercase text-muted-foreground ml-2 flex items-center gap-2">
+    <div className="space-y-4">
+      <h3 className="text-sm font-extrabold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
         <Users size={16} />
-        Thành viên trong nhóm ({sortedMembers.length})
+        Thành viên trong nhóm ({displayList.length})
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {sortedMembers.map((member) => {
+        {displayList.map((member) => {
           const isLeader = member.roleInTeam === "LEADER";
+          const avatarSrc =
+            member.avatarUrl ||
+            member.avatar ||
+            (member as any).picture ||
+            (member as any).photoUrl ||
+            (currentUser &&
+            (currentUser.localProfileId === member.studentId ||
+              currentUser.email === member.email ||
+              currentUser.fullName === member.fullName)
+              ? currentUser.avatarUrl || currentUser.avatar
+              : "") ||
+            "";
+
           return (
             <div
               key={member.studentId}
@@ -39,6 +62,7 @@ export function TeamMembersList({ sortedMembers }: TeamMembersListProps) {
                   isLeader ? "border-primary shadow-[0_0_12px_rgba(234,88,12,0.3)]" : "border-background shadow-md"
                 }`}
               >
+                <AvatarImage src={avatarSrc} alt={member.fullName} />
                 <AvatarFallback
                   className={`font-bold text-sm ${
                     isLeader

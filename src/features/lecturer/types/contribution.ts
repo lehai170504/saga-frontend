@@ -5,6 +5,9 @@ export interface SprintBreakdown {
   retrospectiveMultiplier: number;
   adjustedTaskScore: number;
   peerReviewCount: number;
+  sliceScore?: number;
+  sliceContributionPercentage?: number;
+  contributionPercentage?: number;
 }
 
 export interface ContributionWarning {
@@ -19,16 +22,16 @@ export interface ContributionMember {
   studentCode: string;
   codeContributionScore: number;
   documentContributionScore: number;
-  testContributionScore: number;
-  researchContributionScore: number;
+  researchContributionScore?: number;
   codeContributionPercentage: number;
   documentContributionPercentage: number;
-  testContributionPercentage: number;
-  researchContributionPercentage: number;
+  researchContributionPercentage?: number;
   peerReviewScore: number;
   taskContributionScore: number;
   taskContributionPercentage: number;
   finalContributionPercentage: number;
+  sliceScore?: number;
+  sliceContributionPercentage?: number;
   evidenceCount: number;
   sprintBreakdowns: SprintBreakdown[];
   warnings: ContributionWarning[];
