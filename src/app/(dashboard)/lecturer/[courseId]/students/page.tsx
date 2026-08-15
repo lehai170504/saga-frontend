@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { StudentListClient } from "./student-list-client";
+import { StudentListClient } from "../../../../../features/student/components/student-list-client";
 
 
 export const metadata: Metadata = {

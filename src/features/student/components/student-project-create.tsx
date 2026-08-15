@@ -14,11 +14,13 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useStudentCourse } from "@/context/StudentCourseContext";
 import { useCourseStudents, useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCreateTeamProject, useProjectDetail, useUpdateProjectDetail } from "@/features/projects/hooks/useProjects";
+import { useProjectTypes } from "@/features/admin/hooks/useProjectTypes";
 import { ProjectIntegrationPanel } from "@/features/integrations/components/project-integration-panel";
 import { SyncStatusMonitor } from "@/features/integrations/components/sync-status-monitor";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 export function StudentProjectCreate() {
@@ -61,6 +63,8 @@ export function StudentProjectCreate() {
   const updateProjectMutation = useUpdateProjectDetail(myTeam?.projectId || "");
 
   const [projectName, setProjectName] = useState("");
+  const [projectTypeId, setProjectTypeId] = useState("");
+  const { data: projectTypes } = useProjectTypes();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -111,7 +115,12 @@ export function StudentProjectCreate() {
       return;
     }
 
-    createProject({ name: projectName, courseId: courseId || "", projectTypeId: "default" }, {
+    if (!projectTypeId) {
+      toast.error("Vui lòng chọn loại dự án (Project Type)");
+      return;
+    }
+
+    createProject({ name: projectName, courseId: courseId || "", projectTypeId }, {
       onSuccess: () => {
         refetch();
       }
@@ -120,7 +129,7 @@ export function StudentProjectCreate() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
- <div className="p-6 max-w-[1400px] mx-auto space-y-6 "> 
+      <div className="p-6 max-w-[1400px] mx-auto space-y-6 ">
 
         {/* Nút quay lại */}
         <div>
@@ -182,6 +191,21 @@ export function StudentProjectCreate() {
                         onChange={(e) => setProjectName(e.target.value)}
                         className="h-11 rounded-xl bg-background border-border font-medium text-xs focus-visible:ring-primary"
                       />
+                    </div>
+                    <div className="space-y-1.5 mt-4">
+                      <Label className="text-xs font-bold text-muted-foreground">Loại dự án (Project Type)</Label>
+                      <Select value={projectTypeId} onValueChange={setProjectTypeId}>
+                        <SelectTrigger className="w-full h-11 rounded-xl border-border bg-background">
+                          <SelectValue placeholder="Chọn loại dự án..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {projectTypes?.map((pt) => (
+                            <SelectItem key={pt.projectTypeId} value={pt.projectTypeId}>
+                              {pt.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 ) : (

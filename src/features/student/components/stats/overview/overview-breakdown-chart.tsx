@@ -16,7 +16,7 @@ import {
 } from "recharts";
 
 interface OverviewBreakdownChartProps {
-  chartData: any[];
+  chartData: { date: string, commits: number, tasks: number, peerReviews: number, comments: number }[];
   totalActivities: number;
 }
 
@@ -64,7 +64,7 @@ export function OverviewBreakdownChart({ chartData, totalActivities }: OverviewB
                 fontWeight: "bold",
                 boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5)",
               }}
-              labelFormatter={(label: any) => `Ngày: ${label}`}
+              labelFormatter={(label: unknown) => `Ngày: ${String(label ?? "")}`}
             />
             <Legend
               verticalAlign="top"
@@ -74,12 +74,12 @@ export function OverviewBreakdownChart({ chartData, totalActivities }: OverviewB
                   {val === "commits"
                     ? "Commits"
                     : val === "tasks"
-                    ? "Tasks"
-                    : val === "peerReviews"
-                    ? "Peer Reviews"
-                    : val === "comments"
-                    ? "Comments"
-                    : "Docs"}
+                      ? "Tasks"
+                      : val === "peerReviews"
+                        ? "Peer Reviews"
+                        : val === "comments"
+                          ? "Comments"
+                          : "Docs"}
                 </span>
               )}
             />

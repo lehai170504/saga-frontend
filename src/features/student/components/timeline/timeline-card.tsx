@@ -10,17 +10,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Clock, ArrowRight, Flag, MoreVertical, Loader2 } from "lucide-react";
+import { Clock, ArrowRight, Flag, MoreVertical, Loader2, ChevronDown } from "lucide-react";
 import { Sprint } from "@/features/projects/types";
 import { getSprintStatus } from "./timeline-helpers";
+import { TimelineSprintTasksDropdown } from "./timeline-sprint-tasks-dropdown";
 
 interface TimelineCardProps {
   sprint: Sprint;
+  projectId: string;
   isLeader: boolean;
   isStarting: boolean;
   isClosing: boolean;
   isAnyMutating: boolean;
-  onClick: () => void;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
   onStartSprint: (sprintId: string) => void;
   onCloseSprint: (sprintId: string) => void;
   onOpenEdit: (sprint: Sprint) => void;
@@ -29,11 +32,13 @@ interface TimelineCardProps {
 
 export function TimelineCard({
   sprint,
+  projectId,
   isLeader,
   isStarting,
   isClosing,
   isAnyMutating,
-  onClick,
+  isExpanded,
+  onToggleExpand,
   onStartSprint,
   onCloseSprint,
   onOpenEdit,
@@ -46,26 +51,44 @@ export function TimelineCard({
     <div className="relative group transition-all duration-300">
       {/* Timeline Bullet Node */}
       <div
-        className={`absolute -left-[41px] md:-left-[57px] top-6 w-5 h-5 rounded-full border-4 border-background transition-transform duration-300 group-hover:scale-125 z-10 flex items-center justify-center ${status.timelineNodeStyle}`}
+        className={`absolute -left-[37px] md:-left-[53px] top-5 w-4 h-4 rounded-full border-4 border-background transition-transform duration-300 group-hover:scale-125 z-10 flex items-center justify-center ${status.timelineNodeStyle}`}
       >
         {status.label === "Đã hoàn thành" && (
-          <div className="w-1.5 h-1.5 rounded-full bg-background" />
+          <div className="w-1 h-1 rounded-full bg-background" />
         )}
       </div>
 
       {/* Timeline Card */}
       <Card
-        onClick={onClick}
-        className={`rounded-[2rem] border transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.99] hover:border-primary/40 cursor-pointer ${status.cardStyle}`}
+        onClick={onToggleExpand}
+        className={`rounded-2xl border transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-0.5 active:scale-[0.995] hover:border-primary/40 cursor-pointer ${status.cardStyle}`}
       >
-        <CardContent className="p-6 md:p-8 space-y-6">
-          {/* Card Header with Status Badge */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-4">
-            <h3 className="text-xl font-bold text-foreground">
-              {sprint.sprintName}
-            </h3>
-            <div className="flex items-center gap-3 self-start sm:self-auto">
-              <Badge variant="outline" className={`${status.style} rounded-full font-bold px-4 py-1.5 text-xs`}>
+        <CardContent className="p-4 md:p-5 space-y-3.5">
+          {/* Card Header with Status Badge & Toggle Arrow */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/40 pb-3">
+            <div className="flex items-center gap-2.5">
+              <h3 className="text-base md:text-lg font-black text-foreground">
+                {sprint.sprintName}
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-[11px] font-bold text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg flex items-center gap-1 transition-all"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleExpand();
+                }}
+              >
+                <span>{isExpanded ? "Thu gọn" : "Chi tiết"}</span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-300 ${isExpanded ? "rotate-180 text-primary" : ""}`}
+                />
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2.5 self-start sm:self-auto">
+              <Badge variant="outline" className={`${status.style} rounded-full font-bold px-3 py-1 text-[11px]`}>
                 {status.label}
               </Badge>
 
@@ -77,11 +100,11 @@ export function TimelineCard({
                   }}
                   disabled={isAnyMutating}
                   size="sm"
-                  className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg h-8 px-4 text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg h-7 px-3 text-[11px] transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   {isStarting ? (
                     <>
-                      <Loader2 size={12} className="animate-spin" />
+                      <Loader2 size={11} className="animate-spin" />
                       Đang bắt đầu...
                     </>
                   ) : (
@@ -98,11 +121,11 @@ export function TimelineCard({
                   }}
                   disabled={isAnyMutating}
                   size="sm"
-                  className="rounded-xl font-bold bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg h-8 px-4 text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="rounded-xl font-bold bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg h-7 px-3 text-[11px] transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   {isClosing ? (
                     <>
-                      <Loader2 size={12} className="animate-spin" />
+                      <Loader2 size={11} className="animate-spin" />
                       Đang đóng...
                     </>
                   ) : (
@@ -117,9 +140,9 @@ export function TimelineCard({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-full border border-border/50 bg-background/50 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer flex items-center justify-center transition-all"
+                      className="h-7 w-7 rounded-full border border-border/50 bg-background/50 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer flex items-center justify-center transition-all"
                     >
-                      <MoreVertical size={16} />
+                      <MoreVertical size={14} />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-xl min-w-[120px] p-1.5 animate-in fade-in duration-200">
@@ -147,22 +170,22 @@ export function TimelineCard({
             </div>
           </div>
 
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          {/* Compact Content Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Running Dates */}
-            <div className="flex items-start gap-3.5">
-              <div className="p-3 bg-muted/50 text-muted-foreground rounded-2xl shrink-0 border border-border/10">
-                <Clock size={16} />
+            <div className="flex items-start gap-2.5">
+              <div className="p-2 bg-muted/50 text-muted-foreground rounded-xl shrink-0 border border-border/10">
+                <Clock size={14} />
               </div>
-              <div className="space-y-1 min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+              <div className="space-y-0.5 min-w-0">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/60">
                   Thời gian hoạt động
                 </p>
-                <p className={`text-sm ${status.dateStyle}`}>
+                <p className={`text-xs ${status.dateStyle}`}>
                   {hasDates ? (
                     <>
                       {(() => { const d = new Date(sprint.startDate!); return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; })()}
-                      <ArrowRight size={12} className="inline-block mx-2 text-muted-foreground" />
+                      <ArrowRight size={11} className="inline-block mx-1.5 text-muted-foreground" />
                       {(() => { const d = new Date(sprint.endDate!); return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; })()}
                     </>
                   ) : (
@@ -173,15 +196,15 @@ export function TimelineCard({
             </div>
 
             {/* Sprint Goal */}
-            <div className="flex items-start gap-3.5">
-              <div className="p-3 bg-muted/50 text-muted-foreground rounded-2xl shrink-0 border border-border/10">
-                <Flag size={16} />
+            <div className="flex items-start gap-2.5">
+              <div className="p-2 bg-muted/50 text-muted-foreground rounded-xl shrink-0 border border-border/10">
+                <Flag size={14} />
               </div>
-              <div className="space-y-1 min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+              <div className="space-y-0.5 min-w-0">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/60">
                   Mục tiêu Sprint
                 </p>
-                <p className="text-sm font-medium text-foreground leading-relaxed line-clamp-3">
+                <p className="text-xs font-medium text-foreground leading-relaxed line-clamp-2">
                   {sprint.goal || (
                     <span className="text-muted-foreground/75 italic">Không có mục tiêu nào được thiết lập</span>
                   )}
@@ -189,6 +212,14 @@ export function TimelineCard({
               </div>
             </div>
           </div>
+
+          {/* Inline Dropdown Expanded Tasks List */}
+          {isExpanded && (
+            <TimelineSprintTasksDropdown
+              projectId={projectId}
+              sprintId={sprint.sprintId}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

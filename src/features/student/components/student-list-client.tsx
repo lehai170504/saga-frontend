@@ -35,7 +35,7 @@ export function StudentListClient({ courseId }: { courseId: string }) {
 
   const allStudentsWithTeam = studentsData?.studentsWithTeam.content || [];
   const allStudentsWithoutTeam = studentsData?.studentsWithoutTeam.content || [];
-  
+
   const totalStudents = allStudentsWithTeam.length + allStudentsWithoutTeam.length;
 
   const filteredStudentsWithTeam = allStudentsWithTeam.filter(
@@ -166,7 +166,7 @@ export function StudentListClient({ courseId }: { courseId: string }) {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="w-full">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "students" | "projects")} className="w-full">
         {/* Animated Summary Cards */}
         <div className="mb-6 relative min-h-[110px]">
           <AnimatePresence mode="wait">
@@ -186,9 +186,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Tổng Sinh Viên</p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <div className="text-3xl font-bold text-foreground">
                         {isLoadingStudents ? <Skeleton className="h-8 w-16 mt-1" /> : totalStudents}
-                      </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -199,9 +199,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Đã có Nhóm</p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <div className="text-3xl font-bold text-foreground">
                         {isLoadingStudents ? <Skeleton className="h-8 w-16 mt-1" /> : allStudentsWithTeam.length}
-                      </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -212,9 +212,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Chưa có Nhóm</p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <div className="text-3xl font-bold text-foreground">
                         {isLoadingStudents ? <Skeleton className="h-8 w-16 mt-1" /> : allStudentsWithoutTeam.length}
-                      </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -235,9 +235,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Tổng số nhóm</p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <div className="text-3xl font-bold text-foreground">
                         {isLoadingStudents ? <Skeleton className="h-8 w-16 mt-1" /> : totalTeams}
-                      </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -248,9 +248,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Đã có đề tài</p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <div className="text-3xl font-bold text-foreground">
                         {isLoadingStudents ? <Skeleton className="h-8 w-16 mt-1" /> : teamsWithProjects}
-                      </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -261,9 +261,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Chưa có đề tài</p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <div className="text-3xl font-bold text-foreground">
                         {isLoadingStudents ? <Skeleton className="h-8 w-16 mt-1" /> : teamsWithoutProjects}
-                      </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -274,8 +274,8 @@ export function StudentListClient({ courseId }: { courseId: string }) {
 
         <div className="flex justify-start mb-4">
           <TabsList className="inline-flex w-fit bg-muted/50 p-1 rounded-xl h-auto">
-            <TabsTrigger 
-              value="students" 
+            <TabsTrigger
+              value="students"
               className="relative rounded-lg font-bold h-10 px-4 text-sm text-muted-foreground data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-colors"
             >
               {activeTab === "students" && (
@@ -287,8 +287,8 @@ export function StudentListClient({ courseId }: { courseId: string }) {
               )}
               <span className="relative z-10 flex items-center"><Users className="w-4 h-4 mr-2" /> Danh sách Sinh viên</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="projects" 
+            <TabsTrigger
+              value="projects"
               className="relative rounded-lg font-bold h-10 px-4 text-sm text-muted-foreground data-[state=active]:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-colors"
             >
               {activeTab === "projects" && (
@@ -438,7 +438,7 @@ export function StudentListClient({ courseId }: { courseId: string }) {
                           <FolderKanban size={20} />
                         </div>
                       </div>
-                      
+
                       <div className="mt-auto">
                         <div className="flex items-center gap-2 mb-3 text-muted-foreground font-medium">
                           <Users size={16} />

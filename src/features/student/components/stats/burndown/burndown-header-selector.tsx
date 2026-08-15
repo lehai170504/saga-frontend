@@ -45,7 +45,7 @@ export function BurndownHeaderSelector({
           <SelectTrigger className="w-full bg-background border border-border/60 rounded-xl h-11 focus:ring-2 focus:ring-primary/20 font-bold text-foreground">
             <SelectValue placeholder="Chọn Sprint" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl border-border/50 shadow-xl">
+          <SelectContent position="popper" side="bottom" sideOffset={5} className="rounded-xl border-border/50 shadow-xl w-[var(--radix-select-trigger-width)]">
             {sprints.map((sprint) => (
               <SelectItem
                 key={sprint.sprintId}

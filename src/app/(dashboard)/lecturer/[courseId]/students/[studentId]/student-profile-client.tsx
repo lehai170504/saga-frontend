@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, GitCommit, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, FileText, ArrowRight, Activity, Network } from "lucide-react";
+import { GitCommit, AlertTriangle, CheckCircle2, ChevronRight, FileText, ArrowRight, Activity, Network } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -71,8 +71,8 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
   })) || [];
 
   // Tính phần trăm đóng góp
-  const commitPercentage = projectStats?.github?.commitCount 
-    ? Math.round(((progressData?.totalCommits || 0) / projectStats.github.commitCount) * 100) 
+  const commitPercentage = projectStats?.github?.commitCount
+    ? Math.round(((progressData?.totalCommits || 0) / projectStats.github.commitCount) * 100)
     : 0;
 
   return (
@@ -142,10 +142,10 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
-          
+
           {/* Left Column: Stats & Ecosystem (5 columns) */}
           <div className="lg:col-span-5 space-y-6">
-            
+
             {/* Ecosystem Connect */}
             <Card className="rounded-[2rem] border-border/50 bg-card/60 backdrop-blur-sm shadow-sm overflow-hidden group hover:border-primary/30 transition-colors h-[220px] flex flex-col">
               <CardContent className="p-6 flex-1 flex flex-col justify-between">
@@ -164,7 +164,7 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
                       </div>
                     </div>
                   </div>
-                  
+
                   {STUDENT.groupId ? (
                     <Button variant="secondary" className="w-full rounded-xl bg-background border border-border/50 hover:bg-primary/5 hover:text-primary transition-colors group-hover:border-primary/30" asChild>
                       <Link href={`/lecturer/${courseId}/projects/${STUDENT.groupId}`}>
@@ -200,7 +200,7 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="rounded-2xl border-border/50 bg-card/60 backdrop-blur-sm shadow-sm">
                 <CardContent className="p-5 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
@@ -234,8 +234,8 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
                       <Radar name={STUDENT.name} dataKey="A" stroke="#6366f1" fill="url(#colorUv)" fillOpacity={0.6} />
                       <defs>
                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.2}/>
+                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.2} />
                         </linearGradient>
                       </defs>
                       <RechartsTooltip contentStyle={{ borderRadius: '16px', border: '1px solid hsl(var(--border))', background: 'rgba(var(--card), 0.9)', backdropFilter: 'blur(8px)', fontWeight: 'bold' }} />
@@ -249,7 +249,7 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
 
           {/* Right Column: Timeline & Identity (7 columns) */}
           <div className="lg:col-span-7 space-y-6">
-            
+
             {/* Warning Details */}
             {warnings.length > 0 && (
               <Card className="rounded-[2rem] border-destructive/30 bg-destructive/5 shadow-sm border-dashed h-[220px] flex flex-col">
@@ -281,53 +281,53 @@ export function StudentProfileClient({ courseId, studentId }: { courseId: string
 
                 <div className="flex-1 overflow-y-auto pr-4 -mr-4 pl-4 -ml-4 pt-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-primary/20 hover:[&::-webkit-scrollbar-thumb]:bg-primary/40 [&::-webkit-scrollbar-thumb]:rounded-full max-h-[500px]">
                   <div className="space-y-0">
-                  {isLoadingActivities ? (
-                    Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className="flex gap-6 pb-8">
-                        <div className="w-3 h-3 rounded-full bg-muted shrink-0 mt-1" />
-                        <div className="space-y-2 flex-1">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/2" />
-                        </div>
-                      </div>
-                    ))
-                  ) : TIMELINE.length > 0 ? (
-                    TIMELINE.map((item, idx) => (
-                      <div key={idx} className="group flex gap-6 relative">
-                        {/* Vertical Line */}
-                        {idx !== TIMELINE.length - 1 && (
-                          <div className="absolute left-[5px] top-5 bottom-[-16px] w-[2px] bg-muted/60" />
-                        )}
-                        
-                        {/* Dot */}
-                        <div className="relative z-10 w-3 h-3 shrink-0 rounded-full bg-background border-2 border-primary ring-4 ring-background shadow-sm mt-1.5 group-hover:scale-150 transition-transform duration-300" />
-
-                        {/* Content */}
-                        <div className="flex-1 space-y-2 pb-8">
-                          {/* Hover effect highlight */}
-                          <div className="absolute -inset-x-4 -inset-y-2 bg-muted/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
-
-                          <div className="flex items-center gap-3">
-                            {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20 px-1.5 py-0"><GitCommit size={10} className="mr-1" /> Commit</Badge>}
-                            {item.type === 'document' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-success/10 text-success border-success/20 px-1.5 py-0"><FileText size={10} className="mr-1" /> Document</Badge>}
-                            <span className="text-xs text-muted-foreground font-semibold bg-background/50 px-2 py-0.5 rounded-md border border-border/50">{item.time}</span>
+                    {isLoadingActivities ? (
+                      Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="flex gap-6 pb-8">
+                          <div className="w-3 h-3 rounded-full bg-muted shrink-0 mt-1" />
+                          <div className="space-y-2 flex-1">
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-3 w-1/2" />
                           </div>
-
-                          <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-relaxed">
-                            {item.text}
-                          </p>
                         </div>
+                      ))
+                    ) : TIMELINE.length > 0 ? (
+                      TIMELINE.map((item, idx) => (
+                        <div key={idx} className="group flex gap-6 relative">
+                          {/* Vertical Line */}
+                          {idx !== TIMELINE.length - 1 && (
+                            <div className="absolute left-[5px] top-5 bottom-[-16px] w-[2px] bg-muted/60" />
+                          )}
+
+                          {/* Dot */}
+                          <div className="relative z-10 w-3 h-3 shrink-0 rounded-full bg-background border-2 border-primary ring-4 ring-background shadow-sm mt-1.5 group-hover:scale-150 transition-transform duration-300" />
+
+                          {/* Content */}
+                          <div className="flex-1 space-y-2 pb-8">
+                            {/* Hover effect highlight */}
+                            <div className="absolute -inset-x-4 -inset-y-2 bg-muted/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+
+                            <div className="flex items-center gap-3">
+                              {item.type === 'commit' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-primary/10 text-primary border-primary/20 px-1.5 py-0"><GitCommit size={10} className="mr-1" /> Commit</Badge>}
+                              {item.type === 'document' && <Badge variant="outline" className="text-[10px] uppercase font-bold bg-success/10 text-success border-success/20 px-1.5 py-0"><FileText size={10} className="mr-1" /> Document</Badge>}
+                              <span className="text-xs text-muted-foreground font-semibold bg-background/50 px-2 py-0.5 rounded-md border border-border/50">{item.time}</span>
+                            </div>
+
+                            <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-relaxed">
+                              {item.text}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground italic py-8 text-center bg-muted/20 rounded-2xl border border-dashed border-border/50">
+                        Chưa có hoạt động nào được ghi nhận trong thời gian qua.
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground italic py-8 text-center bg-muted/20 rounded-2xl border border-dashed border-border/50">
-                      Chưa có hoạt động nào được ghi nhận trong thời gian qua.
-                    </div>
-                  )}
+                    )}
                   </div>
                 </div>
 
-                
+
               </CardContent>
             </Card>
 

@@ -28,7 +28,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-const CustomNode = ({ data }: { data: any }) => {
+const CustomNode = ({ data }: { data: { isSelected: boolean, label: string, role?: string, id: string, interactions: number } }) => {
   return (
     <div className={`p-3 shadow-lg rounded-2xl flex flex-col items-center justify-center min-w-[100px] bg-card border-2 transition-all ${data.isSelected ? 'border-primary scale-110 shadow-primary/20 ring-4 ring-primary/20' : 'border-border/50 hover:border-primary/50 hover:scale-105'}`}>
       <Handle type="target" position={Position.Top} className="w-2 h-2 bg-primary/50 border-none" />
@@ -60,8 +60,8 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
 
   const isLoading = isLoadingMembers || isLoadingGraph;
 
-  const [selectedNode, setSelectedNode] = useState<any>(null);
-  
+  const [selectedNode, setSelectedNode] = useState<{ id: string, name: string, role: string, interactions: number } | null>(null);
+
   const activeSelectedNode = useMemo(() => {
     if (selectedNode) return selectedNode;
     if (interactionData?.nodes && interactionData.nodes.length > 0) {
@@ -73,7 +73,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
 
   const { initialNodes, initialEdges } = useMemo(() => {
     if (!interactionData?.nodes) return { initialNodes: [], initialEdges: [] };
-    
+
     const radius = 180;
     const centerX = 250;
     const centerY = 200;
@@ -139,10 +139,10 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
 
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     setSelectedNode({
-      id: node.data.id,
-      name: node.data.label,
-      role: node.data.role,
-      interactions: node.data.interactions,
+      id: node.data.id as string,
+      name: node.data.label as string,
+      role: node.data.role as string,
+      interactions: node.data.interactions as number,
     });
   }, []);
 
@@ -173,7 +173,7 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                   <SelectValue placeholder="Chọn sinh viên..." />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  {members?.content?.map((m: any) => (
+                  {members?.content?.map((m: { studentId: string; fullName: string; studentCode: string }) => (
                     <SelectItem key={m.studentId} value={m.studentId} className="rounded-lg my-1 cursor-pointer">
                       {m.fullName} ({m.studentCode})
                     </SelectItem>
@@ -270,9 +270,9 @@ export function ProjectInteractionGraph({ courseId, teamId }: { courseId: string
                 <div className="space-y-3 pt-4 border-t border-border/50">
                   <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Phân tích Chi tiết (AI)</h3>
                   <div className="space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-2">
-                    {interactionData?.edges?.filter((e: any) => e.fromStudentId === activeSelectedNode?.id || e.toStudentId === activeSelectedNode?.id).map((edge: any, idx: number) => {
+                    {interactionData?.edges?.filter((e) => e.fromStudentId === activeSelectedNode?.id || e.toStudentId === activeSelectedNode?.id).map((edge, idx) => {
                       const isSource = edge.fromStudentId === activeSelectedNode?.id;
-                      const otherNode = interactionData?.nodes?.find((n: any) => n.studentId === (isSource ? edge.toStudentId : edge.fromStudentId));
+                      const otherNode = interactionData?.nodes?.find((n) => n.studentId === (isSource ? edge.toStudentId : edge.fromStudentId));
 
                       const getActionText = () => {
                         if (edge.sourceType === "ASSIGNED_TO") return isSource ? "Giao task cho" : "Được giao task bởi";

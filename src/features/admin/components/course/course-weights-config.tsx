@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useGetCourseWeights } from "@/features/admin/hooks/useContributionWeight";
+import { useCourseWeights } from "@/features/lecturer/hooks/useCourseWeights";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Code, FileText, PenTool, Scale } from "lucide-react";
@@ -12,7 +12,7 @@ interface CourseWeightsConfigProps {
 }
 
 export const CourseWeightsConfig = ({ courseId }: CourseWeightsConfigProps) => {
-  const { data: weights, isLoading } = useGetCourseWeights(courseId);
+  const { data: weights, isLoading } = useCourseWeights(courseId);
 
   if (isLoading) {
     return (
@@ -93,8 +93,8 @@ export const CourseWeightsConfig = ({ courseId }: CourseWeightsConfigProps) => {
         <div>
           <p className="font-semibold text-foreground mb-1">Lưu ý về Trọng số Đánh giá</p>
           <p className="text-muted-foreground text-xs leading-relaxed">
-            Các trọng số này được sử dụng để tính toán điểm đóng góp cuối cùng của sinh viên trong môn học <strong>{weights.courseCode}</strong>.
-            Tổng của 4 trọng số này luôn phải bằng 100%. Nếu muốn điều chỉnh, giảng viên sẽ gửi yêu cầu và Admin sẽ là người phê duyệt.
+            Các trọng số mặc định này được áp dụng làm cơ sở cho môn học (ID: <strong>{weights.courseId}</strong>).
+            Lưu ý: Việc điều chỉnh trọng số đánh giá thực tế hiện đã được chuyển xuống cấp độ Nhóm (Team) để đảm bảo tính linh hoạt. Giảng viên và Admin có thể điều chỉnh trọng số cho từng nhóm cụ thể trong trang quản lý Nhóm.
           </p>
         </div>
       </div>

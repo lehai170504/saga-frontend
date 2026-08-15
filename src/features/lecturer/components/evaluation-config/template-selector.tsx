@@ -29,7 +29,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
   const setDesignWeight = (val: number) => setCustomDesignWeight(val);
 
   const totalWeight = (codeWeight + documentWeight + designWeight).toFixed(2);
-  const isValid = Math.abs(parseFloat(totalWeight) - 100) < 0.1;
+  const isValid = parseFloat(totalWeight) === 100;
   const isModified = weightsData && (
     codeWeight !== weightsData.codeWeight ||
     documentWeight !== weightsData.documentWeight ||
@@ -38,7 +38,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
 
   const handleSubmit = () => {
     if (!isValid) {
-      toast.error("Tổng trọng số phải bằng xấp xỉ 100%");
+      toast.error("Tổng trọng số phải bằng ĐÚNG 100%");
       return;
     }
     updateWeights(
@@ -101,7 +101,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                       <span className="text-sm font-medium w-6">%</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-bold w-1/3">2. Viết Tài liệu (Docs)</Label>
                     <div className="flex items-center gap-2 w-2/3">

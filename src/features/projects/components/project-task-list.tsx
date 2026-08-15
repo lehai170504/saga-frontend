@@ -9,14 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Search, User, CircleDot } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import {
   Select,
   SelectContent,
@@ -58,7 +51,7 @@ function TaskTraceabilityDetails({ projectId, taskId }: { projectId: string; tas
       <h4 className="font-bold text-sm text-muted-foreground uppercase tracking-wider flex items-center gap-2">
         <CircleDot size={16} /> Liên kết GitHub
       </h4>
-      
+
       {githubIssues.length > 0 && (
         <div className="space-y-2">
           {githubIssues.map((issue) => (
@@ -102,7 +95,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
     selectedTaskId || ""
   );
 
-  const tasks = tasksData?.content || [];
+  const tasks = React.useMemo(() => tasksData?.content || [], [tasksData?.content]);
 
   const getStatusColor = (status: string) => {
     if (!status) return "bg-muted text-muted-foreground border-border";
@@ -166,7 +159,7 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
       if (!groups[status]) groups[status] = [];
       groups[status].push(task);
     });
-    
+
     const orderScore = (status: string) => {
       const s = status.toLowerCase().replace(/_/g, " ");
       if (s.includes("to do") || s.includes("todo") || s.includes("backlog") || s.includes("open") || s.includes("mới")) return 1;
@@ -258,11 +251,11 @@ export function ProjectTaskList({ projectId, sprintId: initialSprintId, members 
                     {groupTasks.length}
                   </Badge>
                 </div>
-                
+
                 <div className="flex flex-col gap-3">
                   {groupTasks.map(task => (
-                    <Card 
-                      key={task.id} 
+                    <Card
+                      key={task.id}
                       className="rounded-xl border-border/50 bg-background hover:border-primary/40 hover:shadow-md transition-all cursor-pointer group"
                       onClick={() => setSelectedTaskId(task.id)}
                     >
