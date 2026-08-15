@@ -138,10 +138,6 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     }
   }, [activeTab, courseData]);
 
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
-
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
       <div className="relative p-6 max-w-[1400px] mx-auto space-y-6">

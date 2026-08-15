@@ -58,11 +58,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
   const canAccessReview = isReviewWindowOpen();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Determine criteria with fallbacks (Team -> Default -> Hardcoded standard)
   const getRubricCriteria = (): RubricCriterion[] => {
     if (teamRubricData?.criteria && teamRubricData.criteria.length > 0) {
@@ -99,10 +94,6 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
   const criteria = getRubricCriteria();
   const peerReviewState = usePeerReviewState(activeTeamId, sprintId || "", criteria);
-
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
 
   const candidates = candidatesData?.candidates || [];
 

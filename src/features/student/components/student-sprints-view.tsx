@@ -29,15 +29,6 @@ export function StudentSprintsView({ courseId, hideHeader = false }: StudentSpri
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingSprints);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!mounted) {
-    return <div className="p-6 min-h-screen bg-background" />;
-  }
-
   const sprints = sprintsData?.sprints || [];
 
   const mainContent = (
