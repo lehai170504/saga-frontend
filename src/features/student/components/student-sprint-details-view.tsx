@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { ArrowLeft, Users, UserCheck, ShieldAlert, Lock } from "lucide-react";
+import { ArrowLeft, Users, UserCheck, ShieldAlert, Lock, FolderKanban } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { Badge } from "@/components/ui/badge";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
+import { useProjectDetail } from "@/features/projects/hooks/useProjects";
 import {
   useTeamSprintCandidates,
   useTeamRubric,
@@ -32,6 +34,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
 
   const activeTeamId = myTeamData?.teamId || "";
+  const { data: projectDetail } = useProjectDetail(myTeamData?.project?.id || "");
   const { data: sprintsData } = useTeamSprints(activeTeamId);
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(
     activeTeamId,
@@ -166,21 +169,42 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
         ) : (
           <div className="space-y-8">
             {/* Project / Team Info Hero Bar */}
-            <div className="bg-gradient-to-br from-primary/5 via-background to-transparent border border-border/50 rounded-[2rem] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
-                  Nhóm đang đánh giá
-                </p>
-                <h3 className="text-xl font-bold text-foreground">{myTeamData.teamName}</h3>
+            <div className="bg-gradient-to-br from-primary/5 via-background to-transparent border border-border/50 rounded-[2rem] p-6 space-y-4 shadow-sm">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
+                    Nhóm đang đánh giá
+                  </p>
+                  <h3 className="text-2xl font-black text-foreground">{myTeamData.teamName}</h3>
+                </div>
+
+                <div className="space-y-1 sm:text-right">
+                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
+                    Dự án / Đề tài
+                  </p>
+                  <div className="flex flex-wrap items-center sm:justify-end gap-2">
+                    <h3 className="text-base font-extrabold text-foreground">
+                      {projectDetail?.name || myTeamData.project?.name || "Chưa có đề tài"}
+                    </h3>
+                    {projectDetail?.projectType && (
+                      <Badge
+                        variant="outline"
+                        className="bg-primary/10 text-primary border-primary/20 font-extrabold text-[10px] uppercase px-2.5 py-0.5 rounded-full"
+                      >
+                        {projectDetail.projectType.code
+                          ? `${projectDetail.projectType.name} (${projectDetail.projectType.code})`
+                          : projectDetail.projectType.name}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="space-y-1 sm:text-right">
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
-                  Dự án / Đề tài
+
+              {projectDetail?.description && (
+                <p className="text-xs text-foreground/80 font-medium max-w-2xl border-l-2 border-primary/30 pl-3 leading-relaxed">
+                  {projectDetail.description}
                 </p>
-                <h3 className="text-sm font-semibold text-foreground">
-                  {myTeamData.project?.name || "Chưa có đề tài"}
-                </h3>
-              </div>
+              )}
             </div>
 
             {/* Candidates Section */}

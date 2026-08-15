@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Users, Zap, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
-import { useCreateTeamProject } from "@/features/projects/hooks/useProjects";
+import { useCreateTeamProject, useProjectDetail } from "@/features/projects/hooks/useProjects";
 import { toast } from "sonner";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
@@ -79,7 +79,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     }
 
     createProjectMutation.mutate(
-      { name: projectName, courseId: courseId || "", projectTypeId },
+      { name: projectName, projectTypeId },
       {
         onSuccess: () => {
           setIsDialogOpen(false);
@@ -95,6 +95,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   };
 
   const projectId = myTeamData?.project?.id;
+  const { data: projectDetail } = useProjectDetail(projectId || "");
   const members = useMemo(() => myTeamData?.members?.content || [], [myTeamData]);
 
   // Sắp xếp Trưởng nhóm lên đầu
@@ -204,6 +205,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                   projectName={myTeamData.project?.name}
                   projectId={projectId}
                   courseId={courseId}
+                  projectDetail={projectDetail}
                   showScores={showScores}
                   setShowScores={setShowScores}
                   isDialogOpen={isDialogOpen}
