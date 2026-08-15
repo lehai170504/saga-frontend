@@ -85,9 +85,8 @@ export function MemberContributionCard({
               Tỷ lệ đóng góp cuối
             </p>
             <span
-              className={`text-lg font-black ${
-                member.finalContributionPercentage < 50 ? "text-destructive" : "text-primary"
-              }`}
+              className={`text-lg font-black ${member.finalContributionPercentage < 50 ? "text-destructive" : "text-primary"
+                }`}
             >
               {truncateDecimal(member.finalContributionPercentage)}%
             </span>
@@ -103,11 +102,10 @@ export function MemberContributionCard({
             {warnings.map((w, idx) => (
               <div
                 key={idx}
-                className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${
-                  w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
+                className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
                     ? "bg-destructive/10 border-destructive/20 text-destructive"
                     : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
-                }`}
+                  }`}
               >
                 <AlertTriangle size={15} className="shrink-0 mt-0.5" />
                 <div>
@@ -156,7 +154,7 @@ export function MemberContributionCard({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <Code size={13} className="text-blue-500" />
-                  Lập trình (Code)
+                  Code
                 </span>
                 <span className="text-xs font-black text-blue-500">{truncateDecimal(member.codeContributionPercentage)}%</span>
               </div>
@@ -196,7 +194,7 @@ export function MemberContributionCard({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                   <FileText size={13} className="text-amber-500" />
-                  Tài liệu (Document)
+                  Docs
                 </span>
                 <span className="text-xs font-black text-amber-500">{truncateDecimal(member.documentContributionPercentage)}%</span>
               </div>

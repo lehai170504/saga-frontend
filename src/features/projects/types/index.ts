@@ -46,8 +46,9 @@ export type ProjectDetailResponse = {
 export type UpdateProjectGroupWeightsRequest = {
   groupId: string;
   codeWeight: number;
+  testWeight: number;
   documentWeight: number;
-  designWeight: number;
+  researchWeight: number;
   note?: string;
 };
 

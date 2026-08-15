@@ -1,5 +1,12 @@
 import axiosInstance from "@/lib/axios";
-import { ContributionEvaluationResponse, ContributionOverrideRequest, CourseContributionWeightResponse, CourseContributionWeightRequest } from "../types/contribution";
+import {
+  ContributionEvaluationResponse,
+  ContributionOverrideRequest,
+  CourseContributionWeightResponse,
+  CourseContributionWeightRequest,
+  CourseContributionTeamWeightResponse,
+  CourseContributionModeRequest
+} from "../types/contribution";
 
 export const contributionApi = {
   getContributionEvaluation: async (teamId: string) => {
@@ -27,4 +34,17 @@ export const contributionApi = {
       data
     );
   },
+
+  getCourseContributionTeamWeights: async (courseId: string) => {
+    return axiosInstance.get<never, CourseContributionTeamWeightResponse>(
+      `/api/v1/courses/${courseId}/contribution-team-weights`
+    );
+  },
+
+  updateCourseContributionMode: async (courseId: string, data: CourseContributionModeRequest) => {
+    return axiosInstance.put<never, void>(
+      `/api/v1/courses/${courseId}/contribution-config-mode`,
+      data
+    );
+  }
 };

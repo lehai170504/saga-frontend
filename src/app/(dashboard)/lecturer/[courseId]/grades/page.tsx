@@ -80,45 +80,8 @@ export default function LecturerContributionPage() {
   // State local để quản lý Override (vì API chưa có, ta dùng state giả lập UI)
   const [localAdjustments, setLocalAdjustments] = useState<Record<string, ContributionAdjustment>>({});
 
-  // Dynamic mock data based on real students if API fails
-  const dynamicMockData = useMemo(() => {
-    if (!studentsData?.studentsWithTeam?.content) return undefined;
-    const teamStudents = studentsData.studentsWithTeam.content.filter(s => s.team?.teamId === selectedTeamId);
-    if (teamStudents.length === 0) return undefined;
-
-    // NẾU NHÓM CHƯA KẾT NỐI PROJECT -> Không render mock data, để cho rơi vào Empty State!
-    if (!teamStudents[0].team?.projectId) return undefined;
-
-    return {
-      teamId: selectedTeamId,
-      projectId: teamStudents[0].team.projectId,
-      teamName: teamStudents[0].team?.teamName || "Nhóm",
-      evaluatedAt: new Date().toISOString(),
-      members: teamStudents.map((s, idx) => ({
-        studentId: s.studentId,
-        fullName: s.fullName,
-        studentCode: s.studentCode,
-        email: s.email,
-        role: s.team?.teamMembers?.find(tm => tm.studentId === s.studentId)?.roleInTeam || "MEMBER",
-        codeContributionScore: 80 - idx * 10,
-        codeContributionPercentage: 40.0 - idx * 5,
-        documentContributionScore: 20 + idx * 10,
-        documentContributionPercentage: 10.0 + idx * 5,
-        designContributionScore: 0,
-        designContributionPercentage: 0.0,
-        finalContributionPercentage: 50.0,
-        taskContributionScore: 100,
-        taskContributionPercentage: 50.0,
-        peerReviewScore: 15 + (idx % 5),
-        evidenceCount: 10,
-        warnings: idx === 1 ? [{ code: "AI_WARN", message: "AI: Ghosting 5 ngày", severity: "HIGH" }] : [],
-        sprintBreakdowns: []
-      }))
-    } as ContributionEvaluationResponse;
-  }, [studentsData, selectedTeamId]);
-
-  // Dùng mock data nếu API lỗi hoặc đang dev
-  const teamData = apiData || dynamicMockData;
+  // Dùng dữ liệu thật từ API
+  const teamData = apiData;
 
   // Lọc sinh viên theo tên
   const filteredMembers = useMemo(() => {
@@ -262,7 +225,7 @@ export default function LecturerContributionPage() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-4 py-2 rounded-xl border border-border/50 w-full lg:w-auto">
                 <Info size={16} className="text-primary flex-shrink-0" />
-                <span>% Hệ thống = (% Code + % Doc + % Design). Giảng viên nhập trực tiếp % mới để ghi đè.</span>
+                <span>% Hệ thống được tính dựa trên 4 thành phần (Code, Test, Doc, Research) x Trọng số cấu hình. Giảng viên nhập trực tiếp % mới để ghi đè.</span>
               </div>
             </div>
 
@@ -322,8 +285,9 @@ export default function LecturerContributionPage() {
                       <TableHead className="font-bold text-muted-foreground text-center">Vai trò</TableHead>
                       <TableHead className="font-bold text-muted-foreground text-center" title="Điểm Peer Review (Max 20)">Peer Review</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Test</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
-                      <TableHead className="text-center font-bold text-muted-foreground">% Design</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Rsch</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
@@ -341,8 +305,8 @@ export default function LecturerContributionPage() {
                         const adjustment = localAdjustments[student.studentId];
                         const isOverridden = !!adjustment;
                         const finalDisplayValue = isOverridden
-                          ? (student.finalContributionPercentage + adjustment.adjustmentPercentage).toFixed(1)
-                          : student.finalContributionPercentage.toFixed(1);
+                          ? ((student.finalContributionPercentage ?? 0) + adjustment.adjustmentPercentage).toFixed(1)
+                          : (student.finalContributionPercentage ?? 0).toFixed(1);
 
                         return (
                           <TableRow key={student.studentId} className="hover:bg-muted/20 transition-colors">
@@ -357,8 +321,9 @@ export default function LecturerContributionPage() {
 
                             {/* Slices Breakdown */}
                             <TableCell className="text-center font-medium">{student.codeContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.testContributionPercentage}%</TableCell>
                             <TableCell className="text-center font-medium">{student.documentContributionPercentage}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.designContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.researchContributionPercentage}%</TableCell>
 
                             <TableCell className="text-center">
                               {student.warnings && student.warnings.length > 0 ? (
@@ -374,7 +339,7 @@ export default function LecturerContributionPage() {
 
                             {/* System Score */}
                             <TableCell className="text-center bg-primary/5 border-x border-primary/20">
-                              <span className="font-bold text-primary text-lg">{student.finalContributionPercentage.toFixed(1)}%</span>
+                              <span className="font-bold text-primary text-lg">{(student.finalContributionPercentage ?? 0).toFixed(1)}%</span>
                             </TableCell>
 
                             {/* Manual Override Score */}

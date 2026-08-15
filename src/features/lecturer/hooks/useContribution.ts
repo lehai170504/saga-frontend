@@ -47,3 +47,28 @@ export const useUpdateCourseContributionWeights = () => {
     },
   });
 };
+
+export const useCourseContributionTeamWeights = (courseId: string) => {
+  return useQuery({
+    queryKey: ["course-contribution-team-weights", courseId],
+    queryFn: () => contributionApi.getCourseContributionTeamWeights(courseId),
+    enabled: !!courseId,
+  });
+};
+
+export const useUpdateCourseContributionMode = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ courseId, data }: { courseId: string; data: import("../types/contribution").CourseContributionModeRequest }) =>
+      contributionApi.updateCourseContributionMode(courseId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["course-contribution-team-weights", variables.courseId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["course-contribution-weights", variables.courseId],
+      });
+    },
+  });
+};

@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -25,8 +25,9 @@ interface LecturerUpdateGroupWeightsModalProps {
 export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, teamName }: LecturerUpdateGroupWeightsModalProps) {
   const [open, setOpen] = useState(false);
   const [codeWeight, setCodeWeight] = useState("0");
+  const [testWeight, setTestWeight] = useState("0");
   const [documentWeight, setDocumentWeight] = useState("0");
-  const [designWeight, setDesignWeight] = useState("0");
+  const [researchWeight, setResearchWeight] = useState("0");
   const [note, setNote] = useState("");
   const queryClient = useQueryClient();
 
@@ -36,32 +37,40 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
     setOpen(newOpen);
     if (newOpen) {
       setCodeWeight("0");
+      setTestWeight("0");
       setDocumentWeight("0");
-      setDesignWeight("0");
+      setResearchWeight("0");
       setNote("");
     }
   };
 
   const handleUpdate = () => {
     const c = parseFloat(codeWeight);
+    const test = parseFloat(testWeight);
     const doc = parseFloat(documentWeight);
-    const des = parseFloat(designWeight);
+    const res = parseFloat(researchWeight);
 
-    if (isNaN(c) || isNaN(doc) || isNaN(des)) {
+    if (isNaN(c) || isNaN(test) || isNaN(doc) || isNaN(res)) {
       toast.error("Vui lòng nhập số hợp lệ");
       return;
     }
 
-    if (Math.abs(c + doc + des - 100) > 0.1) {
+    if (Math.abs(c + test + doc + res - 100) > 0.01) {
       toast.warning("Lưu ý: Tổng trọng số nên bằng 100%. Hãy kiểm tra lại nếu cố ý.");
     }
+
+    const codeW = c;
+    const testW = test;
+    const docW = doc;
+    const resW = Math.round((100 - c - test - doc) * 100) / 100; // Strictly guarantee sum is 100
 
     updateWeights.mutate(
       {
         groupId: teamId,
-        codeWeight: c / 100,
-        documentWeight: doc / 100,
-        designWeight: des / 100,
+        codeWeight: codeW,
+        testWeight: testW,
+        documentWeight: docW,
+        researchWeight: resW,
         note
       },
       {
@@ -95,7 +104,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Code</label>
               <div className="relative">
@@ -106,6 +115,21 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
                   max="100"
                   value={codeWeight}
                   onChange={(e) => setCodeWeight(e.target.value)}
+                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Test</label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="100"
+                  value={testWeight}
+                  onChange={(e) => setTestWeight(e.target.value)}
                   className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
@@ -127,15 +151,15 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Design</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Research</label>
               <div className="relative">
                 <Input
                   type="number"
                   step="1"
                   min="0"
                   max="100"
-                  value={designWeight}
-                  onChange={(e) => setDesignWeight(e.target.value)}
+                  value={researchWeight}
+                  onChange={(e) => setResearchWeight(e.target.value)}
                   className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>

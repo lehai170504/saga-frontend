@@ -20,13 +20,13 @@ export interface ContributionMember {
   codeContributionScore: number;
   testContributionScore?: number;
   documentContributionScore: number;
-  researchContributionScore?: number;
-  designContributionScore?: number;
+  testContributionScore: number;
+  researchContributionScore: number;
   codeContributionPercentage: number;
   testContributionPercentage?: number;
   documentContributionPercentage: number;
-  researchContributionPercentage?: number;
-  designContributionPercentage?: number;
+  testContributionPercentage: number;
+  researchContributionPercentage: number;
   peerReviewScore: number;
   taskContributionScore: number;
   taskContributionPercentage: number;
@@ -62,14 +62,41 @@ export interface ContributionOverrideRequest {
 export interface CourseContributionWeightResponse {
   courseId: string;
   codeWeight: number;
+  testWeight: number;
   documentWeight: number;
-  designWeight: number;
+  researchWeight: number;
   lastUpdatedAt: string | null;
 }
 
 export interface CourseContributionWeightRequest {
   codeWeight: number;
+  testWeight: number;
   documentWeight: number;
-  designWeight: number;
+  researchWeight: number;
+}
+
+export interface CourseContributionModeRequest {
+  mode: "COURSE" | "TEAM";
+}
+
+export interface TeamContributionWeightItem {
+  teamId: string;
+  teamName: string;
+  projectId: string;
+  projectName: string;
+  projectTypeId: string;
+  projectTypeCode: string;
+  projectTypeName: string;
+  source: string;
+  codeWeight: number;
+  testWeight: number;
+  documentWeight: number;
+  researchWeight: number;
+}
+
+export interface CourseContributionTeamWeightResponse {
+  courseId: string;
+  mode: "COURSE" | "TEAM";
+  teams: TeamContributionWeightItem[];
 }
 

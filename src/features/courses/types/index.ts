@@ -32,7 +32,8 @@ export interface Course {
   updatedAt: string;
   codeContributionWeight?: number;
   documentContributionWeight?: number;
-  designContributionWeight?: number;
+  testContributionWeight?: number;
+  researchContributionWeight?: number;
 }
 
 export interface CourseRequest {
