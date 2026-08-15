@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSprintVelocity, useSprintBurndown } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,9 +14,36 @@ export function ProjectBurndownChart({ courseId, teamId }: { courseId: string; t
   const { data: velocityData, isLoading: isLoadingSprints } = useSprintVelocity(courseId, teamId);
   const [selectedSprintId, setSelectedSprintId] = useState<string>("");
 
-  const activeSprintId = selectedSprintId || (velocityData?.sprints?.[0]?.sprintId ?? "");
+  // Calculate default sprint synchronously to avoid initial incorrect API calls
+  const defaultSprintId = React.useMemo(() => {
+    if (!velocityData?.sprints || velocityData.sprints.length === 0) return "";
+    
+    // 1. Find ACTIVE sprint
+    let target = velocityData.sprints.find((s: any) => 
+      s.state === "ACTIVE" || s.state === "active" || s.sprintState === "ACTIVE" || s.sprintState === "active"
+    );
+    
+    // 2. If no active sprint, find the latest CLOSED sprint
+    if (!target) {
+      const closedSprints = velocityData.sprints.filter((s: any) => 
+        s.state === "CLOSED" || s.state === "closed" || s.sprintState === "CLOSED" || s.sprintState === "closed"
+      );
+      if (closedSprints.length > 0) {
+        target = closedSprints[closedSprints.length - 1];
+      }
+    }
 
-  const { data: burndownData, isLoading: isLoadingBurndown } = useSprintBurndown(courseId, teamId, activeSprintId);
+    // 3. Fallback to any sprint that has a startDate (not future)
+    if (!target) {
+      target = velocityData.sprints.find((s: any) => s.startDate != null);
+    }
+
+    return target ? target.sprintId : "";
+  }, [velocityData]);
+
+  const activeSprintId = selectedSprintId || defaultSprintId;
+
+  const { data: burndownData, isLoading: isLoadingBurndown, error: burndownError } = useSprintBurndown(courseId, teamId, activeSprintId);
 
   const isLoading = isLoadingSprints || isLoadingBurndown;
 
@@ -128,6 +155,12 @@ export function ProjectBurndownChart({ courseId, teamId }: { courseId: string; t
             {isLoading ? (
               <div className="w-full h-full flex items-center justify-center">
                 <Skeleton className="w-full h-full rounded-xl" />
+              </div>
+            ) : burndownError ? (
+              <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+                <AlertCircle size={48} className="mb-4 text-amber-500/50" />
+                <p className="font-medium text-lg text-foreground">Không thể tải dữ liệu Burndown</p>
+                <p className="text-sm opacity-70 mt-1">Sprint này có thể chưa bắt đầu, hoặc API đang gặp sự cố (báo lỗi HTTP).</p>
               </div>
             ) : chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">

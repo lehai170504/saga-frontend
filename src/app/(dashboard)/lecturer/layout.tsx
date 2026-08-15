@@ -2,6 +2,7 @@
 
 import React from "react";
 import { RouteGuard } from "@/components/shared/RouteGuard";
+import { SagaAiWidget } from "@/features/ai/components/SagaAiWidget";
 
 export default function LecturerLayout({
   children,
@@ -12,6 +13,7 @@ export default function LecturerLayout({
     <RouteGuard allowedRoles={["LECTURER"]}>
       <div className="min-h-screen bg-background">
         <main className="w-full">{children}</main>
+        <SagaAiWidget />
       </div>
     </RouteGuard>
   );

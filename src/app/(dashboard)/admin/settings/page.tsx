@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings2, Logs, BookOpen, ShieldAlert } from "lucide-react";
+import { Logs, BookOpen, ShieldAlert } from "lucide-react";
 import { ClientGuard } from "@/features/auth/components/client-guard";
 
-import { EvaluationConfigView } from "@/features/admin/components/settings/evaluation-config-view";
+import { AiWarningRules } from "@/features/admin/components/evaluation-config/ai-warning-rules";
 import { SystemLogsView } from "@/features/admin/components/settings/system-logs-view";
 import { AdminGuideView } from "@/features/admin/components/settings/admin-guide-view";
 
@@ -34,8 +34,8 @@ export default function SystemSettingsPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
           <TabsList className="bg-card border border-border/50 rounded-[2rem] w-full p-2 grid grid-cols-1 lg:grid-cols-3 gap-2 h-auto lg:h-14">
             <TabsTrigger value="evaluation" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
-              <Settings2 className="w-4 h-4 mr-2" />
-              Cấu hình Đánh giá
+              <ShieldAlert className="w-4 h-4 mr-2" />
+              Cảnh báo AI
             </TabsTrigger>
             <TabsTrigger value="logs" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
               <Logs className="w-4 h-4 mr-2" />
@@ -49,7 +49,7 @@ export default function SystemSettingsPage() {
 
           <TabsContent value="evaluation" className="focus-visible:outline-none">
             <div className="bg-card border border-border/50 rounded-[2rem] p-6 shadow-sm">
-              <EvaluationConfigView />
+              <AiWarningRules />
             </div>
           </TabsContent>
 

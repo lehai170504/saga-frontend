@@ -34,12 +34,12 @@ export const useCourseContributionWeights = (courseId: string) => {
   });
 };
 
-export const useRequestCourseContributionWeight = () => {
+export const useUpdateCourseContributionWeights = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ courseId, data }: { courseId: string; data: import("../types/contribution").CourseContributionWeightRequest }) =>
-      contributionApi.requestCourseContributionWeight(courseId, data),
+      contributionApi.updateCourseContributionWeights(courseId, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["course-contribution-weights", variables.courseId],

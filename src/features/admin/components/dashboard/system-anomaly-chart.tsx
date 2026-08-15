@@ -8,10 +8,10 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useMemo } from "react";
 
 const SIGNAL_MAP: Record<string, { name: string, color: string, gradient: string }> = {
-  OVERDUE_TASK: { name: "Quá hạn Task", color: "hsl(var(--destructive))", gradient: "url(#grad-destructive)" },
-  MSR: { name: "Task Ảo (MSR)", color: "hsl(var(--warning, 38 92% 50%))", gradient: "url(#grad-warning)" },
-  DEADLINE_PROCESS: { name: "Cày Deadline", color: "hsl(var(--primary))", gradient: "url(#grad-primary)" },
-  SNA_ISOLATION: { name: "Cô Lập (SNA)", color: "hsl(var(--success, 142 71% 45%))", gradient: "url(#grad-success)" },
+  OVERDUE_TASK: { name: "Quá hạn Task", color: "var(--destructive)", gradient: "url(#grad-destructive)" },
+  MSR: { name: "Task Ảo (MSR)", color: "var(--warning)", gradient: "url(#grad-warning)" },
+  DEADLINE_PROCESS: { name: "Cày Deadline", color: "var(--primary)", gradient: "url(#grad-primary)" },
+  SNA_ISOLATION: { name: "Cô Lập (SNA)", color: "var(--success)", gradient: "url(#grad-success)" },
 };
 
 export function SystemAnomalyChart() {
@@ -27,7 +27,7 @@ export function SystemAnomalyChart() {
 
     dataArray.forEach((anomaly: unknown) => {
       const typedAnomaly = anomaly as { type: string, supportStatus: string, count: number | null };
-      const config = SIGNAL_MAP[typedAnomaly.type] || { name: typedAnomaly.type, color: "hsl(var(--muted-foreground))" };
+      const config = SIGNAL_MAP[typedAnomaly.type] || { name: typedAnomaly.type, color: "var(--muted-foreground)" };
 
       if (typedAnomaly.supportStatus === "TBD") {
         tbdSignals.push({ name: config.name, color: config.color, signal: typedAnomaly.type });
@@ -66,20 +66,20 @@ export function SystemAnomalyChart() {
               <PieChart>
                 <defs>
                   <linearGradient id="grad-destructive" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={1} />
-                    <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.6} />
+                    <stop offset="0%" stopColor="var(--destructive)" stopOpacity={1} />
+                    <stop offset="100%" stopColor="var(--destructive)" stopOpacity={0.6} />
                   </linearGradient>
                   <linearGradient id="grad-warning" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--warning, 38 92% 50%))" stopOpacity={1} />
-                    <stop offset="100%" stopColor="hsl(var(--warning, 38 92% 50%))" stopOpacity={0.6} />
+                    <stop offset="0%" stopColor="var(--warning)" stopOpacity={1} />
+                    <stop offset="100%" stopColor="var(--warning)" stopOpacity={0.6} />
                   </linearGradient>
                   <linearGradient id="grad-primary" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                    <stop offset="0%" stopColor="var(--primary)" stopOpacity={1} />
+                    <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.6} />
                   </linearGradient>
                   <linearGradient id="grad-success" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--success, 142 71% 45%))" stopOpacity={1} />
-                    <stop offset="100%" stopColor="hsl(var(--success, 142 71% 45%))" stopOpacity={0.6} />
+                    <stop offset="0%" stopColor="var(--success)" stopOpacity={1} />
+                    <stop offset="100%" stopColor="var(--success)" stopOpacity={0.6} />
                   </linearGradient>
                   <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                     <feGaussianBlur stdDeviation="4" result="blur" />
@@ -117,7 +117,7 @@ export function SystemAnomalyChart() {
                   Cảnh báo
                 </text>
                 <Tooltip
-                  contentStyle={{ borderRadius: '16px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--card))' }}
+                  contentStyle={{ borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
                 />
                 <Legend verticalAlign="bottom" height={36} iconType="circle" />
               </PieChart>

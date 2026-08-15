@@ -50,6 +50,20 @@ export const useProjectTypes = () => {
   });
 };
 
+export const useCreateProjectType = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Omit<import("../types").ProjectType, 'projectTypeId'>) => projectApi.createProjectType(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-types"] });
+      toast.success("Tạo Project Type thành công");
+    },
+    onError: (err: Error | Record<string, unknown>) => {
+      toast.error((err as Error).message || "Lỗi khi tạo Project Type");
+    }
+  });
+};
+
 export const useUpdateProjectGroupWeights = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({

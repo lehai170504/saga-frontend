@@ -3,7 +3,7 @@ import { CreateTeamProjectRequest, ProjectResponse, ProjectDetailResponse, Githu
 
 export const projectApi = {
   createTeamProject: async (teamId: string, data: CreateTeamProjectRequest) => {
-    return axiosInstance.post<never, ProjectResponse>(`/api/teams/${teamId}/projects`, data);
+    return axiosInstance.post<never, ProjectResponse>(`/api/v1/teams/${teamId}/projects`, data);
   },
   getProjectDetail: async (projectId: string) => {
     return axiosInstance.get<never, ProjectDetailResponse>(`/api/projects/${projectId}`);
@@ -13,6 +13,9 @@ export const projectApi = {
   },
   getProjectTypes: async () => {
     return axiosInstance.get<never, ProjectType[]>('/api/project-types');
+  },
+  createProjectType: async (data: Omit<ProjectType, 'projectTypeId'>) => {
+    return axiosInstance.post<never, ProjectType>('/api/project-types', data);
   },
   updateProjectGroupWeights: async (projectId: string, data: UpdateProjectGroupWeightsRequest) => {
     return axiosInstance.put<never, ProjectResponse>(`/api/projects/${projectId}/group-weights`, data);

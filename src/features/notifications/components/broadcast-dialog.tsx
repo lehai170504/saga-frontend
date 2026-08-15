@@ -13,9 +13,10 @@ import { v4 as uuidv4 } from "uuid";
 
 interface BroadcastDialogProps {
   courseIds: string[];
+  triggerClassName?: string;
 }
 
-export function BroadcastDialog({ courseIds }: BroadcastDialogProps) {
+export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -53,8 +54,8 @@ export function BroadcastDialog({ courseIds }: BroadcastDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 bg-primary hover:bg-primary/90 h-12 rounded-xl font-bold shadow-lg shadow-primary/20">
-          <Megaphone size={18} />
+        <Button className={triggerClassName || "gap-2 bg-primary hover:bg-primary/90 h-10 px-5 rounded-xl font-bold shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto"}>
+          <Megaphone size={16} />
           Gửi thông báo lớp
         </Button>
       </DialogTrigger>

@@ -5,13 +5,13 @@ import { Settings2, BookOpen, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCourseWeights, useUpdateCourseWeights } from "../../hooks/useCourseWeights";
+import { useCourseContributionWeights, useUpdateCourseContributionWeights } from "../../hooks/useContribution";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function TemplateSelector({ courseId }: { courseId: string }) {
-  const { data: weightsData, isLoading } = useCourseWeights(courseId);
-  const { mutate: updateWeights, isPending } = useUpdateCourseWeights(courseId);
+  const { data: weightsData, isLoading } = useCourseContributionWeights(courseId);
+  const { mutate: updateWeights, isPending } = useUpdateCourseContributionWeights();
 
   const [customCodeWeight, setCustomCodeWeight] = useState<number | null>(null);
   const [customDocumentWeight, setCustomDocumentWeight] = useState<number | null>(null);
@@ -38,16 +38,15 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
       toast.error("Tổng trọng số phải bằng ĐÚNG 100%");
       return;
     }
-
     updateWeights(
-      { codeWeight, documentWeight, designWeight },
+      { courseId, data: { codeWeight, documentWeight, designWeight } },
       {
         onSuccess: () => {
-          // Success handled in hook
+          toast.success("Đã lưu trọng số thành công!");
         },
         onError: (err: Error) => {
           const resErr = err as Error & { response?: { data?: { message?: string } } };
-          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi cập nhật trọng số");
+          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi lưu thay đổi");
         }
       }
     );
@@ -139,16 +138,24 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                 </div>
               </div>
 
-              {/* Save Button */}
+              {/* Action Buttons */}
               {isModified && (
                 <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 space-y-4 animate-in fade-in slide-in-from-top-4">
+                  <div className="flex items-start gap-2 text-primary">
+                    <Info className="w-5 h-5 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <Label className="font-bold">Lưu Thay đổi Trọng số</Label>
+                      <p className="text-xs">Hệ số đã thay đổi so với cấu hình gốc. Bạn có thể lưu trực tiếp các thay đổi này.</p>
+                    </div>
+                  </div>
+
                   <div className="flex justify-end">
                     <Button
                       onClick={handleSubmit}
                       disabled={isPending || !isValid}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                     >
-                      {isPending ? "Đang lưu..." : "Lưu cấu hình"}
+                      {isPending ? "Đang lưu..." : "Lưu Thay Đổi"}
                     </Button>
                   </div>
                 </div>
