@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { ArrowLeft, Users, UserCheck, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Users, UserCheck, ShieldAlert, Lock } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
@@ -11,6 +11,7 @@ import {
   useTeamSprintCandidates,
   useTeamRubric,
   useTeamSprintReviews,
+  useTeamSprints,
 } from "@/features/projects/hooks/useTeamSprints";
 import { RubricCriterion, PeerReviewItem } from "@/features/projects/types";
 
@@ -31,6 +32,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
 
   const activeTeamId = myTeamData?.teamId || "";
+  const { data: sprintsData } = useTeamSprints(activeTeamId);
   const { data: candidatesData, isLoading: isLoadingCandidates } = useTeamSprintCandidates(
     activeTeamId,
     sprintId || ""
@@ -39,6 +41,22 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
   const { data: sprintReviewsData } = useTeamSprintReviews(activeTeamId, sprintId || "");
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!activeTeamId && isLoadingCandidates);
+
+  const currentSprint = (sprintsData?.sprints || []).find(
+    (s) =>
+      (s.sprintId || (s as unknown as { id?: string }).id || (s as unknown as { sprint_id?: string }).sprint_id) === sprintId
+  );
+
+  const isReviewWindowOpen = () => {
+    if (!currentSprint) return true;
+    if (!currentSprint.endDate) return false;
+    const isClosed = currentSprint.state === "CLOSED" || currentSprint.state === "closed";
+    if (isClosed) return true;
+    const openD = new Date(new Date(currentSprint.endDate).getTime() - 7 * 24 * 60 * 60 * 1000);
+    return new Date() >= openD;
+  };
+
+  const canAccessReview = isReviewWindowOpen();
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -100,11 +118,11 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
         {/* Navigation / Back Button */}
         <div className="flex items-center justify-between">
           <Link
-            href={`/student/${courseId}/sprints`}
+            href={`/student/${courseId}/projects?tab=peer-review`}
             className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors bg-muted/30 hover:bg-muted/50 px-4 py-2.5 rounded-xl border border-border/40 cursor-pointer shadow-sm"
           >
             <ArrowLeft size={16} />
-            Quay lại Sprints
+            Quay lại Đánh giá chéo
           </Link>
         </div>
 
@@ -123,6 +141,27 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
               <Skeleton className="h-24 w-full rounded-2xl bg-muted/40" />
               <Skeleton className="h-24 w-full rounded-2xl bg-muted/40" />
+            </div>
+          </div>
+        ) : !canAccessReview ? (
+          <div className="text-center p-12 glass-panel rounded-[2rem] border-dashed border-amber-500/30 max-w-lg mx-auto space-y-4">
+            <Lock size={48} className="mx-auto text-amber-500" />
+            <h3 className="text-xl font-bold text-foreground">Đánh giá chéo chưa được mở</h3>
+            <p className="text-sm text-muted-foreground">
+              {currentSprint && currentSprint.endDate
+                ? `Đợt đánh giá chéo cho ${currentSprint.sprintName} sẽ tự động mở từ ngày ${(() => {
+                    const openD = new Date(new Date(currentSprint.endDate).getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return `${String(openD.getDate()).padStart(2, '0')}-${String(openD.getMonth() + 1).padStart(2, '0')}-${openD.getFullYear()}`;
+                  })()} (trước hạn kết thúc Sprint 7 ngày).`
+                : "Sprint này chưa được thiết lập lịch thời gian trên Jira để mở đợt Đánh giá chéo."}
+            </p>
+            <div className="pt-2">
+              <Link
+                href={`/student/${courseId}/projects?tab=peer-review`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-md hover:bg-primary/90 transition-all"
+              >
+                <ArrowLeft size={16} /> Quay lại danh sách Đánh giá chéo
+              </Link>
             </div>
           </div>
         ) : !myTeamData ? (

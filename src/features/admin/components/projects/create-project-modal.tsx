@@ -102,20 +102,20 @@ export function CreateProjectModal({ teamId, trigger }: CreateProjectModalProps)
                 <SelectTrigger className="w-full h-11 rounded-xl bg-muted/20 border-border/50 focus:ring-primary/20">
                   <SelectValue placeholder="-- Chọn loại dự án --" />
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl">
-                  {projectTypes?.map((type: { projectTypeId: string; name: string; description: string }) => (
-                    <SelectItem key={type.projectTypeId} value={type.projectTypeId} className="rounded-xl cursor-pointer py-2">
-                      <div className="flex flex-col">
-                        <span className="font-semibold">{type.name}</span>
-                        <span className="text-[11px] text-muted-foreground line-clamp-1">{type.description}</span>
-                      </div>
+                <SelectContent position="popper" side="bottom" sideOffset={5} className="rounded-2xl border-border/50 shadow-xl">
+                  {!projectTypes || projectTypes.length === 0 ? (
+                    <SelectItem value="none" disabled className="rounded-xl py-2.5 text-xs text-muted-foreground italic font-medium cursor-not-allowed">
+                      Không có loại dự án nào
                     </SelectItem>
-                  ))}
-                  {(!projectTypes || projectTypes.length === 0) && (
-                    <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4" />
-                      Chưa có loại dự án nào được định nghĩa
-                    </div>
+                  ) : (
+                    projectTypes.map((type: { projectTypeId: string; name: string; description: string }) => (
+                      <SelectItem key={type.projectTypeId} value={type.projectTypeId} className="rounded-xl cursor-pointer py-2">
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{type.name}</span>
+                          <span className="text-[11px] text-muted-foreground line-clamp-1">{type.description}</span>
+                        </div>
+                      </SelectItem>
+                    ))
                   )}
                 </SelectContent>
               </Select>

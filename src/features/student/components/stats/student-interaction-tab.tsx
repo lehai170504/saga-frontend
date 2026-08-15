@@ -213,7 +213,18 @@ export function StudentInteractionTab({
                 }}
               >
                 <SelectTrigger className="w-full bg-background/60 border-border/60 rounded-xl h-11 text-xs font-bold">
-                  <SelectValue placeholder="Chọn sinh viên..." />
+                  <SelectValue placeholder="Chọn sinh viên...">
+                    {(() => {
+                      const found = teamMembers.find((m) => m.studentId === activeStudentId);
+                      if (!found) return "Chọn sinh viên...";
+                      let name = (found.fullName || "").trim();
+                      if (found.studentCode) {
+                        name = name.replace(new RegExp(`\\s*\\(${found.studentCode}\\)`, 'gi'), '').trim();
+                      }
+                      name = name.replace(/\s*\([A-Za-z]{2,4}\d{4,6}\)$/g, '').trim();
+                      return name;
+                    })()}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/50">
                   {teamMembers.length > 0 ? (
