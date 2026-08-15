@@ -74,22 +74,22 @@ export function IntegrationHealthCards() {
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <p className="text-xs text-muted-foreground">Webhooks:</p>
-              <div className="flex gap-1">
+          <div className="mt-4 pt-4 border-t border-border/50 flex flex-col justify-between gap-3">
+            <div className="flex flex-col gap-1.5">
+              <p className="text-xs text-muted-foreground font-medium">Webhooks:</p>
+              <div className="flex flex-wrap gap-1.5">
                 {health.jira.webhookReceiptStatuses.length > 0 ? (
                   health.jira.webhookReceiptStatuses.map((ws: { status: string; count: number }, idx: number) => (
-                    <span key={idx} className={`text-xs px-2 py-0.5 rounded-md font-medium ${ws.status === 'RECEIVED' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
+                    <span key={idx} className={`text-[11px] px-2 py-0.5 rounded-md font-medium ${ws.status === 'RECEIVED' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
                       {ws.count} {ws.status}
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs text-muted-foreground">None</span>
+                  <span className="text-[11px] text-muted-foreground">None</span>
                 )}
               </div>
             </div>
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-[10px] text-muted-foreground text-right">
               Sync: {health.jira.latestLastSyncedAt ? format(new Date(health.jira.latestLastSyncedAt), "HH:mm dd/MM/yyyy") : "N/A"}
             </p>
           </div>
@@ -147,22 +147,22 @@ export function IntegrationHealthCards() {
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <p className="text-xs text-muted-foreground">Webhooks:</p>
-              <div className="flex gap-1">
+          <div className="mt-4 pt-4 border-t border-border/50 flex flex-col justify-between gap-3">
+            <div className="flex flex-col gap-1.5">
+              <p className="text-xs text-muted-foreground font-medium">Webhooks:</p>
+              <div className="flex flex-wrap gap-1.5">
                 {health.gitHub.webhookReceiptStatuses.length > 0 ? (
                   health.gitHub.webhookReceiptStatuses.map((ws, idx) => (
-                    <span key={idx} className={`text-xs px-2 py-0.5 rounded-md font-medium ${ws.status === 'RECEIVED' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
+                    <span key={idx} className={`text-[11px] px-2 py-0.5 rounded-md font-medium ${ws.status === 'RECEIVED' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}`}>
                       {ws.count} {ws.status}
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs text-muted-foreground">None</span>
+                  <span className="text-[11px] text-muted-foreground">None</span>
                 )}
               </div>
             </div>
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-[10px] text-muted-foreground text-right">
               Sync: {health.gitHub.latestLastSyncedAt ? format(new Date(health.gitHub.latestLastSyncedAt), "HH:mm dd/MM/yyyy") : "N/A"}
             </p>
           </div>
