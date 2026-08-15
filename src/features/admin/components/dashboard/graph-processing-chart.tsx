@@ -59,22 +59,22 @@ export function GraphProcessingChart() {
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorNodes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorEdges" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--success)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--success)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                 <Tooltip
-                  cursor={{ stroke: "hsl(var(--border))", strokeWidth: 2, strokeDasharray: "4 4" }}
-                  contentStyle={{ borderRadius: '16px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--card))' }}
+                  cursor={{ stroke: "var(--border)", strokeWidth: 2, strokeDasharray: "4 4" }}
+                  contentStyle={{ borderRadius: '16px', border: '1px solid var(--border)', backgroundColor: 'var(--card)' }}
                 />
-                <Area type="monotone" dataKey="edges" name="Cạnh (Hành động)" stroke="hsl(var(--success))" strokeWidth={3} fillOpacity={1} fill="url(#colorEdges)" />
-                <Area type="monotone" dataKey="nodes" name="Đỉnh (Thực thể)" stroke="hsl(var(--primary))" strokeWidth={3} fillOpacity={1} fill="url(#colorNodes)" />
+                <Area type="monotone" dataKey="edges" name="Cạnh (Hành động)" stroke="var(--success)" strokeWidth={3} fillOpacity={1} fill="url(#colorEdges)" />
+                <Area type="monotone" dataKey="nodes" name="Đỉnh (Thực thể)" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorNodes)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
