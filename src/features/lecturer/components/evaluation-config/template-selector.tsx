@@ -7,19 +7,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthStore } from "@/stores/authStore";
-import { useCourseContributionWeights, useRequestCourseContributionWeight } from "../../hooks/useContribution";
+import { useCourseContributionWeights, useUpdateCourseContributionWeights } from "../../hooks/useContribution";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function TemplateSelector({ courseId }: { courseId: string }) {
   const { user } = useAuthStore();
   const { data: weightsData, isLoading } = useCourseContributionWeights(courseId);
-  const { mutate: requestOverride, isPending } = useRequestCourseContributionWeight();
+  const { mutate: updateWeights, isPending } = useUpdateCourseContributionWeights();
 
   const [customCodeWeight, setCustomCodeWeight] = useState<number | null>(null);
   const [customDocumentWeight, setCustomDocumentWeight] = useState<number | null>(null);
   const [customDesignWeight, setCustomDesignWeight] = useState<number | null>(null);
-  const [overrideReason, setOverrideReason] = useState("");
 
   const codeWeight = customCodeWeight ?? (weightsData ? Number(weightsData.codeWeight.toFixed(2)) : 33.33);
   const documentWeight = customDocumentWeight ?? (weightsData ? Number(weightsData.documentWeight.toFixed(2)) : 33.33);
@@ -42,20 +41,15 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
       toast.error("Tổng trọng số phải bằng xấp xỉ 100%");
       return;
     }
-    if (!overrideReason.trim()) {
-      toast.error("Vui lòng nhập lý do để Admin phê duyệt");
-      return;
-    }
-    requestOverride(
-      { courseId, data: { codeWeight, documentWeight, designWeight, reason: overrideReason, lecturerId: user?.localProfileId || "" } },
+    updateWeights(
+      { courseId, data: { codeWeight, documentWeight, designWeight } },
       {
         onSuccess: () => {
-          toast.success("Đã gửi yêu cầu thay đổi trọng số lên Admin thành công!");
-          setOverrideReason("");
+          toast.success("Đã lưu trọng số thành công!");
         },
         onError: (err: Error) => {
           const resErr = err as Error & { response?: { data?: { message?: string } } };
-          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi gửi yêu cầu");
+          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi lưu thay đổi");
         }
       }
     );
@@ -87,7 +81,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                   <span>Tổng ngân sách điểm Đóng góp (Contribution): 100%</span>
                 </div>
                 <p className="text-sm">
-                  Tổng 3 trọng số phải bằng đúng 100%. Nếu thay đổi hệ số này, phần Đóng góp thực tế của sinh viên sẽ tự động scale dựa trên các loại Task tương ứng. Việc thay đổi cần Admin kiểm duyệt.
+                  Tổng 3 trọng số phải bằng đúng 100%. Nếu thay đổi hệ số này, phần Đóng góp thực tế của sinh viên sẽ tự động scale dựa trên các loại Task tương ứng.
                 </p>
               </div>
 
@@ -147,31 +141,24 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                 </div>
               </div>
 
-              {/* Reason for Override */}
+              {/* Action Buttons */}
               {isModified && (
                 <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 space-y-4 animate-in fade-in slide-in-from-top-4">
                   <div className="flex items-start gap-2 text-primary">
                     <Info className="w-5 h-5 shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <Label className="font-bold">Yêu cầu Kiểm duyệt từ Admin</Label>
-                      <p className="text-xs">Hệ số đã thay đổi so với cấu hình gốc. Vui lòng nhập lý do (VD: Đồ án lớp này tập trung mạnh vào AI, nên cần tăng trọng số Lập trình).</p>
+                      <Label className="font-bold">Lưu Thay đổi Trọng số</Label>
+                      <p className="text-xs">Hệ số đã thay đổi so với cấu hình gốc. Bạn có thể lưu trực tiếp các thay đổi này.</p>
                     </div>
                   </div>
-
-                  <Textarea
-                    placeholder="Lý do điều chỉnh..."
-                    className="min-h-[100px] border-primary/20 focus-visible:ring-primary/20"
-                    value={overrideReason}
-                    onChange={(e) => setOverrideReason(e.target.value)}
-                  />
 
                   <div className="flex justify-end">
                     <Button
                       onClick={handleSubmit}
-                      disabled={isPending || !overrideReason.trim() || !isValid}
+                      disabled={isPending || !isValid}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                     >
-                      {isPending ? "Đang gửi..." : "Gửi yêu cầu lên Admin"}
+                      {isPending ? "Đang lưu..." : "Lưu Thay Đổi"}
                     </Button>
                   </div>
                 </div>

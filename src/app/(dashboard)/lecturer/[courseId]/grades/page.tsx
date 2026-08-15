@@ -178,8 +178,7 @@ export default function LecturerContributionPage() {
             data: {
               studentId: adj.studentId,
               proposedPercentage: adj.proposedPercentage / 100, // API expect decimal (0.1 = 10%)
-              reason: overrideReason,
-              lecturerId: user?.localProfileId
+              reason: overrideReason
             }
           })
         )

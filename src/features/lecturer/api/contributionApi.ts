@@ -21,9 +21,9 @@ export const contributionApi = {
     );
   },
 
-  requestCourseContributionWeight: async (courseId: string, data: CourseContributionWeightRequest) => {
-    return axiosInstance.post<never, void>(
-      `/api/v1/courses/${courseId}/contribution-slice-weight-requests`,
+  updateCourseContributionWeights: async (courseId: string, data: CourseContributionWeightRequest) => {
+    return axiosInstance.put<never, void>(
+      `/api/v1/courses/${courseId}/contribution-slice-weights`,
       data
     );
   },

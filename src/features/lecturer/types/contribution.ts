@@ -53,7 +53,6 @@ export interface ContributionOverrideRequest {
   studentId: string;
   proposedPercentage: number;
   reason: string;
-  lecturerId?: string;
 }
 
 export interface CourseContributionWeightResponse {
@@ -68,7 +67,5 @@ export interface CourseContributionWeightRequest {
   codeWeight: number;
   documentWeight: number;
   designWeight: number;
-  reason: string;
-  lecturerId: string;
 }
 
