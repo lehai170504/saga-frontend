@@ -10,7 +10,7 @@ export function AiWarningRules() {
         <CardHeader>
           <CardTitle>Ngưỡng Cảnh báo Sớm AI (AI Early Warning)</CardTitle>
           <CardDescription>
-            Bộ thông số quét dữ liệu tự động của AI được <strong>khóa cố định</strong> để làm mốc quy chuẩn toàn trường. Giảng viên chỉ có thể xin quyền Ghi đè (Override) từng cảnh báo riêng lẻ ở cấp độ Lớp.
+            Bộ thông số quét dữ liệu tự động của AI được <strong>khóa cố định</strong> để làm mốc quy chuẩn toàn trường. Giảng viên có thể chủ động Ghi đè (Override) từng cảnh báo riêng lẻ ở cấp độ Lớp mà không cần chờ phê duyệt.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
