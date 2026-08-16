@@ -12,6 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { projectApi } from "@/features/projects/api/projectApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useCourse } from "@/features/courses/hooks/useCourses";
+import { isCourseEnded } from "@/lib/course-utils";
 import dynamic from 'next/dynamic';
 import { LecturerUpdateGroupWeightsModal } from "@/features/lecturer/components/project-detail/lecturer-update-group-weights-modal";
 
@@ -63,7 +65,10 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
 
   // Fetch real data
   const { data: teamDetail, isLoading: isLoadingMembers } = useTeamDetail(courseId, teamId);
+  const { data: courseData } = useCourse(courseId);
   const queryClient = useQueryClient();
+
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
 
   // Mồi data (Background Prefetching) ngay khi load xong thông tin dự án
   useEffect(() => {
@@ -117,6 +122,7 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
                 courseId={courseId}
                 teamId={teamId}
                 teamName={projectDetail.name}
+                isEnded={isEnded}
               />
             </div>
           )}

@@ -20,9 +20,10 @@ interface LecturerUpdateGroupWeightsModalProps {
   courseId: string;
   teamId: string;
   teamName: string;
+  isEnded?: boolean;
 }
 
-export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, teamName }: LecturerUpdateGroupWeightsModalProps) {
+export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, teamName, isEnded }: LecturerUpdateGroupWeightsModalProps) {
   const [open, setOpen] = useState(false);
   const [codeWeight, setCodeWeight] = useState("0");
   const [testWeight, setTestWeight] = useState("0");
@@ -86,7 +87,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-amber-500/20 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+        <Button variant="outline" disabled={isEnded} className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-amber-500/20 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed">
           <Scale className="w-5 h-5" />
           Sửa Trọng số
         </Button>

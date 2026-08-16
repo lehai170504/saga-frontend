@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-export function PolicyOverrides() {
+export function PolicyOverrides({ isEnded }: { isEnded?: boolean }) {
   const [overrideGhosting, setOverrideGhosting] = useState(false);
   const [ghostingDays, setGhostingDays] = useState(5);
 
@@ -47,7 +47,7 @@ export function PolicyOverrides() {
               </Label>
               <p className="text-xs text-muted-foreground">Phát hiện &quot;Zero Contribution&quot;. Cảnh báo đỏ nếu sinh viên không phát sinh Slices mới trong 5 ngày (vi phạm Daily Scrum).</p>
             </div>
-            <Switch checked={overrideGhosting} onCheckedChange={setOverrideGhosting} />
+            <Switch disabled={isEnded} checked={overrideGhosting} onCheckedChange={setOverrideGhosting} />
           </div>
 
           {overrideGhosting && (
@@ -80,7 +80,7 @@ export function PolicyOverrides() {
               </Label>
               <p className="text-xs text-muted-foreground">Admin đang cấu hình: Phạt hệ số nếu Tỷ lệ Bug/Commit vượt mức 30%. Ghi đè để đổi tỷ lệ này.</p>
             </div>
-            <Switch checked={overrideBugRate} onCheckedChange={setOverrideBugRate} />
+            <Switch disabled={isEnded} checked={overrideBugRate} onCheckedChange={setOverrideBugRate} />
           </div>
 
           {overrideBugRate && (
@@ -114,7 +114,7 @@ export function PolicyOverrides() {
               </Label>
               <p className="text-xs text-muted-foreground">Phát hiện &quot;Gánh team&quot;. Cảnh báo khi 1-2 cá nhân chiếm trên 60% tổng Slices của toàn bộ Sprint. Trợ lý AI sẽ yêu cầu Scrum Master can thiệp.</p>
             </div>
-            <Switch checked={overrideBusFactor} onCheckedChange={setOverrideBusFactor} />
+            <Switch disabled={isEnded} checked={overrideBusFactor} onCheckedChange={setOverrideBusFactor} />
           </div>
 
           {overrideBusFactor && (
@@ -159,8 +159,8 @@ export function PolicyOverrides() {
 
             <div className="flex justify-end">
               <Button
-                disabled={!overrideReason.trim() || !isGhostingValid || !isBugRateValid || !isBusFactorValid}
-                className="bg-primary text-white font-bold rounded-xl"
+                disabled={!overrideReason.trim() || !isGhostingValid || !isBugRateValid || !isBusFactorValid || isEnded}
+                className="bg-primary text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Gửi yêu cầu Ghi đè AI Rules
               </Button>

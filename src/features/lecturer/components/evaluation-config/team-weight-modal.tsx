@@ -14,9 +14,10 @@ interface TeamWeightModalProps {
   onClose: () => void;
   team: TeamContributionWeightItem | null;
   onSuccess?: () => void;
+  isEnded?: boolean;
 }
 
-export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeightModalProps) {
+export function TeamWeightModal({ isOpen, onClose, team, onSuccess, isEnded }: TeamWeightModalProps) {
   const { mutate: updateWeights, isPending } = useUpdateProjectGroupWeights(team?.projectId || "");
 
   const [codeWeight, setCodeWeight] = useState<number>(0);
@@ -92,11 +93,12 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
               <Label className="text-sm font-bold w-1/3">1. Lập trình (Code)</Label>
               <div className="flex items-center gap-2 w-2/3">
                 <Input
+                  disabled={isEnded}
                   type="number"
                   step="0.01"
                   value={codeWeight}
                   onChange={(e) => setCodeWeight(parseFloat(e.target.value) || 0)}
-                  className="h-10 text-center font-bold"
+                  className="h-10 text-center font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <span className="text-sm font-medium w-6">%</span>
               </div>
@@ -106,11 +108,12 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
               <Label className="text-sm font-bold w-1/3">2. Kiểm thử (Test)</Label>
               <div className="flex items-center gap-2 w-2/3">
                 <Input
+                  disabled={isEnded}
                   type="number"
                   step="0.01"
                   value={testWeight}
                   onChange={(e) => setTestWeight(parseFloat(e.target.value) || 0)}
-                  className="h-10 text-center font-bold"
+                  className="h-10 text-center font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <span className="text-sm font-medium w-6">%</span>
               </div>
@@ -120,11 +123,12 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
               <Label className="text-sm font-bold w-1/3">3. Viết Tài liệu (Docs)</Label>
               <div className="flex items-center gap-2 w-2/3">
                 <Input
+                  disabled={isEnded}
                   type="number"
                   step="0.01"
                   value={documentWeight}
                   onChange={(e) => setDocumentWeight(parseFloat(e.target.value) || 0)}
-                  className="h-10 text-center font-bold"
+                  className="h-10 text-center font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <span className="text-sm font-medium w-6">%</span>
               </div>
@@ -134,11 +138,12 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
               <Label className="text-sm font-bold w-1/3">4. Nghiên cứu (Research)</Label>
               <div className="flex items-center gap-2 w-2/3">
                 <Input
+                  disabled={isEnded}
                   type="number"
                   step="0.01"
                   value={researchWeight}
                   onChange={(e) => setResearchWeight(parseFloat(e.target.value) || 0)}
-                  className="h-10 text-center font-bold"
+                  className="h-10 text-center font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <span className="text-sm font-medium w-6">%</span>
               </div>
@@ -161,8 +166,8 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isPending || !isValid}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
+            disabled={isPending || !isValid || isEnded}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? "Đang lưu..." : "Lưu Trọng Số"}
           </Button>

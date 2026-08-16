@@ -353,7 +353,7 @@ const generateGraphData = (phase: string) => {
   return { nodes, edges, drilldownDetails };
 };
 
-export function ClassNetworkGraph() {
+export function ClassNetworkGraph({ isEnded }: { isEnded?: boolean }) {
   const nodeTypes = useMemo(() => ({
     multiplier: MultiplierNode,
     sprint: SprintNode,
@@ -436,7 +436,8 @@ export function ClassNetworkGraph() {
             </Select>
 
             <Button
-              className="h-10 rounded-xl font-bold px-6 shadow-md transition-all gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+              disabled={isEnded}
+              className="h-10 rounded-xl font-bold px-6 shadow-md transition-all gap-2 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="w-4 h-4" />
               {selectedPhase === 'final' ? 'Chốt Sổ (Publish)' : `Chốt Điểm ${selectedPhase === 'phase1' ? 'Sprint 1' : selectedPhase === 'phase2' ? 'Sprint 2' : 'Sprint 3'
@@ -491,6 +492,7 @@ export function ClassNetworkGraph() {
         isOpen={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
         data={selectedEdgeData as React.ComponentProps<typeof TaskDrilldownDrawer>["data"]}
+        isEnded={isEnded}
       />
     </>
   );

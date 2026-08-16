@@ -25,9 +25,10 @@ interface TaskDrilldownDrawerProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   data: DrilldownData | null;
+  isEnded?: boolean;
 }
 
-export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldownDrawerProps) {
+export function TaskDrilldownDrawer({ isOpen, onOpenChange, data, isEnded }: TaskDrilldownDrawerProps) {
   const [editingTaskId, setEditingTaskId] = React.useState<string | null>(null);
   const [overrideSp, setOverrideSp] = React.useState<string>("");
 
@@ -91,15 +92,17 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
                     <div className="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-md whitespace-nowrap">
                       {task.sp} Story Points
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 text-primary rounded-full"
-                      onClick={() => handleEditClick(task)}
-                      title="Ghi đè SP (Manual Override)"
-                    >
-                      <PenLine className="h-3.5 w-3.5" />
-                    </Button>
+                    {!isEnded && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 text-primary rounded-full"
+                        onClick={() => handleEditClick(task)}
+                        title="Ghi đè SP (Manual Override)"
+                      >
+                        <PenLine className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>

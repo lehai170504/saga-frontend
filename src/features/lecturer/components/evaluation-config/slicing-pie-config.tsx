@@ -13,7 +13,7 @@ type Sprint = {
   endDate: string;
 };
 
-export function SlicingPieConfig() {
+export function SlicingPieConfig({ isEnded }: { isEnded?: boolean }) {
   const [sprints, setSprints] = useState<Sprint[]>([
     { id: "s1", name: "Sprint 1", startDate: "2024-09-01", endDate: "2024-09-14" },
     { id: "s2", name: "Sprint 2", startDate: "2024-09-15", endDate: "2024-09-30" },
@@ -71,11 +71,11 @@ export function SlicingPieConfig() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center gap-4">
                   <span className="text-sm font-semibold text-success">Thưởng (Max)</span>
-                  <Input type="number" step="0.1" value={multipliers.maxRetro} onChange={e => updateMultiplier('maxRetro', parseFloat(e.target.value))} className="w-20 h-8 text-right font-bold text-success" />
+                  <Input disabled={isEnded} type="number" step="0.1" value={multipliers.maxRetro} onChange={e => updateMultiplier('maxRetro', parseFloat(e.target.value))} className="w-20 h-8 text-right font-bold text-success disabled:opacity-50 disabled:cursor-not-allowed" />
                 </div>
                 <div className="flex justify-between items-center gap-4">
                   <span className="text-sm font-semibold text-destructive">Phạt (Min)</span>
-                  <Input type="number" step="0.1" value={multipliers.minRetro} onChange={e => updateMultiplier('minRetro', parseFloat(e.target.value))} className="w-20 h-8 text-right font-bold text-destructive" />
+                  <Input disabled={isEnded} type="number" step="0.1" value={multipliers.minRetro} onChange={e => updateMultiplier('minRetro', parseFloat(e.target.value))} className="w-20 h-8 text-right font-bold text-destructive disabled:opacity-50 disabled:cursor-not-allowed" />
                 </div>
               </div>
             </div>
@@ -87,7 +87,7 @@ export function SlicingPieConfig() {
               <div className="space-y-3 mt-auto">
                 <div className="flex justify-between items-center gap-4 pt-2">
                   <span className="text-sm font-semibold">Max SP / Task</span>
-                  <Input type="number" step="1" value={multipliers.maxSp} onChange={e => updateMultiplier('maxSp', parseInt(e.target.value))} className="w-20 h-8 text-right font-bold text-primary" />
+                  <Input disabled={isEnded} type="number" step="1" value={multipliers.maxSp} onChange={e => updateMultiplier('maxSp', parseInt(e.target.value))} className="w-20 h-8 text-right font-bold text-primary disabled:opacity-50 disabled:cursor-not-allowed" />
                 </div>
               </div>
             </div>
@@ -118,35 +118,39 @@ export function SlicingPieConfig() {
                 <div className="flex-1 space-y-1.5 pl-2">
                   <Label className="text-[10px] font-bold text-muted-foreground uppercase">Tên Sprint</Label>
                   <Input
+                    disabled={isEnded}
                     value={sprint.name}
                     onChange={(e) => updateSprint(sprint.id, "name", e.target.value)}
-                    className="h-10 font-bold rounded-lg border-border/50 bg-background"
+                    className="h-10 font-bold rounded-lg border-border/50 bg-background disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="VD: Sprint 1"
                   />
                 </div>
                 <div className="w-full sm:w-40 space-y-1.5">
                   <Label className="text-[10px] font-bold text-muted-foreground uppercase">Ngày Bắt đầu</Label>
                   <Input
+                    disabled={isEnded}
                     type="date"
                     value={sprint.startDate}
                     onChange={(e) => updateSprint(sprint.id, "startDate", e.target.value)}
-                    className="h-10 text-sm rounded-lg border-border/50 bg-background"
+                    className="h-10 text-sm rounded-lg border-border/50 bg-background disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div className="w-full sm:w-40 space-y-1.5">
                   <Label className="text-[10px] font-bold text-muted-foreground uppercase">Ngày Kết thúc</Label>
                   <Input
+                    disabled={isEnded}
                     type="date"
                     value={sprint.endDate}
                     onChange={(e) => updateSprint(sprint.id, "endDate", e.target.value)}
-                    className="h-10 text-sm rounded-lg border-border/50 bg-background"
+                    className="h-10 text-sm rounded-lg border-border/50 bg-background disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <Button
+                  disabled={isEnded}
                   variant="ghost"
                   size="icon"
                   onClick={() => removeSprint(sprint.id)}
-                  className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl shrink-0"
+                  className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Xóa Sprint"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -156,9 +160,10 @@ export function SlicingPieConfig() {
           </div>
 
           <Button
+            disabled={isEnded}
             variant="outline"
             onClick={addSprint}
-            className="w-full h-12 border-dashed border-2 border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/50 rounded-xl font-bold transition-all text-sm bg-background/50 mt-4"
+            className="w-full h-12 border-dashed border-2 border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/50 rounded-xl font-bold transition-all text-sm bg-background/50 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus className="w-4 h-4 mr-2" /> Thêm Sprint Mới
           </Button>

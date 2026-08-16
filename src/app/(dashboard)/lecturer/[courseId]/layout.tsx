@@ -11,9 +11,7 @@ export default function CourseLayout({ children }: { children: React.ReactNode }
 
   return (
     <LecturerCourseProvider>
-      <div className="p-4 sm:p-6 pb-0 max-w-[1200px] mx-auto w-full">
-        {courseId && <CourseEndedBanner courseId={courseId} />}
-      </div>
+      {courseId && <CourseEndedBanner courseId={courseId} />}
       {children}
     </LecturerCourseProvider>
   );
