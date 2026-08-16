@@ -3,27 +3,19 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TeamsTable } from "@/features/admin/components/teams/teams-table";
-import { ProjectsTable } from "@/features/admin/components/projects/projects-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAdminTeams } from "@/features/admin/hooks/useTeams";
-import { useAdminProjects } from "@/features/admin/hooks/useProjects";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Network, FolderGit2, Layers } from "lucide-react";
+import { Network, Layers } from "lucide-react";
 import { ProjectTypesTable } from "@/features/admin/components/project-types/project-types-table";
 import { useProjectTypes } from "@/features/admin/hooks/useProjectTypes";
 
 export default function TeamsManagementPage() {
   const [teamPage, setTeamPage] = useState(0);
-  const [projectPage, setProjectPage] = useState(0);
 
   const { data: teamsData, isLoading: isLoadingTeams } = useAdminTeams({
     page: teamPage,
-    size: 20,
-  });
-
-  const { data: projectsData, isLoading: isLoadingProjects } = useAdminProjects({
-    page: projectPage,
     size: 20,
   });
 
@@ -38,14 +30,10 @@ export default function TeamsManagementPage() {
       />
 
       <Tabs defaultValue="teams" className="w-full">
-        <TabsList className="bg-card border border-border/50 rounded-[2rem] w-full p-2 grid grid-cols-1 lg:grid-cols-3 gap-2 h-auto lg:h-14">
+        <TabsList className="bg-card border border-border/50 rounded-[2rem] w-full p-2 grid grid-cols-1 lg:grid-cols-2 gap-2 h-auto lg:h-14">
           <TabsTrigger value="teams" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
             <Network className="w-4 h-4 mr-2" />
             Nhóm (Teams)
-          </TabsTrigger>
-          <TabsTrigger value="projects" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
-            <FolderGit2 className="w-4 h-4 mr-2" />
-            Dự án (Projects)
           </TabsTrigger>
           <TabsTrigger value="project-types" className="rounded-xl data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-bold">
             <Layers className="w-4 h-4 mr-2" />
@@ -72,31 +60,6 @@ export default function TeamsManagementPage() {
                   totalPages={teamsData?.totalPages || 0}
                   totalElements={teamsData?.totalElements || 0}
                   onPageChange={setTeamPage}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="projects" className="mt-0 outline-none">
-          <Card className="rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-xl shadow-sm overflow-hidden">
-            <CardContent className="p-6">
-              {isLoadingProjects ? (
-                <div className="space-y-4">
-                  <div className="rounded-2xl border border-border overflow-hidden">
-                    <Skeleton className="h-12 w-full rounded-none border-b border-border" />
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Skeleton key={i} className="h-16 w-full rounded-none border-b border-border/50" />
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <ProjectsTable
-                  data={projectsData?.content || []}
-                  pageIndex={projectsData?.number || 0}
-                  totalPages={projectsData?.totalPages || 0}
-                  totalElements={projectsData?.totalElements || 0}
-                  onPageChange={setProjectPage}
                 />
               )}
             </CardContent>

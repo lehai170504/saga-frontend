@@ -3,7 +3,7 @@
 import { useCourses } from "../hooks/useCourses";
 import { CreateCourseDialog } from "./create-course-dialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { GraduationCap, BookOpen, Network, Calendar, ArrowRight } from "lucide-react";
+import { GraduationCap, BookOpen, Network, Calendar, ArrowRight, Clock } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ export function CourseCards() {
   const isAdmin = user?.applicationRole === "ADMIN";
 
   return (
- <div className="space-y-8 "> 
+    <div className="space-y-8 ">
       <PageHeader
         title="Danh mục Khóa học"
         description="Quản lý danh sách khóa học và danh sách sinh viên."
@@ -64,11 +64,15 @@ export function CourseCards() {
                   </span>
                   <span className="w-1 h-1 rounded-full bg-border shrink-0" />
                   <span className="font-medium flex items-center gap-1.5" title="Lớp">
-                    <Network size={13} className="opacity-70" /> {(course.academicClass?.classCode ?? course.clazz?.classCode) || "N/A"}
+                    <Network size={13} className="opacity-70" /> {course.academicClass?.classCode || "N/A"}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-border shrink-0" />
                   <span className="font-medium flex items-center gap-1.5" title="Học kỳ">
                     <Calendar size={13} className="opacity-70" /> {course.semester?.name || course.semester?.code || "N/A"}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-border shrink-0" />
+                  <span className="font-medium flex items-center gap-1.5" title="Ngày tạo">
+                    <Clock size={13} className="opacity-70" /> {course.createdAt ? new Date(course.createdAt).toLocaleDateString("vi-VN") : "N/A"}
                   </span>
                 </div>
 

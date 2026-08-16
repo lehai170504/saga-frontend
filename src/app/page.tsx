@@ -1,6 +1,8 @@
 // src/app/page.tsx
 "use client";
 
+import { useEffect } from "react";
+import { toast } from "sonner";
 import { FloatingHeader } from "@/features/landingpage/components/floating-header";
 import {
   HeroSection,
@@ -13,6 +15,20 @@ import {
 import { SiteFooter } from "@/components/layout/site-footer";
 
 export default function LandingPage() {
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const error = searchParams.get("error");
+
+    if (error === "ACCOUNT_DISABLED") {
+      toast.error("Tài khoản của bạn đã bị vô hiệu hóa", {
+        description: "Vui lòng liên hệ Quản trị viên để biết thêm chi tiết.",
+        duration: 8000,
+      });
+      // Clean up the URL after showing the toast
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/25 flex flex-col overflow-x-hidden">
       <FloatingHeader />

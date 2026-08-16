@@ -207,8 +207,10 @@ export function AiAgentPanel(props: { projectId?: string }) {
 
                           {/* Render Pending Action Buttons */}
                           {(() => {
-                            const pendingAction = msg.pendingAction || (msg as any).pending_action || (msg as any).proposedAction || (msg as any).action;
-                            if (!pendingAction) return null;
+                            const msgData = msg as unknown as Record<string, unknown>;
+                            const rawPendingAction = msg.pendingAction || msgData.pending_action || msgData.proposedAction || msgData.action;
+                            if (!rawPendingAction) return null;
+                            const pendingAction = rawPendingAction as { id?: string; actionId?: string; status?: string; description?: string; summary?: string; title?: string; actionType?: string; type?: string; action_type?: string; payload?: Record<string, unknown>; parameters?: Record<string, unknown>; data?: Record<string, unknown>; };
 
                             const actionId = pendingAction.id || pendingAction.actionId;
                             const status = (pendingAction.status || "PENDING").toUpperCase();

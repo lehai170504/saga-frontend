@@ -26,7 +26,7 @@ export const useUpdateCourseWeights = (courseId: string) => {
       toast.success("Cập nhật trọng số môn học thành công!");
       queryClient.invalidateQueries({ queryKey: ["course-weights", courseId] });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Lỗi khi cập nhật trọng số môn học");
     }
   });
@@ -41,7 +41,7 @@ export const useUpdateConfigMode = (courseId: string) => {
       queryClient.invalidateQueries({ queryKey: ["course-weights", courseId] });
       queryClient.invalidateQueries({ queryKey: ["team-weights-list", courseId] });
     },
-    onError: (err: any) => {
+    onError: (err: Error & { status?: number }) => {
       if (err.status === 409) {
         toast.error("Một hoặc nhiều nhóm chưa được cấu hình trọng số. Vui lòng kiểm tra lại danh sách Team.");
       } else {

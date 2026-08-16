@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Scale, Loader2, Save } from "lucide-react";
-import { useUpdateProjectGroupWeights, useProjectGroupWeights } from "@/features/projects/hooks/useProjects";
+import { useUpdateProjectGroupWeights } from "@/features/projects/hooks/useProjects";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
   const [note, setNote] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: currentWeights } = useProjectGroupWeights(projectId);
+
   const updateWeights = useUpdateProjectGroupWeights(projectId);
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -176,8 +176,8 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
               <span className="text-muted-foreground font-medium">Tổng trọng số:</span>
               <span className={cn(
                 "font-bold text-lg",
-                (parseFloat(codeWeight || "0") + parseFloat(testWeight || "0") + parseFloat(documentWeight || "0") + parseFloat(researchWeight || "0")) === 100 
-                  ? "text-emerald-500" 
+                (parseFloat(codeWeight || "0") + parseFloat(testWeight || "0") + parseFloat(documentWeight || "0") + parseFloat(researchWeight || "0")) === 100
+                  ? "text-emerald-500"
                   : "text-destructive"
               )}>
                 {(parseFloat(codeWeight || "0") + parseFloat(testWeight || "0") + parseFloat(documentWeight || "0") + parseFloat(researchWeight || "0"))}%

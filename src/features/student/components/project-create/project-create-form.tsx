@@ -127,7 +127,7 @@ export function ProjectCreateForm({
             </div>
             <div className="flex justify-between items-start gap-4">
               <span className="text-muted-foreground">Lớp học:</span>
-              <span className="text-foreground text-right font-extrabold">{course?.clazz?.name}</span>
+              <span className="text-foreground text-right font-extrabold">{course?.academicClass?.name}</span>
             </div>
             <div className="flex justify-between items-start gap-4">
               <span className="text-muted-foreground">Nhóm dự án:</span>

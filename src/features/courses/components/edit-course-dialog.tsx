@@ -69,7 +69,7 @@ export function EditCourseDialog({ courseId }: EditCourseDialogProps) {
         courseCode: course.courseCode,
         name: course.name,
         subjectId: course.subject.id,
-        classId: course.clazz.id,
+        classId: course.academicClass?.id || "",
         semesterId: course.semester.id,
         instructorId: course.instructor.id,
       });

@@ -14,11 +14,6 @@ export interface Course {
     classCode: string;
     name: string;
   };
-  clazz?: {
-    id: string;
-    classCode: string;
-    name: string;
-  };
   semester: {
     id: string;
     code: string;
@@ -39,6 +34,8 @@ export interface Course {
   documentContributionWeight?: number;
   testContributionWeight?: number;
   researchContributionWeight?: number;
+  courseStatus: string;
+  contributionConfigMode?: string;
 }
 
 export interface CourseRequest {

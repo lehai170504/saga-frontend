@@ -3,8 +3,9 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, TrendingUp, Code, FileText, CheckCircle2, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, TrendingUp, Code, FileText, CheckCircle2, Search, ChevronDown, ChevronUp, Beaker } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ContributionMember } from "@/features/lecturer/types/contribution";
 
 const truncateDecimal = (val: number | undefined | null, decimals: number = 2): string => {
   if (val === undefined || val === null || isNaN(val)) {

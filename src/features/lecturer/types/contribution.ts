@@ -20,14 +20,25 @@ export interface ContributionMember {
   studentId: string;
   fullName: string;
   studentCode: string;
+
+  taskContributionScore?: number;
+  taskContributionPercentage?: number;
+
   codeContributionScore: number;
+  codeContributionPercentage: number;
+
+  testContributionScore?: number;
+  testContributionPercentage: number;
 
   documentContributionScore: number;
-  researchContributionScore?: number;
-  codeContributionPercentage: number;
-  testContributionPercentage: number;
   documentContributionPercentage: number;
+
+  researchContributionScore?: number;
   researchContributionPercentage?: number;
+
+  designContributionScore?: number;
+  designContributionPercentage?: number;
+
   peerReviewScore: number;
   finalContributionPercentage: number;
   sliceScore?: number;
@@ -38,6 +49,8 @@ export interface ContributionMember {
   // Optional frontend fields
   role?: string;
   email?: string;
+  avatarUrl?: string;
+  avatar?: string;
 }
 
 export interface ContributionEvaluationResponse {

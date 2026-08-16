@@ -209,8 +209,8 @@ export default function LecturerContributionPage() {
       setIsExporting(true);
       toast.loading("Đang tổng hợp dữ liệu các nhóm...", { id: "export-grades" });
 
-      const allMembers = [];
-      
+      const allMembers: Record<string, string | number | undefined>[] = [];
+
       for (const team of realTeams) {
         try {
           const res = await contributionApi.getContributionEvaluation(team.id);
@@ -238,7 +238,7 @@ export default function LecturerContributionPage() {
               });
             });
           }
-        } catch (err) {
+        } catch {
           console.warn(`Không lấy được dữ liệu cho nhóm ${team.name}`);
         }
       }
@@ -249,7 +249,7 @@ export default function LecturerContributionPage() {
       }
 
       const ws = XLSX.utils.json_to_sheet(allMembers);
-      
+
       // Auto-size columns
       const colWidths = [
         { wch: 15 }, // Tên Nhóm
@@ -301,8 +301,8 @@ export default function LecturerContributionPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="rounded-xl border-border/50 h-10 font-bold text-success bg-success/10 dark:hover:bg-emerald-950/30"
               onClick={handleExportAllGrades}
               disabled={isExporting}
@@ -363,11 +363,7 @@ export default function LecturerContributionPage() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-4 py-2 rounded-xl border border-border/50 w-full lg:w-auto">
                 <Info size={16} className="text-primary flex-shrink-0" />
-<<<<<<< HEAD
-                <span>% Trước Peer = (% Code + % Test + % Doc + % Research). % H.Thống = % Trước Peer * HS Peer.</span>
-=======
                 <span>% Hệ thống được tính dựa trên 4 thành phần (Code, Test, Doc, Research) x Trọng số cấu hình. Giảng viên nhập trực tiếp % mới để ghi đè.</span>
->>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
               </div>
             </div>
 
@@ -429,17 +425,10 @@ export default function LecturerContributionPage() {
                       <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Test</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
-<<<<<<< HEAD
-                      <TableHead className="text-center font-bold text-muted-foreground">% Rsrch</TableHead>
-                      <TableHead className="text-center font-bold text-muted-foreground">% Trước Peer</TableHead>
-                      <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
-                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]" title="Đóng góp sau Peer">% H.Thống</TableHead>
-=======
                       <TableHead className="text-center font-bold text-muted-foreground">% Rsch</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
                       <TableHead className="text-center font-bold text-blue-600 dark:text-blue-400 min-w-[100px]" title="Tỷ lệ đóng góp trước khi nhân đánh giá chéo (Peer Review)">% Trước Peer</TableHead>
-                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
->>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
+                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]" title="Đóng góp sau Peer">% H.Thống</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -470,18 +459,10 @@ export default function LecturerContributionPage() {
                             <TableCell className="text-center font-medium text-muted-foreground">x{student.peerReviewScore.toFixed(2)}</TableCell>
 
                             {/* Slices Breakdown */}
-<<<<<<< HEAD
-                            <TableCell className="text-center font-medium">{student.codeContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.testContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.documentContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.researchContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-bold text-muted-foreground">{student.sliceContributionPercentage.toFixed(1)}%</TableCell>
-=======
-                            <TableCell className="text-center font-medium">{student.codeContributionPercentage}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.testContributionPercentage}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.documentContributionPercentage}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.researchContributionPercentage}%</TableCell>
->>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
+                            <TableCell className="text-center font-medium">{(student.codeContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.testContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.documentContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.researchContributionPercentage ?? 0).toFixed(1)}%</TableCell>
 
                             <TableCell className="text-center">
                               {student.warnings && student.warnings.length > 0 ? (

@@ -15,7 +15,7 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId);
 
-  const courseName = courseData?.clazz?.name || courseId;
+  const courseName = courseData?.academicClass?.name || courseId;
 
   const studentsWithTeam = studentsData?.studentsWithTeam?.content || [];
 
@@ -54,7 +54,7 @@ export default function ProjectsManagementPage({ params }: { params: Promise<{ c
   });
 
   return (
- <div className="p-6 max-w-[1600px] mx-auto space-y-6 "> 
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 ">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <PageHeader
           title={`Quản lý nhóm dự án - Lớp ${courseName}`}

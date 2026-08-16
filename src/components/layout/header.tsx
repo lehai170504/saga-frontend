@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { SagaLogo } from "@/components/ui/saga-logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
-import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, MessageSquare, GitBranch, Compass } from "lucide-react";
+import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, MessageSquare, GitBranch, Compass, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {

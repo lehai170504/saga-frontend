@@ -11,4 +11,7 @@ export const authApi = {
   logout: async (): Promise<void> => {
     return await axiosInstance.post('/api/auth/logout');
   },
+  updateProfile: async (data: { fullName?: string; avatarUrl?: string }): Promise<AuthMeResponse> => {
+    return await axiosInstance.patch('/api/auth/me', data);
+  },
 };

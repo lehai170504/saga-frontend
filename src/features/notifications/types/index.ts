@@ -45,9 +45,6 @@ export interface UnreadCountResponse {
 export interface AdminBroadcastRequest {
   title: string;
   message: string;
-<<<<<<< HEAD
-  audience: "STUDENTS" | "LECTURERS" | "ALL_USERS";
-=======
   audience: "STUDENTS" | "LECTURERS" | "ALL_USERS" | string;
 }
 
@@ -56,5 +53,4 @@ export interface CourseBroadcastRequest {
   title: string;
   message: string;
   actionUrl?: string;
->>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
 }

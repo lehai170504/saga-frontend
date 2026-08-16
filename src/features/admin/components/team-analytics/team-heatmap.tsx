@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { AlertCircle } from "lucide-react";
 import { format, parseISO, eachDayOfInterval, startOfWeek, endOfWeek, subWeeks, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TeamHeatmapProps {
   data?: HeatmapData[];
@@ -41,23 +42,28 @@ export function TeamHeatmap({ data, isLoading }: TeamHeatmapProps) {
         date,
         commits: Number(commits) || 0,
         totalActivities: Number(commits) || 0,
+        peerReviews: 0,
+        comments: 0,
+        documents: 0,
+        tasks: 0,
+        totalScore: 0,
       }));
     }
     return [];
   }, [data]);
 
-  const maxCommits = useMemo(() => {
+  const maxActivities = useMemo(() => {
     if (actualData.length === 0) return 1;
-    return Math.max(...actualData.map(d => d.commits));
+    return Math.max(...actualData.map(d => d.totalActivities));
   }, [actualData]);
 
   const getDayData = (date: Date) => {
     return actualData.find(d => isSameDay(parseISO(d.date), date));
   };
 
-  const getIntensityClass = (commits: number) => {
-    if (commits === 0) return "bg-muted"; // Level 0
-    const ratio = commits / maxCommits;
+  const getIntensityClass = (activities: number) => {
+    if (activities === 0) return "bg-muted/50"; // Level 0
+    const ratio = activities / maxActivities;
     if (ratio <= 0.25) return "bg-primary/40"; // Level 1
     if (ratio <= 0.5) return "bg-primary/60"; // Level 2
     if (ratio <= 0.75) return "bg-primary/80"; // Level 3
@@ -85,66 +91,117 @@ export function TeamHeatmap({ data, isLoading }: TeamHeatmapProps) {
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="flex gap-3 min-w-max">
-        {/* Y Axis Labels (Days) */}
-        <div className="flex flex-col gap-1 mt-[26px] pr-1 text-[11px] text-muted-foreground font-medium">
-          {daysOfWeek.map((day, i) => (
-            <div key={day} className="h-3 flex items-center leading-none">{i % 2 === 0 ? day : ""}</div>
-          ))}
-        </div>
-
-        {/* Heatmap Area */}
-        <div className="flex flex-col">
-          {/* Month Labels Row */}
-          <div className="relative h-[22px] mb-1 text-[11px] text-muted-foreground font-medium w-full">
-            {weeks.map((week, weekIdx) => {
-              const isFirstWeekOfMonth = week[0].getDate() <= 7;
-              if (isFirstWeekOfMonth) {
-                return (
-                  <div
-                    key={weekIdx}
-                    className="absolute bottom-0 whitespace-nowrap"
-                    style={{ left: `${weekIdx * 16}px` }} // 12px width + 4px gap = 16px per column
-                  >
-                    {format(week[0], "MMM", { locale: vi })}
-                  </div>
-                );
-              }
-              return null;
-            })}
-          </div>
-
-          {/* Grid of Weeks */}
-          <div className="flex gap-1">
-            {weeks.map((week, weekIdx) => (
-              <div key={weekIdx} className="flex flex-col gap-1">
-                {week.map((day, dayIdx) => {
-                  const dayData = getDayData(day);
-                  const commits = dayData?.commits || 0;
-
-                  return (
-                    <div
-                      key={dayIdx}
-                      title={`${format(day, "dd/MM/yyyy")}: ${commits} hoạt động`}
-                      className={`w-3 h-3 rounded-[3px] ${getIntensityClass(commits)} hover:ring-2 hover:ring-foreground transition-all cursor-pointer`}
-                    />
-                  );
-                })}
-              </div>
+      <TooltipProvider delayDuration={100}>
+        <div className="flex gap-3 min-w-max">
+          {/* Y Axis Labels (Days) */}
+          <div className="flex flex-col gap-1.5 mt-[28px] pr-2 text-[11px] text-muted-foreground font-medium">
+            {daysOfWeek.map((day, i) => (
+              <div key={day} className="h-6 flex items-center leading-none">{i % 2 === 0 ? day : ""}</div>
             ))}
           </div>
+
+          {/* Heatmap Area */}
+          <div className="flex flex-col">
+            {/* Month Labels Row */}
+            <div className="relative h-[22px] mb-1 text-[11px] text-muted-foreground font-medium w-full">
+              {weeks.map((week, weekIdx) => {
+                const isFirstWeekOfMonth = week[0].getDate() <= 7;
+                if (isFirstWeekOfMonth) {
+                  return (
+                    <div
+                      key={weekIdx}
+                      className="absolute bottom-0 whitespace-nowrap"
+                      style={{ left: `${weekIdx * 30}px` }} // 24px width + 6px gap = 30px per column
+                    >
+                      {format(week[0], "MMM", { locale: vi })}
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
+            {/* Grid of Weeks */}
+            <div className="flex gap-1.5">
+              {weeks.map((week, weekIdx) => (
+                <div key={weekIdx} className="flex flex-col gap-1.5">
+                  {week.map((day, dayIdx) => {
+                    const dayData = getDayData(day);
+                    const activities = dayData?.totalActivities || 0;
+                    const commits = dayData?.commits || 0;
+                    const tasks = dayData?.tasks || 0;
+                    const docs = dayData?.documents || 0;
+                    const reviews = dayData?.peerReviews || 0;
+                    const score = dayData?.totalScore || 0;
+
+                    const hasActivity = activities > 0;
+
+                    return (
+                      <Tooltip key={dayIdx}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className={`w-6 h-6 rounded-md ${getIntensityClass(activities)} hover:ring-2 hover:ring-foreground transition-all cursor-pointer shadow-sm`}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="flex flex-col gap-2 p-4 shadow-xl border-border/50 max-w-xs">
+                          <div className="flex items-center justify-between gap-4 border-b border-border/50 pb-2 mb-1">
+                            <p className="font-bold text-[13px] text-foreground">
+                              {format(day, "EEEE, dd/MM/yyyy", { locale: vi })}
+                            </p>
+                            {score > 0 && (
+                              <span className="bg-primary/20 text-primary px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                +{score} điểm
+                              </span>
+                            )}
+                          </div>
+                          {hasActivity ? (
+                            <>
+                              <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-1">
+                                <div className="w-2 h-2 rounded-full bg-primary" />
+                                <span>Tổng: <strong className="text-foreground">{activities}</strong> hoạt động</span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mt-1 text-xs">
+                                <div className="flex flex-col">
+                                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider">Commits</span>
+                                  <span className="font-extrabold text-foreground">{commits}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider">Tasks</span>
+                                  <span className="font-extrabold text-foreground">{tasks}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider">Tài liệu</span>
+                                  <span className="font-extrabold text-foreground">{docs}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider">Đánh giá</span>
+                                  <span className="font-extrabold text-foreground">{reviews}</span>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="text-muted-foreground text-xs">Không có hoạt động</p>
+                          )}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      </TooltipProvider>
 
       {/* Legend */}
-      <div className="mt-6 flex items-center justify-end gap-2 text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+      <div className="mt-8 flex items-center justify-end gap-3 text-[11px] text-muted-foreground font-bold uppercase tracking-wider">
         <span>Ít</span>
-        <div className="flex gap-1">
-          <div className="w-3 h-3 rounded-[3px] bg-muted" />
-          <div className="w-3 h-3 rounded-[3px] bg-primary/40" />
-          <div className="w-3 h-3 rounded-[3px] bg-primary/60" />
-          <div className="w-3 h-3 rounded-[3px] bg-primary/80" />
-          <div className="w-3 h-3 rounded-[3px] bg-primary" />
+        <div className="flex gap-1.5">
+          <div className="w-5 h-5 rounded-md bg-muted/50" />
+          <div className="w-5 h-5 rounded-md bg-primary/40" />
+          <div className="w-5 h-5 rounded-md bg-primary/60" />
+          <div className="w-5 h-5 rounded-md bg-primary/80" />
+          <div className="w-5 h-5 rounded-md bg-primary" />
         </div>
         <span>Nhiều</span>
       </div>

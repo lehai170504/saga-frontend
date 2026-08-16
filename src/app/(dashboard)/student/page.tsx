@@ -209,9 +209,9 @@ export default function StudentSelectionPage() {
                     <div className="px-6 py-5 border-t border-border/50 flex items-center justify-between mt-auto bg-card">
                       <div className="flex items-center text-muted-foreground gap-3">
                         <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center border border-border/50">
-                          <span className="text-[10px] font-black text-foreground">{course.clazz.name.charAt(0)}</span>
+                          <span className="text-[10px] font-black text-foreground">{course.academicClass?.name?.charAt(0) || "U"}</span>
                         </div>
-                        <span className="text-sm font-semibold">Lớp {course.clazz.name}</span>
+                        <span className="text-sm font-semibold">Lớp {course.academicClass?.name || "Chưa phân lớp"}</span>
                       </div>
                       <div className="w-9 h-9 rounded-full bg-background border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 shadow-sm">
                         <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />

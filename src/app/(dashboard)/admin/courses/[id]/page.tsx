@@ -97,6 +97,11 @@ export default function CourseDetailPage() {
 
         {course && (
           <div className="flex items-center gap-3 shrink-0">
+            <Badge variant="outline" className={`rounded-xl px-3 py-1.5 font-black uppercase tracking-widest ${course.courseStatus === 'OPEN' ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10' : 'text-muted-foreground border-border/50 bg-muted/30'}`}>
+              Trạng thái: {course.courseStatus}
+            </Badge>
+            <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
+
             <EditCourseDialog courseId={courseId} />
 
             <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
@@ -151,7 +156,7 @@ export default function CourseDetailPage() {
           </TabsList>
 
           <TabsContent value="overview" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {/* Thông tin Môn học & Lớp */}
               <div className="p-6 rounded-[2rem] bg-card/40 border border-border/50 shadow-sm space-y-6 flex flex-col">
                 <h3 className="text-lg font-bold flex items-center gap-2">
@@ -177,8 +182,8 @@ export default function CourseDetailPage() {
                     </div>
                     <div>
                       <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Lớp học</div>
-                      <div className="font-semibold">{course.clazz.name}</div>
-                      <div className="text-sm text-muted-foreground mt-0.5">Mã lớp: {course.clazz.classCode}</div>
+                      <div className="font-semibold">{course.academicClass?.name || "Chưa phân lớp"}</div>
+                      <div className="text-sm text-muted-foreground mt-0.5">Mã lớp: {course.academicClass?.classCode || "N/A"}</div>
                     </div>
                   </div>
                 </div>
@@ -232,12 +237,47 @@ export default function CourseDetailPage() {
                 </div>
               </div>
 
-              {/* Trọng số Đánh giá */}
-              <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/5 to-transparent border border-border/50 shadow-sm space-y-6 md:col-span-2">
+              {/* Thông tin Hệ thống */}
+              <div className="p-6 rounded-[2rem] bg-card/40 border border-border/50 shadow-sm space-y-6 flex flex-col md:col-span-2 xl:col-span-1">
                 <h3 className="text-lg font-bold flex items-center gap-2">
-                  <Percent className="w-5 h-5 text-primary" />
-                  Trọng số Đánh giá (Contribution Weights)
+                  <ShieldCheck className="w-5 h-5 text-purple-500" />
+                  Thông tin Hệ thống
                 </h3>
+
+                <div className="space-y-4 flex-1">
+                  <div className="p-4 rounded-2xl bg-background/50 border border-border/50 flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <div className="w-full">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Ngày tạo</div>
+                      <div className="font-semibold text-sm">{course.createdAt ? new Date(course.createdAt).toLocaleString("vi-VN") : "Chưa cập nhật"}</div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-background/50 border border-border/50 flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-slate-500/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-5 h-5 text-slate-500" />
+                    </div>
+                    <div className="w-full">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Cập nhật lần cuối</div>
+                      <div className="font-semibold text-sm">{course.updatedAt ? new Date(course.updatedAt).toLocaleString("vi-VN") : "Chưa cập nhật"}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Trọng số Đánh giá */}
+              <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/5 to-transparent border border-border/50 shadow-sm space-y-6 md:col-span-2 xl:col-span-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <Percent className="w-5 h-5 text-primary" />
+                    Trọng số Đánh giá
+                  </h3>
+                  <Badge variant="outline" className="rounded-xl font-bold bg-background text-foreground border-border/50">
+                    Phạm vi: {course.contributionConfigMode === 'COURSE' ? 'Cấp Khóa học' : (course.contributionConfigMode || 'Chưa xác định')}
+                  </Badge>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
@@ -286,7 +326,7 @@ export default function CourseDetailPage() {
           </TabsContent>
 
           <TabsContent value="students" className="mt-0">
-            <CourseStudentsTable courseId={courseId} courseClassName={course.clazz.name} />
+            <CourseStudentsTable courseId={courseId} courseClassName={course.academicClass?.name || "Chưa phân lớp"} />
           </TabsContent>
         </Tabs>
       ) : null}

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Activity, Clock, AlertCircle } from "lucide-react";
 import { MemberContributionCard } from "./member-contribution-card";
-import { ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
+import { ContributionEvaluationResponse, ContributionMember } from "@/features/lecturer/types/contribution";
 
 interface ContributionEvaluationSectionProps {
   isLoadingEvaluation: boolean;

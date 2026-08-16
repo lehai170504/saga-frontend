@@ -17,6 +17,7 @@ import { useCourses } from "@/features/courses/hooks/useCourses";
 import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useEarlyWarnings } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Course } from "@/features/courses/types";
 
 function CourseStats({ courseId }: { courseId: string }) {
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
@@ -69,7 +70,7 @@ export default function ClassSelectionPage() {
   });
   const courses = coursesPage?.content || [];
 
-  const getCourseStatus = (course: any) => {
+  const getCourseStatus = (course: Course) => {
     if (!course?.semester?.startDate || !course?.semester?.endDate) return "CLOSED";
     const now = new Date();
     const start = new Date(course.semester.startDate);
@@ -80,7 +81,7 @@ export default function ClassSelectionPage() {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
- <div className="relative p-6 max-w-[1400px] mx-auto space-y-12 "> 
+      <div className="relative p-6 max-w-[1400px] mx-auto space-y-12 ">
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 pt-8">
           <PageHeader
@@ -112,7 +113,7 @@ export default function ClassSelectionPage() {
                 )}
               </SelectContent>
             </Select>
-            
+
           </div>
         </div>
 
