@@ -196,26 +196,26 @@ export default function CourseDetailPage() {
                   Học kỳ & Phân công
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-background/60 border border-border/40 flex items-center gap-3">
+                <div className="space-y-4 flex-1">
+                  <div className="p-4 rounded-2xl bg-background/50 border border-border/50 flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
                       <Calendar className="w-5 h-5 text-amber-500" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Học kỳ</div>
-                      <div className="font-semibold">{course.semester?.name || course.semester?.code || "N/A"}</div>
+                      <div className="font-semibold text-foreground">{course.semester?.name || course.semester?.code || "N/A"}</div>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-background/60 border border-border/40 flex items-center gap-3">
+                  <div className="p-4 rounded-2xl bg-background/50 border border-border/50 flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
                       <User className="w-5 h-5 text-blue-500" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Giảng viên phụ trách</div>
-                      <div className="font-semibold">{((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.fullName || "Chưa phân công"}</div>
+                      <div className="font-semibold text-foreground truncate">{((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.fullName || "Chưa phân công"}</div>
                       {((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.email && (
-                        <div className="text-sm text-muted-foreground mt-0.5">{((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.email}</div>
+                        <div className="text-sm text-muted-foreground mt-0.5 truncate">{((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.email}</div>
                       )}
                     </div>
                   </div>
