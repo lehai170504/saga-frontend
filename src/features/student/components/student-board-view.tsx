@@ -34,7 +34,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
   const projectId = myTeamData?.project?.id || "";
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
   // Auth & Role
   const currentUser = useAuthStore((s) => s.user);

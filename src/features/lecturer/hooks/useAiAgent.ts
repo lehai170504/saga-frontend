@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { aiAgentApi, CreateConversationPayload, SendMessagePayload } from "../api/aiAgentApi";
+import { aiAgentApi, CreateConversationPayload, SendMessagePayload, SendMessageResponse } from "../api/aiAgentApi";
 import { toast } from "sonner";
 import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
@@ -39,9 +39,14 @@ export const useSendMessage = () => {
   return useMutation({
     mutationFn: ({ conversationId, payload }: { conversationId: string; payload: SendMessagePayload }) =>
       aiAgentApi.sendMessage(conversationId, payload),
-    onSuccess: (_, variables) => {
+    onSuccess: (data: SendMessageResponse, variables: { conversationId: string; payload: SendMessagePayload }) => {
+      const dataObj = data as unknown as Record<string, unknown>;
+      const pendingAction = dataObj?.pendingAction || dataObj?.pending_action || dataObj?.proposedAction || dataObj?.action;
+      if (pendingAction) {
+        queryClient.setQueryData(["latest-pending-action", variables.conversationId], pendingAction);
+      }
       queryClient.invalidateQueries({ queryKey: ["ai-conversation", variables.conversationId] });
-      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] }); // Update preview or timestamp in sidebar
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: unknown) => {
       toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi gửi tin nhắn cho AI"));
@@ -50,12 +55,17 @@ export const useSendMessage = () => {
 };
 
 export const useConfirmPendingAction = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (actionId: string) => aiAgentApi.confirmPendingAction(actionId),
     onSuccess: () => {
-      // In a real app we might want to invalidate the specific conversation that contained this action,
-      // or rely on the UI to optimistically update the action status.
-      toast.success("Đã xác nhận hành động thành công");
+      toast.success("Đã xác nhận tạo Task thành công!");
+      queryClient.setQueriesData({ queryKey: ["latest-pending-action"] }, null);
+      queryClient.removeQueries({ queryKey: ["latest-pending-action"] });
+      queryClient.invalidateQueries({ queryKey: ["project-tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["project-sprints"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversation"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: unknown) => {
       toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi xác nhận hành động"));
@@ -64,10 +74,15 @@ export const useConfirmPendingAction = () => {
 };
 
 export const useRejectPendingAction = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (actionId: string) => aiAgentApi.rejectPendingAction(actionId),
     onSuccess: () => {
-      toast.success("Đã từ chối hành động");
+      toast.success("Đã từ chối đề xuất tạo Task.");
+      queryClient.setQueriesData({ queryKey: ["latest-pending-action"] }, null);
+      queryClient.removeQueries({ queryKey: ["latest-pending-action"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversation"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: unknown) => {
       toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi từ chối hành động"));

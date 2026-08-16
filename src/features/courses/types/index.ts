@@ -14,6 +14,12 @@ export interface Course {
     classCode: string;
     name: string;
   };
+  /** @deprecated Compatibility alias, prefer academicClass */
+  clazz?: {
+    id: string;
+    classCode: string;
+    name: string;
+  };
   semester: {
     id: string;
     code: string;
@@ -21,13 +27,16 @@ export interface Course {
     startDate?: string;
     endDate?: string;
   };
-  instructor: {
+  instructor?: {
     id: string;
     cognitoSub?: string;
     email?: string;
     fullName: string;
+    avatarUrl?: string | null;
     accountStatus?: string;
-  };
+    createdAt?: string;
+    updatedAt?: string;
+  } | null;
   createdAt: string;
   updatedAt: string;
   codeContributionWeight?: number;

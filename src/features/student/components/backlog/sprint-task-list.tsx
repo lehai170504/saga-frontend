@@ -16,6 +16,8 @@ interface SprintTaskListProps {
   projectId: string;
   canActOnTask: (task: JiraTask) => boolean;
   teamMembers: Array<{ studentId: string; fullName: string }>;
+  sprints?: Sprint[];
+  onMoveTaskSprint?: (taskId: string, sprintId: string | null) => void;
   onSelectTask: (task: JiraTask) => void;
   onOpenCreateTask: (sprintId: string) => void;
   onOpenEditSprint: (sprint: Sprint) => void;
@@ -36,6 +38,8 @@ export function SprintTaskList({
   projectId,
   canActOnTask,
   teamMembers,
+  sprints,
+  onMoveTaskSprint,
   onSelectTask,
   onOpenCreateTask,
   onOpenEditSprint,
@@ -47,7 +51,7 @@ export function SprintTaskList({
   isEnded,
 }: SprintTaskListProps) {
   return (
-    <div className="space-y-3">
+    <div id={`sprint-card-${sprint.sprintId}`} className="space-y-3 scroll-mt-24">
       <SprintHeaderCard
         sprint={sprint}
         sprintTasks={sprintTasks}
@@ -77,6 +81,8 @@ export function SprintTaskList({
                 projectId={projectId}
                 canAct={canActOnTask(task)}
                 teamMembers={teamMembers}
+                sprints={sprints}
+                onMoveTaskSprint={onMoveTaskSprint}
                 onSelectTask={onSelectTask}
                 onOpenEdit={onOpenEditTask}
                 onOpenDelete={onOpenDeleteTask}
@@ -107,6 +113,8 @@ interface UnassignedBacklogSectionProps {
   projectId: string;
   canActOnTask: (task: JiraTask) => boolean;
   teamMembers: Array<{ studentId: string; fullName: string }>;
+  sprints?: Sprint[];
+  onMoveTaskSprint?: (taskId: string, sprintId: string | null) => void;
   onSelectTask: (task: JiraTask) => void;
   onOpenCreateSprint: () => void;
   onOpenEditTask: (task: JiraTask) => void;
@@ -121,6 +129,8 @@ export function UnassignedBacklogSection({
   projectId,
   canActOnTask,
   teamMembers,
+  sprints,
+  onMoveTaskSprint,
   onSelectTask,
   onOpenCreateSprint,
   onOpenEditTask,
@@ -128,7 +138,7 @@ export function UnassignedBacklogSection({
   isEnded,
 }: UnassignedBacklogSectionProps) {
   return (
-    <div className="space-y-3 pt-4">
+    <div id="unassigned-backlog-section" className="space-y-3 pt-4 scroll-mt-24">
       <div
         onClick={onToggleExpand}
         className="flex items-center justify-between p-4 rounded-2xl bg-muted/50 dark:bg-muted/40 border border-border/80 dark:border-border/70 hover:border-border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
@@ -149,14 +159,13 @@ export function UnassignedBacklogSection({
           <Button
             size="sm"
             variant="outline"
+            className="rounded-xl h-8 text-xs font-bold gap-1 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               onOpenCreateSprint();
             }}
-            className="h-8 rounded-xl font-bold text-xs border-border/40 hover:bg-muted/50 flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus size={12} />
-            Tạo Sprint
+            <Plus size={14} /> Tạo Sprint mới
           </Button>
         )}
       </div>
@@ -176,6 +185,8 @@ export function UnassignedBacklogSection({
                 projectId={projectId}
                 canAct={canActOnTask(task)}
                 teamMembers={teamMembers}
+                sprints={sprints}
+                onMoveTaskSprint={onMoveTaskSprint}
                 onSelectTask={onSelectTask}
                 onOpenEdit={onOpenEditTask}
                 onOpenDelete={onOpenDeleteTask}

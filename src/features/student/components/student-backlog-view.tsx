@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
@@ -8,7 +9,7 @@ import { isCourseEnded } from "@/lib/course-utils";
 import { useProjectTasks } from "@/features/projects/hooks/useProjectTasks";
 import { useAuthStore } from "@/stores/authStore";
 import { FolderKanban, Loader2, AlertCircle } from "lucide-react";
-import { JiraTask } from "@/features/projects/types";
+import { JiraTask, Sprint } from "@/features/projects/types";
 
 // Subcomponents & Hooks
 import { BacklogFilterHeader } from "./backlog/backlog-filter-header";
@@ -26,7 +27,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
   const projectId = myTeamData?.project?.id || "";
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
   // Auth & role
   const currentUser = useAuthStore((s) => s.user);
@@ -40,10 +41,17 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const [priorityFilter, setPriorityFilter] = useState("ALL");
 
   // Queries
-  const { data: sprintsData, isLoading: isLoadingSprints } = useProjectSprints(projectId);
+  const { data: sprintsData, isLoading: isLoadingSprints } = useProjectSprints(
+    projectId,
+    { refetchInterval: 10000, refetchOnWindowFocus: true }
+  );
   const sprints = sprintsData?.sprints || [];
 
-  const { data: tasksData, isLoading: isLoadingTasks, error } = useProjectTasks(projectId);
+  const { data: tasksData, isLoading: isLoadingTasks, error } = useProjectTasks(
+    projectId,
+    { page: 0, size: 100 },
+    { refetchInterval: 10000, refetchOnWindowFocus: true }
+  );
   const rawTasks: JiraTask[] = (tasksData as { tasks?: JiraTask[]; content?: JiraTask[] })?.tasks || (tasksData as { tasks?: JiraTask[]; content?: JiraTask[] })?.content || [];
 
   // Custom Hooks for Tasks & Sprints States
@@ -81,17 +89,70 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
     return matchesKeyword && matchesAssignee && matchesPriority;
   });
 
-  // Group tasks by sprint
-  const unassignedTasks = tasks.filter((t) => !t.sprint?.id);
-
-  const getSprintTasks = (sprintId: string) => {
-    return tasks.filter((t) => t.sprint?.id === sprintId);
+  // Helper to extract Sprint ID from Task securely
+  const getTaskSprintId = (task: JiraTask): string | null => {
+    if (!task.sprint) return null;
+    const s = task.sprint as unknown as Record<string, unknown>;
+    const val = s.id || s.sprintId || s.sprint_id || s.externalId || (typeof task.sprint === "string" ? task.sprint : null);
+    if (!val || val === "null" || val === "undefined") return null;
+    return String(val);
   };
+
+  const isTaskInSprint = (task: JiraTask, sprint: Sprint): boolean => {
+    const taskSprintId = getTaskSprintId(task);
+    if (!taskSprintId) return false;
+
+    const targetSprintId = String(sprint.sprintId);
+    const targetExternalId = (sprint as unknown as Record<string, unknown>).externalId ? String((sprint as unknown as Record<string, unknown>).externalId) : null;
+    const targetId = (sprint as unknown as Record<string, unknown>).id ? String((sprint as unknown as Record<string, unknown>).id) : null;
+
+    if (taskSprintId === targetSprintId) return true;
+    if (targetExternalId && taskSprintId === targetExternalId) return true;
+    if (targetId && taskSprintId === targetId) return true;
+    if (task.sprint?.name && sprint.sprintName && task.sprint.name.trim().toLowerCase() === sprint.sprintName.trim().toLowerCase()) return true;
+    return false;
+  };
+
+  // Group tasks by sprint
+  const getSprintTasks = (sprintId: string) => {
+    const targetSprint = sortedSprints.find((s) => s.sprintId === sprintId);
+    if (!targetSprint) return [];
+    return tasks.filter((t) => isTaskInSprint(t, targetSprint));
+  };
+
+  const unassignedTasks = tasks.filter((t) => {
+    const taskSprintId = getTaskSprintId(t);
+    if (!taskSprintId) return true;
+    const belongsToAnySprint = sortedSprints.some((s) => isTaskInSprint(t, s));
+    return !belongsToAnySprint;
+  });
 
   const teamMembers = (myTeamData?.members?.content || []).map((st) => ({
     studentId: st.studentId,
     fullName: st.fullName,
   }));
+
+  const handleMoveTaskWithAutoJump = (taskId: string, sprintId: string | null) => {
+    tasksState.handleMoveTaskSprint(taskId, sprintId);
+
+    if (!sprintId) {
+      sprintsState.setExpandedUnassigned(true);
+      setTimeout(() => {
+        const el = document.getElementById("unassigned-backlog-section");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 100);
+      toast.success("Đã chuyển công việc về Backlog (Chưa phân Sprint)");
+    } else {
+      sprintsState.setExpandedSprints((prev) => ({ ...prev, [sprintId]: true }));
+      const targetSprint = sortedSprints.find((s) => s.sprintId === sprintId);
+      const name = targetSprint?.sprintName || "Sprint mới";
+      setTimeout(() => {
+        const el = document.getElementById(`sprint-card-${sprintId}`);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 100);
+      toast.success(`Đã chuyển công việc sang ${name}`);
+    }
+  };
 
   return (
     <div className="p-6 space-y-6 min-h-screen bg-background text-foreground ">
@@ -159,6 +220,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                       projectId={projectId}
                       canActOnTask={canActOnTask}
                       teamMembers={teamMembers}
+                      sprints={sortedSprints}
+                      onMoveTaskSprint={handleMoveTaskWithAutoJump}
                       onSelectTask={(t) => {
                         tasksState.setSelectedTask(t);
                         tasksState.setIsDetailOpen(true);
@@ -197,6 +260,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                 projectId={projectId}
                 canActOnTask={canActOnTask}
                 teamMembers={teamMembers}
+                sprints={sortedSprints}
+                onMoveTaskSprint={handleMoveTaskWithAutoJump}
                 onSelectTask={(t) => {
                   tasksState.setSelectedTask(t);
                   tasksState.setIsDetailOpen(true);

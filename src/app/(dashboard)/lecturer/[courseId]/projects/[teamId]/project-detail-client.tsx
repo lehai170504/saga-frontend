@@ -67,7 +67,7 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
   const { data: courseData } = useCourse(courseId);
   const queryClient = useQueryClient();
 
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
   // Mồi data (Background Prefetching) ngay khi load xong thông tin dự án
   useEffect(() => {

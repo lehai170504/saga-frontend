@@ -8,7 +8,7 @@ import { isCourseEnded } from "@/lib/course-utils";
 export function CourseEndedBanner({ courseId }: { courseId: string }) {
   const { data: course } = useCourse(courseId);
 
-  if (!course || !isCourseEnded(course.semester?.endDate)) return null;
+  if (!course || !isCourseEnded(course)) return null;
 
   return (
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-full max-w-fit px-4 pointer-events-none animate-in slide-in-from-top-8 fade-in duration-700">

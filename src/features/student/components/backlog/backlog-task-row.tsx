@@ -9,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Calendar, MoreHorizontal } from "lucide-react";
-import { JiraTask } from "@/features/projects/types";
+import { Calendar, MoreHorizontal, Zap } from "lucide-react";
+import { JiraTask, Sprint } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { getTypeIcon } from "./backlog-helpers";
 import { TaskStatusDropdown } from "../board/task-status-dropdown";
@@ -24,6 +24,8 @@ interface BacklogTaskRowProps {
   projectId: string;
   canAct: boolean;
   teamMembers: Array<{ studentId: string; fullName: string }>;
+  sprints?: Sprint[];
+  onMoveTaskSprint?: (taskId: string, sprintId: string | null) => void;
   onSelectTask: (task: JiraTask) => void;
   onOpenEdit: (task: JiraTask) => void;
   onOpenDelete: (task: JiraTask) => void;
@@ -35,6 +37,8 @@ export function BacklogTaskRow({
   projectId,
   canAct,
   teamMembers,
+  sprints,
+  onMoveTaskSprint,
   onSelectTask,
   onOpenEdit,
   onOpenDelete,
@@ -104,6 +108,49 @@ export function BacklogTaskRow({
 
         {/* Assignee Dropdown */}
         <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} isEnded={isEnded} />
+
+        {/* Sprint Selection Dropdown */}
+        {sprints && sprints.length > 0 && onMoveTaskSprint && !isEnded && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Badge
+                variant="outline"
+                className="rounded-xl h-8 px-2.5 bg-primary/10 hover:bg-primary/20 text-primary border-primary/30 cursor-pointer font-extrabold text-[10px] gap-1 flex items-center shrink-0 transition-all shadow-xs"
+              >
+                <Zap size={11} className="text-primary fill-primary/30 shrink-0" />
+                <span className="max-w-[100px] truncate">{task.sprint?.name || "Backlog"}</span>
+              </Badge>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-2xl border border-border/40 bg-background/95 backdrop-blur-xl shadow-xl min-w-[180px] p-1.5 animate-in fade-in duration-200">
+              <div className="px-2 py-1 text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider">
+                Chuyển sang Sprint
+              </div>
+              <DropdownMenuItem
+                onClick={() => onMoveTaskSprint(task.id, null)}
+                className="rounded-xl px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors flex items-center justify-between"
+              >
+                <span>Backlog (Chưa phân)</span>
+                {!task.sprint?.id && <span className="text-primary font-black">✓</span>}
+              </DropdownMenuItem>
+              <div className="my-1 border-t border-border/40" />
+              {sprints
+                .filter((s) => s.state !== "closed" && s.state !== "CLOSED")
+                .map((s) => {
+                  const isCurrent = task.sprint?.id === s.sprintId;
+                  return (
+                    <DropdownMenuItem
+                      key={s.sprintId}
+                      onClick={() => onMoveTaskSprint(task.id, s.sprintId)}
+                      className="rounded-xl px-2.5 py-1.5 text-xs font-bold text-foreground cursor-pointer hover:bg-muted focus:bg-muted transition-colors flex items-center justify-between"
+                    >
+                      <span className="truncate">{s.sprintName}</span>
+                      {isCurrent && <span className="text-primary font-black">✓</span>}
+                    </DropdownMenuItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         {/* More Actions (Edit / Delete) */}
         {canAct && (

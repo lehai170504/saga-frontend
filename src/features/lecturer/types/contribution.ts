@@ -46,11 +46,11 @@ export interface ContributionMember {
   evidenceCount: number;
   sprintBreakdowns: SprintBreakdown[];
   warnings: ContributionWarning[];
+  avatarUrl?: string;
+  avatar?: string;
   // Optional frontend fields
   role?: string;
   email?: string;
-  avatarUrl?: string;
-  avatar?: string;
 }
 
 export interface ContributionEvaluationResponse {

@@ -24,7 +24,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
   const { data: teamWeightsData, isLoading: isLoadingTeam } = useCourseContributionTeamWeights(courseId);
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId);
 
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
   const { mutate: updateCourseWeights, isPending: isUpdatingCourse } = useUpdateCourseContributionWeights();
   const { mutate: updateMode, isPending: isUpdatingMode } = useUpdateCourseContributionMode();

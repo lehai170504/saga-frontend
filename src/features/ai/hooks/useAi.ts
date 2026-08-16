@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { aiApi } from "../api/aiApi";
+import { AiMessage } from "../types";
 import { toast } from "sonner";
 
 import { getVietnameseErrorMessage } from "@/lib/error-utils";
@@ -48,8 +49,14 @@ export const useSendAiMessage = (conversationId: string) => {
       }
       return aiApi.sendMessage(conversationId, payload.content, payload.courseId);
     },
-    onSuccess: () => {
+    onSuccess: (data: AiMessage) => {
+      const dataObj = data as unknown as Record<string, unknown>;
+      const pendingAction = data?.pendingAction || dataObj?.pending_action || dataObj?.proposedAction || dataObj?.action;
+      if (pendingAction) {
+        queryClient.setQueryData(["latest-pending-action", conversationId], pendingAction);
+      }
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: unknown) => {
       toast.error(getVietnameseErrorMessage(err, "Lỗi khi gửi tin nhắn"));
@@ -63,7 +70,12 @@ export const useSendAiMessageDynamic = () => {
     mutationFn: (payload: { conversationId: string; content: string; courseId?: string }) => {
       return aiApi.sendMessage(payload.conversationId, payload.content, payload.courseId);
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data: AiMessage, variables) => {
+      const dataObj = data as unknown as Record<string, unknown>;
+      const pendingAction = data?.pendingAction || dataObj?.pending_action || dataObj?.proposedAction || dataObj?.action;
+      if (pendingAction) {
+        queryClient.setQueryData(["latest-pending-action", variables.conversationId], pendingAction);
+      }
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", variables.conversationId] });
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
@@ -110,6 +122,10 @@ export const useConfirmAiAction = (conversationId: string) => {
     mutationFn: (actionId: string) => aiApi.confirmAction(actionId),
     onSuccess: () => {
       toast.success("Đã xác nhận tạo Task thành công!");
+      queryClient.setQueryData(["latest-pending-action", conversationId], null);
+      queryClient.removeQueries({ queryKey: ["latest-pending-action", conversationId] });
+      queryClient.invalidateQueries({ queryKey: ["project-tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["project-sprints"] });
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
@@ -125,6 +141,8 @@ export const useRejectAiAction = (conversationId: string) => {
     mutationFn: (actionId: string) => aiApi.rejectAction(actionId),
     onSuccess: () => {
       toast.success("Đã từ chối đề xuất tạo Task.");
+      queryClient.setQueryData(["latest-pending-action", conversationId], null);
+      queryClient.removeQueries({ queryKey: ["latest-pending-action", conversationId] });
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
