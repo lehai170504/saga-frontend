@@ -23,6 +23,7 @@ interface BacklogFilterHeaderProps {
   onOpenCreateTask: (sprintId?: string | null) => void;
   onOpenCreateSprint: () => void;
   isLeader: boolean;
+  isEnded?: boolean;
 }
 
 export function BacklogFilterHeader({
@@ -36,6 +37,7 @@ export function BacklogFilterHeader({
   onOpenCreateTask,
   onOpenCreateSprint,
   isLeader,
+  isEnded,
 }: BacklogFilterHeaderProps) {
   return (
     <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 p-4 glass-panel border border-border/40 rounded-2xl">
@@ -92,7 +94,8 @@ export function BacklogFilterHeader({
       <div className="flex items-center gap-2 shrink-0">
         <Button
           onClick={() => onOpenCreateTask(null)}
-          className="h-10 px-4 rounded-xl font-bold text-xs bg-primary text-primary-foreground hover:bg-primary/95 shadow-md flex items-center gap-1.5 cursor-pointer"
+          disabled={isEnded}
+          className="h-10 px-4 rounded-xl font-bold text-xs bg-primary text-primary-foreground hover:bg-primary/95 shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus size={14} />
           Tạo công việc

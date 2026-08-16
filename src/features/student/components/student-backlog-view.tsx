@@ -109,6 +109,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         onPriorityFilterChange={setPriorityFilter}
         teamMembers={teamMembers}
         isLeader={isLeader && !isEnded}
+        isEnded={isEnded}
         onOpenCreateTask={() => {
           if (!isEnded) tasksState.handleOpenCreate(null);
         }}
@@ -183,6 +184,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                       onCloseSprint={(sprintId) => {
                         if (!isEnded) sprintsState.handleCloseSprint(sprintId);
                       }}
+                      isEnded={isEnded}
                     />
                   );
                 })}
@@ -208,6 +210,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                 onOpenDeleteTask={(task) => {
                   if (!isEnded) tasksState.handleOpenDelete(task);
                 }}
+                isEnded={isEnded}
               />
             </div>
           )}
