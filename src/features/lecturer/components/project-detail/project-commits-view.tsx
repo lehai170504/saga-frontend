@@ -9,6 +9,7 @@ import { useGithubBranches, useGithubCommits } from "@/features/projects/hooks/u
 import { GithubBranchInfo, GithubCommitInfo } from "@/features/projects/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GitCommit, GitBranch, Calendar, ExternalLink, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { CommitReviewBadge } from "@/components/shared/commit-review-badge";
 
 interface ProjectCommitsViewProps {
   projectId: string;
@@ -246,7 +247,8 @@ export function ProjectCommitsView({ projectId, repositories = [] }: ProjectComm
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0 self-end md:self-center">
+                    <div className="flex flex-wrap items-center gap-3 shrink-0 self-end md:self-center">
+                      <CommitReviewBadge review={commit.review} />
                       <Badge
                         variant="outline"
                         className="font-mono rounded-lg text-[11px] bg-muted/30 border-border font-bold py-1 px-2.5"

@@ -264,6 +264,24 @@ export interface GithubBranchesResponse {
   };
 }
 
+export interface CommitReviewResult {
+  traceabilityStatus?: string;
+  messageQuality?: string;
+  codeQuality?: string;
+  taskAlignment?: string;
+  verdictEligible?: boolean;
+  verdict?: string;
+  overallStatus?: string;
+}
+
+export interface CommitReview {
+  intentStatus: string;
+  reviewMode?: string | null;
+  startedAt?: string | null;
+  completedAt?: string | null;
+  result?: CommitReviewResult | null;
+}
+
 export interface GithubCommitInfo {
   sha: string;
   message: string;
@@ -272,6 +290,7 @@ export interface GithubCommitInfo {
   authoredAt: string;
   committedAt: string;
   url: string;
+  review?: CommitReview | null;
 }
 
 export interface GithubCommitsResponse {
