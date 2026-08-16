@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { ApplicationRole } from "@/stores/authStore";
+import { ApplicationRole, useAuthStore } from "@/stores/authStore";
 
 interface ClientGuardProps {
   children: React.ReactNode;
@@ -13,15 +13,16 @@ interface ClientGuardProps {
 
 export function ClientGuard({ children, allowedRoles }: ClientGuardProps) {
   const { user, isLoading } = useAuth();
+  const authError = useAuthStore(state => state.authError);
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      // Not authenticated, redirect to API login
+    if (!isLoading && !user && !authError) {
+      // Not authenticated and no specific error, redirect to API login silently
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
       window.location.assign(`${API_BASE_URL}/api/auth/login`);
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, authError]);
 
   if (isLoading) {
     return (
@@ -33,7 +34,28 @@ export function ClientGuard({ children, allowedRoles }: ClientGuardProps) {
   }
 
   if (!user) {
-    // Return null while redirecting
+    if (authError) {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saga-backend-production-3951.up.railway.app";
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 text-center">
+          <div className="bg-destructive/10 p-5 rounded-full text-destructive mb-6 shadow-sm border border-destructive/20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18.36 6.64A9 9 0 0 1 20.77 15" /><path d="M6.16 6.16a9 9 0 1 0 12.68 12.68" /><path d="M12 2v4" /><path d="m2 2 20 20" /></svg>
+          </div>
+          <h1 className="text-3xl font-black mb-3 tracking-tight">Đăng xuất hệ thống</h1>
+          <p className="text-muted-foreground font-medium mb-8 max-w-md">{authError}</p>
+          <button
+            onClick={() => {
+              useAuthStore.getState().setAuthError(null);
+              window.location.assign(`${API_BASE_URL}/api/auth/login`);
+            }}
+            className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-2xl hover:bg-primary/90 transition-all shadow-md hover:scale-105 active:scale-95"
+          >
+            Đăng nhập lại
+          </button>
+        </div>
+      );
+    }
+    // Return null while redirecting silently
     return null;
   }
 
