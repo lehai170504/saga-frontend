@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/authStore";
 export default function LogoutCallbackPage() {
   useEffect(() => {
     // Xóa trạng thái người dùng ở phía FE
-    useAuthStore.getState().logout();
+    useAuthStore.getState().logoutLocalOnlyOrClearState();
 
     // Về trang chủ (trang chủ có code tự động redirect ra form đăng nhập nếu cần, hoặc hiển thị nút Login)
     window.location.replace("/");
