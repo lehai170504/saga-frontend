@@ -25,8 +25,8 @@ import { useContributionEvaluation, useOverrideContribution } from "@/features/l
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { ContributionAdjustment, ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
 import { contributionApi } from "@/features/lecturer/api/contributionApi";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - xlsx fallback
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TeamContributionGraph } from "@/features/lecturer/components/project-detail/team-contribution-graph";
 import * as XLSX from "xlsx";
 
 import { courseApi } from "@/features/courses/api/courseApi";
@@ -365,11 +365,20 @@ export default function LecturerContributionPage() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-4 py-2 rounded-xl border border-border/50 w-full lg:w-auto">
                 <Info size={16} className="text-primary flex-shrink-0" />
-                <span>% Hệ thống được tính dựa trên 4 thành phần (Code, Test, Doc, Research) x Trọng số cấu hình. Giảng viên nhập trực tiếp % mới để ghi đè.</span>
+                <span>% Trước Peer = (% Code + % Test + % Doc + % Research). % H.Thống = % Trước Peer * HS Peer.</span>
               </div>
             </div>
 
-            {/* Lý do Override Chung */}
+            <Tabs defaultValue="table" className="w-full">
+              <div className="px-4 pt-4 pb-2">
+                <TabsList className="w-full max-w-md grid grid-cols-2">
+                  <TabsTrigger value="table">Bảng điểm (Evaluation)</TabsTrigger>
+                  <TabsTrigger value="graph">Sơ đồ Đóng góp (Graph)</TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="table" className="m-0 border-t border-border/50">
+                {/* Lý do Override Chung */}
             {Object.keys(localAdjustments).length > 0 && (
               <div className={`p-5 border-b animate-in slide-in-from-top-2 transition-colors duration-300 ${!overrideReason.trim() ? 'bg-destructive/10 border-destructive/20' : 'bg-success/10 border-success/20'}`}>
                 <div className="flex items-start gap-4">
@@ -427,9 +436,9 @@ export default function LecturerContributionPage() {
                       <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Test</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
-                      <TableHead className="text-center font-bold text-muted-foreground">% Rsch</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Rsrch</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Trước Peer</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
-                      <TableHead className="text-center font-bold text-blue-600 dark:text-blue-400 min-w-[100px]" title="Tỷ lệ đóng góp trước khi nhân đánh giá chéo (Peer Review)">% Trước Peer</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]" title="Đóng góp sau Peer">% H.Thống</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
                     </TableRow>
@@ -458,13 +467,14 @@ export default function LecturerContributionPage() {
                                 {student.role || "MEMBER"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-center font-medium text-muted-foreground">x{student.peerReviewScore.toFixed(2)}</TableCell>
+                            <TableCell className="text-center font-medium text-muted-foreground">x{(student.peerReviewScore ?? 0).toFixed(2)}</TableCell>
 
                             {/* Slices Breakdown */}
                             <TableCell className="text-center font-medium">{(student.codeContributionPercentage ?? 0).toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-medium">{(student.testContributionPercentage ?? 0).toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-medium">{(student.documentContributionPercentage ?? 0).toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-medium">{(student.researchContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-bold text-muted-foreground">{(student.sliceContributionPercentage ?? student.taskContributionPercentage ?? 0).toFixed(1)}%</TableCell>
 
                             <TableCell className="text-center">
                               {student.warnings && student.warnings.length > 0 ? (
@@ -522,6 +532,26 @@ export default function LecturerContributionPage() {
                 </Table>
               </div>
             )}
+              </TabsContent>
+              <TabsContent value="graph" className="m-0 border-t border-border/50 bg-muted/10 p-6">
+                {!hasProject ? (
+                  <div className="flex flex-col items-center justify-center py-24 text-center px-4">
+                    <div className="w-24 h-24 mb-6 relative">
+                      <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-20"></div>
+                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-primary/20 rounded-full border border-primary/10 shadow-inner flex items-center justify-center">
+                        <AlertTriangle className="w-10 h-10 text-primary opacity-50" />
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">Chưa có kết quả đánh giá đóng góp</h3>
+                    <p className="text-muted-foreground max-w-sm mb-6">
+                      Nhóm này hiện tại <b>chưa kết nối với bất kỳ Dự án nào</b>.
+                    </p>
+                  </div>
+                ) : (
+                  <TeamContributionGraph teamId={selectedTeamId} />
+                )}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
 

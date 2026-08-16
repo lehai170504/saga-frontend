@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Users, Zap, UserCheck } from "lucide-react";
+import { Users, Zap, UserCheck, Network } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useCreateTeamProject, useProjectDetail } from "@/features/projects/hooks/useProjects";
 import { toast } from "sonner";
@@ -15,6 +15,8 @@ import { useProjectTypes } from "@/features/admin/hooks/useProjectTypes";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { StudentOverviewActivityTab } from "@/features/student/components/stats/student-overview-activity-tab";
 import { StudentSprintsView } from "@/features/student/components/student-sprints-view";
+import { TeamContributionGraph } from "@/features/lecturer/components/project-detail/team-contribution-graph";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 // Subcomponents
 import { TeamHeroCard } from "./projects-list/team-hero-card";
@@ -32,9 +34,11 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   const [activeTab, setActiveTab] = useState<string>(tabFromUrl || "overview");
   const [prevTabFromUrl, setPrevTabFromUrl] = useState(tabFromUrl);
 
+  const { user } = useAuth();
+
   if (tabFromUrl !== prevTabFromUrl) {
     setPrevTabFromUrl(tabFromUrl);
-    if (tabFromUrl && ["overview", "team", "peer-review"].includes(tabFromUrl)) {
+    if (tabFromUrl && ["overview", "team", "peer-review", "graph"].includes(tabFromUrl)) {
       setActiveTab(tabFromUrl);
     }
   }
@@ -102,6 +106,11 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
     });
   }, [members]);
 
+  const isCurrentUserLeader = useMemo(() => {
+    if (!user || !members) return false;
+    return members.some(m => m.studentId === user.localProfileId && m.roleInTeam === "LEADER");
+  }, [user, members]);
+
   const headerInfo = useMemo(() => {
     switch (activeTab) {
       case "team":
@@ -119,6 +128,14 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
             ? `Thực hiện tự đánh giá và đánh giá chéo thành viên trong nhóm theo từng Sprint cho Khóa học ${courseData.courseCode || ""
             }`
             : "Thực hiện tự đánh giá và đánh giá chéo thành viên trong nhóm theo từng Sprint",
+        };
+      case "graph":
+        return {
+          title: "Sơ đồ Đóng góp",
+          description: courseData
+            ? `Xem Sơ đồ mạng lưới đóng góp toàn nhóm trong Khóa học ${courseData.courseCode || ""
+            }`
+            : "Xem Sơ đồ mạng lưới đóng góp toàn nhóm (Chỉ Leader)",
         };
       default:
         return {
@@ -177,6 +194,15 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                   <UserCheck size={16} />
                   <span>Đánh giá chéo</span>
                 </TabsTrigger>
+                {isCurrentUserLeader && (
+                  <TabsTrigger
+                    value="graph"
+                    className="rounded-xl px-5 py-2.5 font-bold text-xs text-primary bg-primary/5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all flex items-center gap-2 cursor-pointer border border-primary/20"
+                  >
+                    <Network size={16} />
+                    <span>Sơ đồ Đóng góp (Graph)</span>
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
 
@@ -231,6 +257,13 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
             <TabsContent value="peer-review" className="focus-visible:outline-none space-y-6 mt-0">
               <StudentSprintsView courseId={courseId || ""} hideHeader />
             </TabsContent>
+
+            {/* Tab 4: Graph View (Leader Only) */}
+            {isCurrentUserLeader && (
+              <TabsContent value="graph" className="focus-visible:outline-none space-y-6 mt-0">
+                <TeamContributionGraph teamId={activeTeamId} isEnded={isEnded} />
+              </TabsContent>
+            )}
           </Tabs>
         )}
       </div>

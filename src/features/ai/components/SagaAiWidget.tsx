@@ -220,6 +220,21 @@ export function SagaAiWidget() {
     );
   };
 
+  const formatMessageText = (text: string) => {
+    if (!text) return null;
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return (
+      <p className="whitespace-pre-wrap text-sm leading-relaxed">
+        {parts.map((part, index) => {
+          if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+            return <strong key={index} className="font-extrabold">{part.slice(2, -2)}</strong>;
+          }
+          return <React.Fragment key={index}>{part}</React.Fragment>;
+        })}
+      </p>
+    );
+  };
+
   const renderMessageContent = (msg: AiMessage) => {
     const textStr = msg.content || msg.text || "";
 
