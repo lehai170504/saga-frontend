@@ -9,7 +9,8 @@ export const sessionEvents = {
 
     events = new EventSource(`${API_BASE_URL}/api/auth/session-events`, { withCredentials: true });
 
-    events.addEventListener("account-disabled", (event) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    events.addEventListener("account-disabled", (_event) => {
       if (events) {
         events.close();
         events = null;

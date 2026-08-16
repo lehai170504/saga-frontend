@@ -55,6 +55,30 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
   const msgLower = rawMessage.toLowerCase();
 
   // Common English Backend Error patterns -> Vietnamese translations
+  if (msgLower.includes("jira_evidence_required")) {
+    return "Vui lòng chọn ít nhất 1 tệp hoặc 1 đường dẫn link bằng chứng.";
+  }
+  if (msgLower.includes("jira_attachment_limit_exceeded")) {
+    return "Vượt quá số lượng tệp cho phép (Tối đa 5 tệp / lần nộp).";
+  }
+  if (msgLower.includes("jira_attachment_too_large")) {
+    return "Dung lượng tệp quá lớn (Mỗi tệp không được vượt quá 10 MB).";
+  }
+  if (msgLower.includes("jira_attachment_type_unsupported")) {
+    return "Định dạng tệp không được hỗ trợ.";
+  }
+  if (msgLower.includes("jira_attachment_filename_invalid")) {
+    return "Tên tệp không hợp lệ.";
+  }
+  if (msgLower.includes("jira_link_too_long")) {
+    return "Đường dẫn link quá dài (Tối đa 2048 ký tự).";
+  }
+  if (msgLower.includes("jira_link_invalid")) {
+    return "Đường dẫn link không hợp lệ (Phải bắt đầu bằng http:// hoặc https://).";
+  }
+  if (msgLower.includes("jira_task_not_linked")) {
+    return "Task này chưa được liên kết với Jira issue.";
+  }
   if (msgLower.includes("access is denied") || msgLower.includes("forbidden") || msgLower.includes("unauthorized")) {
     return "Bạn không có quyền thực hiện thao tác này.";
   }

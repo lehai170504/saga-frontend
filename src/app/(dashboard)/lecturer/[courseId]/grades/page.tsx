@@ -25,6 +25,8 @@ import { useContributionEvaluation, useOverrideContribution } from "@/features/l
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { ContributionAdjustment, ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
 import { contributionApi } from "@/features/lecturer/api/contributionApi";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - xlsx fallback
 import * as XLSX from "xlsx";
 
 import { courseApi } from "@/features/courses/api/courseApi";

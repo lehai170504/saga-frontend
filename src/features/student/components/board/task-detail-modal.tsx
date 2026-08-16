@@ -17,12 +17,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { User, Flag, Calendar, Sparkles, Clock, Tag } from "lucide-react";
+import { User, Flag, Calendar, Sparkles, Clock, Tag, Paperclip, ExternalLink, FileText, Link as LinkIcon } from "lucide-react";
 import { JiraTask } from "@/features/projects/types";
 import { getTaskDueDateInfo } from "@/features/projects/utils/dueDateUtils";
 import { getTypeBadge } from "./board-helpers";
 import { TaskStatusDropdown } from "./task-status-dropdown";
 import { TaskTraceabilitySection } from "@/features/projects/components/task-traceability-section";
+import { TaskAttachmentModal } from "./modals/task-attachment-modal";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -43,6 +44,8 @@ export function TaskDetailModal({
   variant = "modal",
   isEnded,
 }: TaskDetailModalProps) {
+  const [isAttachmentModalOpen, setIsAttachmentModalOpen] = React.useState(false);
+
   if (!selectedTask) return null;
 
   const detailBody = (
@@ -196,6 +199,58 @@ export function TaskDetailModal({
             {selectedTask.storyPoint ?? 0}
           </span>
         </div>
+        {/* Evidence / Attachments Section */}
+        <div className="space-y-2 mt-3 p-3 bg-muted/20 border border-border/30 rounded-2xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Paperclip size={15} className="text-primary shrink-0" />
+              <span className="text-xs font-bold text-foreground">Bằng chứng / File đính kèm</span>
+            </div>
+            {!isEnded && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setIsAttachmentModalOpen(true)}
+                className="h-8 rounded-xl text-xs font-bold text-primary border-primary/30 hover:bg-primary/10 gap-1.5 cursor-pointer"
+              >
+                <Paperclip size={13} />
+                <span>+ Nộp bằng chứng</span>
+              </Button>
+            )}
+          </div>
+
+          {/* List of files/links */}
+          {((selectedTask.attachments && selectedTask.attachments.length > 0) || (selectedTask.links && selectedTask.links.length > 0)) ? (
+            <div className="space-y-1.5 pt-2">
+              {selectedTask.attachments?.map((att) => (
+                <div key={att.id} className="flex items-center justify-between p-2 rounded-xl bg-card border border-border/40 text-xs">
+                  <div className="flex items-center gap-2 truncate">
+                    <FileText size={14} className="text-primary shrink-0" />
+                    <span className="truncate font-semibold">{att.filename}</span>
+                    <span className="text-[10px] text-muted-foreground">({(att.sizeBytes / 1024).toFixed(1)} KB)</span>
+                  </div>
+                  <Badge variant="outline" className="text-[10px] bg-muted/40 font-mono">Jira #{att.externalId}</Badge>
+                </div>
+              ))}
+
+              {selectedTask.links?.map((link) => (
+                <div key={link.id} className="flex items-center justify-between p-2 rounded-xl bg-card border border-border/40 text-xs">
+                  <div className="flex items-center gap-2 truncate">
+                    <LinkIcon size={14} className="text-primary shrink-0" />
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" className="truncate font-semibold text-primary hover:underline flex items-center gap-1">
+                      {link.url}
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[11px] text-muted-foreground italic pt-1">
+              Chưa có bằng chứng (file/link) nào được nộp cho Task này.
+            </p>
+          )}
+        </div>
 
         {/* Traceability Jira Task ↔ GitHub Issue */}
         <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} isEnded={isEnded} />
@@ -267,42 +322,58 @@ export function TaskDetailModal({
 
   if (variant === "drawer") {
     return (
-      <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="right"
-          className="w-full sm:max-w-xl md:max-w-2xl border-l border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-6 overflow-y-auto flex flex-col justify-between"
-        >
-          <div>
-            <SheetHeader className="pb-4 border-b border-border/40 space-y-2 text-left">
-              <SheetTitle asChild>
-                <div>{headerContent}</div>
-              </SheetTitle>
-              <SheetDescription className="sr-only">
-                Chi tiết công việc đồng bộ trực tiếp từ Jira.
-              </SheetDescription>
-            </SheetHeader>
-            {detailBody}
-          </div>
-        </SheetContent>
-      </Sheet>
+      <>
+        <Sheet open={isOpen} onOpenChange={onOpenChange}>
+          <SheetContent
+            side="right"
+            className="w-full sm:max-w-xl md:max-w-2xl border-l border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-6 overflow-y-auto flex flex-col justify-between"
+          >
+            <div>
+              <SheetHeader className="pb-4 border-b border-border/40 space-y-2 text-left">
+                <SheetTitle asChild>
+                  <div>{headerContent}</div>
+                </SheetTitle>
+                <SheetDescription className="sr-only">
+                  Chi tiết công việc đồng bộ trực tiếp từ Jira.
+                </SheetDescription>
+              </SheetHeader>
+              {detailBody}
+            </div>
+          </SheetContent>
+        </Sheet>
+        <TaskAttachmentModal
+          isOpen={isAttachmentModalOpen}
+          onClose={() => setIsAttachmentModalOpen(false)}
+          projectId={projectId}
+          task={selectedTask}
+        />
+      </>
     );
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[520px] md:max-w-[580px] max-h-[85vh] rounded-3xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-5 overflow-y-auto flex flex-col justify-between">
-        <div>
-          <DialogHeader className="pb-4 border-b border-border/40 space-y-2 text-left">
-            <DialogTitle asChild>
-              <div>{headerContent}</div>
-            </DialogTitle>
-            <DialogDescription className="sr-only">
-              Chi tiết công việc đồng bộ trực tiếp từ Jira.
-            </DialogDescription>
-          </DialogHeader>
-          {detailBody}
-        </div>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[520px] md:max-w-[580px] max-h-[85vh] rounded-3xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-5 overflow-y-auto flex flex-col justify-between">
+          <div>
+            <DialogHeader className="pb-4 border-b border-border/40 space-y-2 text-left">
+              <DialogTitle asChild>
+                <div>{headerContent}</div>
+              </DialogTitle>
+              <DialogDescription className="sr-only">
+                Chi tiết công việc đồng bộ trực tiếp từ Jira.
+              </DialogDescription>
+            </DialogHeader>
+            {detailBody}
+          </div>
+        </DialogContent>
+      </Dialog>
+      <TaskAttachmentModal
+        isOpen={isAttachmentModalOpen}
+        onClose={() => setIsAttachmentModalOpen(false)}
+        projectId={projectId}
+        task={selectedTask}
+      />
+    </>
   );
 }
