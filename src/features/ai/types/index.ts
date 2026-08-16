@@ -16,8 +16,15 @@ export interface AiPendingAction {
 export interface AiMessage {
   id: string;
   role: 'USER' | 'ASSISTANT' | 'SYSTEM';
-  content: string;
+  content?: string; // Kept for backwards compatibility
+  text?: string;
   createdAt: string;
   pendingAction?: AiPendingAction;
-  artifactId?: string;
+  generatedArtifact?: string;
+  artifactId?: string; // Kept for backwards compatibility if needed
+  jobReference?: {
+    status: 'PENDING' | 'RUNNING' | 'WAITING_RETRY' | 'COMPLETED' | 'FAILED';
+  };
+  citations?: string[];
+  suggestedFollowups?: string[];
 }

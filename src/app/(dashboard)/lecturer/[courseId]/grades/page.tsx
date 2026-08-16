@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useContributionEvaluation, useOverrideContribution } from "@/features/lecturer/hooks/useContribution";
-import { ContributionAdjustment, ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
+import { ContributionAdjustment } from "@/features/lecturer/types/contribution";
 import { courseApi } from "@/features/courses/api/courseApi";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";

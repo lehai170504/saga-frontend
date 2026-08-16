@@ -78,10 +78,19 @@ export const useDownloadArtifact = () => {
   return useMutation({
     mutationFn: (artifactId: string) => aiAgentApi.downloadArtifact(artifactId),
     onSuccess: (response, artifactId) => {
+      let filename = `Artifact_${artifactId}`;
+      const contentDisposition = response.headers['content-disposition'];
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (filenameMatch && filenameMatch.length > 1) {
+          filename = filenameMatch[1];
+        }
+      }
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `Artifact_${artifactId}`);
+      link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
       link.parentNode?.removeChild(link);

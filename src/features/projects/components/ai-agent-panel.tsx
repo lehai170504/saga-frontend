@@ -66,26 +66,7 @@ export function AiAgentPanel(props: { projectId?: string }) {
     }
   };
 
-  // Basic parser to find action IDs embedded in AI messages (if any)
-  const extractActionIds = (text: string) => {
-    const regex = /actionId:\s*([a-f0-9\-]{36})/gi;
-    const matches = [];
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-      matches.push(match[1]);
-    }
-    return matches;
-  };
-
-  const extractArtifactIds = (text: string) => {
-    const regex = /artifactId:\s*([a-f0-9\-]{36})/gi;
-    const matches = [];
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-      matches.push(match[1]);
-    }
-    return matches;
-  };
+  // Regex extractors removed as BE now returns structured data in AiMessage
 
   const handleDownloadArtifact = async (artifactId: string) => {
     try {
@@ -168,62 +149,106 @@ export function AiAgentPanel(props: { projectId?: string }) {
                     <p className="text-sm font-medium">Bắt đầu trò chuyện với SAGA AI</p>
                   </div>
                 ) : (
-                  conversationDetail.messages.map(msg => (
-                    <div key={msg.id} className={`flex gap-3 ${msg.role === 'USER' ? 'flex-row-reverse' : ''}`}>
-                      <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'USER' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
-                        {msg.role === 'USER' ? <User size={16} /> : <Bot size={16} />}
-                      </div>
-                      <div className={`max-w-[75%] space-y-2 ${msg.role === 'USER' ? 'items-end' : 'items-start'}`}>
-                        <div
-                          className={`p-4 rounded-2xl text-sm leading-relaxed ${
-                            msg.role === 'USER'
+                  conversationDetail.messages
+                    .filter(msg => {
+                      const text = msg.content || msg.text || "";
+                      if (msg.role === 'SYSTEM' || (msg as any).role === 'TOOL') return false;
+                      if (/^[a-zA-Z_]+:(COMPLETED|PENDING|STARTED)$/.test(text.trim())) return false;
+                      return true;
+                    })
+                    .map(msg => (
+                      <div key={msg.id} className={`flex gap-3 ${msg.role === 'USER' ? 'flex-row-reverse' : ''}`}>
+                        <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'USER' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                          {msg.role === 'USER' ? <User size={16} /> : <Bot size={16} />}
+                        </div>
+                        <div className={`max-w-[75%] space-y-2 ${msg.role === 'USER' ? 'items-end' : 'items-start'}`}>
+                          <div
+                            className={`p-4 rounded-2xl text-sm leading-relaxed ${msg.role === 'USER'
                               ? 'bg-primary text-primary-foreground rounded-tr-sm selection:bg-white/30 selection:text-white'
                               : 'bg-muted text-foreground rounded-tl-sm selection:bg-primary/25 selection:text-foreground'
-                          }`}
-                        >
-                          {msg.content}
-                        </div>
+                              }`}
+                          >
+                            {msg.text || msg.content}
+                          </div>
 
-                        {/* Render Pending Action Buttons if AI embedded an actionId */}
-                        {msg.role === 'AI' && extractActionIds(msg.content).map(actionId => (
-                          <div key={actionId} className="p-3 bg-card border border-border rounded-xl flex items-center justify-between shadow-sm mt-2">
-                            <span className="text-xs font-bold flex items-center gap-2 text-foreground">
-                              <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
-                              Yêu cầu phê duyệt hành động
-                            </span>
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="ghost" className="h-8 text-success hover:bg-success/20 rounded-lg" onClick={() => confirmAction(actionId)} disabled={isConfirming || isRejecting}>
-                                <CheckCircle size={14} className="mr-1" /> Duyệt
-                              </Button>
-                              <Button size="sm" variant="ghost" className="h-8 text-destructive hover:bg-destructive/20 rounded-lg" onClick={() => rejectAction(actionId)} disabled={isConfirming || isRejecting}>
-                                <XCircle size={14} className="mr-1" /> Hủy
+                          {/* Render Pending Action Buttons */}
+                          {msg.pendingAction && msg.pendingAction.status === 'PENDING' && (
+                            <div className="p-3 bg-card border border-border rounded-xl shadow-sm mt-2">
+                              <span className="text-xs font-bold flex items-center gap-2 text-foreground mb-2">
+                                <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+                                Đề xuất hành động: {msg.pendingAction.actionType}
+                              </span>
+                              <p className="text-xs text-muted-foreground mb-3">{msg.pendingAction.description}</p>
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="ghost" className="h-8 text-success hover:bg-success/20 rounded-lg" onClick={() => confirmAction(msg.pendingAction!.id)} disabled={isConfirming || isRejecting}>
+                                  <CheckCircle size={14} className="mr-1" /> Duyệt
+                                </Button>
+                                <Button size="sm" variant="ghost" className="h-8 text-destructive hover:bg-destructive/20 rounded-lg" onClick={() => rejectAction(msg.pendingAction!.id)} disabled={isConfirming || isRejecting}>
+                                  <XCircle size={14} className="mr-1" /> Hủy
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Render Artifact Download Buttons */}
+                          {msg.generatedArtifact && (
+                            <div className="p-3 bg-card border border-border rounded-xl flex items-center justify-between shadow-sm mt-2">
+                              <span className="text-xs font-bold flex items-center gap-2 text-foreground">
+                                <Download size={14} className="text-primary" />
+                                Tài liệu Artifact
+                              </span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 rounded-lg"
+                                onClick={() => handleDownloadArtifact(msg.generatedArtifact!)}
+                                disabled={downloadingArtifacts[msg.generatedArtifact!]}
+                              >
+                                {downloadingArtifacts[msg.generatedArtifact!] ? <Loader2 size={14} className="animate-spin mr-1" /> : <Download size={14} className="mr-1" />}
+                                Tải xuống
                               </Button>
                             </div>
-                          </div>
-                        ))}
+                          )}
 
-                        {/* Render Artifact Download Buttons if AI embedded an artifactId */}
-                        {msg.role === 'AI' && extractArtifactIds(msg.content).map(artifactId => (
-                          <div key={artifactId} className="p-3 bg-card border border-border rounded-xl flex items-center justify-between shadow-sm mt-2">
-                            <span className="text-xs font-bold flex items-center gap-2 text-foreground">
-                              <Download size={14} className="text-primary" />
-                              Tài liệu Artifact (SRS)
-                            </span>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-8 rounded-lg"
-                              onClick={() => handleDownloadArtifact(artifactId)}
-                              disabled={downloadingArtifacts[artifactId]}
-                            >
-                              {downloadingArtifacts[artifactId] ? <Loader2 size={14} className="animate-spin mr-1" /> : <Download size={14} className="mr-1" />}
-                              Tải xuống
-                            </Button>
-                          </div>
-                        ))}
+                          {/* Render Job Reference Status */}
+                          {msg.jobReference && (
+                            <div className="mt-2">
+                              <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${msg.jobReference.status === 'COMPLETED' ? "bg-emerald-500/15 text-emerald-600" :
+                                msg.jobReference.status === 'FAILED' ? "bg-destructive/15 text-destructive" :
+                                  "bg-amber-500/15 text-amber-600 animate-pulse"
+                                }`}>
+                                {['PENDING', 'RUNNING', 'WAITING_RETRY'].includes(msg.jobReference.status) && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
+                                Trạng thái hệ thống: {msg.jobReference.status}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Suggested Followups */}
+                          {msg.suggestedFollowups && msg.suggestedFollowups.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {msg.suggestedFollowups.map((followup: string, idx: number) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => {
+                                    if (selectedConversationId) {
+                                      setOptimisticMessage(followup);
+                                      sendMessage({ conversationId: selectedConversationId, payload: { content: followup } }).catch(e => {
+                                        console.error(e);
+                                        setOptimisticMessage(null);
+                                      }).finally(() => setOptimisticMessage(null));
+                                    }
+                                  }}
+                                  disabled={isSending}
+                                  className="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-full transition-colors text-left disabled:opacity-50"
+                                >
+                                  {followup}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))
                 )}
 
                 {/* Render Optimistic Message */}
@@ -264,14 +289,22 @@ export function AiAgentPanel(props: { projectId?: string }) {
                         handleSendMessage();
                       }
                     }}
+                    disabled={
+                      isSending ||
+                      ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes(conversationDetail?.messages?.[conversationDetail.messages.length - 1]?.jobReference?.status || '')
+                    }
                     placeholder="Gõ tin nhắn cho AI... (Enter để gửi)"
                     className="min-h-[60px] max-h-[150px] resize-none rounded-2xl bg-background border-border/50 pr-12 custom-scrollbar"
                   />
                   <Button
                     onClick={handleSendMessage}
-                    disabled={isSending || !messageInput.trim()}
+                    disabled={
+                      isSending ||
+                      !messageInput.trim() ||
+                      ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes(conversationDetail?.messages?.[conversationDetail.messages.length - 1]?.jobReference?.status || '')
+                    }
                     size="icon"
-                    className="absolute right-2 bottom-2 h-10 w-10 rounded-xl bg-primary hover:bg-primary/90 transition-transform active:scale-95"
+                    className="absolute right-2 bottom-2 h-10 w-10 rounded-xl bg-primary hover:bg-primary/90 transition-transform active:scale-95 disabled:opacity-50"
                   >
                     <Send size={18} className={messageInput.trim() ? "translate-x-0.5 -translate-y-0.5" : ""} />
                   </Button>

@@ -7,10 +7,10 @@ import { Card } from "@/components/ui/card";
 
 import { Bot, X, Send, Plus, Loader2, Check, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { 
-  useAiConversations, 
-  useAiConversationDetail, 
-  useCreateAiConversation, 
+import {
+  useAiConversations,
+  useAiConversationDetail,
+  useCreateAiConversation,
   useSendAiMessage,
   useConfirmAiAction,
   useRejectAiAction
@@ -22,7 +22,7 @@ export function SagaAiWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [inputText, setInputText] = useState("");
-  
+
   const { data: conversations, isLoading: isLoadingConversations } = useAiConversations();
   const { data: detailData, isLoading: isLoadingDetail } = useAiConversationDetail(activeConversationId);
   const createMutation = useCreateAiConversation();
@@ -41,7 +41,7 @@ export function SagaAiWidget() {
 
   const handleSend = () => {
     if (!inputText.trim()) return;
-    
+
     if (!activeConversationId) {
       // Create new conversation first
       createMutation.mutate(inputText.slice(0, 30) + "...", {
@@ -73,7 +73,7 @@ export function SagaAiWidget() {
     return (
       <div className="space-y-2">
         <p className="whitespace-pre-wrap text-sm leading-relaxed">{textStr}</p>
-        
+
         {/* Pending Action Rendering */}
         {msg.pendingAction && msg.pendingAction.status === 'PENDING' && (
           <div className="mt-3 p-3 bg-muted/50 rounded-xl border border-border">
@@ -82,8 +82,8 @@ export function SagaAiWidget() {
             </p>
             <p className="text-sm mb-3">{msg.pendingAction.description}</p>
             <div className="flex gap-2">
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 onClick={() => confirmMutation.mutate(msg.pendingAction!.id)}
                 disabled={confirmMutation.isPending}
                 className="rounded-lg h-8 px-3 bg-primary text-white"
@@ -91,8 +91,8 @@ export function SagaAiWidget() {
                 {confirmMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Check className="w-3 h-3 mr-1" />}
                 Xác nhận
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => rejectMutation.mutate(msg.pendingAction!.id)}
                 disabled={rejectMutation.isPending}
@@ -106,17 +106,55 @@ export function SagaAiWidget() {
         )}
 
         {/* Artifact Rendering */}
-        {msg.artifactId && (
+        {(msg.generatedArtifact || msg.artifactId) && (
           <div className="mt-3">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
-              onClick={() => aiApi.downloadArtifact(msg.artifactId!)}
+              onClick={() => aiApi.downloadArtifact(msg.generatedArtifact || msg.artifactId!)}
               className="rounded-lg h-8 px-3 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-500/20"
             >
               <Download className="w-3 h-3 mr-2" />
               Tải File (Artifact)
             </Button>
+          </div>
+        )}
+
+        {/* Job Reference Rendering */}
+        {msg.jobReference && (
+          <div className="mt-2">
+            <span className={cn(
+              "inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold",
+              msg.jobReference.status === 'COMPLETED' ? "bg-emerald-500/15 text-emerald-600" :
+                msg.jobReference.status === 'FAILED' ? "bg-destructive/15 text-destructive" :
+                  "bg-amber-500/15 text-amber-600 animate-pulse"
+            )}>
+              {msg.jobReference.status === 'PENDING' && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
+              {msg.jobReference.status === 'RUNNING' && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
+              {msg.jobReference.status === 'WAITING_RETRY' && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
+              Trạng thái hệ thống: {msg.jobReference.status}
+            </span>
+          </div>
+        )}
+        {/* Suggested Followups */}
+        {msg.suggestedFollowups && msg.suggestedFollowups.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {msg.suggestedFollowups.map((followup: string, idx: number) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (activeConversationId) {
+                    sendMutation.mutate(followup);
+                  } else {
+                    setInputText(followup);
+                  }
+                }}
+                disabled={sendMutation.isPending}
+                className="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-full transition-colors text-left disabled:opacity-50"
+              >
+                {followup}
+              </button>
+            ))}
           </div>
         )}
       </div>
@@ -136,7 +174,7 @@ export function SagaAiWidget() {
       {/* Chat Window */}
       {isOpen && (
         <Card className="fixed bottom-24 right-6 w-[380px] h-[600px] max-h-[80vh] flex flex-col shadow-2xl rounded-[2rem] border border-border/50 bg-background/95 backdrop-blur-3xl z-50 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
-          
+
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 bg-primary/5 border-b border-border/50">
             <div className="flex items-center gap-3">
@@ -204,7 +242,7 @@ export function SagaAiWidget() {
                     <>
                       {(() => {
                         let msgList = Array.isArray(detailData?.messages) ? detailData?.messages : (detailData as any)?.messages?.content || (detailData as any)?.messages?.data || (Array.isArray(detailData) ? detailData : []);
-                        
+
                         // Filter out tool execution logs
                         msgList = msgList.filter((msg: any) => {
                           const text = msg.content || msg.text || "";
@@ -239,14 +277,26 @@ export function SagaAiWidget() {
                 {/* Input Area */}
                 <div className="p-3 bg-background border-t border-border/50">
                   <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
-                    <Input 
-                      placeholder="Hỏi trợ lý AI..." 
+                    <Input
+                      placeholder="Hỏi trợ lý AI..."
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      disabled={sendMutation.isPending}
+                      disabled={
+                        sendMutation.isPending ||
+                        ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes((Array.isArray(detailData?.messages) ? detailData?.messages : [])[((Array.isArray(detailData?.messages) ? detailData?.messages : []).length || 1) - 1]?.jobReference?.status || '')
+                      }
                       className="rounded-xl border-border/50 bg-muted/30 focus-visible:ring-1"
                     />
-                    <Button type="submit" size="icon" disabled={!inputText.trim() || sendMutation.isPending} className="rounded-xl shrink-0">
+                    <Button
+                      type="submit"
+                      size="icon"
+                      disabled={
+                        !inputText.trim() ||
+                        sendMutation.isPending ||
+                        ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes((Array.isArray(detailData?.messages) ? detailData?.messages : [])[((Array.isArray(detailData?.messages) ? detailData?.messages : []).length || 1) - 1]?.jobReference?.status || '')
+                      }
+                      className="rounded-xl shrink-0 disabled:opacity-50"
+                    >
                       <Send size={16} />
                     </Button>
                   </form>

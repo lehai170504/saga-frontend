@@ -27,9 +27,7 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
     defaultValues: {
       title: "",
       message: "",
-      actionUrl: "",
-      type: "SYSTEM",
-      audience: "ALL",
+      audience: "ALL_USERS",
     },
   });
 
@@ -38,15 +36,11 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
       await sendBroadcast({
         title: values.title,
         message: values.message,
-        actionUrl: values.actionUrl,
-        type: values.type,
         audience: values.audience,
       });
       form.reset({
         title: "",
         message: "",
-        actionUrl: "",
-        type: "SYSTEM",
         audience: values.audience,
       });
       onClose();
@@ -56,9 +50,9 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
   };
 
   const audienceList = [
-    { id: "ALL", label: "Tất cả mọi người (ALL)" },
-    { id: "STUDENT", label: "Sinh viên (STUDENT)" },
-    { id: "LECTURER", label: "Giảng viên (LECTURER)" },
+    { id: "ALL_USERS", label: "Tất cả mọi người (ALL_USERS)" },
+    { id: "STUDENTS", label: "Sinh viên (STUDENTS)" },
+    { id: "LECTURERS", label: "Giảng viên (LECTURERS)" },
   ];
 
   return (
@@ -102,20 +96,6 @@ export function BroadcastModal({ isOpen, onClose }: BroadcastModalProps) {
                   <FormLabel className="font-semibold text-foreground">Nội dung chi tiết</FormLabel>
                   <FormControl>
                     <Textarea placeholder="Nhập nội dung thông báo..." className="rounded-xl min-h-[100px] bg-background" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="actionUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold text-foreground">Đường dẫn đính kèm (Tùy chọn)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="VD: /student/123/projects" className="rounded-xl bg-background" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
