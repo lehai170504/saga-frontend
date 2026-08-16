@@ -125,14 +125,8 @@ export function StudentListClient({ courseId }: { courseId: string }) {
           <ImportGroupingDialog
             courseId={courseId}
             courseClassName={className}
-<<<<<<< HEAD
-            onSuccess={() => {
-              queryClient.invalidateQueries({ queryKey: ["courses", courseId, "students"] });
-            }}
-=======
             onSuccess={() => window.location.reload()}
             disabled={isEnded}
->>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
           />
         </div>
       </div>
