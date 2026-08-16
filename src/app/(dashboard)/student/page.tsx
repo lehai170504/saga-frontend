@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Loader2, BookOpen, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Loader2, BookOpen, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSemesters } from "@/features/semesters/hooks/useSemesters";
 import { useCourses } from "@/features/courses/hooks/useCourses";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -16,17 +17,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const ITEMS_PER_PAGE = 6;
+
 export default function StudentSelectionPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [selectedSemester, setSelectedSemester] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data: semestersPage, isLoading: isLoadingSemesters, error: semestersError } = useSemesters({ size: 50 });
   const semesters = useMemo(() => semestersPage?.content || [], [semestersPage?.content]);
 
   useEffect(() => {
     if (semesters.length > 0 && !selectedSemester) {
-      requestAnimationFrame(() => setSelectedSemester(semesters[0].id));
+      requestAnimationFrame(() => {
+        setSelectedSemester(semesters[0].id);
+        setCurrentPage(1);
+      });
     }
   }, [semesters, selectedSemester]);
 
@@ -34,7 +41,12 @@ export default function StudentSelectionPage() {
     semesterId: selectedSemester,
     size: 100
   });
-  const courses = coursesPage?.content || [];
+  const courses = useMemo(() => coursesPage?.content || [], [coursesPage?.content]);
+
+  const totalPages = Math.max(1, Math.ceil(courses.length / ITEMS_PER_PAGE));
+  const paginatedCourses = useMemo(() => {
+    return courses.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  }, [courses, currentPage]);
 
   const isAccountInactive =
     (user?.accountStatus && user.accountStatus !== "ACTIVE") ||
@@ -57,6 +69,7 @@ export default function StudentSelectionPage() {
 
   const handleSemesterChange = (semId: string) => {
     setSelectedSemester(semId);
+    setCurrentPage(1);
   };
 
   const getGreeting = () => {
@@ -168,7 +181,7 @@ export default function StudentSelectionPage() {
               </div>
             </div>
           ) : (
-            courses.map((course) => {
+            paginatedCourses.map((course) => {
               const status = getSemesterStatus(selectedSemester);
               return (
                 <Card
@@ -246,6 +259,56 @@ export default function StudentSelectionPage() {
             })
           )}
         </div>
+
+        {/* Pagination Bar */}
+        {!isLoadingCourses && totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/40">
+            <div className="text-xs font-semibold text-muted-foreground">
+              Hiển thị <span className="font-bold text-foreground">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> - <span className="font-bold text-foreground">{Math.min(currentPage * ITEMS_PER_PAGE, courses.length)}</span> trên tổng số <span className="font-bold text-foreground">{courses.length}</span> lớp học
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="h-9 px-3 rounded-xl text-xs font-bold gap-1 cursor-pointer disabled:opacity-40"
+              >
+                <ChevronLeft size={16} />
+                <span>Trang trước</span>
+              </Button>
+
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`w-9 h-9 rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
+                      pageNum === currentPage
+                        ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-105"
+                        : "bg-card border border-border/50 text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="h-9 px-3 rounded-xl text-xs font-bold gap-1 cursor-pointer disabled:opacity-40"
+              >
+                <span>Trang sau</span>
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
