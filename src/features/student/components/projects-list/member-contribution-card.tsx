@@ -290,7 +290,7 @@ export function MemberContributionCard({
                     <div className="col-span-2 truncate font-bold text-foreground/90">{s.sprintName}</div>
                     <div className="text-center">{truncateDecimal(s.sliceScore ?? s.taskScore)}</div>
                     <div className="text-center text-blue-600 dark:text-blue-400 font-bold">
-                      {truncateDecimal(s.sliceContributionPercentage ?? s.taskScore)}%
+                      {truncateDecimal(s.sliceContributionPercentage ?? s.contributionPercentage ?? 0)}%
                     </div>
                     <div className="text-center">x{truncateDecimal(s.retrospectiveMultiplier)}</div>
                     <div className="text-center font-bold text-primary">

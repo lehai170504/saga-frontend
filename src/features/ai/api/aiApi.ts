@@ -8,11 +8,16 @@ export const aiApi = {
   getConversationDetail: async (id: string) => {
     return axiosInstance.get<never, { conversation: AiConversation; messages: AiMessage[] }>(`/api/v1/ai/conversations/${id}`);
   },
-  createConversation: async (title: string) => {
-    return axiosInstance.post<never, AiConversation>("/api/v1/ai/conversations", { title });
+  createConversation: async (title?: string, courseId?: string) => {
+    const payload: { title?: string; courseId?: string } = {};
+    if (title) payload.title = title;
+    if (courseId) payload.courseId = courseId;
+    return axiosInstance.post<never, AiConversation>("/api/v1/ai/conversations", payload);
   },
-  sendMessage: async (id: string, content: string) => {
-    return axiosInstance.post<never, AiMessage>(`/api/v1/ai/conversations/${id}/messages`, { content });
+  sendMessage: async (id: string, content: string, courseId?: string) => {
+    const payload: { content: string; courseId?: string } = { content };
+    if (courseId) payload.courseId = courseId;
+    return axiosInstance.post<never, AiMessage>(`/api/v1/ai/conversations/${id}/messages`, payload);
   },
   confirmAction: async (actionId: string) => {
     return axiosInstance.post<never, void>(`/api/v1/ai/pending-actions/${actionId}/confirm`);

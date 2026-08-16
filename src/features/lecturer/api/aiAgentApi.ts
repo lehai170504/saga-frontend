@@ -27,6 +27,7 @@ export interface AiMessage {
 export interface ConversationItem {
   id: string;
   title: string;
+  courseId?: string | null;
   applicationRoleSnapshot: string;
   archived: boolean;
   createdAt: string;
@@ -39,11 +40,13 @@ export interface ConversationsResponse {
 }
 
 export interface CreateConversationPayload {
-  title: string;
+  title?: string;
+  courseId?: string;
 }
 
 export interface SendMessagePayload {
   content: string;
+  courseId?: string;
 }
 
 export interface SendMessageResponse {

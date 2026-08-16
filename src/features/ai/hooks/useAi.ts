@@ -2,10 +2,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { aiApi } from "../api/aiApi";
 import { toast } from "sonner";
 
+const getAiErrorMessage = (err: any, fallback: string) => {
+  if (err?.response?.status === 503 || err?.status === 503 || err?.response?.data?.error === "AI_AGENT_UNAVAILABLE") {
+    return "Dịch vụ Trợ lý AI hiện đang tạm ngưng kết nối (503 Service Unavailable). Vui lòng thử lại sau ít phút.";
+  }
+  return err?.response?.data?.message || err?.message || fallback;
+};
+
 export const useAiConversations = () => {
   return useQuery({
     queryKey: ["ai-conversations"],
     queryFn: () => aiApi.getConversations(),
+    retry: 1,
   });
 };
 
@@ -14,18 +22,24 @@ export const useAiConversationDetail = (id: string | null) => {
     queryKey: ["ai-conversation-detail", id],
     queryFn: () => aiApi.getConversationDetail(id!),
     enabled: !!id,
+    retry: 1,
   });
 };
 
 export const useCreateAiConversation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (title: string) => aiApi.createConversation(title),
-    onSuccess: (data) => {
+    mutationFn: (payload: { title?: string; courseId?: string } | string) => {
+      if (typeof payload === "string") {
+        return aiApi.createConversation(payload);
+      }
+      return aiApi.createConversation(payload.title, payload.courseId);
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: any) => {
-      toast.error(err.message || "Không thể tạo cuộc hội thoại");
+      toast.error(getAiErrorMessage(err, "Không thể tạo cuộc hội thoại"));
     }
   });
 };
@@ -33,12 +47,17 @@ export const useCreateAiConversation = () => {
 export const useSendAiMessage = (conversationId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (content: string) => aiApi.sendMessage(conversationId, content),
+    mutationFn: (payload: { content: string; courseId?: string } | string) => {
+      if (typeof payload === "string") {
+        return aiApi.sendMessage(conversationId, payload);
+      }
+      return aiApi.sendMessage(conversationId, payload.content, payload.courseId);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
     },
     onError: (err: any) => {
-      toast.error(err.message || "Lỗi khi gửi tin nhắn");
+      toast.error(getAiErrorMessage(err, "Lỗi khi gửi tin nhắn"));
     }
   });
 };

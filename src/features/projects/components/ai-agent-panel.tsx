@@ -12,16 +12,25 @@ import {
   useRejectPendingAction,
   useDownloadArtifact
 } from "@/features/lecturer/hooks/useAiAgent";
+import { useParams } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { format, addHours } from "date-fns";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function AiAgentPanel(props: { projectId?: string }) {
+  const params = useParams();
+  const activeCourseId = typeof params?.courseId === "string" ? params.courseId : undefined;
+
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [optimisticMessage, setOptimisticMessage] = useState<string | null>(null);
 
-  const { data: conversationsData, isLoading: isLoadingConversations } = useConversations();
+  const {
+    data: conversationsData,
+    isLoading: isLoadingConversations,
+    isError: isErrorConversations,
+    refetch: refetchConversations,
+  } = useConversations();
   const { data: conversationDetail, isLoading: isLoadingMessages } = useConversation(selectedConversationId);
 
   const { mutateAsync: createConversation, isPending: isCreating } = useCreateConversation();
@@ -42,7 +51,7 @@ export function AiAgentPanel(props: { projectId?: string }) {
 
   const handleNewChat = async () => {
     try {
-      const res = await createConversation({ title: "New Conversation" });
+      const res = await createConversation({ title: "New Conversation", courseId: activeCourseId });
       if (res && res.id) {
         setSelectedConversationId(res.id);
       }
@@ -57,7 +66,7 @@ export function AiAgentPanel(props: { projectId?: string }) {
     setMessageInput("");
     setOptimisticMessage(content);
     try {
-      await sendMessage({ conversationId: selectedConversationId, payload: { content } });
+      await sendMessage({ conversationId: selectedConversationId, payload: { content, courseId: activeCourseId } });
     } catch (e) {
       console.error(e);
       setMessageInput(content); // restore on error
@@ -105,26 +114,51 @@ export function AiAgentPanel(props: { projectId?: string }) {
         <CardContent className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
           {isLoadingConversations ? (
             <div className="flex justify-center p-4"><Loader2 className="animate-spin text-muted-foreground" /></div>
-          ) : !conversationsData?.items?.length ? (
-            <div className="text-center text-sm text-muted-foreground mt-4">Chưa có hội thoại nào</div>
-          ) : (
-            conversationsData.items.map(conv => (
-              <div
-                key={conv.id}
-                onClick={() => setSelectedConversationId(conv.id)}
-                className={`p-3 rounded-2xl cursor-pointer transition-all border ${selectedConversationId === conv.id ? 'bg-primary/10 border-primary/30' : 'bg-background hover:bg-muted/50 border-transparent'}`}
-              >
-                <div className="flex items-center gap-2 font-bold text-sm text-foreground">
-                  <MessageSquare size={14} className="text-primary" />
-                  <span className="truncate">{conv.title || "Hội thoại không tên"}</span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1.5">
-                  <Clock size={10} />
-                  {format(addHours(new Date(conv.updatedAt || conv.createdAt || 0), 7), "dd/MM/yyyy HH:mm")}
-                </div>
+          ) : isErrorConversations || (conversationsData as any)?.status === 503 || (conversationsData as any)?.error === "AI_AGENT_UNAVAILABLE" ? (
+            <div className="p-6 text-center space-y-3">
+              <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto">
+                <Bot size={20} className="animate-pulse" />
               </div>
-            ))
-          )}
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-foreground">Dịch vụ AI đang khởi động / gián đoạn</p>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Hệ thống Trợ lý AI đang tạm ngưng kết nối (503 Service Unavailable). Vui lòng nhấn <strong>Thử lại</strong> sau ít phút.
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => refetchConversations()}
+                className="rounded-xl h-8 text-xs font-bold gap-1.5 mx-auto cursor-pointer"
+              >
+                Thử lại
+              </Button>
+            </div>
+          ) : (() => {
+            const convItems = (conversationsData?.items || []).filter(conv =>
+              activeCourseId ? conv.courseId === activeCourseId : !conv.courseId
+            );
+            return convItems.length === 0 ? (
+              <div className="text-center text-sm text-muted-foreground mt-4">Chưa có hội thoại nào trong không gian này</div>
+            ) : (
+              convItems.map(conv => (
+                <div
+                  key={conv.id}
+                  onClick={() => setSelectedConversationId(conv.id)}
+                  className={`p-3 rounded-2xl cursor-pointer transition-all border ${selectedConversationId === conv.id ? 'bg-primary/10 border-primary/30' : 'bg-background hover:bg-muted/50 border-transparent'}`}
+                >
+                  <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+                    <MessageSquare size={14} className="text-primary" />
+                    <span className="truncate">{conv.title || "Hội thoại không tên"}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1.5">
+                    <Clock size={10} />
+                    {format(addHours(new Date(conv.updatedAt || conv.createdAt || 0), 7), "dd/MM/yyyy HH:mm")}
+                  </div>
+                </div>
+              ))
+            );
+          })()}
         </CardContent>
       </Card>
 

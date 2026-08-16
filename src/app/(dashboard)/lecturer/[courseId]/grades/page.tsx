@@ -289,6 +289,7 @@ export default function LecturerContributionPage() {
                       <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Rsch</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
+                      <TableHead className="text-center font-bold text-blue-600 dark:text-blue-400 min-w-[100px]" title="Tỷ lệ đóng góp trước khi nhân đánh giá chéo (Peer Review)">% Trước Peer</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
                     </TableRow>
@@ -296,7 +297,7 @@ export default function LecturerContributionPage() {
                   <TableBody>
                     {filteredMembers.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={11} className="h-32 text-center text-muted-foreground">
+                        <TableCell colSpan={12} className="h-32 text-center text-muted-foreground">
                           {isLoading ? "Đang tải dữ liệu..." : "Không tìm thấy dữ liệu nhóm này"}
                         </TableCell>
                       </TableRow>
@@ -335,6 +336,11 @@ export default function LecturerContributionPage() {
                                   <CheckCircle2 size={12} /> Hợp lệ
                                 </div>
                               )}
+                            </TableCell>
+
+                            {/* Pre-Peer Slice % */}
+                            <TableCell className="text-center font-bold text-blue-600 dark:text-blue-400">
+                              {(student.sliceContributionPercentage ?? student.taskContributionPercentage ?? 0).toFixed(1)}%
                             </TableCell>
 
                             {/* System Score */}

@@ -1,6 +1,7 @@
 export interface AiConversation {
   id: string;
   title: string;
+  courseId?: string | null;
   createdAt: string;
   updatedAt: string;
 }

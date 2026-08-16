@@ -1,9 +1,10 @@
-"use client";
-
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
 
 import { Bot, X, Send, Plus, Loader2, Check, Download, Sparkles, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,11 +20,24 @@ import { aiApi } from "../api/aiApi";
 import { AiMessage } from "../types";
 
 export function SagaAiWidget() {
+  const params = useParams();
+  const activeCourseId = typeof params?.courseId === "string" ? params.courseId : undefined;
+  const currentScopeKey = activeCourseId || "GLOBAL";
+
   const [isOpen, setIsOpen] = useState(false);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [conversationByScope, setConversationByScope] = useState<Record<string, string>>({});
   const [inputText, setInputText] = useState("");
 
-  const { data: conversations, isLoading: isLoadingConversations } = useAiConversations();
+  const activeConversationId = conversationByScope[currentScopeKey] || null;
+
+  const queryClient = useQueryClient();
+
+  const {
+    data: conversations,
+    isLoading: isLoadingConversations,
+    isError: isErrorConversations,
+    refetch: refetchConversations,
+  } = useAiConversations();
   const { data: detailData, isLoading: isLoadingDetail } = useAiConversationDetail(activeConversationId);
   const createMutation = useCreateAiConversation();
   const sendMutation = useSendAiMessage(activeConversationId || "");
@@ -42,30 +56,61 @@ export function SagaAiWidget() {
   const handleSend = () => {
     if (!inputText.trim()) return;
 
+    const messageContent = inputText.trim();
+    setInputText("");
+
     if (!activeConversationId) {
-      // Create new conversation first
-      createMutation.mutate(inputText.slice(0, 30) + "...", {
-        onSuccess: (newConv) => {
-          setActiveConversationId(newConv.id);
-          // Note: React Query mutation success might need to trigger the actual send
-          // But since activeConversationId just changed, we have to wait.
-          // Better: If no active conversation, just create one and then send.
-          // For simplicity, let's just make them select or create explicitly.
+      // Create new scoped conversation first
+      createMutation.mutate(
+        {
+          title: messageContent.slice(0, 30) + "...",
+          courseId: activeCourseId,
+        },
+        {
+          onSuccess: (newConv) => {
+            setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: newConv.id }));
+            aiApi.sendMessage(newConv.id, messageContent, activeCourseId).then(() => {
+              queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", newConv.id] });
+              queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
+            }).catch((err) => {
+              toast.error(err?.message || "Lỗi khi gửi tin nhắn");
+            });
+          },
         }
-      });
+      );
       return;
     }
 
-    sendMutation.mutate(inputText);
-    setInputText("");
+    sendMutation.mutate(
+      { content: messageContent, courseId: activeCourseId },
+      {
+        onError: (err: any) => {
+          // If 409 scope mismatch or conflict
+          if (err?.response?.status === 409 || err?.status === 409 || String(err?.message).includes("409")) {
+            toast.error("Cuộc trò chuyện này không thuộc Lớp học hiện tại. Đã tạo cuộc trò chuyện mới.");
+            setConversationByScope((prev) => {
+              const next = { ...prev };
+              delete next[currentScopeKey];
+              return next;
+            });
+          }
+        },
+      }
+    );
   };
 
   const handleCreateNew = () => {
-    createMutation.mutate("Trò chuyện mới", {
-      onSuccess: (newConv) => {
-        setActiveConversationId(newConv.id);
+    createMutation.mutate(
+      {
+        title: activeCourseId ? "Trò chuyện Khóa học" : "Trò chuyện mới",
+        courseId: activeCourseId,
+      },
+      {
+        onSuccess: (newConv) => {
+          setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: newConv.id }));
+        },
       }
-    });
+    );
   };
 
   const renderMessageContent = (msg: AiMessage) => {
@@ -191,7 +236,7 @@ export function SagaAiWidget() {
                 type="button"
                 onClick={() => {
                   if (activeConversationId) {
-                    sendMutation.mutate(followup);
+                    sendMutation.mutate({ content: followup, courseId: activeCourseId });
                   } else {
                     setInputText(followup);
                   }
@@ -229,7 +274,9 @@ export function SagaAiWidget() {
               </div>
               <div>
                 <h3 className="font-bold text-foreground leading-none">SAGA AI</h3>
-                <p className="text-xs text-muted-foreground mt-1">Trợ lý Phân tích Hệ thống</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {activeCourseId ? "Trợ lý Lớp học hiện tại" : "Trợ lý Phân tích Hệ thống"}
+                </p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground">
@@ -251,17 +298,38 @@ export function SagaAiWidget() {
                 <div className="flex-1 overflow-y-auto">
                   {isLoadingConversations ? (
                     <div className="p-4 flex justify-center"><Loader2 className="animate-spin text-muted-foreground" /></div>
+                  ) : isErrorConversations || (conversations as any)?.status === 503 || (conversations as any)?.error === "AI_AGENT_UNAVAILABLE" ? (
+                    <div className="p-6 text-center space-y-3">
+                      <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto">
+                        <Bot size={20} className="animate-pulse" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs font-bold text-foreground">Dịch vụ AI đang khởi động / gián đoạn</p>
+                        <p className="text-[11px] text-muted-foreground leading-normal">
+                          Hệ thống Trợ lý AI đang tạm ngưng kết nối (503 Service Unavailable). Vui lòng nhấn <strong>Thử lại</strong> sau ít phút.
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => refetchConversations()}
+                        className="rounded-xl h-8 text-xs font-bold gap-1.5 mx-auto cursor-pointer"
+                      >
+                        Thử lại
+                      </Button>
+                    </div>
                   ) : (() => {
-                    const convList = Array.isArray(conversations) ? conversations : (conversations as any)?.content || (conversations as any)?.data || [];
+                    const rawList = Array.isArray(conversations) ? conversations : (conversations as any)?.content || (conversations as any)?.data || [];
+                    const convList = rawList.filter((conv: any) => activeCourseId ? conv.courseId === activeCourseId : !conv.courseId);
                     return convList.length === 0 ? (
-                      <div className="p-6 text-center text-sm text-muted-foreground">Chưa có lịch sử. Hãy bắt đầu chat!</div>
+                      <div className="p-6 text-center text-sm text-muted-foreground">Chưa có lịch sử cho không gian này. Hãy bắt đầu chat!</div>
                     ) : (
                       <div className="p-2 space-y-1">
                         {convList.map((conv: any) => (
                           <button
                             key={conv.id}
-                            onClick={() => setActiveConversationId(conv.id)}
-                            className="w-full text-left px-4 py-3 rounded-xl hover:bg-muted/50 text-sm font-medium transition-colors line-clamp-1"
+                            onClick={() => setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: conv.id }))}
+                            className="w-full text-left px-4 py-3 rounded-xl hover:bg-muted/50 text-sm font-medium transition-colors line-clamp-1 cursor-pointer"
                           >
                             {conv.title}
                           </button>
@@ -276,7 +344,7 @@ export function SagaAiWidget() {
               <div className="w-full flex flex-col h-full bg-muted/10">
                 {/* Chat Header inside active conversation */}
                 <div className="px-4 py-2 bg-background border-b border-border/50 flex items-center gap-2">
-                  <button onClick={() => setActiveConversationId(null)} className="text-muted-foreground hover:text-foreground text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                  <button onClick={() => setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: "" }))} className="text-muted-foreground hover:text-foreground text-xs font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer">
                     ← Quay lại
                   </button>
                 </div>
