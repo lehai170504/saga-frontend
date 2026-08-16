@@ -69,15 +69,13 @@ export default function ClassSelectionPage() {
   });
   const courses = coursesPage?.content || [];
 
-  const getSemesterStatus = (semId: string) => {
-    const sem = semesters.find(s => s.id === semId);
-    if (!sem) return "completed";
+  const getCourseStatus = (course: any) => {
+    if (!course?.semester?.startDate || !course?.semester?.endDate) return "CLOSED";
     const now = new Date();
-    const start = new Date(sem.startDate);
-    const end = new Date(sem.endDate);
-    if (now < start) return "upcoming";
-    if (now > end) return "completed";
-    return "active";
+    const start = new Date(course.semester.startDate);
+    const end = new Date(course.semester.endDate);
+    if (now >= start && now <= end) return "OPEN";
+    return "CLOSED";
   };
 
   return (
@@ -147,7 +145,7 @@ export default function ClassSelectionPage() {
           ) : (
             // Real Data State
             courses.map((course) => {
-              const status = getSemesterStatus(course.semester.id);
+              const status = getCourseStatus(course);
               return (
                 <div key={course.id} className="group relative rounded-3xl border border-border/50 bg-card/60 backdrop-blur-sm text-card-foreground shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/40 transition-all duration-300 flex flex-col h-full min-h-[320px] overflow-hidden">
                   {/* Decorative Gradient Background */}
@@ -160,21 +158,13 @@ export default function ClassSelectionPage() {
                           {course.name}
                         </h3>
                         <div className="shrink-0 mt-1">
-                          {status === "active" ? (
+                          {status === "OPEN" ? (
                             <div className="flex items-center gap-1.5 text-[11px] font-bold text-success bg-success/15 px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
                               <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success"></span>
                               </span>
                               Đang diễn ra
-                            </div>
-                          ) : status === "upcoming" ? (
-                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-primary bg-primary/15 px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">
-                              <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
-                              </span>
-                              Sắp diễn ra
                             </div>
                           ) : (
                             <div className="text-[11px] font-bold text-muted-foreground bg-muted/80 px-2.5 py-1 rounded-full shadow-sm whitespace-nowrap">

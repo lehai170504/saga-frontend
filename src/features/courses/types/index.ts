@@ -9,7 +9,12 @@ export interface Course {
     subjectCode: string;
     name: string;
   };
-  clazz: {
+  academicClass?: {
+    id: string;
+    classCode: string;
+    name: string;
+  };
+  clazz?: {
     id: string;
     classCode: string;
     name: string;

@@ -64,7 +64,7 @@ export function CourseCards() {
                   </span>
                   <span className="w-1 h-1 rounded-full bg-border shrink-0" />
                   <span className="font-medium flex items-center gap-1.5" title="Lớp">
-                    <Network size={13} className="opacity-70" /> {course.clazz?.classCode || "N/A"}
+                    <Network size={13} className="opacity-70" /> {(course.academicClass?.classCode ?? course.clazz?.classCode) || "N/A"}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-border shrink-0" />
                   <span className="font-medium flex items-center gap-1.5" title="Học kỳ">
