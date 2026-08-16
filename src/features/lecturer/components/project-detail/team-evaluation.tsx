@@ -4,7 +4,6 @@ import React from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ClassNetworkGraph } from "@/features/lecturer/components/class-network-graph";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -32,13 +31,10 @@ export function TeamEvaluation({ courseId, teamId, isEnded }: TeamEvaluationProp
 
   return (
     <div className="space-y-6">
-      {/* Network Graph for Slicing Pie Audit */}
-      <ClassNetworkGraph isEnded={isEnded} />
-
       {/* Layer 2 & 3: Retro Evaluation & Final Slices */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <SlicingPieChart teamId={teamId} />
-        <RetroSkillRadar />
+        <RetroSkillRadar teamId={teamId} />
       </div>
 
       {/* Final Action */}

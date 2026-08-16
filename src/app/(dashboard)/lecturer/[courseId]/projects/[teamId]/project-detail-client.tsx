@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Users, Activity, Flame, Share2, ListTodo, ChevronLeft, ChevronRight, GitCommit, CircleDot, Waypoints } from "lucide-react";
+import { ArrowLeft, Users, Activity, Flame, ListTodo, ChevronLeft, ChevronRight, GitCommit, CircleDot, Waypoints } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,8 +18,6 @@ import dynamic from 'next/dynamic';
 import { LecturerUpdateGroupWeightsModal } from "@/features/lecturer/components/project-detail/lecturer-update-group-weights-modal";
 
 // Lớp 2: Lazy Loading các Component nặng (Dynamic Imports)
-const ProjectHeatmap = dynamic(() => import('@/features/lecturer/components/project-detail/project-heatmap').then(m => m.ProjectHeatmap), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
-const ProjectInteractionGraph = dynamic(() => import('@/features/lecturer/components/project-detail/project-interaction-graph').then(m => m.ProjectInteractionGraph), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
 const ProjectBurndownChart = dynamic(() => import('@/features/lecturer/components/project-detail/project-burndown-chart').then(m => m.ProjectBurndownChart), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
 const EarlyWarningAlerts = dynamic(() => import('@/features/lecturer/components/project-detail/charts/early-warning-alerts').then(m => m.EarlyWarningAlerts), { ssr: false });
 const SprintVelocityBar = dynamic(() => import('@/features/lecturer/components/project-detail/charts/sprint-velocity-bar').then(m => m.SprintVelocityBar), { ssr: false });
@@ -28,6 +26,7 @@ const ProjectCommitsView = dynamic(() => import('@/features/lecturer/components/
 const ProjectIssuesView = dynamic(() => import('@/features/lecturer/components/project-detail/project-issues-view').then(m => m.ProjectIssuesView), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
 const ProjectDashboardStats = dynamic(() => import('@/features/lecturer/components/project-detail/project-dashboard-stats').then(m => m.ProjectDashboardStats), { ssr: false });
 const ProjectTraceabilityView = dynamic(() => import('@/features/lecturer/components/project-detail/project-traceability-view').then(m => m.ProjectTraceabilityView), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
+const ProjectContributionTab = dynamic(() => import('@/features/lecturer/components/project-detail/project-contribution-tab').then(m => m.ProjectContributionTab), { ssr: false, loading: () => <Skeleton className="h-[400px] w-full rounded-2xl" /> });
 
 interface ProjectDetailClientProps {
   courseId: string;
@@ -37,7 +36,7 @@ interface ProjectDetailClientProps {
 export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientProps) {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const tabValues = ["overview", "tasks", "commits", "issues", "traceability", "heatmap", "interaction", "burndown"];
+  const tabValues = ["overview", "tasks", "commits", "issues", "traceability", "slices", "burndown"];
 
   const handlePrevTab = () => {
     const idx = tabValues.indexOf(activeTab);
@@ -171,16 +170,9 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
                 <Waypoints className="w-4 h-4 mr-2" /> Dòng thời gian
               </TabsTrigger>
               <TabsTrigger
-                value="heatmap"
-                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-heatmap')}
+                value="slices"
                 className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-                <Flame className="w-4 h-4 mr-2" /> Biểu đồ Nhiệt
-              </TabsTrigger>
-              <TabsTrigger
-                value="interaction"
-                onMouseEnter={() => import('@/features/lecturer/components/project-detail/project-interaction-graph')}
-                className="rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm h-12 px-6 flex-1 md:flex-none shrink-0 whitespace-nowrap">
-                <Share2 className="w-4 h-4 mr-2" /> Mạng Tương Tác
+                <Flame className="w-4 h-4 mr-2" /> Đóng góp (Slices)
               </TabsTrigger>
               <TabsTrigger
                 value="burndown"
@@ -308,12 +300,8 @@ export function ProjectDetailClient({ courseId, teamId }: ProjectDetailClientPro
 
         {projectDetail.project && projectDetail.project !== "Chưa có dự án" && (
           <>
-            <TabsContent value="heatmap" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <ProjectHeatmap courseId={courseId} teamId={projectDetail.id} />
-            </TabsContent>
-
-            <TabsContent value="interaction" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <ProjectInteractionGraph courseId={courseId} teamId={projectDetail.id} />
+            <TabsContent value="slices" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <ProjectContributionTab courseId={courseId} teamId={projectDetail.id} isEnded={isEnded} />
             </TabsContent>
 
             <TabsContent value="burndown" className="mt-0 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
