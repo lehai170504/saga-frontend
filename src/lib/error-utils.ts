@@ -41,6 +41,9 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
   if (status === 503 || (rawMessage && rawMessage.toLowerCase().includes("ai_agent_unavailable"))) {
     return "Dịch vụ Trợ lý AI hiện đang tạm ngưng kết nối (503 Service Unavailable). Vui lòng thử lại sau ít phút.";
   }
+  if (status === 409 && (rawMessage.includes("JIRA_WRITE_RECOVERY_REQUIRED") || rawMessage.includes("JIRA_WRITE_OPERATION_IN_PROGRESS"))) {
+    return "Thao tác ghi Jira đang tạm gián đoạn. Vui lòng bấm 'Thử lại' để hoàn tất quá trình tạo Task.";
+  }
 
   if (!rawMessage) return fallbackMessage;
 
@@ -52,6 +55,30 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
   const msgLower = rawMessage.toLowerCase();
 
   // Common English Backend Error patterns -> Vietnamese translations
+  if (msgLower.includes("jira_evidence_required")) {
+    return "Vui lòng chọn ít nhất 1 tệp hoặc 1 đường dẫn link bằng chứng.";
+  }
+  if (msgLower.includes("jira_attachment_limit_exceeded")) {
+    return "Vượt quá số lượng tệp cho phép (Tối đa 5 tệp / lần nộp).";
+  }
+  if (msgLower.includes("jira_attachment_too_large")) {
+    return "Dung lượng tệp quá lớn (Mỗi tệp không được vượt quá 10 MB).";
+  }
+  if (msgLower.includes("jira_attachment_type_unsupported")) {
+    return "Định dạng tệp không được hỗ trợ.";
+  }
+  if (msgLower.includes("jira_attachment_filename_invalid")) {
+    return "Tên tệp không hợp lệ.";
+  }
+  if (msgLower.includes("jira_link_too_long")) {
+    return "Đường dẫn link quá dài (Tối đa 2048 ký tự).";
+  }
+  if (msgLower.includes("jira_link_invalid")) {
+    return "Đường dẫn link không hợp lệ (Phải bắt đầu bằng http:// hoặc https://).";
+  }
+  if (msgLower.includes("jira_task_not_linked")) {
+    return "Task này chưa được liên kết với Jira issue.";
+  }
   if (msgLower.includes("access is denied") || msgLower.includes("forbidden") || msgLower.includes("unauthorized")) {
     return "Bạn không có quyền thực hiện thao tác này.";
   }
@@ -109,4 +136,29 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
 
   // Fallback to provided Vietnamese message if rawMessage is purely English or unrecognized
   return fallbackMessage;
+}
+
+export function isJiraRecoveryError(err: unknown): boolean {
+  if (!err) return false;
+
+  let status = 0;
+  let rawMessage = "";
+
+  if (err instanceof ApiError) {
+    status = err.status || 0;
+    rawMessage = err.message || err.errorName || "";
+  } else if (err instanceof AxiosError) {
+    status = err.response?.status || 0;
+    const data = err.response?.data as Record<string, unknown> | undefined;
+    rawMessage = (data?.errorName as string) || (data?.errorCode as string) || (data?.message as string) || err.message || "";
+  }
+
+  if (status === 409) {
+    return (
+      rawMessage.includes("JIRA_WRITE_RECOVERY_REQUIRED") ||
+      rawMessage.includes("JIRA_WRITE_OPERATION_IN_PROGRESS")
+    );
+  }
+
+  return false;
 }

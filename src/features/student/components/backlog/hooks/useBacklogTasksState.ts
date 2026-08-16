@@ -282,6 +282,7 @@ export function useBacklogTasksState(projectId: string) {
     handleEditTask,
     handleOpenDelete,
     handleDeleteTask,
+    handleMoveTaskSprint,
     handleConfirmMoveTask,
     createTaskMutation,
     updateTaskMutation,

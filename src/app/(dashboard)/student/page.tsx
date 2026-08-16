@@ -193,27 +193,53 @@ export default function StudentSelectionPage() {
                       )}
                     </div>
 
-                    {/* Body: Subject Name */}
-                    <div className="p-6 pt-5 flex-1 bg-card">
+                    {/* Body: Subject Name & Instructor Info */}
+                    <div className="p-6 pt-5 flex-1 bg-card flex flex-col justify-between gap-4">
                       <h3 className="text-lg md:text-xl font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                         {course.subject.name}
                       </h3>
+
+                      {/* Instructor Info */}
+                      {course.instructor ? (
+                        <div className="flex items-center gap-2.5 pt-2 border-t border-border/30 text-xs">
+                          <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs border border-primary/20 shrink-0 overflow-hidden">
+                            {course.instructor.avatarUrl ? (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img src={course.instructor.avatarUrl} alt={course.instructor.fullName} className="w-full h-full object-cover" />
+                            ) : (
+                              course.instructor.fullName?.charAt(0) || "G"
+                            )}
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="font-bold text-foreground line-clamp-1 text-[13px]" title={course.instructor.fullName}>
+                              GV: {course.instructor.fullName}
+                            </span>
+                            {course.instructor.email && (
+                              <span className="text-[11px] text-muted-foreground line-clamp-1" title={course.instructor.email}>
+                                {course.instructor.email}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground italic font-medium pt-2 border-t border-border/30">
+                          Chưa phân công giảng viên
+                        </span>
+                      )}
                     </div>
 
                     {/* Footer: Class Name & Action */}
-                    <div className="px-6 py-5 border-t border-border/50 flex items-center justify-between mt-auto bg-card">
-                      <div className="flex items-center text-muted-foreground gap-3">
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center border border-border/50">
-                          <span className="text-[10px] font-black text-foreground">
-                            {(course.academicClass?.classCode ?? course.clazz?.name ?? "U").charAt(0)}
-                          </span>
+                    {(() => {
+                      const academicClass = course.academicClass ?? course.clazz;
+                      return (
+                        <div className="px-6 py-4 border-t border-border/50 flex items-center justify-between mt-auto bg-card">
+                          <span className="text-xs font-bold text-foreground">Lớp {academicClass?.name || "Chưa phân lớp"}</span>
+                          <div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 shadow-sm">
+                            <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+                          </div>
                         </div>
-                        <span className="text-sm font-semibold">Lớp {course.academicClass?.classCode ?? course.clazz?.name}</span>
-                      </div>
-                      <div className="w-9 h-9 rounded-full bg-background border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 shadow-sm">
-                        <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
-                      </div>
-                    </div>
+                      );
+                    })()}
                   </CardContent>
                 </Card>
               );

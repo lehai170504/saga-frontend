@@ -1,16 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { taskApi, GetTasksParams, CreateTaskRequest, UpdateTaskRequest } from "../api/taskApi";
+import { taskApi, GetTasksParams, CreateTaskRequest, UpdateTaskRequest, AttachTaskEvidenceRequest } from "../api/taskApi";
 import { JiraTask } from "../types";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { TASK_MESSAGES } from "../constants/messages";
 import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
-export const useProjectTasks = (projectId: string, params?: GetTasksParams) => {
+export const useProjectTasks = (projectId: string, params?: GetTasksParams, options?: Record<string, unknown>) => {
   return useQuery({
     queryKey: ["project-tasks", projectId, params],
     queryFn: () => taskApi.getProjectTasks(projectId, params),
-    enabled: !!projectId
+    enabled: !!projectId,
+    staleTime: 5000,
+    ...options,
   });
 };
 
@@ -87,11 +89,53 @@ export const useUpdateTask = (projectId: string) => {
         await taskApi.updateTaskEstimation(projectId, taskId, storyPoint, estimationIdempotencyKey!);
       }
     },
+    onMutate: async ({ taskId, sprintId }) => {
+      if (sprintId !== undefined) {
+        await queryClient.cancelQueries({ queryKey: ["project-tasks", projectId] });
+        const previousData = queryClient.getQueriesData({ queryKey: ["project-tasks", projectId] });
+
+        queryClient.setQueriesData({ queryKey: ["project-tasks", projectId] }, (oldData: unknown) => {
+          if (!oldData) return oldData;
+          const casted = oldData as Record<string, unknown>;
+          const tasksArray = Array.isArray(oldData)
+            ? (oldData as JiraTask[])
+            : Array.isArray(casted.content)
+            ? (casted.content as JiraTask[])
+            : Array.isArray(casted.data)
+            ? (casted.data as JiraTask[])
+            : null;
+
+          if (!tasksArray) return oldData;
+
+          const updatedTasks = tasksArray.map((t: JiraTask) => {
+            if (t.id === taskId) {
+              return {
+                ...t,
+                sprint: sprintId ? { id: sprintId, name: t.sprint?.name || "Sprint" } : null,
+              };
+            }
+            return t;
+          });
+
+          if (Array.isArray(oldData)) return updatedTasks;
+          if (casted.content) return { ...casted, content: updatedTasks };
+          if (casted.data) return { ...casted, data: updatedTasks };
+          return oldData;
+        });
+
+        return { previousData };
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
       toast.success(TASK_MESSAGES.UPDATE.SUCCESS);
     },
-    onError: (err: unknown) => {
+    onError: (err: unknown, _variables, context) => {
+      if (context?.previousData) {
+        context.previousData.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
       toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.UPDATE.ERROR));
     }
   });
@@ -296,6 +340,29 @@ export const useTransitionTask = (projectId: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     }
+  });
+};
+
+export const useAttachTaskEvidence = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      taskId,
+      data,
+      idempotencyKey,
+    }: {
+      taskId: string;
+      data: AttachTaskEvidenceRequest;
+      idempotencyKey: string;
+    }) => taskApi.attachTaskEvidence(projectId, taskId, data, idempotencyKey),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["project-task", projectId] });
+      toast.success(TASK_MESSAGES.ATTACHMENT.SUCCESS);
+    },
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.ATTACHMENT.ERROR));
+    },
   });
 };
 

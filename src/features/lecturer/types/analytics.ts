@@ -158,7 +158,12 @@ export interface TeamInteraction {
 export interface HeatmapDay {
   date: string;
   commits: number;
+  peerReviews?: number;
+  comments?: number;
+  documents?: number;
+  tasks?: number;
   totalActivities: number;
+  totalScore?: number;
 }
 
 export type HeatmapData = HeatmapDay;

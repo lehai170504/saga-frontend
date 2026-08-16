@@ -211,8 +211,8 @@ export default function LecturerContributionPage() {
       setIsExporting(true);
       toast.loading("Đang tổng hợp dữ liệu các nhóm...", { id: "export-grades" });
 
-      const allMembers = [];
-      
+      const allMembers: Record<string, unknown>[] = [];
+
       for (const team of realTeams) {
         try {
           const res = await contributionApi.getContributionEvaluation(team.id);
@@ -240,7 +240,7 @@ export default function LecturerContributionPage() {
               });
             });
           }
-        } catch (err) {
+        } catch {
           console.warn(`Không lấy được dữ liệu cho nhóm ${team.name}`);
         }
       }
@@ -251,7 +251,7 @@ export default function LecturerContributionPage() {
       }
 
       const ws = XLSX.utils.json_to_sheet(allMembers);
-      
+
       // Auto-size columns
       const colWidths = [
         { wch: 15 }, // Tên Nhóm
@@ -303,8 +303,8 @@ export default function LecturerContributionPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="rounded-xl border-border/50 h-10 font-bold text-success bg-success/10 dark:hover:bg-emerald-950/30"
               onClick={handleExportAllGrades}
               disabled={isExporting}
@@ -467,14 +467,14 @@ export default function LecturerContributionPage() {
                                 {student.role || "MEMBER"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-center font-medium text-muted-foreground">x{student.peerReviewScore.toFixed(2)}</TableCell>
+                            <TableCell className="text-center font-medium text-muted-foreground">x{(student.peerReviewScore ?? 0).toFixed(2)}</TableCell>
 
                             {/* Slices Breakdown */}
-                            <TableCell className="text-center font-medium">{student.codeContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.testContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.documentContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.researchContributionPercentage.toFixed(1)}%</TableCell>
-                            <TableCell className="text-center font-bold text-muted-foreground">{student.sliceContributionPercentage.toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.codeContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.testContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.documentContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{(student.researchContributionPercentage ?? 0).toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-bold text-muted-foreground">{(student.sliceContributionPercentage ?? student.taskContributionPercentage ?? 0).toFixed(1)}%</TableCell>
 
                             <TableCell className="text-center">
                               {student.warnings && student.warnings.length > 0 ? (

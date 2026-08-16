@@ -2,8 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import {
-  ArrowLeft, BookOpen, Users, Calendar, GraduationCap, Percent, Code,
-  FileText, Layout, User, Mail, ShieldCheck, Clock, Trash2, Loader2,
+  ArrowLeft, BookOpen, Users, Calendar, GraduationCap, Percent,
+  Layout, User, ShieldCheck, Clock, Trash2, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -97,6 +97,11 @@ export default function CourseDetailPage() {
 
         {course && (
           <div className="flex items-center gap-3 shrink-0">
+            <Badge variant="outline" className={`rounded-xl px-3 py-1.5 font-black uppercase tracking-widest ${course.courseStatus === 'OPEN' ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10' : 'text-muted-foreground border-border/50 bg-muted/30'}`}>
+              Trạng thái: {course.courseStatus}
+            </Badge>
+            <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
+
             <EditCourseDialog courseId={courseId} />
 
             <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
@@ -151,7 +156,7 @@ export default function CourseDetailPage() {
           </TabsList>
 
           <TabsContent value="overview" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {/* Thông tin Môn học & Lớp */}
               <div className="p-6 rounded-[2rem] bg-card/40 border border-border/50 shadow-sm space-y-6 flex flex-col">
                 <h3 className="text-lg font-bold flex items-center gap-2">
@@ -177,8 +182,8 @@ export default function CourseDetailPage() {
                     </div>
                     <div>
                       <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Lớp học</div>
-                      <div className="font-semibold">{course.clazz.name}</div>
-                      <div className="text-sm text-muted-foreground mt-0.5">Mã lớp: {course.clazz.classCode}</div>
+                      <div className="font-semibold">{(course.academicClass ?? course.clazz)?.name || "Chưa phân lớp"}</div>
+                      <div className="text-sm text-muted-foreground mt-0.5">Mã lớp: {(course.academicClass ?? course.clazz)?.classCode || "N/A"}</div>
                     </div>
                   </div>
                 </div>
@@ -188,82 +193,79 @@ export default function CourseDetailPage() {
               <div className="p-6 rounded-[2rem] bg-card/40 border border-border/50 shadow-sm space-y-6 flex flex-col">
                 <h3 className="text-lg font-bold flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-amber-500" />
-                  Học kỳ & Giảng viên
+                  Học kỳ & Phân công
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-2xl bg-background/60 border border-border/40 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+                      <Calendar className="w-5 h-5 text-amber-500" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Học kỳ</div>
+                      <div className="font-semibold">{course.semester?.name || course.semester?.code || "N/A"}</div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-background/60 border border-border/40 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+                      <User className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Giảng viên phụ trách</div>
+                      <div className="font-semibold">{((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.fullName || "Chưa phân công"}</div>
+                      {((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.email && (
+                        <div className="text-sm text-muted-foreground mt-0.5">{((course as unknown as Record<string, unknown>).lecturer as { fullName?: string; email?: string } || course.instructor)?.email}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Thông tin Hệ thống */}
+              <div className="p-6 rounded-[2rem] bg-card/40 border border-border/50 shadow-sm space-y-6 flex flex-col md:col-span-2 xl:col-span-1">
+                <h3 className="text-lg font-bold flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-purple-500" />
+                  Thông tin Hệ thống
                 </h3>
 
                 <div className="space-y-4 flex-1">
                   <div className="p-4 rounded-2xl bg-background/50 border border-border/50 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
-                      <Clock className="w-5 h-5 text-amber-500" />
+                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-5 h-5 text-purple-500" />
                     </div>
-                    <div className="w-full flex justify-between items-center">
-                      <div>
-                        <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Học kỳ</div>
-                        <div className="font-semibold">{course.semester.name}</div>
-                        <div className="text-sm text-muted-foreground mt-0.5">Mã: {course.semester.code}</div>
-                      </div>
-                      {course.semester.startDate && (
-                        <Badge variant="outline" className="rounded-xl border-amber-500/30 text-amber-600 bg-amber-500/10">
-                          {new Date(course.semester.startDate).getFullYear()}
-                        </Badge>
-                      )}
+                    <div className="w-full">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Ngày tạo</div>
+                      <div className="font-semibold text-sm">{course.createdAt ? new Date(course.createdAt).toLocaleString("vi-VN") : "Chưa cập nhật"}</div>
                     </div>
                   </div>
 
                   <div className="p-4 rounded-2xl bg-background/50 border border-border/50 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <User className="w-5 h-5 text-blue-500" />
+                    <div className="w-10 h-10 rounded-full bg-slate-500/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-5 h-5 text-slate-500" />
                     </div>
                     <div className="w-full">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 flex justify-between">
-                        Giảng viên
-                        {course.instructor.accountStatus === "ACTIVE" && (
-                          <span className="text-emerald-500 flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3" /> Active
-                          </span>
-                        )}
-                      </div>
-                      <div className="font-semibold">{course.instructor.fullName}</div>
-                      <div className="text-sm text-muted-foreground mt-0.5 flex items-center gap-1 truncate max-w-[200px]" title={course.instructor.email}>
-                        <Mail className="w-3 h-3 shrink-0" /> {course.instructor.email || "Chưa cập nhật email"}
-                      </div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Cập nhật lần cuối</div>
+                      <div className="font-semibold text-sm">{course.updatedAt ? new Date(course.updatedAt).toLocaleString("vi-VN") : "Chưa cập nhật"}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Trọng số Đánh giá */}
-              <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/5 to-transparent border border-border/50 shadow-sm space-y-6 md:col-span-2">
-                <h3 className="text-lg font-bold flex items-center gap-2">
-                  <Percent className="w-5 h-5 text-primary" />
-                  Trọng số Đánh giá (Contribution Weights)
-                </h3>
+              <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/5 to-transparent border border-border/50 shadow-sm space-y-6 md:col-span-2 xl:col-span-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <Percent className="w-5 h-5 text-primary" />
+                    Trọng số Đánh giá
+                  </h3>
+                  <Badge variant="outline" className="rounded-xl font-bold bg-background text-foreground border-border/50">
+                    Phạm vi: {course.contributionConfigMode === 'COURSE' ? 'Cấp Khóa học' : (course.contributionConfigMode || 'Chưa xác định')}
+                  </Badge>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
-                    <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-3">
-                      <Code className="w-6 h-6 text-rose-500" />
-                    </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Code</span>
-                    <span className="text-3xl font-black text-rose-500">
-                      {((course.codeContributionWeight || 0)).toFixed(2)}%
-                    </span>
-                  </div>
-
-                  <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-3">
-                      <FileText className="w-6 h-6 text-blue-500" />
-                    </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Document</span>
-                    <span className="text-3xl font-black text-blue-500">
-                      {((course.documentContributionWeight || 0)).toFixed(2)}%
-                    </span>
-                  </div>
-
-                  <div className="p-5 rounded-2xl bg-background/60 border border-border/50 flex flex-col items-center justify-center text-center">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-3">
-                      <Layout className="w-6 h-6 text-emerald-500" />
-                    </div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Test</span>
                     <span className="text-3xl font-black text-emerald-500">
                       {((course.testContributionWeight || 0)).toFixed(2)}%
@@ -286,7 +288,7 @@ export default function CourseDetailPage() {
           </TabsContent>
 
           <TabsContent value="students" className="mt-0">
-            <CourseStudentsTable courseId={courseId} courseClassName={course.clazz.name} />
+            <CourseStudentsTable courseId={courseId} courseClassName={(course.academicClass ?? course.clazz)?.name || "Chưa phân lớp"} />
           </TabsContent>
         </Tabs>
       ) : null}

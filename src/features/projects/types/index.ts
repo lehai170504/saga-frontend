@@ -264,6 +264,24 @@ export interface GithubBranchesResponse {
   };
 }
 
+export interface CommitReviewResult {
+  traceabilityStatus?: string;
+  messageQuality?: string;
+  codeQuality?: string;
+  taskAlignment?: string;
+  verdictEligible?: boolean;
+  verdict?: string;
+  overallStatus?: string;
+}
+
+export interface CommitReview {
+  intentStatus: string;
+  reviewMode?: string | null;
+  startedAt?: string | null;
+  completedAt?: string | null;
+  result?: CommitReviewResult | null;
+}
+
 export interface GithubCommitInfo {
   sha: string;
   message: string;
@@ -272,6 +290,7 @@ export interface GithubCommitInfo {
   authoredAt: string;
   committedAt: string;
   url: string;
+  review?: CommitReview | null;
 }
 
 export interface GithubCommitsResponse {
@@ -343,6 +362,26 @@ export type JiraTaskActor = {
   studentCode: string;
 };
 
+export interface TaskAttachmentItem {
+  id: string;
+  externalId: string;
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
+export interface TaskWebLinkItem {
+  id: string;
+  url: string;
+  remoteLinkId: string | null;
+}
+
+export interface TaskAttachmentResponse {
+  taskId: string;
+  attachments: TaskAttachmentItem[];
+  links: TaskWebLinkItem[];
+}
+
 export type JiraTask = {
   id: string;
   projectId: string;
@@ -369,6 +408,8 @@ export type JiraTask = {
   assignee: JiraTaskActor | null;
   reporter: JiraTaskActor | null;
   blocksTaskId: string | null;
+  attachments?: TaskAttachmentItem[];
+  links?: TaskWebLinkItem[];
 };
 
 export type ProjectTasksResponse = {

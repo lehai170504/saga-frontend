@@ -69,7 +69,7 @@ axiosInstance.interceptors.response.use(
         ? "Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ Quản trị viên."
         : "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
       authStore.setAuthError(msg);
-      authStore.logout();
+      authStore.logoutLocalOnlyOrClearState();
     }
 
     return Promise.reject(new ApiError(status, message, errorName, body));

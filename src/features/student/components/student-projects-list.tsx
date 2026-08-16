@@ -61,7 +61,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   );
 
   const isLoading = isLoadingCourse || isLoadingMyTeam;
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
 
 
@@ -108,7 +108,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
 
   const isCurrentUserLeader = useMemo(() => {
     if (!user || !members) return false;
-    return members.some(m => m.studentId === user.id && m.roleInTeam === "LEADER");
+    return members.some(m => m.studentId === user.localProfileId && m.roleInTeam === "LEADER");
   }, [user, members]);
 
   const headerInfo = useMemo(() => {

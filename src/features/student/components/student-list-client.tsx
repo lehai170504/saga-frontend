@@ -24,8 +24,8 @@ export function StudentListClient({ courseId }: { courseId: string }) {
 
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
   const { data: courseData } = useCourse(courseId);
-  const className = courseData?.clazz?.name || courseData?.courseCode || courseId;
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const className = courseData?.academicClass?.name || courseData?.courseCode || courseId;
+  const isEnded = isCourseEnded(courseData);
 
   const allStudentsWithTeam = useMemo(
     () => studentsData?.studentsWithTeam.content || [],
@@ -125,7 +125,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
           <ImportGroupingDialog
             courseId={courseId}
             courseClassName={className}
-            onSuccess={() => window.location.reload()}
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ["courses", courseId, "students"] });
+            }}
             disabled={isEnded}
           />
         </div>

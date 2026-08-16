@@ -4,6 +4,7 @@ import React, { createContext, useContext } from "react";
 import { useParams } from "next/navigation";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { Course } from "@/features/courses/types";
+import { isCourseEnded } from "@/lib/course-utils";
 import { Loader2 } from "lucide-react";
 
 interface StudentCourseContextType {
@@ -12,6 +13,8 @@ interface StudentCourseContextType {
   isLoading: boolean;
   error: unknown;
   refetch: () => void;
+  isReadonly: boolean;
+  isEnded: boolean;
 }
 
 const StudentCourseContext = createContext<StudentCourseContextType | undefined>(undefined);
@@ -22,6 +25,9 @@ export function StudentCourseProvider({ children }: { children: React.ReactNode 
 
   // Fetch dữ liệu của khóa học từ Backend
   const { data: course, isLoading, error, refetch } = useCourse(courseId);
+
+  const isEnded = isCourseEnded(course);
+  const isReadonly = isEnded;
 
   // Hiển thị Loading toàn màn hình nếu đang tải dữ liệu khóa học
   if (isLoading) {
@@ -47,7 +53,7 @@ export function StudentCourseProvider({ children }: { children: React.ReactNode 
   }
 
   return (
-    <StudentCourseContext.Provider value={{ courseId, course, isLoading, error, refetch }}>
+    <StudentCourseContext.Provider value={{ courseId, course, isLoading, error, refetch, isReadonly, isEnded }}>
       {children}
     </StudentCourseContext.Provider>
   );

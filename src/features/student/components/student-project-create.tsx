@@ -72,7 +72,7 @@ export function StudentProjectCreate() {
 
   const isLoading = isLoadingCourse || isLoadingAuth || (isStudent ? isLoadingMyTeam : isLoadingStudents);
   const refetch = isStudent ? refetchMyTeam : refetchStudents;
-  const isEnded = isCourseEnded(course?.semester?.endDate);
+  const isEnded = isCourseEnded(course);
 
   const handleOpenEdit = () => {
     setEditName(projectDetail?.name || myTeam?.projectName || "");

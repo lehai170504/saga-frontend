@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings2, BookOpen, Info, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Settings2, BookOpen, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,17 @@ import { useCourseWeights, useTeamWeightsList, useUpdateCourseWeights, useUpdate
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+
+interface TeamConfig {
+  groupId: string;
+  groupName: string;
+  configured: boolean;
+  projectName?: string;
+  codeWeight?: number;
+  testWeight?: number;
+  documentWeight?: number;
+  researchWeight?: number;
+}
 
 export function CourseEvaluationConfigClient({ courseId }: { courseId: string }) {
   const { data: courseWeightsData, isLoading: isLoadingCourse } = useCourseWeights(courseId);
@@ -26,6 +37,7 @@ export function CourseEvaluationConfigClient({ courseId }: { courseId: string })
   const [researchWeight, setResearchWeight] = useState<number>(10);
 
   // Sync mode and weights from backend on load
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (courseWeightsData) {
       if (courseWeightsData.mode) setMode(courseWeightsData.mode);
@@ -35,6 +47,7 @@ export function CourseEvaluationConfigClient({ courseId }: { courseId: string })
       setResearchWeight(courseWeightsData.researchWeight);
     }
   }, [courseWeightsData]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const totalWeight = codeWeight + testWeight + documentWeight + researchWeight;
   const isCourseValid = Math.abs(totalWeight - 100) <= 0.01;
@@ -66,12 +79,13 @@ export function CourseEvaluationConfigClient({ courseId }: { courseId: string })
     return <Skeleton className="w-full h-96 rounded-2xl" />;
   }
 
-  const teamListArray = Array.isArray(teamWeightsList)
+  const rawList = teamWeightsList as unknown as { content?: TeamConfig[]; data?: TeamConfig[] };
+  const teamListArray = (Array.isArray(teamWeightsList)
     ? teamWeightsList
-    : (teamWeightsList as any)?.content || (teamWeightsList as any)?.data || [];
+    : rawList?.content || rawList?.data || []) as TeamConfig[];
 
-  const allTeamsConfigured = teamListArray.every((t: any) => t.configured) ?? false;
-  const configuredCount = teamListArray.filter((t: any) => t.configured).length ?? 0;
+  const allTeamsConfigured = teamListArray.every((t: TeamConfig) => t.configured) ?? false;
+  const configuredCount = teamListArray.filter((t: TeamConfig) => t.configured).length ?? 0;
   const totalTeams = teamListArray.length ?? 0;
 
   return (
@@ -228,12 +242,12 @@ export function CourseEvaluationConfigClient({ courseId }: { courseId: string })
               Danh sách Cấu hình Nhóm
             </CardTitle>
             <CardDescription>
-              Tất cả các nhóm đều phải được thiết lập trọng số (✅) thì Chế độ theo Nhóm mới có thể kích hoạt. 
+              Tất cả các nhóm đều phải được thiết lập trọng số (✅) thì Chế độ theo Nhóm mới có thể kích hoạt.
               Vui lòng vào trang Chi tiết Nhóm để thiết lập.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            
+
             <div className={cn(
               "p-4 rounded-xl border flex items-center justify-between mb-6",
               allTeamsConfigured ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-700" : "bg-amber-500/10 border-amber-500/20 text-amber-700"
@@ -253,7 +267,7 @@ export function CourseEvaluationConfigClient({ courseId }: { courseId: string })
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {teamListArray.map((team: any) => (
+                {teamListArray.map((team: TeamConfig) => (
                   <div key={team.groupId} className={cn(
                     "p-5 rounded-2xl border relative overflow-hidden transition-colors flex flex-col justify-between",
                     team.configured ? "bg-card border-emerald-500/30" : "bg-muted/30 border-border"

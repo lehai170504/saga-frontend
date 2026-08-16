@@ -6,10 +6,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Mail, ShieldCheck, GraduationCap } from "lucide-react";
+import { Mail, ShieldCheck, GraduationCap, Edit2, Check, X, Loader2 } from "lucide-react";
 import { PersonalIntegrationPanel } from "@/features/integrations/components/personal-integration-panel";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useUpdateProfile } from "@/features/user/hooks/useUpdateProfile";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -24,8 +29,36 @@ const roleDisplay: Record<string, string> = {
 
 export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const { user } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [fullName, setFullName] = useState(user?.fullName || "");
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || user?.avatar || "");
+
+  const updateProfileMutation = useUpdateProfile();
 
   if (!user) return null;
+
+  const handleEditToggle = () => {
+    if (!isEditing) {
+      setFullName(user.fullName || "");
+      setAvatarUrl(user.avatarUrl || user.avatar || "");
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleSave = () => {
+    if (!fullName.trim()) {
+      toast.error("Tên không được để trống");
+      return;
+    }
+    updateProfileMutation.mutate(
+      { fullName, avatarUrl },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      }
+    );
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -57,15 +90,55 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
               {/* Basics */}
               <div className="mb-6">
-                <div className="flex items-center gap-3 mb-1">
-                  <h2 className="text-xl font-black text-foreground">{user.fullName}</h2>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-widest shrink-0 ${user.accountStatus === 'ACTIVE' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
-                    {user.accountStatus === 'ACTIVE' ? 'Hoạt động' : user.accountStatus || 'Unknown'}
-                  </span>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-widest shrink-0 ${user.accountStatus === 'ACTIVE' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
+                      {user.accountStatus === 'ACTIVE' ? 'Hoạt động' : user.accountStatus || 'Unknown'}
+                    </span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={handleEditToggle} className="h-7 text-xs font-bold rounded-full">
+                    {isEditing ? <X className="w-3.5 h-3.5 mr-1" /> : <Edit2 className="w-3.5 h-3.5 mr-1" />}
+                    {isEditing ? "Hủy" : "Chỉnh sửa"}
+                  </Button>
                 </div>
-                <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 shrink-0" /> <span>{user.email}</span>
-                </p>
+
+                {isEditing ? (
+                  <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Họ và tên</label>
+                      <Input
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="h-9 rounded-xl font-medium"
+                        placeholder="Nhập họ và tên..."
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">URL Ảnh đại diện</label>
+                      <Input
+                        value={avatarUrl}
+                        onChange={(e) => setAvatarUrl(e.target.value)}
+                        className="h-9 rounded-xl font-medium text-xs"
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <Button
+                      className="w-full h-9 rounded-xl font-bold mt-2"
+                      onClick={handleSave}
+                      disabled={updateProfileMutation.isPending}
+                    >
+                      {updateProfileMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Check className="w-4 h-4 mr-2" />}
+                      Lưu thay đổi
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-xl font-black text-foreground mb-1">{user.fullName}</h2>
+                    <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 shrink-0" /> <span>{user.email}</span>
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Roles / Metadata */}

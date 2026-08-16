@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, TrendingUp, Code, FileText, CheckCircle2, Search, ChevronDown, ChevronUp, Beaker } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ContributionMember, ContributionWarning, SprintBreakdown } from "@/features/lecturer/types/contribution";
 
 const truncateDecimal = (val: number | undefined | null, decimals: number = 2): string => {
   if (val === undefined || val === null || isNaN(val)) {
@@ -131,7 +132,7 @@ export function MemberContributionCard({
         {/* Warning Section (If Any) */}
         {hasWarnings && (
           <div className="space-y-2">
-            {warnings.map((w, idx) => (
+            {warnings.map((w: ContributionWarning, idx: number) => (
               <div
                 key={idx}
                 className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
@@ -294,7 +295,7 @@ export function MemberContributionCard({
                   <div className="text-center">Hệ số Retro</div>
                   <div className="text-center">% Đóng góp cuối</div>
                 </div>
-                {member.sprintBreakdowns.map((s, sIdx) => (
+                {member.sprintBreakdowns.map((s: SprintBreakdown, sIdx: number) => (
                   <div key={sIdx} className="grid grid-cols-6 p-3.5 text-xs items-center font-semibold text-foreground">
                     <div className="col-span-2 truncate font-bold text-foreground/90">{s.sprintName}</div>
                     <div className="text-center">{truncateDecimal(s.sliceScore ?? s.taskScore)}</div>

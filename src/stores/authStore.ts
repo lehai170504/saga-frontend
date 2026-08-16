@@ -30,7 +30,7 @@ interface AuthState {
   setCsrf: (csrf: CsrfTokenResponse | null) => void;
   setInitializing: (isInit: boolean) => void;
   setAuthError: (error: string | null) => void;
-  logout: () => void;
+  logoutLocalOnlyOrClearState: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -43,5 +43,24 @@ export const useAuthStore = create<AuthState>((set) => ({
   setCsrf: (csrf) => set({ csrf }),
   setInitializing: (isInitializing) => set({ isInitializing }),
   setAuthError: (authError) => set({ authError }),
-  logout: () => set({ user: null, csrf: null, isAuthenticated: false }),
+  logoutLocalOnlyOrClearState: () => set({ user: null, csrf: null, isAuthenticated: false }),
 }));
+
+// Initialize SSE listener outside React tree
+if (typeof window !== "undefined") {
+  // Dynamic import or require to avoid circular dependency if any, 
+  // but direct import is fine since sessionEvents just uses useAuthStore.getState()
+  import('@/features/auth/api/sessionEvents').then(({ sessionEvents }) => {
+    useAuthStore.subscribe((state, prevState) => {
+      // If user becomes authenticated and ACTIVE, start SSE
+      if (state.isAuthenticated && state.user) {
+        // According to requirements: ACTIVE Student/Lecturer -> start singleton
+        // Admin also gets heartbeat. So as long as authenticated, we can start it.
+        sessionEvents.start();
+      } else if (!state.isAuthenticated && prevState?.isAuthenticated) {
+        // If logged out, stop SSE
+        sessionEvents.stop();
+      }
+    });
+  });
+}

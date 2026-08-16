@@ -54,7 +54,7 @@ export function Sidebar({ onClose, isCollapsed, onToggleCollapse }: SidebarProps
   const { data: course } = useCourse(courseId || "");
 
   // 3. Khởi tạo navigation
-  const navGroups = getNavigationConfig(user?.applicationRole || "", courseId, course?.clazz?.name || course?.courseCode);
+  const navGroups = getNavigationConfig(user?.applicationRole || "", courseId, (course?.academicClass ?? course?.clazz)?.name || course?.courseCode);
 
   return (
     <TooltipProvider delayDuration={0}>
