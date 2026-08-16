@@ -64,7 +64,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const deleteSprintMutation = useDeleteSprint(projectId);
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && isLoadingSprints);
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
   const isLeader = true;
 
 

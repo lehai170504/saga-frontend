@@ -54,11 +54,13 @@ export const useTeamSprintReviews = (teamId: string, sprintId: string) => {
   });
 };
 
-export const useProjectSprints = (projectId: string) => {
+export const useProjectSprints = (projectId: string, options?: Record<string, unknown>) => {
   return useQuery({
     queryKey: ["project-sprints", projectId],
     queryFn: () => sprintApi.getProjectSprints(projectId),
     enabled: !!projectId,
+    staleTime: 5000,
+    ...options,
   });
 };
 

@@ -57,7 +57,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   );
 
   const isLoading = isLoadingCourse || isLoadingMyTeam;
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
 
 

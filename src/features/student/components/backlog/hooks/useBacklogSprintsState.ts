@@ -173,6 +173,7 @@ export function useBacklogSprintsState(projectId: string, sprints: Sprint[]) {
 
   return {
     expandedSprints,
+    setExpandedSprints,
     expandedUnassigned,
     setExpandedUnassigned,
     toggleSprintExpanded,

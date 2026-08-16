@@ -2,8 +2,11 @@ export interface AiConversation {
   id: string;
   title: string;
   courseId?: string | null;
+  applicationRoleSnapshot?: string;
+  archived?: boolean;
   createdAt: string;
   updatedAt: string;
+  messages?: AiMessage[];
 }
 
 export interface AiPendingAction {

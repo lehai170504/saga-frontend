@@ -25,7 +25,7 @@ export function StudentListClient({ courseId }: { courseId: string }) {
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
   const { data: courseData } = useCourse(courseId);
   const className = courseData?.academicClass?.name || courseData?.courseCode || courseId;
-  const isEnded = isCourseEnded(courseData?.semester?.endDate);
+  const isEnded = isCourseEnded(courseData);
 
   const allStudentsWithTeam = useMemo(
     () => studentsData?.studentsWithTeam.content || [],
