@@ -1,10 +1,13 @@
 export interface SprintBreakdown {
   sprintId: string;
   sprintName: string;
-  sliceScore: number;
-  sliceContributionPercentage: number;
-  contributionPercentage: number;
-  peerReviewCount?: number;
+  taskScore: number;
+  retrospectiveMultiplier: number;
+  adjustedTaskScore: number;
+  peerReviewCount: number;
+  sliceScore?: number;
+  sliceContributionPercentage?: number;
+  contributionPercentage?: number;
 }
 
 export interface ContributionWarning {
@@ -18,19 +21,17 @@ export interface ContributionMember {
   fullName: string;
   studentCode: string;
   codeContributionScore: number;
-  testContributionScore: number;
+
   documentContributionScore: number;
-  researchContributionScore: number;
-  
+  researchContributionScore?: number;
   codeContributionPercentage: number;
   testContributionPercentage: number;
   documentContributionPercentage: number;
-  researchContributionPercentage: number;
-
-  sliceScore: number;
-  sliceContributionPercentage: number;
+  researchContributionPercentage?: number;
   peerReviewScore: number;
   finalContributionPercentage: number;
+  sliceScore?: number;
+  sliceContributionPercentage?: number;
   evidenceCount: number;
   sprintBreakdowns: SprintBreakdown[];
   warnings: ContributionWarning[];
@@ -73,5 +74,30 @@ export interface CourseContributionWeightRequest {
   testWeight: number;
   documentWeight: number;
   researchWeight: number;
+}
+
+export interface CourseContributionModeRequest {
+  mode: "COURSE" | "TEAM";
+}
+
+export interface TeamContributionWeightItem {
+  teamId: string;
+  teamName: string;
+  projectId: string;
+  projectName: string;
+  projectTypeId: string;
+  projectTypeCode: string;
+  projectTypeName: string;
+  source: string;
+  codeWeight: number;
+  testWeight: number;
+  documentWeight: number;
+  researchWeight: number;
+}
+
+export interface CourseContributionTeamWeightResponse {
+  courseId: string;
+  mode: "COURSE" | "TEAM";
+  teams: TeamContributionWeightItem[];
 }
 

@@ -3,11 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { TableRow, TableCell } from "@/components/ui/table";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
 import { CourseStudent } from "@/features/courses/types";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { EditStudentGroupDialog } from "./edit-student-group-dialog";
+
+type MemberWithAvatar = CourseStudent & { avatarUrl?: string; avatar?: string; picture?: string; photoUrl?: string; email?: string };
 
 interface StudentTableRowProps {
   student: CourseStudent;
@@ -16,7 +19,22 @@ interface StudentTableRowProps {
 }
 
 export function StudentTableRow({ student, index, courseId }: StudentTableRowProps) {
+  const { user: currentUser } = useAuth();
   const role = student.team?.teamMembers.find((m) => m.studentId === student.studentId)?.roleInTeam;
+
+  const m = student as MemberWithAvatar;
+  const avatarSrc =
+    m.avatarUrl ||
+    m.avatar ||
+    m.picture ||
+    m.photoUrl ||
+    (currentUser &&
+      (currentUser.localProfileId === m.studentId ||
+        currentUser.email === m.email ||
+        currentUser.fullName === m.fullName)
+      ? currentUser.avatarUrl || currentUser.avatar
+      : "") ||
+    "";
 
   return (
     <TableRow key={student.studentId} className="hover:bg-muted/30 transition-colors group">
@@ -24,6 +42,7 @@ export function StudentTableRow({ student, index, courseId }: StudentTableRowPro
       <TableCell>
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8 border shadow-sm">
+            <AvatarImage src={avatarSrc} alt={student.fullName} />
             <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
               {student.fullName.charAt(0)}
             </AvatarFallback>

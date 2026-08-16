@@ -64,7 +64,12 @@ axiosInstance.interceptors.response.use(
 
     // Handle unauthorized globally
     if (status === 401) {
-      useAuthStore.getState().logout();
+      const authStore = useAuthStore.getState();
+      const msg = errorName === 'ACCOUNT_DISABLED'
+        ? "Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ Quản trị viên."
+        : "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+      authStore.setAuthError(msg);
+      authStore.logout();
     }
 
     return Promise.reject(new ApiError(status, message, errorName, body));

@@ -3,6 +3,7 @@ import { semesterApi } from "../api/semesterApi";
 import { SemesterRequest } from "../types";
 import { toast } from "sonner";
 import { SEMESTER_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useSemesters = (params?: { keyword?: string; page?: number; size?: number }) => {
   return useQuery({
@@ -29,8 +30,7 @@ export const useCreateSemester = () => {
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.CREATE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SEMESTER_MESSAGES.CREATE.ERROR));
     },
   });
 };
@@ -46,8 +46,7 @@ export const useUpdateSemester = () => {
       queryClient.invalidateQueries({ queryKey: ["semesters", variables.id] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.UPDATE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SEMESTER_MESSAGES.UPDATE.ERROR));
     },
   });
 };
@@ -62,11 +61,11 @@ export const useDeleteSemester = () => {
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.DELETE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SEMESTER_MESSAGES.DELETE.ERROR));
     },
   });
 };
+
 export const useActiveSemester = () => {
   return useQuery({
     queryKey: ["semesters", "active"],
@@ -85,8 +84,7 @@ export const useSetActiveSemester = () => {
       queryClient.invalidateQueries({ queryKey: ["semesters"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SEMESTER_MESSAGES.SET_ACTIVE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SEMESTER_MESSAGES.SET_ACTIVE.ERROR));
     },
   });
 };

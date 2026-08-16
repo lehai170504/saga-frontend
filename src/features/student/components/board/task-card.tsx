@@ -20,6 +20,7 @@ import { TaskAssigneeDropdown } from "./task-assignee-dropdown";
 
 import { GithubDevelopmentPopover, GithubBadgeTriggerButton } from "./github-development-popover";
 import { shouldIgnoreTaskCardClick } from "./utils/popoverCloseGuard";
+import { getSagaMarkerBadgeStyle, getSagaMarkerDisplayName } from "./modals/task-labels-input";
 
 interface TaskCardProps {
   task: JiraTask;
@@ -58,9 +59,20 @@ export function TaskCard({
       draggable={!isPendingMove && canAct}
       onDragStart={(e) => canAct && onDragStart(e, task)}
       onDragEnd={onDragEnd}
+      onPointerDown={(e) => {
+        if (shouldIgnoreTaskCardClick()) {
+          e.stopPropagation();
+        }
+      }}
+      onMouseDown={(e) => {
+        if (shouldIgnoreTaskCardClick()) {
+          e.stopPropagation();
+        }
+      }}
       onClick={(e) => {
         if (shouldIgnoreTaskCardClick()) {
           e.stopPropagation();
+          e.preventDefault();
           return;
         }
         onClick();
@@ -149,9 +161,9 @@ export function TaskCard({
             <Badge
               key={label}
               variant="outline"
-              className="rounded-lg text-[9px] py-0 px-1.5 font-bold border-primary/20 bg-primary/5 text-primary/80 truncate max-w-[80px]"
+              className={`rounded-lg text-[9px] py-0.5 px-2 font-extrabold border truncate shrink-0 ${getSagaMarkerBadgeStyle(label)}`}
             >
-              {label}
+              {getSagaMarkerDisplayName(label)}
             </Badge>
           ))}
         </div>

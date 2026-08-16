@@ -24,10 +24,7 @@ export default function StudentAiAgentPage({ params }: StudentAiAgentPageProps) 
   const isLoading = isLoadingTeam || isLoadingCourse;
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
-      {/* Ambient background glows */}
-      <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+    <div className="relative min-h-[calc(100vh-4rem)] w-full bg-background">
 
       <div className="relative p-6 max-w-[1200px] mx-auto space-y-6">
         <PageHeader

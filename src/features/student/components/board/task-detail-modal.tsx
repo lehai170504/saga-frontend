@@ -31,6 +31,7 @@ interface TaskDetailModalProps {
   projectId: string;
   onTaskUpdated: (updatedTask: JiraTask) => void;
   variant?: "modal" | "drawer";
+  isEnded?: boolean;
 }
 
 export function TaskDetailModal({
@@ -40,6 +41,7 @@ export function TaskDetailModal({
   projectId,
   onTaskUpdated,
   variant = "modal",
+  isEnded,
 }: TaskDetailModalProps) {
   if (!selectedTask) return null;
 
@@ -147,10 +149,9 @@ export function TaskDetailModal({
               return (
                 <div className="flex items-start gap-2.5">
                   <div
-                    className={`p-2 rounded-xl shrink-0 border ${
-                      dueDateInfo?.badgeStyle ||
+                    className={`p-2 rounded-xl shrink-0 border ${dueDateInfo?.badgeStyle ||
                       "bg-muted/40 text-muted-foreground border-border/10"
-                    }`}
+                      }`}
                   >
                     <Calendar size={14} className={dueDateInfo?.iconColorStyle} />
                   </div>
@@ -197,7 +198,7 @@ export function TaskDetailModal({
         </div>
 
         {/* Traceability Jira Task ↔ GitHub Issue */}
-        <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} />
+        <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} isEnded={isEnded} />
       </div>
 
       {/* Footer */}
@@ -208,14 +209,14 @@ export function TaskDetailModal({
             Cập nhật cuối trên Jira:{" "}
             {selectedTask.externalUpdatedAt
               ? (() => {
-                  const d = new Date(selectedTask.externalUpdatedAt!);
-                  const dd = String(d.getDate()).padStart(2, "0");
-                  const mm = String(d.getMonth() + 1).padStart(2, "0");
-                  const yyyy = d.getFullYear();
-                  const hh = String(d.getHours()).padStart(2, "0");
-                  const min = String(d.getMinutes()).padStart(2, "0");
-                  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
-                })()
+                const d = new Date(selectedTask.externalUpdatedAt!);
+                const dd = String(d.getDate()).padStart(2, "0");
+                const mm = String(d.getMonth() + 1).padStart(2, "0");
+                const yyyy = d.getFullYear();
+                const hh = String(d.getHours()).padStart(2, "0");
+                const min = String(d.getMinutes()).padStart(2, "0");
+                return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+              })()
               : "Không xác định"}
           </span>
         </div>
@@ -252,6 +253,7 @@ export function TaskDetailModal({
           projectId={projectId}
           task={selectedTask}
           onTransitionSuccess={onTaskUpdated}
+          isEnded={isEnded}
         />
       </div>
       <div className="text-xl font-extrabold text-foreground leading-snug">

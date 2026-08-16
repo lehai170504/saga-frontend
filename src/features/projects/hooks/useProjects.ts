@@ -3,6 +3,7 @@ import { projectApi } from "../api/projectApi";
 import { CreateTeamProjectRequest, UpdateProjectGroupWeightsRequest } from "../types";
 import { toast } from "sonner";
 import { PROJECT_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useCreateTeamProject = (teamId: string) => {
   const queryClient = useQueryClient();
@@ -13,8 +14,8 @@ export const useCreateTeamProject = (teamId: string) => {
       queryClient.invalidateQueries({ queryKey: ["my-team-members"] });
       toast.success(PROJECT_MESSAGES.CREATE.SUCCESS);
     },
-    onError: (err: Error | Record<string, unknown>) => {
-      toast.error((err as Error).message || PROJECT_MESSAGES.CREATE.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, PROJECT_MESSAGES.CREATE.ERROR));
     },
   });
 };
@@ -36,8 +37,8 @@ export const useUpdateProjectDetail = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-detail", projectId] });
       toast.success(PROJECT_MESSAGES.UPDATE.SUCCESS);
     },
-    onError: (err: Error | Record<string, unknown>) => {
-      toast.error((err as Error).message || PROJECT_MESSAGES.UPDATE.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, PROJECT_MESSAGES.UPDATE.ERROR));
     }
   });
 };
@@ -57,8 +58,8 @@ export const useCreateProjectType = () => {
       queryClient.invalidateQueries({ queryKey: ["project-types"] });
       toast.success("Tạo Project Type thành công");
     },
-    onError: (err: Error | Record<string, unknown>) => {
-      toast.error((err as Error).message || "Lỗi khi tạo Project Type");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Lỗi khi tạo Project Type"));
     }
   });
 };
@@ -81,8 +82,8 @@ export const useUpdateProjectGroupWeights = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-group-weights", projectId] });
       toast.success("Cập nhật trọng số nhóm thành công");
     },
-    onError: (err: Error | Record<string, unknown>) => {
-      toast.error((err as Error).message || "Lỗi khi cập nhật trọng số nhóm");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi cập nhật trọng số nhóm. Vui lòng thử lại."));
     }
   });
 };

@@ -5,15 +5,29 @@ import axiosInstance from "@/lib/axios";
 export interface AiMessage {
   id: string;
   role: "USER" | "AI" | "SYSTEM";
-  content: string;
-  provider: string;
-  model: string;
+  content?: string;
+  text?: string;
+  provider?: string;
+  model?: string;
   createdAt: string;
+  pendingAction?: {
+    id: string;
+    actionType: string;
+    description: string;
+    status: 'PENDING' | 'CONFIRMED' | 'REJECTED';
+  };
+  generatedArtifact?: string;
+  jobReference?: {
+    status: 'PENDING' | 'RUNNING' | 'WAITING_RETRY' | 'COMPLETED' | 'FAILED';
+  };
+  citations?: string[];
+  suggestedFollowups?: string[];
 }
 
 export interface ConversationItem {
   id: string;
   title: string;
+  courseId?: string | null;
   applicationRoleSnapshot: string;
   archived: boolean;
   createdAt: string;
@@ -26,11 +40,13 @@ export interface ConversationsResponse {
 }
 
 export interface CreateConversationPayload {
-  title: string;
+  title?: string;
+  courseId?: string;
 }
 
 export interface SendMessagePayload {
   content: string;
+  courseId?: string;
 }
 
 export interface SendMessageResponse {

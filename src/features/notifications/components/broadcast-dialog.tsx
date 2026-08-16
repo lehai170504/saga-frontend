@@ -8,8 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Megaphone, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { notificationApi } from "@/features/notifications/api/notificationApi";
-import { v4 as uuidv4 } from "uuid";
+import { useCourseBroadcast } from "@/features/notifications/hooks/useNotifications";
 
 interface BroadcastDialogProps {
   courseIds: string[];
@@ -21,11 +20,16 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [actionUrl, setActionUrl] = useState("");
-  const [isSending, setIsSending] = useState(false);
+  const { mutate: courseBroadcast, isPending: isSending } = useCourseBroadcast();
 
   const handleBroadcast = async () => {
     if (!title.trim() || !message.trim()) {
       toast.error("Vui lòng nhập đầy đủ tiêu đề và nội dung.");
+      return;
+    }
+
+    if (actionUrl.trim() && !actionUrl.trim().startsWith("https://")) {
+      toast.error("Liên kết đính kèm phải là đường dẫn HTTPS tuyệt đối (ví dụ: https://example.com/document).");
       return;
     }
 
@@ -34,36 +38,22 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
       return;
     }
 
-    if (actionUrl.trim() && !/^https:\/\//i.test(actionUrl.trim())) {
-      toast.error("Đường dẫn phải bắt đầu bằng https://");
-      return;
-    }
-
-    try {
-      setIsSending(true);
-      const idempotencyKey = uuidv4();
-      
-      const payload: { courseIds: string[]; title: string; message: string; actionUrl?: string } = {
+    courseBroadcast(
+      {
         courseIds,
         title: title.trim(),
         message: message.trim(),
-      };
-      
-      if (actionUrl.trim()) {
-        payload.actionUrl = actionUrl.trim();
+        ...(actionUrl.trim() ? { actionUrl: actionUrl.trim() } : {})
+      },
+      {
+        onSuccess: () => {
+          setIsOpen(false);
+          setTitle("");
+          setMessage("");
+          setActionUrl("");
+        }
       }
-
-      await notificationApi.courseBroadcast(payload, idempotencyKey);
-      toast.success("Đã gửi thông báo thành công!");
-      setIsOpen(false);
-      setTitle("");
-      setMessage("");
-      setActionUrl("");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Có lỗi xảy ra khi gửi thông báo.");
-    } finally {
-      setIsSending(false);
-    }
+    );
   };
 
   return (
@@ -102,18 +92,22 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Nhập nội dung thông báo (tối đa 1000 ký tự)..."
-              className="min-h-[120px]"
+              className="min-h-[100px]"
               maxLength={1000}
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="actionUrl" className="font-bold">Đường dẫn đính kèm (Tùy chọn)</Label>
+            <Label htmlFor="actionUrl" className="font-bold text-xs flex justify-between">
+              <span>Đường dẫn đính kèm (tùy chọn)</span>
+              <span className="text-muted-foreground font-normal">Chỉ nhận HTTPS</span>
+            </Label>
             <Input
               id="actionUrl"
               value={actionUrl}
               onChange={(e) => setActionUrl(e.target.value)}
-              placeholder="https://example.com/..."
+              placeholder="https://docs.google.com/... hoặc https://github.com/..."
               maxLength={500}
+              className="text-xs"
             />
           </div>
         </div>

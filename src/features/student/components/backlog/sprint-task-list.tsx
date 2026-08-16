@@ -24,6 +24,7 @@ interface SprintTaskListProps {
   onOpenDeleteTask: (task: JiraTask) => void;
   onStartSprint?: (sprintId: string) => void;
   onCloseSprint?: (sprintId: string) => void;
+  isEnded?: boolean;
 }
 
 export function SprintTaskList({
@@ -43,6 +44,7 @@ export function SprintTaskList({
   onOpenDeleteTask,
   onStartSprint,
   onCloseSprint,
+  isEnded,
 }: SprintTaskListProps) {
   return (
     <div className="space-y-3">
@@ -78,17 +80,20 @@ export function SprintTaskList({
                 onSelectTask={onSelectTask}
                 onOpenEdit={onOpenEditTask}
                 onOpenDelete={onOpenDeleteTask}
+                isEnded={isEnded}
               />
             ))
           )}
 
-          <button
-            onClick={() => onOpenCreateTask(sprint.sprintId)}
-            className="flex items-center gap-1.5 py-2.5 px-4 rounded-xl border border-dashed border-border/30 text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 hover:border-border/50 transition-all text-xs font-bold w-full cursor-pointer mt-1"
-          >
-            <Plus size={14} />
-            Thêm công việc vào {sprint.sprintName}
-          </button>
+          {!isEnded && (
+            <button
+              onClick={() => onOpenCreateTask(sprint.sprintId)}
+              className="flex items-center gap-1.5 py-2.5 px-4 rounded-xl border border-dashed border-border/30 text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 hover:border-border/50 transition-all text-xs font-bold w-full cursor-pointer mt-1"
+            >
+              <Plus size={14} />
+              Thêm công việc vào {sprint.sprintName}
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -106,6 +111,7 @@ interface UnassignedBacklogSectionProps {
   onOpenCreateSprint: () => void;
   onOpenEditTask: (task: JiraTask) => void;
   onOpenDeleteTask: (task: JiraTask) => void;
+  isEnded?: boolean;
 }
 
 export function UnassignedBacklogSection({
@@ -119,6 +125,7 @@ export function UnassignedBacklogSection({
   onOpenCreateSprint,
   onOpenEditTask,
   onOpenDeleteTask,
+  isEnded,
 }: UnassignedBacklogSectionProps) {
   return (
     <div className="space-y-3 pt-4">
@@ -138,18 +145,20 @@ export function UnassignedBacklogSection({
           </span>
         </div>
 
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenCreateSprint();
-          }}
-          className="h-8 rounded-xl font-bold text-xs border-border/40 hover:bg-muted/50 flex items-center gap-1.5 cursor-pointer"
-        >
-          <Plus size={12} />
-          Tạo Sprint
-        </Button>
+        {!isEnded && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenCreateSprint();
+            }}
+            className="h-8 rounded-xl font-bold text-xs border-border/40 hover:bg-muted/50 flex items-center gap-1.5 cursor-pointer"
+          >
+            <Plus size={12} />
+            Tạo Sprint
+          </Button>
+        )}
       </div>
 
       {isExpanded && (
@@ -170,6 +179,7 @@ export function UnassignedBacklogSection({
                 onSelectTask={onSelectTask}
                 onOpenEdit={onOpenEditTask}
                 onOpenDelete={onOpenDeleteTask}
+                isEnded={isEnded}
               />
             ))
           )}

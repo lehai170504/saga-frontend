@@ -22,6 +22,7 @@ import { Loader2, AlertCircle, Bug, Sparkles, PlusSquare, Bookmark, CheckSquare 
 import { JiraTask } from "@/features/projects/types";
 import { getTodayString } from "./backlog-helpers";
 import { CustomDateInput } from "../shared/custom-date-input";
+import { TaskLabelsInput } from "../board/modals/task-labels-input";
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -36,6 +37,8 @@ interface CreateTaskModalProps {
   onCreateDueDateChange: (val: string) => void;
   createAssignee: string;
   onCreateAssigneeChange: (val: string) => void;
+  createLabels: string;
+  onCreateLabelsChange: (val: string) => void;
   createDescription: string;
   onCreateDescriptionChange: (val: string) => void;
   teamMembers: Array<{ studentId: string; fullName: string }>;
@@ -56,6 +59,8 @@ export function BacklogCreateTaskModal({
   onCreateDueDateChange,
   createAssignee,
   onCreateAssigneeChange,
+  createLabels,
+  onCreateLabelsChange,
   createDescription,
   onCreateDescriptionChange,
   teamMembers,
@@ -169,6 +174,11 @@ export function BacklogCreateTaskModal({
             </div>
           </div>
 
+          <TaskLabelsInput
+            value={createLabels}
+            onChange={onCreateLabelsChange}
+          />
+
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Mô tả chi tiết</label>
             <Textarea
@@ -216,6 +226,8 @@ interface EditTaskModalProps {
   onEditDueDateChange: (val: string) => void;
   editAssignee: string;
   onEditAssigneeChange: (val: string) => void;
+  editLabels: string;
+  onEditLabelsChange: (val: string) => void;
   editDescription: string;
   onEditDescriptionChange: (val: string) => void;
   teamMembers: Array<{ studentId: string; fullName: string }>;
@@ -236,6 +248,8 @@ export function BacklogEditTaskModal({
   onEditDueDateChange,
   editAssignee,
   onEditAssigneeChange,
+  editLabels,
+  onEditLabelsChange,
   editDescription,
   onEditDescriptionChange,
   teamMembers,
@@ -348,6 +362,11 @@ export function BacklogEditTaskModal({
               </Select>
             </div>
           </div>
+
+          <TaskLabelsInput
+            value={editLabels}
+            onChange={onEditLabelsChange}
+          />
 
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Mô tả chi tiết</label>

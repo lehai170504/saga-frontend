@@ -13,7 +13,7 @@ import {
   GitCommit,
   Activity,
   FolderKanban,
-  Sparkles,
+ 
 } from "lucide-react";
 
 export type NavItemType = {
@@ -124,7 +124,6 @@ export const getNavigationConfig = (
               { href: `/student/${courseId}/jira`, icon: <FolderKanban size={18} />, label: "Tiến độ công việc", exact: true },
               { href: `/student/${courseId}/commits`, icon: <GitCommit size={18} />, label: "Commit", exact: true },
               { href: `/student/${courseId}/config`, icon: <Settings size={18} />, label: "Cấu hình", exact: true },
-              { href: `/student/${courseId}/ai-agent`, icon: <Sparkles size={18} />, label: "Trợ lý AI SAGA", exact: true },
             ],
           },
         ];

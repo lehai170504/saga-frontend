@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { personalIntegrationApi } from "../api/personalIntegrationApi";
 import { toast } from "sonner";
 import { INTEGRATION_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const usePersonalIntegrations = () => {
   return useQuery({
@@ -18,8 +19,8 @@ export const useDeleteJiraIntegration = () => {
       queryClient.invalidateQueries({ queryKey: ["personal-integrations"] });
       toast.success(INTEGRATION_MESSAGES.JIRA.DELETE.SUCCESS);
     },
-    onError: (err: Error) => {
-      toast.error(err.message || INTEGRATION_MESSAGES.JIRA.DELETE.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, INTEGRATION_MESSAGES.JIRA.DELETE.ERROR));
     },
   });
 };
@@ -32,8 +33,8 @@ export const useDeleteGithubIntegration = () => {
       queryClient.invalidateQueries({ queryKey: ["personal-integrations"] });
       toast.success(INTEGRATION_MESSAGES.GITHUB.DELETE.SUCCESS);
     },
-    onError: (err: Error) => {
-      toast.error(err.message || INTEGRATION_MESSAGES.GITHUB.DELETE.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, INTEGRATION_MESSAGES.GITHUB.DELETE.ERROR));
     },
   });
 };

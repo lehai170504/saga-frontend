@@ -3,6 +3,7 @@ import { courseApi } from "../api/courseApi";
 import { CourseRequest } from "../types";
 import { toast } from "sonner";
 import { COURSE_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useCourses = (params?: { subjectId?: string; semesterId?: string; instructorId?: string; page?: number; size?: number }) => {
   return useQuery({
@@ -37,8 +38,7 @@ export const useCreateCourse = () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.CREATE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, COURSE_MESSAGES.CREATE.ERROR));
     }
   });
 };
@@ -54,8 +54,7 @@ export const useUpdateCourse = () => {
       queryClient.invalidateQueries({ queryKey: ["courses", id] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.UPDATE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, COURSE_MESSAGES.UPDATE.ERROR));
     }
   });
 };
@@ -70,8 +69,7 @@ export const useDeleteCourse = () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.DELETE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, COURSE_MESSAGES.DELETE.ERROR));
     }
   });
 };
@@ -95,9 +93,7 @@ export const useExportCourseReport = () => {
     },
     onError: (error: unknown) => {
       console.error("Export failed:", error);
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || COURSE_MESSAGES.EXPORT.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, COURSE_MESSAGES.EXPORT.ERROR));
     }
   });
 };
-

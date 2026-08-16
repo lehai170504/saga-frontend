@@ -3,6 +3,7 @@ import { subjectApi } from "../api/subjectApi";
 import { SubjectRequest } from "../types";
 import { toast } from "sonner";
 import { SUBJECT_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useSubjects = (params?: { keyword?: string; page?: number; size?: number }) => {
   return useQuery({
@@ -29,8 +30,7 @@ export const useCreateSubject = () => {
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SUBJECT_MESSAGES.CREATE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SUBJECT_MESSAGES.CREATE.ERROR));
     },
   });
 };
@@ -47,8 +47,7 @@ export const useUpdateSubject = () => {
       queryClient.invalidateQueries({ queryKey: ["subjects", id] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SUBJECT_MESSAGES.UPDATE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SUBJECT_MESSAGES.UPDATE.ERROR));
     },
   });
 };
@@ -63,8 +62,7 @@ export const useDeleteSubject = () => {
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error: unknown) => {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SUBJECT_MESSAGES.DELETE.ERROR;
-      toast.error(errorMessage);
+      toast.error(getVietnameseErrorMessage(error, SUBJECT_MESSAGES.DELETE.ERROR));
     },
   });
 };

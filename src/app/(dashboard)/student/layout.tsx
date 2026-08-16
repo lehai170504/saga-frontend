@@ -2,6 +2,7 @@
 
 import React from "react";
 import { RouteGuard } from "@/components/shared/RouteGuard";
+import { SagaAiWidget } from "@/features/ai/components/SagaAiWidget";
 
 export default function StudentLayout({
   children,
@@ -10,7 +11,10 @@ export default function StudentLayout({
 }) {
   return (
     <RouteGuard allowedRoles={["STUDENT"]}>
-      {children}
+      <>
+        {children}
+        <SagaAiWidget />
+      </>
     </RouteGuard>
   );
 }

@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useProjectDashboardStats } from "@/features/projects/hooks/useProjectDashboardStats";
-import { StudentHeatmapTab } from "./stats/student-heatmap-tab";
-import { StudentInteractionTab } from "./stats/student-interaction-tab";
 import { StudentMemberProgressTab } from "./stats/student-member-progress-tab";
-import { BarChart3, UserCheck, Sparkles, Network } from "lucide-react";
+import { ProjectContributionTab } from "@/features/lecturer/components/project-detail/project-contribution-tab";
+import { BarChart3, UserCheck, Flame } from "lucide-react";
 
 // Subcomponents
 import { NoTopicRegisteredCard } from "./project-stats/no-topic-registered-card";
@@ -18,11 +17,10 @@ import { OverallStatsTab } from "./project-stats/overall-stats-tab";
 
 interface StudentProjectStatsViewProps {
   courseId?: string;
+  hideHeader?: boolean;
 }
 
 export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewProps) {
-  const [mounted, setMounted] = useState(false);
-
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
   const teamId = myTeamData?.teamId || "";
@@ -44,15 +42,7 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
 
   const { data: stats, isLoading: isLoadingStats } = useProjectDashboardStats(projectId);
 
-  useEffect(() => {
-    let isMounted = true;
-    requestAnimationFrame(() => {
-      if (isMounted) setMounted(true);
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
@@ -94,19 +84,11 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
                 </TabsTrigger>
 
                 <TabsTrigger
-                  value="heatmap"
+                  value="slices"
                   className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
                 >
-                  <Sparkles size={16} className="text-rose-500" />
-                  <span>Biểu đồ Nhiệt (Heatmap)</span>
-                </TabsTrigger>
-
-                <TabsTrigger
-                  value="interaction"
-                  className="rounded-xl px-5 py-2.5 font-extrabold text-xs tracking-wide data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200 flex items-center gap-2"
-                >
-                  <Network size={16} className="text-purple-500" />
-                  <span>Mạng Tương tác</span>
+                  <Flame size={16} className="text-orange-500" />
+                  <span>Đóng góp (Slices)</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -119,24 +101,14 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
               <TabsContent value="member-progress" className="outline-none">
                 <StudentMemberProgressTab
                   courseId={courseId || ""}
-                  teamId={teamId}
                   isLeader={isLeader}
                   membersList={membersList}
                 />
               </TabsContent>
 
-              {/* Tab 3: Heatmap Chart */}
-              <TabsContent value="heatmap" className="outline-none">
-                <StudentHeatmapTab courseId={courseId || ""} teamId={teamId} />
-              </TabsContent>
-
-              {/* Tab 4: Interaction Graph Chart */}
-              <TabsContent value="interaction" className="outline-none">
-                <StudentInteractionTab
-                  courseId={courseId || ""}
-                  teamId={teamId}
-                  teamMembers={membersList}
-                />
+              {/* Tab 3: Slices Tab */}
+              <TabsContent value="slices" className="outline-none">
+                <ProjectContributionTab courseId={courseId || ""} teamId={teamId} isEnded={true} />
               </TabsContent>
             </Tabs>
           </div>

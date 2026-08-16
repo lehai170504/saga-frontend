@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { JiraTask } from "@/features/projects/types";
 import { TaskTransition, taskApi } from "@/features/projects/api/taskApi";
 import { useTransitionTask } from "@/features/projects/hooks/useProjectTasks";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export function useBoardKanbanState(projectId: string, tasks: JiraTask[]) {
   const queryClient = useQueryClient();
@@ -117,8 +118,7 @@ export function useBoardKanbanState(projectId: string, tasks: JiraTask[]) {
               delete next[taskId];
               return next;
             });
-            const msg = err instanceof Error ? err.message : String(err);
-            toast.error(`Lỗi chuyển trạng thái: ${msg}`);
+            toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi chuyển trạng thái. Vui lòng thử lại."));
           },
         }
       );

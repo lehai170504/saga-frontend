@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { NotificationResponse, UnreadCountResponse, AdminBroadcastRequest } from "../types";
+import { NotificationResponse, UnreadCountResponse, AdminBroadcastRequest, CourseBroadcastRequest } from "../types";
 
 export const notificationApi = {
   getNotifications: async (page = 0, size = 20): Promise<NotificationResponse> => {
@@ -23,18 +23,29 @@ export const notificationApi = {
   },
 
   adminBroadcast: async (payload: AdminBroadcastRequest, idempotencyKey: string): Promise<void> => {
-    await axiosInstance.post(`/api/admin/notifications/broadcast`, payload, {
+    const cleanPayload = {
+      audience: payload.audience,
+      title: payload.title.trim(),
+      message: payload.message.trim(),
+    };
+    await axiosInstance.post(`/api/admin/notifications/broadcast`, cleanPayload, {
       headers: {
-        "Idempotency-Key": idempotencyKey
-      }
+        "Idempotency-Key": idempotencyKey,
+      },
     });
   },
 
-  courseBroadcast: async (payload: { courseIds: string[]; title: string; message: string; actionUrl?: string }, idempotencyKey: string): Promise<void> => {
-    await axiosInstance.post(`/api/v1/courses/notifications/broadcast`, payload, {
+  courseBroadcast: async (payload: CourseBroadcastRequest, idempotencyKey: string): Promise<void> => {
+    const cleanPayload: CourseBroadcastRequest = {
+      courseIds: payload.courseIds,
+      title: payload.title.trim(),
+      message: payload.message.trim(),
+      ...(payload.actionUrl?.trim() ? { actionUrl: payload.actionUrl.trim() } : {}),
+    };
+    await axiosInstance.post(`/api/v1/courses/notifications/broadcast`, cleanPayload, {
       headers: {
-        "Idempotency-Key": idempotencyKey
-      }
+        "Idempotency-Key": idempotencyKey,
+      },
     });
-  }
+  },
 };

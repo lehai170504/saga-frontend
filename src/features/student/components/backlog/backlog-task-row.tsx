@@ -16,6 +16,8 @@ import { getTypeIcon } from "./backlog-helpers";
 import { TaskStatusDropdown } from "../board/task-status-dropdown";
 import { TaskPriorityDropdown } from "../board/task-priority-dropdown";
 import { TaskAssigneeDropdown } from "../board/task-assignee-dropdown";
+import { shouldIgnoreTaskCardClick } from "@/features/student/components/board/utils/popoverCloseGuard";
+import { getSagaMarkerBadgeStyle, getSagaMarkerDisplayName } from "../board/modals/task-labels-input";
 
 interface BacklogTaskRowProps {
   task: JiraTask;
@@ -25,6 +27,7 @@ interface BacklogTaskRowProps {
   onSelectTask: (task: JiraTask) => void;
   onOpenEdit: (task: JiraTask) => void;
   onOpenDelete: (task: JiraTask) => void;
+  isEnded?: boolean;
 }
 
 export function BacklogTaskRow({
@@ -35,12 +38,16 @@ export function BacklogTaskRow({
   onSelectTask,
   onOpenEdit,
   onOpenDelete,
+  isEnded,
 }: BacklogTaskRowProps) {
   const dueDateInfo = getTaskDueDateInfo(task.dueDate, task.status);
 
   return (
     <div
-      onClick={() => onSelectTask(task)}
+      onClick={() => {
+        if (shouldIgnoreTaskCardClick()) return;
+        onSelectTask(task);
+      }}
       className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-card dark:bg-card/90 border border-border/70 dark:border-border/60 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
     >
       {/* Left Info: Type icon + Key + Title */}
@@ -70,9 +77,9 @@ export function BacklogTaskRow({
               <Badge
                 key={label}
                 variant="outline"
-                className="rounded-lg text-[9px] py-0 px-1.5 font-bold border-primary/20 bg-primary/5 text-primary/80 truncate max-w-[72px] shrink-0"
+                className={`rounded-lg text-[9px] py-0.5 px-2 font-extrabold border truncate shrink-0 ${getSagaMarkerBadgeStyle(label)}`}
               >
-                {label}
+                {getSagaMarkerDisplayName(label)}
               </Badge>
             ))}
           </div>
@@ -90,13 +97,13 @@ export function BacklogTaskRow({
         )}
 
         {/* Status Dropdown */}
-        <TaskStatusDropdown projectId={projectId} task={task} />
+        <TaskStatusDropdown projectId={projectId} task={task} isEnded={isEnded} />
 
         {/* Priority Dropdown */}
-        <TaskPriorityDropdown projectId={projectId} task={task} />
+        <TaskPriorityDropdown projectId={projectId} task={task} isEnded={isEnded} />
 
         {/* Assignee Dropdown */}
-        <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} />
+        <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} isEnded={isEnded} />
 
         {/* More Actions (Edit / Delete) */}
         {canAct && (

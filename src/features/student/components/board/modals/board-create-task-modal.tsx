@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Loader2, Bug, Sparkles, PlusSquare, Bookmark, CheckSquare } from "lucide-react";
+import { TaskLabelsInput } from "./task-labels-input";
 import { getTodayString } from "../board-helpers";
 import { CustomDateInput } from "../../shared/custom-date-input";
 
@@ -191,15 +192,10 @@ export function BoardCreateTaskModal({
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">Nhãn (Labels)</label>
-            <Input
-              value={createLabels}
-              onChange={(e) => onCreateLabelsChange(e.target.value)}
-              placeholder="Ngăn cách bằng dấu phẩy, ví dụ: FE, API, design"
-              className="h-10 rounded-xl bg-background/50 border-border/40 text-xs px-4"
-            />
-          </div>
+          <TaskLabelsInput
+            value={createLabels}
+            onChange={onCreateLabelsChange}
+          />
 
           <div className="flex justify-end gap-3 border-t border-border/40 pt-4 mt-6">
             <Button

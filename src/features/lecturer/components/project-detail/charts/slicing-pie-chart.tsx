@@ -4,16 +4,16 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Sparkles } from "lucide-react";
-import { useContributionEvaluation } from "@/features/lecturer/hooks/useContribution";
+import { useContributionEvaluation } from "@/features/projects/hooks/useContribution";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const COLORS = [
-  "hsl(var(--primary))",
-  "hsl(var(--warning))",
-  "hsl(var(--success))",
-  "hsl(var(--destructive))",
-  "hsl(var(--accent))",
-  "hsl(var(--muted-foreground))"
+  "#3b82f6", // blue-500
+  "#10b981", // emerald-500
+  "#f59e0b", // amber-500
+  "#ef4444", // red-500
+  "#8b5cf6", // violet-500
+  "#06b6d4"  // cyan-500
 ];
 
 interface SlicingPieChartProps {
@@ -25,7 +25,7 @@ export function SlicingPieChart({ teamId }: SlicingPieChartProps) {
 
   const slicingData = evaluationData?.members?.map((member, index) => ({
     name: member.fullName,
-    value: member.finalContributionPercentage,
+    value: Number(member.finalContributionPercentage.toFixed(2)),
     color: COLORS[index % COLORS.length],
   })) || [];
 
@@ -88,7 +88,7 @@ export function SlicingPieChart({ teamId }: SlicingPieChartProps) {
             <div key={idx} className="flex items-center gap-2 bg-background border border-border/50 px-3 py-1.5 rounded-xl">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
               <span className="text-sm font-bold">{item.name}</span>
-              <span className="text-sm font-bold" style={{ color: item.color }}>{item.value}%</span>
+              <span className="text-sm font-bold" style={{ color: item.color }}>{item.value.toFixed(2)}%</span>
             </div>
           ))}
         </div>

@@ -20,9 +20,7 @@ export default function AdminBroadcastPage() {
     defaultValues: {
       title: "",
       message: "",
-      actionUrl: "",
-      type: "SYSTEM",
-      audience: "ALL",
+      audience: "ALL_USERS",
     },
   });
 
@@ -31,16 +29,12 @@ export default function AdminBroadcastPage() {
       await sendBroadcast({
         title: values.title,
         message: values.message,
-        actionUrl: values.actionUrl,
-        type: values.type,
         audience: values.audience,
       });
       form.reset({
         title: "",
         message: "",
-        actionUrl: "",
-        type: "SYSTEM",
-        audience: values.audience, // Keep the selected audience
+        audience: values.audience,
       });
     } catch (error) {
       console.error(error);
@@ -48,9 +42,9 @@ export default function AdminBroadcastPage() {
   };
 
   const audienceList = [
-    { id: "ALL", label: "Tất cả mọi người (ALL)" },
-    { id: "STUDENT", label: "Sinh viên (STUDENT)" },
-    { id: "LECTURER", label: "Giảng viên (LECTURER)" },
+    { id: "ALL_USERS", label: "Tất cả mọi người (ALL_USERS)" },
+    { id: "STUDENTS", label: "Sinh viên (STUDENTS)" },
+    { id: "LECTURERS", label: "Giảng viên (LECTURERS)" },
   ];
 
   return (
@@ -91,19 +85,7 @@ export default function AdminBroadcastPage() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="actionUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Đường dẫn đính kèm (Action URL - Tùy chọn)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="VD: /student/123/projects" className="rounded-xl" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
 
             <FormField
               control={form.control}

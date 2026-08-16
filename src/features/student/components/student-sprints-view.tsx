@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import Link from "next/link";
-import { Calendar, FolderKanban, Users, Flag, Clock, UserCheck, Lock } from "lucide-react";
+import { Calendar, FolderKanban, Users, Flag, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -20,7 +20,6 @@ interface StudentSprintsViewProps {
 }
 
 export function StudentSprintsView({ courseId, hideHeader = false }: StudentSprintsViewProps) {
-  const [mounted, setMounted] = useState(false);
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");

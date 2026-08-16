@@ -30,6 +30,7 @@ interface KanbanColumnProps {
   onOpenEditTask: (task: JiraTask) => void;
   onOpenDeleteTask: (task: JiraTask) => void;
   onOpenCreateTask: () => void;
+  isEnded?: boolean;
 }
 
 export function KanbanColumn({
@@ -51,6 +52,7 @@ export function KanbanColumn({
   onOpenEditTask,
   onOpenDeleteTask,
   onOpenCreateTask,
+  isEnded,
 }: KanbanColumnProps) {
   const isOver = dragOverColumn === column.id;
 
@@ -59,13 +61,11 @@ export function KanbanColumn({
       onDragOver={(e) => onDragOver(e, column.id)}
       onDragLeave={onDragLeave}
       onDrop={(e) => onDrop(e, column.id)}
-      className={`rounded-[2rem] p-4 transition-all duration-300 min-h-[500px] border flex flex-col justify-between ${
-        column.color
-      } ${
-        isOver
+      className={`rounded-[2rem] p-4 transition-all duration-300 min-h-[500px] border flex flex-col justify-between ${column.color
+        } ${isOver
           ? "ring-2 ring-primary/40 border-primary/50 bg-primary/[0.02] shadow-xl scale-[1.01]"
           : "hover:border-border/60"
-      }`}
+        }`}
     >
       <div className="space-y-3">
         {/* Header */}
@@ -110,13 +110,15 @@ export function KanbanColumn({
           ))
         )}
 
-        <button
-          onClick={onOpenCreateTask}
-          className="flex items-center gap-1.5 justify-start py-2.5 px-4 rounded-xl border border-dashed border-border/30 text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 hover:border-border transition-all duration-300 text-xs font-bold w-full cursor-pointer mt-2"
-        >
-          <Plus size={14} />
-          Thêm công việc
-        </button>
+        {!isEnded && (
+          <button
+            onClick={onOpenCreateTask}
+            className="flex items-center gap-1.5 justify-start py-2.5 px-4 rounded-xl border border-dashed border-border/30 text-muted-foreground/60 hover:text-foreground hover:bg-muted/40 hover:border-border transition-all duration-300 text-xs font-bold w-full cursor-pointer mt-2"
+          >
+            <Plus size={14} />
+            Thêm công việc
+          </button>
+        )}
       </div>
     </div>
   );

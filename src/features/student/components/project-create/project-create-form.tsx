@@ -21,6 +21,7 @@ interface ProjectCreateFormProps {
   teamName: string;
   isCreating: boolean;
   handleCreateProject: (e: React.FormEvent) => void;
+  isEnded?: boolean;
 }
 
 export function ProjectCreateForm({
@@ -34,6 +35,7 @@ export function ProjectCreateForm({
   teamName,
   isCreating,
   handleCreateProject,
+  isEnded,
 }: ProjectCreateFormProps) {
   return (
     <form onSubmit={handleCreateProject} className="grid gap-6 lg:grid-cols-3 items-start">
@@ -65,12 +67,13 @@ export function ProjectCreateForm({
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   className="h-11 rounded-xl bg-background border-border font-medium text-xs focus-visible:ring-primary"
+                  disabled={isEnded}
                 />
               </div>
 
               <div className="space-y-1.5 mt-4">
                 <Label className="text-xs font-bold text-muted-foreground">Loại dự án (Project Type)</Label>
-                <Select value={projectTypeId} onValueChange={setProjectTypeId}>
+                <Select value={projectTypeId} onValueChange={setProjectTypeId} disabled={isEnded}>
                   <SelectTrigger className="w-full h-11 rounded-xl border-border bg-background font-medium text-xs">
                     <SelectValue placeholder="Chọn loại dự án..." />
                   </SelectTrigger>
@@ -139,7 +142,7 @@ export function ProjectCreateForm({
           {myRole === "LEADER" && (
             <Button
               type="submit"
-              disabled={isCreating}
+              disabled={isCreating || isEnded}
               className="w-full h-11 rounded-xl font-bold text-xs uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md shadow-primary/10 gap-2"
             >
               {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}

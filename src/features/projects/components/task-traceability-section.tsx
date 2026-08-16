@@ -10,9 +10,10 @@ import { LinkGithubIssueModal } from "./link-github-issue-modal";
 interface TaskTraceabilitySectionProps {
   projectId: string;
   taskId: string;
+  isEnded?: boolean;
 }
 
-export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilitySectionProps) {
+export function TaskTraceabilitySection({ projectId, taskId, isEnded }: TaskTraceabilitySectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [unlinkingIssueId, setUnlinkingIssueId] = useState<string | null>(null);
 
@@ -122,7 +123,8 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
           size="sm"
           variant="outline"
           onClick={() => setIsModalOpen(true)}
-          className="rounded-xl text-xs font-bold h-8 px-3 border-primary/30 text-primary hover:bg-primary/10 gap-1.5"
+          disabled={isEnded}
+          className="rounded-xl text-xs font-bold h-8 px-3 border-primary/30 text-primary hover:bg-primary/10 gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus size={14} /> Liên kết Issue
         </Button>
@@ -153,11 +155,10 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge
                       variant="outline"
-                      className={`rounded-md text-[9px] py-0 px-1.5 font-bold ${
-                        issue.state === "OPEN"
+                      className={`rounded-md text-[9px] py-0 px-1.5 font-bold ${issue.state === "OPEN"
                           ? "border-emerald-500/30 text-emerald-600 bg-emerald-500/10"
                           : "border-muted text-muted-foreground bg-muted/20"
-                      }`}
+                        }`}
                     >
                       <CircleDot className="size-2.5 mr-1 inline" /> Issue #{issue.issueNumber}
                     </Badge>
@@ -186,9 +187,9 @@ export function TaskTraceabilitySection({ projectId, taskId }: TaskTraceabilityS
                   type="button"
                   size="icon"
                   variant="ghost"
-                  disabled={isUnlinking}
+                  disabled={isUnlinking || isEnded}
                   onClick={() => handleUnlink(issue.issueId)}
-                  className="h-7 w-7 rounded-lg text-destructive hover:bg-destructive/10 shrink-0"
+                  className="h-7 w-7 rounded-lg text-destructive hover:bg-destructive/10 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Hủy liên kết"
                 >
                   {isUnlinking ? <Loader2 className="size-3 animate-spin" /> : <Trash2 size={14} />}

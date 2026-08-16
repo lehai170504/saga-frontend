@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ExternalLink, Check, CircleDot, GitPullRequest, GitCommit, Plus } from "lucide-react";
 import { useTaskTraceability } from "@/features/projects/hooks/useTraceability";
 import { LinkGithubIssueModal } from "@/features/projects/components/link-github-issue-modal";
-import { recordGithubPopoverClosed } from "../utils/popoverCloseGuard";
+import { recordGithubPopoverClosed, recordGithubPopoverOpened } from "../utils/popoverCloseGuard";
 import { useGithubTraceabilityData } from "./use-github-traceability-data";
 import { GithubBadgeTriggerButton } from "./github-badge-trigger-button";
 
@@ -40,6 +40,15 @@ export function GithubDevelopmentPopover({
     hasNoItems,
   } = useGithubTraceabilityData(traceability);
 
+  const handleOpenState = (nextOpen: boolean) => {
+    if (nextOpen) {
+      recordGithubPopoverOpened();
+    } else {
+      recordGithubPopoverClosed();
+    }
+    setOpen(nextOpen);
+  };
+
   return (
     <>
       <div
@@ -48,7 +57,7 @@ export function GithubDevelopmentPopover({
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          setOpen(true);
+          handleOpenState(true);
         }}
         onPointerDown={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
@@ -59,12 +68,7 @@ export function GithubDevelopmentPopover({
 
       <Dialog
         open={open}
-        onOpenChange={(nextOpen) => {
-          if (!nextOpen) {
-            recordGithubPopoverClosed();
-          }
-          setOpen(nextOpen);
-        }}
+        onOpenChange={handleOpenState}
       >
         <DialogContent
           showCloseButton={false}
@@ -74,33 +78,25 @@ export function GithubDevelopmentPopover({
           }}
           onPointerDownOutside={(e) => {
             e.preventDefault();
+            recordGithubPopoverClosed();
+            setTimeout(() => {
+              setOpen(false);
+            }, 50);
           }}
           onInteractOutside={(e) => {
             e.preventDefault();
+            recordGithubPopoverClosed();
+            setTimeout(() => {
+              setOpen(false);
+            }, 50);
           }}
-          className="sm:max-w-[440px] rounded-3xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-5 space-y-4"
+          className="sm:max-w-[440px] rounded-3xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-5 space-y-4 z-[100]"
         >
           <DialogHeader className="pb-3 border-b border-border/40 text-left">
             <DialogTitle asChild>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 font-extrabold text-foreground text-sm">
-                  <span className="text-pink-500 font-bold text-base">🐙</span>
-                  <span>GitHub Development</span>
-                </div>
-                {!isLoading && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setOpen(false);
-                      setIsLinkModalOpen(true);
-                    }}
-                    className="h-7 px-2.5 text-xs font-bold border-primary/30 text-primary hover:bg-primary/10 rounded-xl gap-1"
-                  >
-                    <Plus size={12} /> Liên kết
-                  </Button>
-                )}
+              <div className="flex items-center gap-2 font-extrabold text-foreground text-sm">
+                <span className="text-pink-500 font-bold text-base">🐙</span>
+                <span>GitHub Development</span>
               </div>
             </DialogTitle>
             <DialogDescription className="sr-only">

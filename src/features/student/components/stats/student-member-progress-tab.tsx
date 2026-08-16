@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -23,7 +23,6 @@ import {
   Zap,
   HelpCircle,
   PieChart as PieChartIcon,
-  Activity,
 } from "lucide-react";
 import {
   PieChart,
@@ -35,12 +34,7 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
+  CartesianGrid
 } from "recharts";
 
 interface MemberItem {
@@ -52,42 +46,25 @@ interface MemberItem {
 
 interface StudentMemberProgressTabProps {
   courseId: string;
-  teamId: string;
   isLeader: boolean;
   membersList: MemberItem[];
 }
 
 export function StudentMemberProgressTab({
   courseId,
-  teamId,
   isLeader,
   membersList,
 }: StudentMemberProgressTabProps) {
   const { user } = useAuth();
   const currentStudentId = user?.localProfileId || "";
 
-  // State for selected student (Leader can change, Member is locked to self)
+  // State for selected student
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
-  useEffect(() => {
-    if (isLeader) {
-      if (currentStudentId && membersList.some((m) => m.studentId === currentStudentId)) {
-        setSelectedStudentId(currentStudentId);
-      } else if (membersList.length > 0) {
-        setSelectedStudentId(membersList[0].studentId);
-      }
-    } else {
-      if (currentStudentId) {
-        setSelectedStudentId(currentStudentId);
-      } else if (membersList.length > 0) {
-        setSelectedStudentId(membersList[0].studentId);
-      }
-    }
-  }, [isLeader, currentStudentId, membersList]);
-
-  const targetStudentId = isLeader
-    ? selectedStudentId || currentStudentId || (membersList[0]?.studentId ?? "")
-    : currentStudentId || selectedStudentId || (membersList[0]?.studentId ?? "");
+  const targetStudentId = selectedStudentId ||
+    (isLeader
+      ? (currentStudentId && membersList.some((m) => m.studentId === currentStudentId) ? currentStudentId : (membersList[0]?.studentId ?? ""))
+      : (currentStudentId || (membersList[0]?.studentId ?? "")));
 
   const { data: progressData, isLoading, error } = useStudentProgress(courseId, targetStudentId);
 
@@ -126,15 +103,7 @@ export function StudentMemberProgressTab({
     fill: getTaskTypeBadge(typeKey).hex,
   }));
 
-  // Chart 3 Data: Radar Graph (Biểu đồ Đa giác / Mạng nhện Đánh giá Đóng góp 5 chiều)
-  const totalTasksCount = Math.max(1, progressData?.totalTasks || 1);
-  const radarData = [
-    { subject: "Tỷ lệ Hoàn thành", value: Math.round(progressData?.overallCompletionRate || 0), fullMark: 100 },
-    { subject: "Task Jira", value: Math.min(100, Math.round(((progressData?.totalTasks || 0) / 20) * 100)), fullMark: 100 },
-    { subject: "Commits Git", value: Math.min(100, Math.round(((progressData?.totalCommits || 0) / 40) * 100)), fullMark: 100 },
-    { subject: "Feature & Story", value: Math.min(100, Math.round((((progressData?.taskDistribution?.FEATURE || 0) + (progressData?.taskDistribution?.STORY || 0)) / totalTasksCount) * 100)), fullMark: 100 },
-    { subject: "Sửa lỗi Bug", value: Math.min(100, Math.round(((progressData?.taskDistribution?.BUG || 0) / totalTasksCount) * 100)), fullMark: 100 },
-  ];
+
 
   return (
     <div className="space-y-6">
@@ -161,7 +130,7 @@ export function StudentMemberProgressTab({
           {isLeader ? (
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-bold text-muted-foreground hidden md:inline">Chọn thành viên:</span>
-              <Select value={selectedStudentId} onValueChange={setSelectedStudentId}>
+              <Select value={targetStudentId} onValueChange={setSelectedStudentId}>
                 <SelectTrigger className="w-full sm:w-[260px] h-11 rounded-xl bg-background border-border/60 font-bold text-xs shadow-sm focus:ring-primary/20">
                   <SelectValue placeholder="Chọn thành viên...">
                     {(() => {
@@ -292,13 +261,12 @@ export function StudentMemberProgressTab({
                   </span>
                   <Badge
                     variant="outline"
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      progressData.overallCompletionRate >= 70
-                        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-                        : progressData.overallCompletionRate >= 30
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${progressData.overallCompletionRate >= 70
+                      ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                      : progressData.overallCompletionRate >= 30
                         ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
                         : "bg-destructive/10 text-destructive border-destructive/20"
-                    }`}
+                      }`}
                   >
                     {progressData.overallCompletionRate >= 70 ? "Tốt" : progressData.overallCompletionRate >= 30 ? "Trung bình" : "Cần đẩy nhanh"}
                   </Badge>
@@ -326,8 +294,8 @@ export function StudentMemberProgressTab({
             </Card>
           </div>
 
-          {/* Recharts Visualizations Grid (3 Charts & Radar Graph) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recharts Visualizations Grid (2 Charts) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Chart 1: Completion Ratio Donut Chart */}
             <Card className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-xl p-6 space-y-4 shadow-sm flex flex-col justify-between">
               <div className="flex items-center gap-2.5 pb-3 border-b border-border/40">
@@ -443,42 +411,7 @@ export function StudentMemberProgressTab({
               </div>
             </Card>
 
-            {/* Graph 3: Radar Chart (Đồ thị Đa giác / Mạng nhện Đánh giá Đóng góp 5 chiều) */}
-            <Card className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-xl p-6 space-y-4 shadow-sm flex flex-col justify-between">
-              <div className="flex items-center gap-2.5 pb-3 border-b border-border/40">
-                <div className="p-2 bg-purple-500/10 text-purple-500 rounded-xl">
-                  <Activity size={18} />
-                </div>
-                <div>
-                  <h4 className="text-base font-extrabold text-foreground">Đồ thị Đa giác Đóng góp</h4>
-                  <p className="text-xs text-muted-foreground">Đánh giá cân bằng năng lực (Radar Graph)</p>
-                </div>
-              </div>
 
-              <div className="h-56 w-full flex items-center justify-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                    <PolarGrid stroke="var(--border)" opacity={0.5} />
-                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fontWeight: "bold", fill: "var(--foreground)" }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8 }} />
-                    <Radar name="Chỉ số đóng góp" dataKey="value" stroke="oklch(0.65 0.22 30)" fill="oklch(0.65 0.22 30)" fillOpacity={0.4} />
-                    <RechartsTooltip
-                      contentStyle={{
-                        backgroundColor: "var(--background)",
-                        borderColor: "var(--border)",
-                        borderRadius: "12px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                      }}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[11px] font-extrabold text-purple-600 dark:text-purple-400 text-center">
-                🕸️ Radar Graph 5 chiều đóng góp sinh viên
-              </div>
-            </Card>
           </div>
 
           {/* Original Bottom Section: Task Distribution Breakdown Details & Summary Box */}

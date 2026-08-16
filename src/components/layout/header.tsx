@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { SagaLogo } from "@/components/ui/saga-logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
-import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, Search, Command, MessageSquare, GitBranch, Compass, Check, Settings2 } from "lucide-react";
+import { Moon, Sun, ShieldCheck, LogOut, User as UserIcon, Bell, MessageSquare, GitBranch, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,7 +44,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  // State quản lý việc đóng/mở Profile Modal
+  // State quản lý việc đóng/mở Profile Modal & Notification Detail
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isBroadcastOpen, setIsBroadcastOpen] = useState(false);
 
@@ -70,7 +70,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const handleMarkAsRead = (id: string, actionUrl: string | null) => {
     markAsRead(id);
     if (actionUrl) {
-      if (actionUrl.startsWith("http")) {
+      if (actionUrl.startsWith("http://") || actionUrl.startsWith("https://")) {
         window.open(actionUrl, "_blank", "noopener,noreferrer");
       } else {
         router.push(actionUrl);
@@ -91,7 +91,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <>
-      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
+      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
         {/* Logo and Mobile Menu */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0 relative z-10">
           {onMenuClick && (
@@ -106,22 +106,8 @@ export function Header({ onMenuClick }: HeaderProps) {
           <div className="h-8 w-px bg-border/40 hidden lg:block mx-2" />
         </div>
 
-        {/* Global Search */}
-        <div className="flex-1 max-w-2xl px-2 hidden md:flex items-center relative z-10">
-          <div className="relative w-full group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input
-              placeholder="Tìm kiếm lớp học, sinh viên, tài liệu..."
-              className="w-full pl-10 bg-primary/5 border-transparent hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:bg-background transition-all duration-300 rounded-full h-11 shadow-sm text-[15px]"
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:flex items-center gap-1.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-              <kbd className="inline-flex h-6 items-center gap-1 rounded-md border border-border/50 bg-background/50 px-2 font-mono text-[10px] font-medium text-muted-foreground shadow-sm">
-                <Command size={12} /> K
-              </kbd>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 md:hidden" />
+        {/* Empty Spacer since Search is removed */}
+        <div className="flex-1" />
 
         {/* Right side: Notifications + Theme toggle + User Dropdown */}
         <div className="flex items-center gap-2.5 shrink-0 relative z-10">
@@ -201,7 +187,9 @@ export function Header({ onMenuClick }: HeaderProps) {
                     return (
                       <DropdownMenuItem
                         key={notif.id}
-                        onClick={() => handleMarkAsRead(notif.id, notif.actionUrl)}
+                        onClick={() => {
+                          markAsRead(notif.id);
+                        }}
                         className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
                           }`}
                       >
@@ -221,17 +209,32 @@ export function Header({ onMenuClick }: HeaderProps) {
                           <p className="text-[10px] text-muted-foreground leading-normal line-clamp-2">
                             {notif.message}
                           </p>
-                          {notif.actionUrl && (
-                            <a
-                              href={notif.actionUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-block mt-1 text-[10px] font-bold text-blue-500 hover:text-blue-600 hover:underline"
-                              onClick={(e) => e.stopPropagation()}
+                          <div className="pt-1 flex items-center gap-2.5">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                markAsRead(notif.id);
+                              }}
+                              className="text-[10px] font-extrabold text-primary hover:underline flex items-center gap-0.5 cursor-pointer"
                             >
-                              Mở liên kết
-                            </a>
-                          )}
+                              <span>🔍 Xem chi tiết</span>
+                            </button>
+                            {notif.actionUrl && (
+                              <a
+                                href={notif.actionUrl}
+                                target={notif.actionUrl.startsWith("http") ? "_blank" : "_self"}
+                                rel="noopener noreferrer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMarkAsRead(notif.id, notif.actionUrl);
+                                }}
+                                className="text-[10px] font-bold text-muted-foreground hover:text-primary hover:underline flex items-center gap-0.5"
+                              >
+                                <span>🔗 Mở liên kết ↗</span>
+                              </a>
+                            )}
+                          </div>
                         </div>
 
                         {!notif.read && (
@@ -292,31 +295,11 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
-                onClick={() => {
-                  if (typeof window !== "undefined") {
-                    sessionStorage.setItem("profile_modal_tab", "profile");
-                  }
-                  setIsProfileOpen(true);
-                }}
+                onClick={() => setIsProfileOpen(true)}
               >
                 <UserIcon className="mr-3 h-4 w-4" />
-                <span>Hồ sơ cá nhân</span>
+                <span>Hồ sơ & Cài đặt</span>
               </DropdownMenuItem>
-
-              {user?.applicationRole === "STUDENT" && (
-                <DropdownMenuItem
-                  className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
-                  onClick={() => {
-                    if (typeof window !== "undefined") {
-                      sessionStorage.setItem("profile_modal_tab", "settings");
-                    }
-                    setIsProfileOpen(true);
-                  }}
-                >
-                  <Settings2 className="mr-3 h-4 w-4" />
-                  <span>Cài đặt & Tích hợp</span>
-                </DropdownMenuItem>
-              )}
 
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem

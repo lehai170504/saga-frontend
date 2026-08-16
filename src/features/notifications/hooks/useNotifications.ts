@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { notificationApi } from "../api/notificationApi";
 import { AdminBroadcastRequest } from "../types";
 import { toast } from "sonner";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useNotificationsList = (page = 0, size = 20) => {
   return useQuery({
@@ -40,9 +41,24 @@ export const useAdminBroadcast = () => {
     onSuccess: () => {
       toast.success("Đã gửi thông báo Broadcast thành công!");
     },
-    onError: (error) => {
-      toast.error("Gửi thông báo thất bại. Vui lòng thử lại.");
+    onError: (error: unknown) => {
+      toast.error(getVietnameseErrorMessage(error, "Gửi thông báo thất bại. Vui lòng thử lại."));
       console.error(error);
+    }
+  });
+};
+
+export const useCourseBroadcast = () => {
+  return useMutation({
+    mutationFn: async (payload: { courseIds: string[]; title: string; message: string; actionUrl?: string }) => {
+      const idempotencyKey = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+      return notificationApi.courseBroadcast(payload, idempotencyKey);
+    },
+    onSuccess: () => {
+      toast.success("Đã gửi thông báo lớp học thành công!");
+    },
+    onError: (error: unknown) => {
+      toast.error(getVietnameseErrorMessage(error, "Có lỗi xảy ra khi gửi thông báo lớp học."));
     }
   });
 };

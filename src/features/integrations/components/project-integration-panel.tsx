@@ -30,7 +30,7 @@ const getStatusBadgeClass = (status: string) => {
   }
 };
 
-export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
+export function ProjectIntegrationPanel({ projectId, isEnded }: { projectId: string; isEnded?: boolean }) {
   const { data: projectIntegration, isLoading, error } = useProjectIntegrations(projectId);
   const { mutate: deleteJira, isPending: isDeletingJira } = useDeleteProjectJiraIntegration(projectId);
   const { mutate: deleteGithubRepo, isPending: isDeletingGithubRepo } = useDeleteGithubRepository(projectId);
@@ -122,7 +122,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                   variant="destructive"
                   className="w-full rounded-xl font-bold mt-4 cursor-pointer"
                   onClick={() => setDeleteConfirm({ type: "JIRA" })}
-                  disabled={isDeletingJira}
+                  disabled={isDeletingJira || isEnded}
                 >
                   {isDeletingJira ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
                   Ngắt kết nối Jira
@@ -134,7 +134,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                 <p className="text-sm text-muted-foreground text-center">
                   Chưa liên kết Jira Project. Nhấn nút bên dưới để bắt đầu xác thực qua OAuth.
                 </p>
-                <Button onClick={handleConnectJira} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white gap-2 cursor-pointer">
+                <Button onClick={handleConnectJira} disabled={isEnded} className="rounded-xl px-6 font-bold shadow-sm bg-[#0052CC] hover:bg-[#0052CC]/90 text-white gap-2 cursor-pointer">
                   <Plus className="h-4 w-4" /> Liên kết Jira Project
                 </Button>
               </div>
@@ -230,7 +230,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                             title="Kết nối lại"
                             className="text-primary hover:text-primary hover:bg-primary/10 rounded-full shrink-0 cursor-pointer"
                             onClick={() => reconnectGithubRepo(activeRepo.repositoryId)}
-                            disabled={isReconnecting}
+                            disabled={isReconnecting || isEnded}
                           >
                             {isReconnecting ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
                           </Button>
@@ -242,7 +242,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                             size="icon"
                             className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full shrink-0 cursor-pointer"
                             onClick={() => setDeleteConfirm({ type: "GITHUB", repoId: activeRepo.repositoryId, repoName: activeRepo.fullName })}
-                            disabled={isDeletingGithubRepo}
+                            disabled={isDeletingGithubRepo || isEnded}
                           >
                             <Trash2 size={16} />
                           </Button>
@@ -252,7 +252,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                   </div>
                 )}
 
-                <Button onClick={handleInstallGithub} variant="outline" className="w-full rounded-xl font-bold mt-2 border-dashed border-2 cursor-pointer">
+                <Button onClick={handleInstallGithub} disabled={isEnded} variant="outline" className="w-full rounded-xl font-bold mt-2 border-dashed border-2 cursor-pointer">
                   <Plus className="mr-2 h-4 w-4" /> Thêm Repository khác
                 </Button>
               </div>
@@ -262,7 +262,7 @@ export function ProjectIntegrationPanel({ projectId }: { projectId: string }) {
                 <p className="text-sm text-muted-foreground text-center">
                   Chưa liên kết GitHub Repository nào. Nhấn nút bên dưới để cài đặt GitHub App.
                 </p>
-                <Button onClick={handleInstallGithub} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white gap-2 cursor-pointer">
+                <Button onClick={handleInstallGithub} disabled={isEnded} className="rounded-xl px-6 font-bold shadow-sm bg-[#24292F] hover:bg-[#24292F]/90 text-white gap-2 cursor-pointer">
                   <Plus className="h-4 w-4" /> Liên kết GitHub Repositories
                 </Button>
               </div>

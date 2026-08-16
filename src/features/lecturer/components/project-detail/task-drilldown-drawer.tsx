@@ -5,15 +5,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GitCommit, ShieldCheck, Search, PenLine, Check, X, AlertCircle, Link, ExternalLink } from "lucide-react";
+import { ShieldCheck, Search, PenLine, Check, X, AlertCircle } from "lucide-react";
 
 interface TaskItem {
   id: string;
   name: string;
   sp: number;
-  proofText: string;
-  proofType: 'commit' | 'link';
-  proofLink?: string;
+  sprint: string;
 }
 
 interface DrilldownData {
@@ -25,9 +23,10 @@ interface TaskDrilldownDrawerProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   data: DrilldownData | null;
+  isEnded?: boolean;
 }
 
-export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldownDrawerProps) {
+export function TaskDrilldownDrawer({ isOpen, onOpenChange, data, isEnded }: TaskDrilldownDrawerProps) {
   const [editingTaskId, setEditingTaskId] = React.useState<string | null>(null);
   const [overrideSp, setOverrideSp] = React.useState<string>("");
 
@@ -91,15 +90,17 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
                     <div className="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-md whitespace-nowrap">
                       {task.sp} Story Points
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 text-primary rounded-full"
-                      onClick={() => handleEditClick(task)}
-                      title="Ghi đè SP (Manual Override)"
-                    >
-                      <PenLine className="h-3.5 w-3.5" />
-                    </Button>
+                    {!isEnded && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 text-primary rounded-full"
+                        onClick={() => handleEditClick(task)}
+                        title="Ghi đè SP (Manual Override)"
+                      >
+                        <PenLine className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
@@ -107,28 +108,10 @@ export function TaskDrilldownDrawer({ isOpen, onOpenChange, data }: TaskDrilldow
 
               <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground bg-muted/50 p-2.5 rounded-lg mt-3">
                 <div className="flex items-center gap-1.5 shrink-0">
-                  {task.proofType === 'commit' ? <GitCommit className="w-4 h-4 shrink-0" /> : <Link className="w-4 h-4 shrink-0" />}
-                  <span className="shrink-0">{task.proofType === 'commit' ? 'Hash (PoW):' : 'Bằng chứng:'}</span>
-                </div>
-
-                {task.proofLink ? (
-                  <a
-                    href={task.proofLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`font-mono font-bold px-2 py-0.5 rounded break-all border border-border/50 shadow-sm flex items-center gap-1 transition-all ${task.proofType === 'commit'
-                      ? 'text-foreground bg-background hover:bg-muted text-primary'
-                      : 'text-primary bg-primary/10 bg-primary/20 bg-primary/10 dark:bg-primary/20'
-                      }`}
-                  >
-                    {task.proofText}
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                ) : (
-                  <span className={`font-mono font-bold px-2 py-0.5 rounded break-all ${task.proofText.includes('Late') ? 'text-destructive bg-destructive/10' : 'text-foreground bg-background border border-border/50 shadow-sm'}`}>
-                    {task.proofText}
+                  <span className="shrink-0 font-bold text-foreground bg-background border border-border/50 px-2 py-0.5 rounded shadow-sm">
+                    {task.sprint}
                   </span>
-                )}
+                </div>
               </div>
             </div>
           ))}

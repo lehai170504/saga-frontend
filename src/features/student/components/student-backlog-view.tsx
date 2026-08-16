@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
+import { isCourseEnded } from "@/lib/course-utils";
 import { useProjectTasks } from "@/features/projects/hooks/useProjectTasks";
 import { useAuthStore } from "@/stores/authStore";
 import { FolderKanban, Loader2, AlertCircle } from "lucide-react";
@@ -15,15 +16,17 @@ import { SprintTaskList, UnassignedBacklogSection } from "./backlog/sprint-task-
 import { BacklogModalsContainer } from "./backlog/backlog-modals-container";
 import { useBacklogTasksState } from "./backlog/hooks/useBacklogTasksState";
 import { useBacklogSprintsState } from "./backlog/hooks/useBacklogSprintsState";
+import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 
 interface StudentBacklogViewProps {
   courseId: string;
 }
 
 export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
-  // Load team & project data
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
   const projectId = myTeamData?.project?.id || "";
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
 
   // Auth & role
   const currentUser = useAuthStore((s) => s.user);
@@ -47,7 +50,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   const tasksState = useBacklogTasksState(projectId);
   const sprintsState = useBacklogSprintsState(projectId, sprints);
 
-  const isLoading = isLoadingTeam || (!!projectId && (isLoadingSprints || isLoadingTasks));
+  const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && (isLoadingSprints || isLoadingTasks));
 
   // Sort sprints: Sprint cũ nằm trên, Sprint mới hơn nằm dưới
   const sortedSprints = [...sprints].sort((a, b) => {
@@ -91,7 +94,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
   }));
 
   return (
- <div className="p-6 space-y-6 min-h-screen bg-background text-foreground "> 
+    <div className="p-6 space-y-6 min-h-screen bg-background text-foreground ">
       <PageHeader
         title="Quản lý Backlog Jira"
         description="Lập kế hoạch công việc, phân chia Sprint và quản lý danh mục công việc của dự án."
@@ -105,9 +108,14 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         priorityFilter={priorityFilter}
         onPriorityFilterChange={setPriorityFilter}
         teamMembers={teamMembers}
-        isLeader={isLeader}
-        onOpenCreateTask={() => tasksState.handleOpenCreate(null)}
-        onOpenCreateSprint={() => sprintsState.setIsCreateSprintOpen(true)}
+        isLeader={isLeader && !isEnded}
+        isEnded={isEnded}
+        onOpenCreateTask={() => {
+          if (!isEnded) tasksState.handleOpenCreate(null);
+        }}
+        onOpenCreateSprint={() => {
+          if (!isEnded) sprintsState.setIsCreateSprintOpen(true);
+        }}
       />
 
       {isLoading ? (
@@ -147,7 +155,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                       sprintTasks={sprintTasks}
                       isExpanded={isExpanded}
                       onToggleExpand={() => sprintsState.toggleSprintExpanded(sprint.sprintId)}
-                      isLeader={isLeader}
+                      isLeader={isLeader && !isEnded}
                       projectId={projectId}
                       canActOnTask={canActOnTask}
                       teamMembers={teamMembers}
@@ -155,13 +163,28 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                         tasksState.setSelectedTask(t);
                         tasksState.setIsDetailOpen(true);
                       }}
-                      onOpenCreateTask={tasksState.handleOpenCreate}
-                      onOpenEditSprint={sprintsState.handleOpenEditSprint}
-                      onDeleteSprint={sprintsState.handleDeleteSprint}
-                      onOpenEditTask={tasksState.handleOpenEdit}
-                      onOpenDeleteTask={tasksState.handleOpenDelete}
-                      onStartSprint={sprintsState.handleStartSprint}
-                      onCloseSprint={sprintsState.handleCloseSprint}
+                      onOpenCreateTask={(sprintId) => {
+                        if (!isEnded) tasksState.handleOpenCreate(sprintId);
+                      }}
+                      onOpenEditSprint={(sprint) => {
+                        if (!isEnded) sprintsState.handleOpenEditSprint(sprint);
+                      }}
+                      onDeleteSprint={(sprint) => {
+                        if (!isEnded) sprintsState.handleDeleteSprint(sprint);
+                      }}
+                      onOpenEditTask={(task) => {
+                        if (!isEnded) tasksState.handleOpenEdit(task);
+                      }}
+                      onOpenDeleteTask={(task) => {
+                        if (!isEnded) tasksState.handleOpenDelete(task);
+                      }}
+                      onStartSprint={(sprintId) => {
+                        if (!isEnded) sprintsState.handleStartSprint(sprintId);
+                      }}
+                      onCloseSprint={(sprintId) => {
+                        if (!isEnded) sprintsState.handleCloseSprint(sprintId);
+                      }}
+                      isEnded={isEnded}
                     />
                   );
                 })}
@@ -178,9 +201,16 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
                   tasksState.setSelectedTask(t);
                   tasksState.setIsDetailOpen(true);
                 }}
-                onOpenCreateSprint={() => sprintsState.setIsCreateSprintOpen(true)}
-                onOpenEditTask={tasksState.handleOpenEdit}
-                onOpenDeleteTask={tasksState.handleOpenDelete}
+                onOpenCreateSprint={() => {
+                  if (!isEnded) sprintsState.setIsCreateSprintOpen(true);
+                }}
+                onOpenEditTask={(task) => {
+                  if (!isEnded) tasksState.handleOpenEdit(task);
+                }}
+                onOpenDeleteTask={(task) => {
+                  if (!isEnded) tasksState.handleOpenDelete(task);
+                }}
+                isEnded={isEnded}
               />
             </div>
           )}
@@ -208,6 +238,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         setCreateDueDate={tasksState.setCreateDueDate}
         createAssignee={tasksState.createAssignee}
         setCreateAssignee={tasksState.setCreateAssignee}
+        createLabels={tasksState.createLabels}
+        setCreateLabels={tasksState.setCreateLabels}
         createDescription={tasksState.createDescription}
         setCreateDescription={tasksState.setCreateDescription}
         handleCreateTask={tasksState.handleCreateTask}
@@ -224,6 +256,8 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         setEditDueDate={tasksState.setEditDueDate}
         editAssignee={tasksState.editAssignee}
         setEditAssignee={tasksState.setEditAssignee}
+        editLabels={tasksState.editLabels}
+        setEditLabels={tasksState.setEditLabels}
         editDescription={tasksState.editDescription}
         setEditDescription={tasksState.setEditDescription}
         handleEditTask={tasksState.handleEditTask}
@@ -264,6 +298,7 @@ export function StudentBacklogView({ courseId }: StudentBacklogViewProps) {
         targetSprintForMove={tasksState.targetSprintForMove}
         handleConfirmMoveTask={tasksState.handleConfirmMoveTask}
         isMoveTaskPending={tasksState.updateTaskMutation.isPending}
+        isEnded={isEnded}
       />
     </div>
   );

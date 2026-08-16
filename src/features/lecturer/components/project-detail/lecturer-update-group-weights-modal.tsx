@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,14 +21,15 @@ interface LecturerUpdateGroupWeightsModalProps {
   courseId: string;
   teamId: string;
   teamName: string;
+  isEnded?: boolean;
 }
 
-export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, teamName }: LecturerUpdateGroupWeightsModalProps) {
+export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, teamName, isEnded }: LecturerUpdateGroupWeightsModalProps) {
   const [open, setOpen] = useState(false);
-  const [codeWeight, setCodeWeight] = useState("40");
-  const [testWeight, setTestWeight] = useState("20");
-  const [documentWeight, setDocumentWeight] = useState("30");
-  const [researchWeight, setResearchWeight] = useState("10");
+  const [codeWeight, setCodeWeight] = useState("0");
+  const [testWeight, setTestWeight] = useState("0");
+  const [documentWeight, setDocumentWeight] = useState("0");
+  const [researchWeight, setResearchWeight] = useState("0");
   const [note, setNote] = useState("");
   const queryClient = useQueryClient();
 
@@ -38,46 +39,41 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (newOpen) {
-      if (currentWeights) {
-        setCodeWeight((currentWeights.codeWeight * 100).toString());
-        setTestWeight((currentWeights.testWeight * 100).toString());
-        setDocumentWeight((currentWeights.documentWeight * 100).toString());
-        setResearchWeight((currentWeights.researchWeight * 100).toString());
-        setNote(currentWeights.note || "");
-      } else {
-        setCodeWeight("40");
-        setTestWeight("20");
-        setDocumentWeight("30");
-        setResearchWeight("10");
-        setNote("");
-      }
+      setCodeWeight("0");
+      setTestWeight("0");
+      setDocumentWeight("0");
+      setResearchWeight("0");
+      setNote("");
     }
   };
 
   const handleUpdate = () => {
     const c = parseFloat(codeWeight);
-    const t = parseFloat(testWeight);
+    const test = parseFloat(testWeight);
     const doc = parseFloat(documentWeight);
     const res = parseFloat(researchWeight);
 
-    if (isNaN(c) || isNaN(t) || isNaN(doc) || isNaN(res)) {
-      toast.error("Vui lòng nhập số hợp lệ cho tất cả tiêu chí.");
+    if (isNaN(c) || isNaN(test) || isNaN(doc) || isNaN(res)) {
+      toast.error("Vui lòng nhập số hợp lệ");
       return;
     }
 
-    const total = c + t + doc + res;
-    if (Math.abs(total - 100) > 0.1) {
-      toast.error("Lỗi: Tổng trọng số phải bằng đúng 100%. Vui lòng kiểm tra lại.");
-      return; // Force valid sum for team config
+    if (Math.abs(c + test + doc + res - 100) > 0.01) {
+      toast.warning("Lưu ý: Tổng trọng số nên bằng 100%. Hãy kiểm tra lại nếu cố ý.");
     }
+
+    const codeW = c;
+    const testW = test;
+    const docW = doc;
+    const resW = Math.round((100 - c - test - doc) * 100) / 100; // Strictly guarantee sum is 100
 
     updateWeights.mutate(
       {
         groupId: teamId,
-        codeWeight: c / 100,
-        testWeight: t / 100,
-        documentWeight: doc / 100,
-        researchWeight: res / 100,
+        codeWeight: codeW,
+        testWeight: testW,
+        documentWeight: docW,
+        researchWeight: resW,
         note
       },
       {
@@ -94,7 +90,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-amber-500/20 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+        <Button variant="outline" disabled={isEnded} className="gap-2 rounded-xl h-10 px-5 shadow-md shadow-amber-500/20 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 font-bold transition-all hover:-translate-y-0.5 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed">
           <Scale className="w-5 h-5" />
           Sửa Trọng số
         </Button>
@@ -112,7 +108,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">Code</label>
               <div className="relative">
@@ -129,7 +125,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">Test</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Test</label>
               <div className="relative">
                 <Input
                   type="number"
@@ -138,13 +134,13 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
                   max="100"
                   value={testWeight}
                   onChange={(e) => setTestWeight(e.target.value)}
-                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8 h-10"
+                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">Document</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Document</label>
               <div className="relative">
                 <Input
                   type="number"
@@ -159,7 +155,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">Research</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Research</label>
               <div className="relative">
                 <Input
                   type="number"
@@ -168,7 +164,7 @@ export function LecturerUpdateGroupWeightsModal({ projectId, courseId, teamId, t
                   max="100"
                   value={researchWeight}
                   onChange={(e) => setResearchWeight(e.target.value)}
-                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8 h-10"
+                  className="rounded-xl bg-muted/20 border-border/50 text-center font-bold pr-8"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">%</span>
               </div>

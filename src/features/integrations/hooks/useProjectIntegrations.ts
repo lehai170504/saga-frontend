@@ -3,6 +3,7 @@ import { projectIntegrationApi } from "../api/projectIntegrationApi";
 import { JiraProjectLinkRequest, GitHubRepositoriesLinkRequest, ProjectIntegrationsResponse } from "../types";
 import { toast } from "sonner";
 import { INTEGRATION_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useProjectIntegrations = (projectId: string) => {
   return useQuery({
@@ -64,8 +65,8 @@ export const useDeleteProjectJiraIntegration = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
       toast.success(INTEGRATION_MESSAGES.JIRA.DELETE.SUCCESS);
     },
-    onError: (err: Error) => {
-      toast.error(err.message || INTEGRATION_MESSAGES.JIRA.DELETE.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, INTEGRATION_MESSAGES.JIRA.DELETE.ERROR));
     },
   });
 };
@@ -88,8 +89,8 @@ export const useDeleteGithubRepository = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
       toast.success(INTEGRATION_MESSAGES.GITHUB.DELETE_REPO.SUCCESS);
     },
-    onError: (err: Error) => {
-      toast.error(err.message || INTEGRATION_MESSAGES.GITHUB.DELETE_REPO.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, INTEGRATION_MESSAGES.GITHUB.DELETE_REPO.ERROR));
     },
   });
 };
@@ -102,12 +103,11 @@ export const useReconnectGithubRepository = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-integrations", projectId] });
       toast.success(INTEGRATION_MESSAGES.GITHUB.RECONNECT_REPO.SUCCESS);
     },
-    onError: (err: Error) => {
-      toast.error(err.message || INTEGRATION_MESSAGES.GITHUB.RECONNECT_REPO.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, INTEGRATION_MESSAGES.GITHUB.RECONNECT_REPO.ERROR));
     },
   });
 };
-
 
 export const useTriggerProjectSync = (projectId: string) => {
   const queryClient = useQueryClient();
@@ -118,11 +118,8 @@ export const useTriggerProjectSync = (projectId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
       toast.success(INTEGRATION_MESSAGES.SYNC.TRIGGER.SUCCESS);
     },
-    onError: (err: Error) => {
-      toast.error(err.message || INTEGRATION_MESSAGES.SYNC.TRIGGER.ERROR);
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, INTEGRATION_MESSAGES.SYNC.TRIGGER.ERROR));
     },
   });
 };
-
-
-

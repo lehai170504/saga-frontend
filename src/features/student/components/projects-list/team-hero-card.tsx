@@ -26,6 +26,7 @@ interface TeamHeroCardProps {
   projectTypes?: AdminProjectType[] | ProjectType[];
   isPending: boolean;
   handleCreateProject: (e: React.FormEvent) => void;
+  isEnded?: boolean;
 }
 
 export function TeamHeroCard({
@@ -45,6 +46,7 @@ export function TeamHeroCard({
   projectTypes,
   isPending,
   handleCreateProject,
+  isEnded,
 }: TeamHeroCardProps) {
   return (
     <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 shadow-lg shadow-primary/10 rounded-[2rem] p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden group">
@@ -92,11 +94,10 @@ export function TeamHeroCard({
             <Button
               onClick={() => setShowScores(!showScores)}
               variant={showScores ? "secondary" : "outline"}
-              className={`w-full sm:w-auto h-12 px-6 rounded-xl font-bold transition-all duration-300 ${
-                showScores
+              className={`w-full sm:w-auto h-12 px-6 rounded-xl font-bold transition-all duration-300 ${showScores
                   ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground border-border/80"
                   : "border-border/60 hover:bg-muted text-foreground bg-background"
-              }`}
+                }`}
             >
               <Activity size={18} className="mr-2 text-primary" strokeWidth={3} />
               {showScores ? "Ẩn điểm" : "Xem điểm"}
@@ -114,6 +115,7 @@ export function TeamHeroCard({
             <Button
               onClick={() => setIsDialogOpen(true)}
               className="w-full md:w-auto h-12 px-6 rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,88,12,0.3)] hover:shadow-[0_6px_25px_rgba(234,88,12,0.4)]"
+              disabled={isEnded}
             >
               <Plus size={18} className="mr-2" strokeWidth={3} />
               Khởi tạo Dự án

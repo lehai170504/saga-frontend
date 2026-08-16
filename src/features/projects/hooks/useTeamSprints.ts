@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { PeerReviewItem } from "../types";
 import { AxiosError } from "axios";
 import { SPRINT_MESSAGES } from "../constants/messages";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useTeamSprints = (teamId: string) => {
   return useQuery({
@@ -40,8 +41,7 @@ export const useSubmitPeerReview = (teamId: string, sprintId: string) => {
       toast.success(SPRINT_MESSAGES.PEER_REVIEW.SUCCESS);
     },
     onError: (err) => {
-      const errMsg = err?.response?.data?.message || SPRINT_MESSAGES.PEER_REVIEW.ERROR;
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, SPRINT_MESSAGES.PEER_REVIEW.ERROR));
     }
   });
 };
@@ -84,17 +84,14 @@ export const useCreateSprint = (projectId: string) => {
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
       const errCode = axiosErr?.response?.data?.error;
-      const originalMsg = axiosErr?.response?.data?.message;
 
-      let errMsg: string = SPRINT_MESSAGES.CREATE.ERROR;
+      let fallbackMsg: string = SPRINT_MESSAGES.CREATE.ERROR;
       if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
       } else if (errCode === "JIRA_IDENTIFIER_INVALID") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_INVALID;
-      } else if (originalMsg) {
-        errMsg = originalMsg;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_INVALID;
       }
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, fallbackMsg));
     }
   });
 };
@@ -112,17 +109,14 @@ export const useStartSprint = (projectId: string) => {
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
       const errCode = axiosErr?.response?.data?.error;
-      const originalMsg = axiosErr?.response?.data?.message;
 
-      let errMsg: string = SPRINT_MESSAGES.START.ERROR;
+      let fallbackMsg: string = SPRINT_MESSAGES.START.ERROR;
       if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
       } else if (errCode === "JIRA_ACCESS_REVOKED") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
-      } else if (originalMsg) {
-        errMsg = originalMsg;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
       }
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, fallbackMsg));
     }
   });
 };
@@ -140,17 +134,14 @@ export const useCloseSprint = (projectId: string) => {
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
       const errCode = axiosErr?.response?.data?.error;
-      const originalMsg = axiosErr?.response?.data?.message;
 
-      let errMsg: string = SPRINT_MESSAGES.CLOSE.ERROR;
+      let fallbackMsg: string = SPRINT_MESSAGES.CLOSE.ERROR;
       if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
       } else if (errCode === "JIRA_ACCESS_REVOKED") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
-      } else if (originalMsg) {
-        errMsg = originalMsg;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
       }
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, fallbackMsg));
     }
   });
 };
@@ -170,17 +161,14 @@ export const useUpdateSprint = (projectId: string) => {
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
       const errCode = axiosErr?.response?.data?.error;
-      const originalMsg = axiosErr?.response?.data?.message;
 
-      let errMsg: string = SPRINT_MESSAGES.UPDATE.ERROR;
+      let fallbackMsg: string = SPRINT_MESSAGES.UPDATE.ERROR;
       if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
       } else if (errCode === "JIRA_ACCESS_REVOKED") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
-      } else if (originalMsg) {
-        errMsg = originalMsg;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
       }
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, fallbackMsg));
     }
   });
 };
@@ -198,17 +186,14 @@ export const useDeleteSprint = (projectId: string) => {
     onError: (err: unknown) => {
       const axiosErr = err as AxiosError<{ error?: string; message?: string }>;
       const errCode = axiosErr?.response?.data?.error;
-      const originalMsg = axiosErr?.response?.data?.message;
 
-      let errMsg: string = SPRINT_MESSAGES.DELETE.ERROR;
+      let fallbackMsg: string = SPRINT_MESSAGES.DELETE.ERROR;
       if (errCode === "JIRA_INTEGRATION_NOT_ACTIVE") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_NOT_ACTIVE;
       } else if (errCode === "JIRA_ACCESS_REVOKED") {
-        errMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
-      } else if (originalMsg) {
-        errMsg = originalMsg;
+        fallbackMsg = SPRINT_MESSAGES.ERRORS.JIRA_REVOKED;
       }
-      toast.error(errMsg);
+      toast.error(getVietnameseErrorMessage(err, fallbackMsg));
     }
   });
 };

@@ -380,8 +380,8 @@ export type ProjectTasksResponse = {
   numberOfElements: number;
   first: boolean;
   last: boolean;
-  empty: boolean;
-};
+}
 
 export * from "./githubIssue";
 export * from "./traceability";
+export * from "./contribution";

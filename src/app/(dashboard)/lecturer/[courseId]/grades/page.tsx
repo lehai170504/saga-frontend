@@ -363,7 +363,11 @@ export default function LecturerContributionPage() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-4 py-2 rounded-xl border border-border/50 w-full lg:w-auto">
                 <Info size={16} className="text-primary flex-shrink-0" />
+<<<<<<< HEAD
                 <span>% Trước Peer = (% Code + % Test + % Doc + % Research). % H.Thống = % Trước Peer * HS Peer.</span>
+=======
+                <span>% Hệ thống được tính dựa trên 4 thành phần (Code, Test, Doc, Research) x Trọng số cấu hình. Giảng viên nhập trực tiếp % mới để ghi đè.</span>
+>>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
               </div>
             </div>
 
@@ -425,17 +429,24 @@ export default function LecturerContributionPage() {
                       <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Test</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
+<<<<<<< HEAD
                       <TableHead className="text-center font-bold text-muted-foreground">% Rsrch</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Trước Peer</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]" title="Đóng góp sau Peer">% H.Thống</TableHead>
+=======
+                      <TableHead className="text-center font-bold text-muted-foreground">% Rsch</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
+                      <TableHead className="text-center font-bold text-blue-600 dark:text-blue-400 min-w-[100px]" title="Tỷ lệ đóng góp trước khi nhân đánh giá chéo (Peer Review)">% Trước Peer</TableHead>
+                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
+>>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
                       <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredMembers.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={11} className="h-32 text-center text-muted-foreground">
+                        <TableCell colSpan={12} className="h-32 text-center text-muted-foreground">
                           {isLoading ? "Đang tải dữ liệu..." : "Không tìm thấy dữ liệu nhóm này"}
                         </TableCell>
                       </TableRow>
@@ -444,8 +455,8 @@ export default function LecturerContributionPage() {
                         const adjustment = localAdjustments[student.studentId];
                         const isOverridden = !!adjustment;
                         const finalDisplayValue = isOverridden
-                          ? (student.finalContributionPercentage + adjustment.adjustmentPercentage).toFixed(1)
-                          : student.finalContributionPercentage.toFixed(1);
+                          ? ((student.finalContributionPercentage ?? 0) + adjustment.adjustmentPercentage).toFixed(1)
+                          : (student.finalContributionPercentage ?? 0).toFixed(1);
 
                         return (
                           <TableRow key={student.studentId} className="hover:bg-muted/20 transition-colors">
@@ -459,11 +470,18 @@ export default function LecturerContributionPage() {
                             <TableCell className="text-center font-medium text-muted-foreground">x{student.peerReviewScore.toFixed(2)}</TableCell>
 
                             {/* Slices Breakdown */}
+<<<<<<< HEAD
                             <TableCell className="text-center font-medium">{student.codeContributionPercentage.toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-medium">{student.testContributionPercentage.toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-medium">{student.documentContributionPercentage.toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-medium">{student.researchContributionPercentage.toFixed(1)}%</TableCell>
                             <TableCell className="text-center font-bold text-muted-foreground">{student.sliceContributionPercentage.toFixed(1)}%</TableCell>
+=======
+                            <TableCell className="text-center font-medium">{student.codeContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.testContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.documentContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.researchContributionPercentage}%</TableCell>
+>>>>>>> c577a12c44b58ec012275a20192ddcf332967b08
 
                             <TableCell className="text-center">
                               {student.warnings && student.warnings.length > 0 ? (
@@ -477,9 +495,14 @@ export default function LecturerContributionPage() {
                               )}
                             </TableCell>
 
+                            {/* Pre-Peer Slice % */}
+                            <TableCell className="text-center font-bold text-blue-600 dark:text-blue-400">
+                              {(student.sliceContributionPercentage ?? student.taskContributionPercentage ?? 0).toFixed(1)}%
+                            </TableCell>
+
                             {/* System Score */}
                             <TableCell className="text-center bg-primary/5 border-x border-primary/20">
-                              <span className="font-bold text-primary text-lg">{student.finalContributionPercentage.toFixed(1)}%</span>
+                              <span className="font-bold text-primary text-lg">{(student.finalContributionPercentage ?? 0).toFixed(1)}%</span>
                             </TableCell>
 
                             {/* Manual Override Score */}

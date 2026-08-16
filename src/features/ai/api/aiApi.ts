@@ -8,11 +8,16 @@ export const aiApi = {
   getConversationDetail: async (id: string) => {
     return axiosInstance.get<never, { conversation: AiConversation; messages: AiMessage[] }>(`/api/v1/ai/conversations/${id}`);
   },
-  createConversation: async (title: string, courseId?: string) => {
-    return axiosInstance.post<never, AiConversation>("/api/v1/ai/conversations", { title, courseId });
+  createConversation: async (title?: string, courseId?: string) => {
+    const payload: { title?: string; courseId?: string } = {};
+    if (title) payload.title = title;
+    if (courseId) payload.courseId = courseId;
+    return axiosInstance.post<never, AiConversation>("/api/v1/ai/conversations", payload);
   },
   sendMessage: async (id: string, content: string, courseId?: string) => {
-    return axiosInstance.post<never, AiMessage>(`/api/v1/ai/conversations/${id}/messages`, { content, courseId });
+    const payload: { content: string; courseId?: string } = { content };
+    if (courseId) payload.courseId = courseId;
+    return axiosInstance.post<never, AiMessage>(`/api/v1/ai/conversations/${id}/messages`, payload);
   },
   confirmAction: async (actionId: string) => {
     return axiosInstance.post<never, void>(`/api/v1/ai/pending-actions/${actionId}/confirm`);
@@ -21,7 +26,7 @@ export const aiApi = {
     return axiosInstance.post<never, void>(`/api/v1/ai/pending-actions/${actionId}/reject`);
   },
   // Download artifact
-  downloadArtifact: async (artifactId: string, filename: string = "saga-artifact.docx") => {
+  downloadArtifact: async (artifactId: string) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "https://saga-backend-production-3951.up.railway.app"}/api/v1/ai/artifacts/${artifactId}/download`, {
       method: "GET",
       credentials: "include"
@@ -29,6 +34,17 @@ export const aiApi = {
     if (!response.ok) {
       throw new Error("Failed to download artifact");
     }
+
+    // Try to extract filename from Content-Disposition
+    let filename = "saga-artifact.docx";
+    const contentDisposition = response.headers.get("Content-Disposition");
+    if (contentDisposition && contentDisposition.includes("filename=")) {
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (filenameMatch && filenameMatch.length > 1) {
+        filename = filenameMatch[1];
+      }
+    }
+
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

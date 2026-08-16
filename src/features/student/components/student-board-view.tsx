@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useProjectSprints } from "@/features/projects/hooks/useTeamSprints";
 import { useProjectTasks } from "@/features/projects/hooks/useProjectTasks";
+import { isCourseEnded } from "@/lib/course-utils";
 import { useProjectTraceability } from "@/features/projects/hooks/useTraceability";
 import { getLinkedTaskIds } from "@/features/projects/utils/linkedTasksStorage";
 import { useAuthStore } from "@/stores/authStore";
@@ -17,6 +18,8 @@ import { KanbanColumn } from "./board/kanban-column";
 import { BoardModalsContainer } from "./board/board-modals-container";
 import { useBoardTasksState } from "./board/hooks/useBoardTasksState";
 import { useBoardKanbanState } from "./board/hooks/useBoardKanbanState";
+import { shouldIgnoreTaskCardClick } from "./board/utils/popoverCloseGuard";
+import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 
 interface StudentBoardViewProps {
   courseId: string;
@@ -29,7 +32,9 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
 
   // Load team data
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
   const projectId = myTeamData?.project?.id || "";
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
 
   // Auth & Role
   const currentUser = useAuthStore((s) => s.user);
@@ -128,15 +133,15 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
     [];
   const teamMembers = Array.isArray(rawMembers)
     ? (rawMembers as { studentId: string; fullName: string }[]).map((m) => ({
-        studentId: m.studentId,
-        fullName: m.fullName,
-      }))
+      studentId: m.studentId,
+      fullName: m.fullName,
+    }))
     : [];
 
-  const isLoading = isLoadingTeam || isLoadingSprints;
+  const isLoading = isLoadingTeam || isLoadingCourse || isLoadingSprints;
 
   return (
- <div className="space-y-8 "> 
+    <div className="space-y-8 ">
       <PageHeader
         title="Board công việc Jira"
         description="Xem danh sách công việc và phân loại theo bảng Kanban trực quan từ dự án Jira."
@@ -211,16 +216,28 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
                     teamMembers={teamMembers}
                     onDragOver={kanbanState.handleDragOver}
                     onDragLeave={kanbanState.handleDragLeave}
-                    onDrop={kanbanState.handleDrop}
-                    onDragStart={kanbanState.handleDragStart}
-                    onDragEnd={() => {}}
+                    onDrop={(e, columnId) => {
+                      if (!isEnded) kanbanState.handleDrop(e, columnId);
+                    }}
+                    onDragStart={(e, t) => {
+                      if (!isEnded) kanbanState.handleDragStart(e, t);
+                    }}
+                    onDragEnd={() => { }}
                     onTaskClick={(task) => {
+                      if (shouldIgnoreTaskCardClick()) return;
                       tasksState.setSelectedTask(task);
                       tasksState.setIsDetailOpen(true);
                     }}
-                    onOpenEditTask={tasksState.handleOpenEdit}
-                    onOpenDeleteTask={tasksState.handleOpenDelete}
-                    onOpenCreateTask={() => tasksState.setIsCreateOpen(true)}
+                    onOpenEditTask={(t) => {
+                      if (!isEnded) tasksState.handleOpenEdit(t);
+                    }}
+                    onOpenDeleteTask={(t) => {
+                      if (!isEnded) tasksState.handleOpenDelete(t);
+                    }}
+                    onOpenCreateTask={() => {
+                      if (!isEnded) tasksState.setIsCreateOpen(true);
+                    }}
+                    isEnded={isEnded}
                   />
                 );
               })}
@@ -277,6 +294,7 @@ export function StudentBoardView({ courseId }: StudentBoardViewProps) {
         taskToDelete={tasksState.taskToDelete}
         handleConfirmDelete={tasksState.handleConfirmDelete}
         isDeleteTaskPending={tasksState.deleteTaskMutation.isPending}
+        isEnded={isEnded}
       />
     </div>
   );

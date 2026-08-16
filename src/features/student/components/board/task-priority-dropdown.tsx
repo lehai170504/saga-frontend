@@ -16,9 +16,11 @@ import { PRIORITIES } from "./board-helpers";
 export function TaskPriorityDropdown({
   projectId,
   task,
+  isEnded,
 }: {
   projectId: string;
   task: JiraTask;
+  isEnded?: boolean;
 }) {
   const updatePriorityMutation = useUpdateTaskPriority(projectId);
 
@@ -42,7 +44,8 @@ export function TaskPriorityDropdown({
       <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
-          className="p-1 rounded-lg hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-all cursor-pointer outline-none flex items-center justify-center"
+          disabled={updatePriorityMutation.isPending || isEnded}
+          className="p-1 rounded-lg hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-all cursor-pointer outline-none flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           title={`Độ ưu tiên: ${matched.label}`}
         >
           {matched.icon}
@@ -64,9 +67,8 @@ export function TaskPriorityDropdown({
             <DropdownMenuItem
               key={p.id}
               onClick={() => handleSelectPriority(p.id)}
-              className={`rounded-xl px-2.5 py-1.5 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${
-                isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
-              }`}
+              className={`rounded-xl px-2.5 py-1.5 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
+                }`}
             >
               {p.icon}
               <span className="truncate flex-1">{p.label}</span>

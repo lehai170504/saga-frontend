@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/shared/Skeleton";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useProjectSprints, useCreateSprint, useStartSprint, useCloseSprint, useUpdateSprint, useDeleteSprint } from "@/features/projects/hooks/useTeamSprints";
+import { isCourseEnded } from "@/lib/course-utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Sprint } from "@/features/projects/types";
@@ -22,7 +23,6 @@ interface StudentTimelineViewProps {
 }
 
 export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
-  const [mounted, setMounted] = useState(false);
 
   // Create sprint modal states
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -64,12 +64,10 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
   const deleteSprintMutation = useDeleteSprint(projectId);
 
   const isLoading = isLoadingTeam || isLoadingCourse || (!!projectId && isLoadingSprints);
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
   const isLeader = true;
 
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
+
 
   useEffect(() => {
     if (isCreateOpen) {
@@ -243,7 +241,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
- <div className="relative p-6 max-w-[1200px] mx-auto space-y-8 "> 
+      <div className="relative p-6 max-w-[1200px] mx-auto space-y-8 ">
         <PageHeader
           title="Timeline Tiến Độ"
           description={
@@ -252,7 +250,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
               : "Đang tải dữ liệu khóa học..."
           }
         >
-          {!isLoading && isLeader && (
+          {!isLoading && isLeader && !isEnded && (
             <Button
               onClick={() => setIsCreateOpen(true)}
               className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg h-11 px-5 cursor-pointer transition-all"
@@ -308,7 +306,7 @@ export function StudentTimelineView({ courseId }: StudentTimelineViewProps) {
                 key={sprint.sprintId}
                 sprint={sprint}
                 projectId={projectId}
-                isLeader={isLeader}
+                isLeader={isLeader && !isEnded}
                 isStarting={startingSprintId === sprint.sprintId}
                 isClosing={closingSprintId === sprint.sprintId}
                 isAnyMutating={startSprintMutation.isPending || closeSprintMutation.isPending}

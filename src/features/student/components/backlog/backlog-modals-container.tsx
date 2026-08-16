@@ -30,6 +30,8 @@ interface BacklogModalsContainerProps {
   setCreateDueDate: (val: string) => void;
   createAssignee: string;
   setCreateAssignee: (val: string) => void;
+  createLabels: string;
+  setCreateLabels: (val: string) => void;
   createDescription: string;
   setCreateDescription: (val: string) => void;
   handleCreateTask: (e: React.FormEvent) => void;
@@ -48,6 +50,8 @@ interface BacklogModalsContainerProps {
   setEditDueDate: (val: string) => void;
   editAssignee: string;
   setEditAssignee: (val: string) => void;
+  editLabels: string;
+  setEditLabels: (val: string) => void;
   editDescription: string;
   setEditDescription: (val: string) => void;
   handleEditTask: (e: React.FormEvent) => void;
@@ -96,6 +100,7 @@ interface BacklogModalsContainerProps {
   targetSprintForMove: string | null;
   handleConfirmMoveTask: () => void;
   isMoveTaskPending: boolean;
+  isEnded?: boolean;
 }
 
 export function BacklogModalsContainer({
@@ -118,6 +123,8 @@ export function BacklogModalsContainer({
   setCreateDueDate,
   createAssignee,
   setCreateAssignee,
+  createLabels,
+  setCreateLabels,
   createDescription,
   setCreateDescription,
   handleCreateTask,
@@ -134,6 +141,8 @@ export function BacklogModalsContainer({
   setEditDueDate,
   editAssignee,
   setEditAssignee,
+  editLabels,
+  setEditLabels,
   editDescription,
   setEditDescription,
   handleEditTask,
@@ -174,6 +183,7 @@ export function BacklogModalsContainer({
   targetSprintForMove,
   handleConfirmMoveTask,
   isMoveTaskPending,
+  isEnded,
 }: BacklogModalsContainerProps) {
   return (
     <>
@@ -185,6 +195,7 @@ export function BacklogModalsContainer({
         projectId={projectId}
         onTaskUpdated={(updatedTask) => setSelectedTask(updatedTask)}
         variant="drawer"
+        isEnded={isEnded}
       />
 
       {/* Create Task Modal */}
@@ -201,6 +212,8 @@ export function BacklogModalsContainer({
         onCreateDueDateChange={setCreateDueDate}
         createAssignee={createAssignee}
         onCreateAssigneeChange={setCreateAssignee}
+        createLabels={createLabels}
+        onCreateLabelsChange={setCreateLabels}
         createDescription={createDescription}
         onCreateDescriptionChange={setCreateDescription}
         teamMembers={teamMembers}
@@ -222,6 +235,8 @@ export function BacklogModalsContainer({
         onEditDueDateChange={setEditDueDate}
         editAssignee={editAssignee}
         onEditAssigneeChange={setEditAssignee}
+        editLabels={editLabels}
+        onEditLabelsChange={setEditLabels}
         editDescription={editDescription}
         onEditDescriptionChange={setEditDescription}
         teamMembers={teamMembers}
