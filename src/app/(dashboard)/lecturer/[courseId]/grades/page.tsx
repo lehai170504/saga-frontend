@@ -25,7 +25,6 @@ import { useContributionEvaluation, useOverrideContribution } from "@/features/l
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { ContributionAdjustment, ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
 import { contributionApi } from "@/features/lecturer/api/contributionApi";
-// @ts-expect-error - xlsx module declaration fallback
 import * as XLSX from "xlsx";
 
 import { courseApi } from "@/features/courses/api/courseApi";
@@ -211,7 +210,7 @@ export default function LecturerContributionPage() {
       toast.loading("Đang tổng hợp dữ liệu các nhóm...", { id: "export-grades" });
 
       const allMembers: Record<string, unknown>[] = [];
-      
+
       for (const team of realTeams) {
         try {
           const res = await contributionApi.getContributionEvaluation(team.id);
