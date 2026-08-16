@@ -27,6 +27,7 @@ interface BacklogTaskRowProps {
   onSelectTask: (task: JiraTask) => void;
   onOpenEdit: (task: JiraTask) => void;
   onOpenDelete: (task: JiraTask) => void;
+  isEnded?: boolean;
 }
 
 export function BacklogTaskRow({
@@ -37,6 +38,7 @@ export function BacklogTaskRow({
   onSelectTask,
   onOpenEdit,
   onOpenDelete,
+  isEnded,
 }: BacklogTaskRowProps) {
   const dueDateInfo = getTaskDueDateInfo(task.dueDate, task.status);
 
@@ -95,13 +97,13 @@ export function BacklogTaskRow({
         )}
 
         {/* Status Dropdown */}
-        <TaskStatusDropdown projectId={projectId} task={task} />
+        <TaskStatusDropdown projectId={projectId} task={task} isEnded={isEnded} />
 
         {/* Priority Dropdown */}
-        <TaskPriorityDropdown projectId={projectId} task={task} />
+        <TaskPriorityDropdown projectId={projectId} task={task} isEnded={isEnded} />
 
         {/* Assignee Dropdown */}
-        <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} />
+        <TaskAssigneeDropdown projectId={projectId} task={task} teamMembers={teamMembers} isEnded={isEnded} />
 
         {/* More Actions (Edit / Delete) */}
         {canAct && (

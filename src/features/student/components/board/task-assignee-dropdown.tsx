@@ -20,10 +20,12 @@ export function TaskAssigneeDropdown({
   projectId,
   task,
   teamMembers,
+  isEnded,
 }: {
   projectId: string;
   task: JiraTask;
   teamMembers: Array<{ studentId: string; fullName: string; avatarUrl?: string; avatar?: string; email?: string }>;
+  isEnded?: boolean;
 }) {
   const { user: currentUser } = useAuth();
   const updateAssigneeMutation = useUpdateTaskAssignee(projectId);
@@ -56,7 +58,8 @@ export function TaskAssigneeDropdown({
       <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
-          className="h-6 w-6 rounded-full shrink-0 cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all outline-none"
+          disabled={updateAssigneeMutation.isPending || isEnded}
+          className="h-6 w-6 rounded-full shrink-0 cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           title={task.assignee?.fullName ? `Người thực hiện: ${task.assignee.fullName}` : "Chưa phân công"}
         >
           <Avatar className="h-6 w-6 border border-background shadow-sm">

@@ -198,7 +198,7 @@ export function TaskDetailModal({
         </div>
 
         {/* Traceability Jira Task ↔ GitHub Issue */}
-        <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} />
+        <TaskTraceabilitySection projectId={projectId} taskId={selectedTask.id} isEnded={isEnded} />
       </div>
 
       {/* Footer */}

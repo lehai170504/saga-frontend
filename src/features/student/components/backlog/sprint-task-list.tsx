@@ -80,6 +80,7 @@ export function SprintTaskList({
                 onSelectTask={onSelectTask}
                 onOpenEdit={onOpenEditTask}
                 onOpenDelete={onOpenDeleteTask}
+                isEnded={isEnded}
               />
             ))
           )}
@@ -178,6 +179,7 @@ export function UnassignedBacklogSection({
                 onSelectTask={onSelectTask}
                 onOpenEdit={onOpenEditTask}
                 onOpenDelete={onOpenDeleteTask}
+                isEnded={isEnded}
               />
             ))
           )}
