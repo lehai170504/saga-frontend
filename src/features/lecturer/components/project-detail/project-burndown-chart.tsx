@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSprintVelocity, useSprintBurndown } from "@/features/lecturer/hooks/useAnalytics";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,23 +11,26 @@ import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
 
 export function ProjectBurndownChart({ courseId, teamId }: { courseId: string; teamId: string }) {
+
   const { data: velocityData, isLoading: isLoadingSprints } = useSprintVelocity(courseId, teamId);
   const [selectedSprintId, setSelectedSprintId] = useState<string>("");
 
   // Calculate default sprint synchronously to avoid initial incorrect API calls
   const defaultSprintId = React.useMemo(() => {
     if (!velocityData?.sprints || velocityData.sprints.length === 0) return "";
-    
+
     // 1. Find ACTIVE sprint
-    let target = velocityData.sprints.find((s: any) => 
-      s.state === "ACTIVE" || s.state === "active" || s.sprintState === "ACTIVE" || s.sprintState === "active"
-    );
-    
+    let target = velocityData.sprints.find((s) => {
+      const sprint = s as unknown as Record<string, unknown>;
+      return sprint.state === "ACTIVE" || sprint.state === "active" || sprint.sprintState === "ACTIVE" || sprint.sprintState === "active";
+    });
+
     // 2. If no active sprint, find the latest CLOSED sprint
     if (!target) {
-      const closedSprints = velocityData.sprints.filter((s: any) => 
-        s.state === "CLOSED" || s.state === "closed" || s.sprintState === "CLOSED" || s.sprintState === "closed"
-      );
+      const closedSprints = velocityData.sprints.filter((s) => {
+        const sprint = s as unknown as Record<string, unknown>;
+        return sprint.state === "CLOSED" || sprint.state === "closed" || sprint.sprintState === "CLOSED" || sprint.sprintState === "closed";
+      });
       if (closedSprints.length > 0) {
         target = closedSprints[closedSprints.length - 1];
       }
@@ -35,7 +38,10 @@ export function ProjectBurndownChart({ courseId, teamId }: { courseId: string; t
 
     // 3. Fallback to any sprint that has a startDate (not future)
     if (!target) {
-      target = velocityData.sprints.find((s: any) => s.startDate != null);
+      target = velocityData.sprints.find((s) => {
+        const sprint = s as unknown as Record<string, unknown>;
+        return sprint.startDate != null;
+      });
     }
 
     return target ? target.sprintId : "";
@@ -49,18 +55,24 @@ export function ProjectBurndownChart({ courseId, teamId }: { courseId: string; t
 
   const chartData = React.useMemo(() => {
     if (!burndownData?.points) return [];
-    return burndownData.points.map((p: { date: string; idealRemaining: number; actualRemaining: number; doneCount: number }) => ({
-      date: format(parseISO(p.date), 'dd/MM', { locale: vi }),
-      ideal: p.idealRemaining,
-      actual: p.actualRemaining,
-      done: p.doneCount,
-    }));
+    return burndownData.points.map((p) => {
+      const point = p as unknown as Record<string, unknown>;
+      return {
+        date: format(parseISO(point.date as string), 'dd/MM', { locale: vi }),
+        ideal: point.idealRemaining as number,
+        actual: point.actualRemaining as number,
+        done: point.doneCount as number,
+      };
+    });
   }, [burndownData]);
 
   const currentPoint = React.useMemo(() => {
     if (!burndownData?.points?.length) return null;
     const today = new Date().toISOString().split('T')[0];
-    const pastOrToday = burndownData.points.filter((p: { date: string; idealRemaining: number; actualRemaining: number; doneCount: number }) => p.date <= today);
+    const pastOrToday = burndownData.points.filter((p) => {
+      const point = p as unknown as Record<string, unknown>;
+      return (point.date as string) <= today;
+    });
     return pastOrToday.length > 0 ? pastOrToday[pastOrToday.length - 1] : burndownData.points[0];
   }, [burndownData]);
 

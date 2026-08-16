@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Bell, ExternalLink, Calendar, Info, CheckCircle2, Clock, Link2, Key } from "lucide-react";
+import { Bell, ExternalLink, Calendar, Info, CheckCircle2, Link2, Key } from "lucide-react";
 import { Notification } from "../types";
 import { formatNotificationRelativeTime } from "../utils/formatTime";
 

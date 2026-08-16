@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { aiAgentApi, CreateConversationPayload, SendMessagePayload } from "../api/aiAgentApi";
 import { toast } from "sonner";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useConversations = () => {
   return useQuery({
@@ -27,8 +28,8 @@ export const useCreateConversation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
-    onError: () => {
-      toast.error("Có lỗi xảy ra khi tạo hội thoại AI");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi tạo hội thoại AI"));
     }
   });
 };
@@ -42,8 +43,8 @@ export const useSendMessage = () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversation", variables.conversationId] });
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] }); // Update preview or timestamp in sidebar
     },
-    onError: () => {
-      toast.error("Có lỗi xảy ra khi gửi tin nhắn cho AI");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi gửi tin nhắn cho AI"));
     }
   });
 };
@@ -56,8 +57,8 @@ export const useConfirmPendingAction = () => {
       // or rely on the UI to optimistically update the action status.
       toast.success("Đã xác nhận hành động thành công");
     },
-    onError: () => {
-      toast.error("Có lỗi xảy ra khi xác nhận hành động");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi xác nhận hành động"));
     }
   });
 };
@@ -68,8 +69,8 @@ export const useRejectPendingAction = () => {
     onSuccess: () => {
       toast.success("Đã từ chối hành động");
     },
-    onError: () => {
-      toast.error("Có lỗi xảy ra khi từ chối hành động");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Có lỗi xảy ra khi từ chối hành động"));
     }
   });
 };
@@ -96,8 +97,8 @@ export const useDownloadArtifact = () => {
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(url);
     },
-    onError: () => {
-      toast.error("Lỗi khi tải xuống tệp");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Lỗi khi tải xuống tệp"));
     }
   });
 };

@@ -9,6 +9,8 @@ import { Crown } from "lucide-react";
 import { CourseStudent } from "@/features/courses/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
+type MemberWithAvatar = CourseStudent & { avatarUrl?: string; avatar?: string; picture?: string; photoUrl?: string; email?: string };
+
 interface StudentTableRowProps {
   student: CourseStudent;
   index: number;
@@ -19,15 +21,16 @@ export function StudentTableRow({ student, index, courseId }: StudentTableRowPro
   const { user: currentUser } = useAuth();
   const role = student.team?.teamMembers.find((m) => m.studentId === student.studentId)?.roleInTeam;
 
+  const m = student as MemberWithAvatar;
   const avatarSrc =
-    (student as any).avatarUrl ||
-    (student as any).avatar ||
-    (student as any).picture ||
-    (student as any).photoUrl ||
+    m.avatarUrl ||
+    m.avatar ||
+    m.picture ||
+    m.photoUrl ||
     (currentUser &&
-    (currentUser.localProfileId === student.studentId ||
-      currentUser.email === student.email ||
-      currentUser.fullName === student.fullName)
+      (currentUser.localProfileId === m.studentId ||
+        currentUser.email === m.email ||
+        currentUser.fullName === m.fullName)
       ? currentUser.avatarUrl || currentUser.avatar
       : "") ||
     "";

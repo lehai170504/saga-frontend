@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Users, Zap, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -8,6 +8,7 @@ import { useCreateTeamProject, useProjectDetail } from "@/features/projects/hook
 import { toast } from "sonner";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
+import { isCourseEnded } from "@/lib/course-utils";
 import { useSearchParams } from "next/navigation";
 import { useContributionEvaluation } from "@/features/lecturer/hooks/useContribution";
 import { useProjectTypes } from "@/features/admin/hooks/useProjectTypes";
@@ -28,14 +29,15 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   const searchParams = useSearchParams();
   const tabFromUrl = searchParams?.get("tab");
 
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<string>(tabFromUrl || "overview");
+  const [prevTabFromUrl, setPrevTabFromUrl] = useState(tabFromUrl);
 
-  useEffect(() => {
+  if (tabFromUrl !== prevTabFromUrl) {
+    setPrevTabFromUrl(tabFromUrl);
     if (tabFromUrl && ["overview", "team", "peer-review"].includes(tabFromUrl)) {
       setActiveTab(tabFromUrl);
     }
-  }, [tabFromUrl]);
+  }
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
@@ -55,16 +57,9 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
   );
 
   const isLoading = isLoadingCourse || isLoadingMyTeam;
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
 
-  useEffect(() => {
-    let isMounted = true;
-    requestAnimationFrame(() => {
-      if (isMounted) setMounted(true);
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+
 
   const handleCreateProject = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,27 +108,24 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
         return {
           title: "Thông tin Nhóm & Thành viên",
           description: courseData
-            ? `Xem thông tin nhóm, danh sách thành viên và điểm số đóng góp dự án trong Khóa học ${
-                courseData.courseCode || ""
-              }`
+            ? `Xem thông tin nhóm, danh sách thành viên và điểm số đóng góp dự án trong Khóa học ${courseData.courseCode || ""
+            }`
             : "Xem thông tin nhóm, danh sách thành viên và điểm số đóng góp dự án",
         };
       case "peer-review":
         return {
           title: "Đánh giá chéo",
           description: courseData
-            ? `Thực hiện tự đánh giá và đánh giá chéo thành viên trong nhóm theo từng Sprint cho Khóa học ${
-                courseData.courseCode || ""
-              }`
+            ? `Thực hiện tự đánh giá và đánh giá chéo thành viên trong nhóm theo từng Sprint cho Khóa học ${courseData.courseCode || ""
+            }`
             : "Thực hiện tự đánh giá và đánh giá chéo thành viên trong nhóm theo từng Sprint",
         };
       default:
         return {
           title: "Tổng quan Hoạt động",
           description: courseData
-            ? `Xem biểu đồ thống kê các hoạt động Jira, Commit và tương tác thành viên trong Khóa học ${
-                courseData.courseCode || ""
-              }`
+            ? `Xem biểu đồ thống kê các hoạt động Jira, Commit và tương tác thành viên trong Khóa học ${courseData.courseCode || ""
+            }`
             : "Xem biểu đồ thống kê các hoạt động Jira, Commit và tương tác thành viên",
         };
     }
@@ -217,6 +209,7 @@ export function StudentProjectsList({ courseId }: StudentProjectsListProps) {
                   projectTypes={projectTypes}
                   isPending={createProjectMutation.isPending}
                   handleCreateProject={handleCreateProject}
+                  isEnded={isEnded}
                 />
 
                 {/* Members Section */}

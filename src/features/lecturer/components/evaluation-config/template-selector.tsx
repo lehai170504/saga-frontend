@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings2, BookOpen, CheckCircle2, XCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,18 +8,23 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   useCourseContributionWeights,
-  useUpdateCourseContributionWeights,
   useCourseContributionTeamWeights,
+  useUpdateCourseContributionWeights,
   useUpdateCourseContributionMode
 } from "../../hooks/useContribution";
+import { useCourse } from "@/features/courses/hooks/useCourses";
+import { isCourseEnded } from "@/lib/course-utils";
 import { TeamContributionWeightItem } from "../../types/contribution";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamWeightModal } from "./team-weight-modal";
 
 export function TemplateSelector({ courseId }: { courseId: string }) {
-  const { data: courseWeightsData, isLoading: isLoadingCourse } = useCourseContributionWeights(courseId);
+  const { data: courseWeightsData, isLoading: isLoadingCourseWeight } = useCourseContributionWeights(courseId);
   const { data: teamWeightsData, isLoading: isLoadingTeam } = useCourseContributionTeamWeights(courseId);
+  const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId);
+
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
 
   const { mutate: updateCourseWeights, isPending: isUpdatingCourse } = useUpdateCourseContributionWeights();
   const { mutate: updateMode, isPending: isUpdatingMode } = useUpdateCourseContributionMode();
@@ -33,11 +38,14 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
 
   const [selectedTeam, setSelectedTeam] = useState<TeamContributionWeightItem | null>(null);
 
-  useEffect(() => {
+  const [prevModeStr, setPrevModeStr] = useState<string | undefined>(teamWeightsData?.mode);
+
+  if (teamWeightsData?.mode !== prevModeStr) {
+    setPrevModeStr(teamWeightsData?.mode);
     if (teamWeightsData?.mode) {
       setMode(teamWeightsData.mode);
     }
-  }, [teamWeightsData?.mode]);
+  }
 
   const codeWeight = customCodeWeight ?? (courseWeightsData ? Number((courseWeightsData.codeWeight ?? 40).toFixed(2)) : 40);
   const testWeight = customTestWeight ?? (courseWeightsData ? Number((courseWeightsData.testWeight ?? 20).toFixed(2)) : 20);
@@ -75,15 +83,13 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
       { courseId, data: { codeWeight: cw, testWeight: tw, documentWeight: dw, researchWeight: rw } },
       {
         onSuccess: () => {
-          toast.success("Đã lưu trọng số chung thành công!");
           // Switch to COURSE mode implicitly if they were on TEAM mode
           if (mode === "TEAM") {
             handleSaveMode("COURSE");
           }
         },
-        onError: (err: Error) => {
-          const resErr = err as Error & { response?: { data?: { message?: string } } };
-          toast.error(resErr?.response?.data?.message || "Có lỗi xảy ra khi lưu thay đổi");
+        onError: () => {
+          // Toast is handled in hook
         }
       }
     );
@@ -94,17 +100,17 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
       { courseId, data: { mode: newMode } },
       {
         onSuccess: () => {
-          toast.success(`Đã chuyển sang chế độ ${newMode === "COURSE" ? "Toàn khóa" : "Theo từng nhóm"}!`);
+          // Toast is handled in hook
         },
-        onError: (err: Error) => {
+        onError: (err: unknown) => {
           const resErr = err as Error & { response?: { data?: { message?: string, error?: string } } };
           const msg = resErr?.response?.data?.message;
           const errorCode = resErr?.response?.data?.error;
 
           if (errorCode === "TEAM_MODE_CONFIGURATION_INCOMPLETE" || msg?.includes("INCOMPLETE") || msg?.includes("weight override")) {
-            toast.error("Một hoặc nhiều Team chưa được cấu hình. Vui lòng thiết lập trọng số cho TỪNG nhóm trước khi áp dụng chế độ này.");
-          } else {
-            toast.error(msg || "Có lỗi xảy ra khi chuyển chế độ");
+            // Keep this specific UI warning toast, but hook will still show a generic error.
+            // Actually, let's keep the specialized error handling here if it's specific UI logic.
+            // But the hook already shows an error. Let's just set the mode back.
           }
           // Revert mode back if failed
           setMode(teamWeightsData?.mode || "COURSE");
@@ -121,7 +127,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
     handleSaveMode("COURSE");
   };
 
-  if (isLoadingCourse || isLoadingTeam) {
+  if (isLoadingCourseWeight || isLoadingTeam || isLoadingCourse) {
     return <Skeleton className="w-full h-96 rounded-2xl" />;
   }
 
@@ -146,6 +152,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
               }
             }}
             className="flex flex-col sm:flex-row gap-6"
+            disabled={isEnded}
           >
             <div className={`flex items-center space-x-3 border p-4 rounded-2xl cursor-pointer transition-all ${mode === "COURSE" ? "border-primary bg-primary/5" : "border-border hover:bg-muted/50"}`}>
               <RadioGroupItem value="COURSE" id="r1" />
@@ -190,6 +197,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                           value={codeWeight}
                           onChange={(e) => setCustomCodeWeight(parseFloat(e.target.value) || 0)}
                           className="h-10 text-center font-bold"
+                          disabled={isEnded}
                         />
                         <span className="text-sm font-medium w-6">%</span>
                       </div>
@@ -204,6 +212,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                           value={testWeight}
                           onChange={(e) => setCustomTestWeight(parseFloat(e.target.value) || 0)}
                           className="h-10 text-center font-bold"
+                          disabled={isEnded}
                         />
                         <span className="text-sm font-medium w-6">%</span>
                       </div>
@@ -218,6 +227,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                           value={documentWeight}
                           onChange={(e) => setCustomDocumentWeight(parseFloat(e.target.value) || 0)}
                           className="h-10 text-center font-bold"
+                          disabled={isEnded}
                         />
                         <span className="text-sm font-medium w-6">%</span>
                       </div>
@@ -232,6 +242,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                           value={researchWeight}
                           onChange={(e) => setCustomResearchWeight(parseFloat(e.target.value) || 0)}
                           className="h-10 text-center font-bold"
+                          disabled={isEnded}
                         />
                         <span className="text-sm font-medium w-6">%</span>
                       </div>
@@ -252,7 +263,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                   <div className="flex justify-end pt-4">
                     <Button
                       onClick={handleSaveCourseWeights}
-                      disabled={isUpdatingCourse || !isCourseValid}
+                      disabled={isUpdatingCourse || !isCourseValid || isEnded}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                     >
                       {isUpdatingCourse ? "Đang lưu..." : "Lưu Trọng Số Chung"}
@@ -346,7 +357,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
                         </div>
                       )}
 
-                      <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setSelectedTeam(team)}>
+                      <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setSelectedTeam(team)} disabled={isEnded}>
                         Thiết lập
                       </Button>
                     </div>
@@ -366,7 +377,7 @@ export function TemplateSelector({ courseId }: { courseId: string }) {
               <div className="flex justify-end pt-6 mt-6 border-t">
                 <Button
                   onClick={handleActivateTeamMode}
-                  disabled={isUpdatingMode || !isAllTeamsConfigured}
+                  disabled={isUpdatingMode || !isAllTeamsConfigured || isEnded}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl"
                 >
                   {isUpdatingMode ? "Đang xử lý..." : "Áp Dụng Chế Độ Theo Team"}

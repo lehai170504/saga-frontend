@@ -46,7 +46,7 @@ export function PeerReviewModal({
         <DialogHeader className="pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border-primary/20">
-              <AvatarImage src={(evaluatingCandidate?.avatarUrl as string) || (evaluatingCandidate as any)?.avatar || ""} alt={evaluatingCandidate?.fullName ?? ""} />
+              <AvatarImage src={(evaluatingCandidate?.avatarUrl as string) || ((evaluatingCandidate as Record<string, unknown>)?.avatar as string) || ""} alt={evaluatingCandidate?.fullName ?? ""} />
               <AvatarFallback className="font-bold text-sm bg-gradient-to-br from-primary to-orange-600 text-white">
                 {evaluatingCandidate?.fullName.charAt(0)}
               </AvatarFallback>

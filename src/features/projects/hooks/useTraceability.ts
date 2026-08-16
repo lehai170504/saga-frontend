@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 import { traceabilityApi } from "../api/traceabilityApi";
 import { addLinkedTaskId, removeLinkedTaskId } from "../utils/linkedTasksStorage";
 import { toast } from "sonner";
@@ -23,7 +24,6 @@ export const useProjectTraceability = (projectId: string) => {
 
 export const useLinkTaskIssue = (projectId: string, taskId: string) => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: ({ issueId, idempotencyKey }: { issueId: string; idempotencyKey: string }) =>
       traceabilityApi.linkTaskIssue(projectId, taskId, issueId, idempotencyKey),
@@ -35,15 +35,13 @@ export const useLinkTaskIssue = (projectId: string, taskId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     },
     onError: (err: Error) => {
-      const resErr = err as Error & { response?: { data?: { message?: string } } };
-      toast.error(resErr?.response?.data?.message || "Không thể liên kết GitHub Issue");
+      toast.error(getVietnameseErrorMessage(err, "Không thể liên kết GitHub Issue"));
     },
   });
 };
 
 export const useUnlinkTaskIssue = (projectId: string, taskId: string) => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: ({ issueId, idempotencyKey }: { issueId: string; idempotencyKey: string }) =>
       traceabilityApi.unlinkTaskIssue(projectId, taskId, issueId, idempotencyKey),
@@ -55,8 +53,7 @@ export const useUnlinkTaskIssue = (projectId: string, taskId: string) => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     },
     onError: (err: Error) => {
-      const resErr = err as Error & { response?: { data?: { message?: string } } };
-      toast.error(resErr?.response?.data?.message || "Không thể hủy liên kết GitHub Issue");
+      toast.error(getVietnameseErrorMessage(err, "Không thể hủy liên kết GitHub Issue"));
     },
   });
 };

@@ -100,6 +100,7 @@ interface BacklogModalsContainerProps {
   targetSprintForMove: string | null;
   handleConfirmMoveTask: () => void;
   isMoveTaskPending: boolean;
+  isEnded?: boolean;
 }
 
 export function BacklogModalsContainer({
@@ -182,6 +183,7 @@ export function BacklogModalsContainer({
   targetSprintForMove,
   handleConfirmMoveTask,
   isMoveTaskPending,
+  isEnded,
 }: BacklogModalsContainerProps) {
   return (
     <>
@@ -193,6 +195,7 @@ export function BacklogModalsContainer({
         projectId={projectId}
         onTaskUpdated={(updatedTask) => setSelectedTask(updatedTask)}
         variant="drawer"
+        isEnded={isEnded}
       />
 
       {/* Create Task Modal */}

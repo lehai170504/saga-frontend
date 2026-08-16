@@ -9,6 +9,8 @@ import { FolderKanban, Users, ArrowRight } from "lucide-react";
 import { CourseStudent } from "@/features/courses/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
+type MemberWithAvatar = CourseStudent & { avatarUrl?: string; avatar?: string; picture?: string; photoUrl?: string; email?: string };
+
 export interface TeamGroupItem {
   id: string;
   name: string;
@@ -25,7 +27,7 @@ interface ProjectsGridTabProps {
 
 export function ProjectsGridTab({ courseId, isLoadingStudents, teams }: ProjectsGridTabProps) {
   const { user: currentUser } = useAuth();
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {isLoadingStudents ? (
@@ -70,15 +72,16 @@ export function ProjectsGridTab({ courseId, isLoadingStudents, teams }: Projects
 
                   <div className="flex -space-x-3 overflow-hidden mb-5">
                     {project.members.slice(0, 5).map((member) => {
+                      const m = member as MemberWithAvatar;
                       const avatarSrc =
-                        (member as any).avatarUrl ||
-                        (member as any).avatar ||
-                        (member as any).picture ||
-                        (member as any).photoUrl ||
+                        m.avatarUrl ||
+                        m.avatar ||
+                        m.picture ||
+                        m.photoUrl ||
                         (currentUser &&
-                        (currentUser.localProfileId === member.studentId ||
-                          currentUser.email === (member as any).email ||
-                          currentUser.fullName === member.fullName)
+                          (currentUser.localProfileId === m.studentId ||
+                            currentUser.email === m.email ||
+                            currentUser.fullName === m.fullName)
                           ? currentUser.avatarUrl || currentUser.avatar
                           : "") ||
                         "";

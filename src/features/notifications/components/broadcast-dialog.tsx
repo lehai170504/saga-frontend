@@ -8,8 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Megaphone, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { notificationApi } from "@/features/notifications/api/notificationApi";
-import { v4 as uuidv4 } from "uuid";
+import { useCourseBroadcast } from "@/features/notifications/hooks/useNotifications";
 
 interface BroadcastDialogProps {
   courseIds: string[];
@@ -21,7 +20,7 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [actionUrl, setActionUrl] = useState("");
-  const [isSending, setIsSending] = useState(false);
+  const { mutate: courseBroadcast, isPending: isSending } = useCourseBroadcast();
 
   const handleBroadcast = async () => {
     if (!title.trim() || !message.trim()) {
@@ -39,28 +38,22 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
       return;
     }
 
-    try {
-      setIsSending(true);
-      const idempotencyKey = uuidv4();
-      await notificationApi.courseBroadcast(
-        { 
-          courseIds, 
-          title: title.trim(), 
-          message: message.trim(),
-          ...(actionUrl.trim() ? { actionUrl: actionUrl.trim() } : {})
-        },
-        idempotencyKey
-      );
-      toast.success("Đã gửi thông báo lớp học thành công!");
-      setIsOpen(false);
-      setTitle("");
-      setMessage("");
-      setActionUrl("");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Có lỗi xảy ra khi gửi thông báo.");
-    } finally {
-      setIsSending(false);
-    }
+    courseBroadcast(
+      {
+        courseIds,
+        title: title.trim(),
+        message: message.trim(),
+        ...(actionUrl.trim() ? { actionUrl: actionUrl.trim() } : {})
+      },
+      {
+        onSuccess: () => {
+          setIsOpen(false);
+          setTitle("");
+          setMessage("");
+          setActionUrl("");
+        }
+      }
+    );
   };
 
   return (

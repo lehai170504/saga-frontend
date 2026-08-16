@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,14 +24,17 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
   const [documentWeight, setDocumentWeight] = useState<number>(0);
   const [researchWeight, setResearchWeight] = useState<number>(0);
 
-  useEffect(() => {
+  const [prevTeamId, setPrevTeamId] = useState<string | undefined>(team?.teamId);
+
+  if (team?.teamId !== prevTeamId) {
+    setPrevTeamId(team?.teamId);
     if (team) {
       setCodeWeight(Number((team.codeWeight ?? 0).toFixed(2)));
       setTestWeight(Number((team.testWeight ?? 0).toFixed(2)));
       setDocumentWeight(Number((team.documentWeight ?? 0).toFixed(2)));
       setResearchWeight(Number((team.researchWeight ?? 0).toFixed(2)));
     }
-  }, [team]);
+  }
 
   const totalWeight = Math.round((codeWeight + testWeight + documentWeight + researchWeight) * 100) / 100;
   const isValid = totalWeight === 100;
@@ -61,10 +64,7 @@ export function TeamWeightModal({ isOpen, onClose, team, onSuccess }: TeamWeight
           onSuccess?.();
           onClose();
         },
-        onError: (err: unknown) => {
-          const resErr = err as Error & { response?: { data?: { message?: string } } };
-          toast.error(resErr?.response?.data?.message || resErr?.message || "Có lỗi xảy ra khi lưu thay đổi");
-        },
+        onError: () => { },
       }
     );
   };

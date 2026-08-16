@@ -38,6 +38,9 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
   if (status === 500 && (!rawMessage || rawMessage.toLowerCase().includes("internal server error"))) {
     return "Lỗi hệ thống máy chủ. Vui lòng thử lại sau.";
   }
+  if (status === 503 || (rawMessage && rawMessage.toLowerCase().includes("ai_agent_unavailable"))) {
+    return "Dịch vụ Trợ lý AI hiện đang tạm ngưng kết nối (503 Service Unavailable). Vui lòng thử lại sau ít phút.";
+  }
 
   if (!rawMessage) return fallbackMessage;
 
@@ -87,6 +90,21 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
   }
   if (msgLower.includes("internal server error")) {
     return "Lỗi hệ thống máy chủ. Vui lòng thử lại sau.";
+  }
+  if (msgLower.includes("already exists") || msgLower.includes("duplicate")) {
+    return "Dữ liệu đã tồn tại trong hệ thống. Vui lòng kiểm tra lại.";
+  }
+  if (msgLower.includes("validation failed") || msgLower.includes("invalid") || msgLower.includes("must be") || msgLower.includes("should be")) {
+    return "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+  }
+  if (msgLower.includes("expired") || msgLower.includes("timeout")) {
+    return "Phiên làm việc đã hết hạn hoặc quá hạn kết nối. Vui lòng thử lại.";
+  }
+  if (msgLower.includes("too large") || msgLower.includes("exceeds")) {
+    return "Dữ liệu tải lên quá lớn. Vui lòng giảm kích thước.";
+  }
+  if (msgLower.includes("not enough permission") || msgLower.includes("permission denied")) {
+    return "Bạn không có quyền thực hiện thao tác này.";
   }
 
   // Fallback to provided Vietnamese message if rawMessage is purely English or unrecognized

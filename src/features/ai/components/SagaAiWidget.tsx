@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -13,11 +12,32 @@ import {
   useAiConversationDetail,
   useCreateAiConversation,
   useSendAiMessage,
+  useSendAiMessageDynamic,
   useConfirmAiAction,
   useRejectAiAction
 } from "../hooks/useAi";
 import { aiApi } from "../api/aiApi";
-import { AiMessage } from "../types";
+import { AiMessage, AiConversation } from "../types";
+
+const getConversationList = (data: unknown): AiConversation[] => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  const obj = data as Record<string, unknown>;
+  if (Array.isArray(obj.content)) return obj.content;
+  if (Array.isArray(obj.data)) return obj.data;
+  return [];
+};
+
+const getMessageList = (data: unknown): AiMessage[] => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data as AiMessage[];
+  const obj = data as Record<string, unknown>;
+  if (Array.isArray(obj.messages)) return obj.messages as AiMessage[];
+  const msgs = obj.messages as Record<string, unknown> | undefined;
+  if (msgs && Array.isArray(msgs.content)) return msgs.content as AiMessage[];
+  if (msgs && Array.isArray(msgs.data)) return msgs.data as AiMessage[];
+  return [];
+};
 
 export function SagaAiWidget() {
   const params = useParams();
@@ -30,8 +50,6 @@ export function SagaAiWidget() {
 
   const activeConversationId = conversationByScope[currentScopeKey] || null;
 
-  const queryClient = useQueryClient();
-
   const {
     data: conversations,
     isLoading: isLoadingConversations,
@@ -41,10 +59,39 @@ export function SagaAiWidget() {
   const { data: detailData, isLoading: isLoadingDetail } = useAiConversationDetail(activeConversationId);
   const createMutation = useCreateAiConversation();
   const sendMutation = useSendAiMessage(activeConversationId || "");
+  const sendMutationDynamic = useSendAiMessageDynamic();
   const confirmMutation = useConfirmAiAction(activeConversationId || "");
   const rejectMutation = useRejectAiAction(activeConversationId || "");
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Parse lists securely
+  const parsedConversations = useMemo(() => getConversationList(conversations), [conversations]);
+  const filteredConversations = useMemo(() => {
+    return parsedConversations.filter((conv: AiConversation) => activeCourseId ? conv.courseId === activeCourseId : !conv.courseId);
+  }, [parsedConversations, activeCourseId]);
+
+  const isServiceUnavailable = isErrorConversations ||
+    (conversations as unknown as Record<string, unknown>)?.status === 503 ||
+    (conversations as unknown as Record<string, unknown>)?.error === "AI_AGENT_UNAVAILABLE";
+
+  const parsedMessages = useMemo(() => {
+    const rawList = getMessageList(detailData);
+    return rawList.filter((msg: AiMessage) => {
+      const text = (msg.content || msg.text || "").trim();
+      const roleStr = msg.role as string;
+      if (roleStr === 'SYSTEM' || roleStr === 'TOOL') return false;
+      // Hide strings like "discover_resource_context:COMPLETED", "propose_task_create:COMPLETED", etc.
+      if (/^[a-zA-Z0-9_]+:(COMPLETED|PENDING|STARTED|SUCCESS|FAILED|RUNNING)$/i.test(text)) return false;
+      if (text.startsWith("tool_") || text.includes(":COMPLETED") || text.includes(":STARTED")) return false;
+      return true;
+    });
+  }, [detailData]);
+
+  const isAiThinking = sendMutation.isPending || (
+    parsedMessages.length > 0 &&
+    ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes(parsedMessages[parsedMessages.length - 1]?.jobReference?.status || '')
+  );
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
@@ -69,11 +116,10 @@ export function SagaAiWidget() {
         {
           onSuccess: (newConv) => {
             setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: newConv.id }));
-            aiApi.sendMessage(newConv.id, messageContent, activeCourseId).then(() => {
-              queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", newConv.id] });
-              queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
-            }).catch((err) => {
-              toast.error(err?.message || "Lỗi khi gửi tin nhắn");
+            sendMutationDynamic.mutate({
+              conversationId: newConv.id,
+              content: messageContent,
+              courseId: activeCourseId,
             });
           },
         }
@@ -84,9 +130,11 @@ export function SagaAiWidget() {
     sendMutation.mutate(
       { content: messageContent, courseId: activeCourseId },
       {
-        onError: (err: any) => {
+        onError: (err: unknown) => {
+          const error = err as Record<string, unknown>;
+          const response = error?.response as Record<string, unknown>;
           // If 409 scope mismatch or conflict
-          if (err?.response?.status === 409 || err?.status === 409 || String(err?.message).includes("409")) {
+          if (response?.status === 409 || error?.status === 409 || String(error?.message).includes("409")) {
             toast.error("Cuộc trò chuyện này không thuộc Lớp học hiện tại. Đã tạo cuộc trò chuyện mới.");
             setConversationByScope((prev) => {
               const next = { ...prev };
@@ -142,8 +190,8 @@ export function SagaAiWidget() {
             <span className={cn(
               "px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase",
               msg.jobReference.status === "COMPLETED" ? "bg-emerald-500/20 text-emerald-600" :
-              msg.jobReference.status === "FAILED" ? "bg-destructive/20 text-destructive" :
-              "bg-amber-500/20 text-amber-600 animate-pulse"
+                msg.jobReference.status === "FAILED" ? "bg-destructive/20 text-destructive" :
+                  "bg-amber-500/20 text-amber-600 animate-pulse"
             )}>
               {msg.jobReference.status}
             </span>
@@ -189,8 +237,8 @@ export function SagaAiWidget() {
             </p>
 
             <div className="flex gap-2 pt-1">
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 onClick={() => confirmMutation.mutate(msg.pendingAction!.id)}
                 disabled={confirmMutation.isPending}
                 className="rounded-xl h-8 px-4 bg-primary text-primary-foreground text-xs font-bold gap-1.5 cursor-pointer flex-1"
@@ -198,8 +246,8 @@ export function SagaAiWidget() {
                 {confirmMutation.isPending ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
                 Xác nhận
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => rejectMutation.mutate(msg.pendingAction!.id)}
                 disabled={rejectMutation.isPending}
@@ -215,8 +263,8 @@ export function SagaAiWidget() {
         {/* Artifact Download Rendering */}
         {artifactId && (
           <div className="mt-3">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
               onClick={() => aiApi.downloadArtifact(artifactId)}
               className="rounded-xl h-8 px-3 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-500/20 text-xs font-bold gap-1.5 cursor-pointer"
@@ -298,7 +346,7 @@ export function SagaAiWidget() {
                 <div className="flex-1 overflow-y-auto">
                   {isLoadingConversations ? (
                     <div className="p-4 flex justify-center"><Loader2 className="animate-spin text-muted-foreground" /></div>
-                  ) : isErrorConversations || (conversations as any)?.status === 503 || (conversations as any)?.error === "AI_AGENT_UNAVAILABLE" ? (
+                  ) : isServiceUnavailable ? (
                     <div className="p-6 text-center space-y-3">
                       <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto">
                         <Bot size={20} className="animate-pulse" />
@@ -318,25 +366,21 @@ export function SagaAiWidget() {
                         Thử lại
                       </Button>
                     </div>
-                  ) : (() => {
-                    const rawList = Array.isArray(conversations) ? conversations : (conversations as any)?.content || (conversations as any)?.data || [];
-                    const convList = rawList.filter((conv: any) => activeCourseId ? conv.courseId === activeCourseId : !conv.courseId);
-                    return convList.length === 0 ? (
-                      <div className="p-6 text-center text-sm text-muted-foreground">Chưa có lịch sử cho không gian này. Hãy bắt đầu chat!</div>
-                    ) : (
-                      <div className="p-2 space-y-1">
-                        {convList.map((conv: any) => (
-                          <button
-                            key={conv.id}
-                            onClick={() => setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: conv.id }))}
-                            className="w-full text-left px-4 py-3 rounded-xl hover:bg-muted/50 text-sm font-medium transition-colors line-clamp-1 cursor-pointer"
-                          >
-                            {conv.title}
-                          </button>
-                        ))}
-                      </div>
-                    );
-                  })()}
+                  ) : filteredConversations.length === 0 ? (
+                    <div className="p-6 text-center text-sm text-muted-foreground">Chưa có lịch sử cho không gian này. Hãy bắt đầu chat!</div>
+                  ) : (
+                    <div className="p-2 space-y-1">
+                      {filteredConversations.map((conv: AiConversation) => (
+                        <button
+                          key={conv.id}
+                          onClick={() => setConversationByScope((prev) => ({ ...prev, [currentScopeKey]: conv.id }))}
+                          className="w-full text-left px-4 py-3 rounded-xl hover:bg-muted/50 text-sm font-medium transition-colors line-clamp-1 cursor-pointer"
+                        >
+                          {conv.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -354,30 +398,16 @@ export function SagaAiWidget() {
                     <div className="flex justify-center py-4"><Loader2 className="animate-spin text-muted-foreground" /></div>
                   ) : (
                     <>
-                      {(() => {
-                        let msgList = Array.isArray(detailData?.messages) ? detailData?.messages : (detailData as any)?.messages?.content || (detailData as any)?.messages?.data || (Array.isArray(detailData) ? detailData : []);
-
-                        // Filter out tool execution logs and raw metadata
-                        msgList = msgList.filter((msg: any) => {
-                          const text = (msg.content || msg.text || "").trim();
-                          if (msg.role === 'SYSTEM' || msg.role === 'TOOL') return false;
-                          // Hide strings like "discover_resource_context:COMPLETED", "propose_task_create:COMPLETED", etc.
-                          if (/^[a-zA-Z0-9_]+:(COMPLETED|PENDING|STARTED|SUCCESS|FAILED|RUNNING)$/i.test(text)) return false;
-                          if (text.startsWith("tool_") || text.includes(":COMPLETED") || text.includes(":STARTED")) return false;
-                          return true;
-                        });
-
-                        return msgList.map((msg: any) => (
-                          <div key={msg.id || msg.messageId} className={cn("flex w-full", msg.role === 'USER' ? "justify-end" : "justify-start")}>
-                            <div className={cn(
-                              "max-w-[85%] rounded-2xl px-4 py-3",
-                              msg.role === 'USER' ? "bg-primary text-white rounded-tr-sm" : "bg-background border border-border/50 shadow-sm rounded-tl-sm text-foreground"
-                            )}>
-                              {renderMessageContent(msg)}
-                            </div>
+                      {parsedMessages.map((msg: AiMessage) => (
+                        <div key={msg.id || (msg as unknown as Record<string, unknown>).messageId as string} className={cn("flex w-full", msg.role === 'USER' ? "justify-end" : "justify-start")}>
+                          <div className={cn(
+                            "max-w-[85%] rounded-2xl px-4 py-3",
+                            msg.role === 'USER' ? "bg-primary text-white rounded-tr-sm" : "bg-background border border-border/50 shadow-sm rounded-tl-sm text-foreground"
+                          )}>
+                            {renderMessageContent(msg)}
                           </div>
-                        ));
-                      })()}
+                        </div>
+                      ))}
                       {sendMutation.isPending && (
                         <div className="flex w-full justify-start">
                           <div className="bg-background border border-border/50 shadow-sm rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-2 text-muted-foreground">
@@ -396,20 +426,13 @@ export function SagaAiWidget() {
                       placeholder="Hỏi trợ lý AI..."
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      disabled={
-                        sendMutation.isPending ||
-                        ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes((Array.isArray(detailData?.messages) ? detailData?.messages : [])[((Array.isArray(detailData?.messages) ? detailData?.messages : []).length || 1) - 1]?.jobReference?.status || '')
-                      }
+                      disabled={isAiThinking}
                       className="rounded-xl border-border/50 bg-muted/30 focus-visible:ring-1"
                     />
                     <Button
                       type="submit"
                       size="icon"
-                      disabled={
-                        !inputText.trim() ||
-                        sendMutation.isPending ||
-                        ['PENDING', 'RUNNING', 'WAITING_RETRY'].includes((Array.isArray(detailData?.messages) ? detailData?.messages : [])[((Array.isArray(detailData?.messages) ? detailData?.messages : []).length || 1) - 1]?.jobReference?.status || '')
-                      }
+                      disabled={!inputText.trim() || isAiThinking}
                       className="rounded-xl shrink-0 disabled:opacity-50"
                     >
                       <Send size={16} />

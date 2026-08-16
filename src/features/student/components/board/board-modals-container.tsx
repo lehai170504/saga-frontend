@@ -60,6 +60,7 @@ interface BoardModalsContainerProps {
   taskToDelete: JiraTask | null;
   handleConfirmDelete: () => void;
   isDeleteTaskPending: boolean;
+  isEnded?: boolean;
 }
 
 export function BoardModalsContainer({
@@ -109,6 +110,7 @@ export function BoardModalsContainer({
   taskToDelete,
   handleConfirmDelete,
   isDeleteTaskPending,
+  isEnded,
 }: BoardModalsContainerProps) {
   return (
     <>
@@ -119,6 +121,7 @@ export function BoardModalsContainer({
         selectedTask={selectedTask}
         projectId={projectId}
         onTaskUpdated={(updatedTask) => setSelectedTask(updatedTask)}
+        isEnded={isEnded}
       />
 
       {/* Create Task Modal */}

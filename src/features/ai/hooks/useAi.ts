@@ -2,12 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { aiApi } from "../api/aiApi";
 import { toast } from "sonner";
 
-const getAiErrorMessage = (err: any, fallback: string) => {
-  if (err?.response?.status === 503 || err?.status === 503 || err?.response?.data?.error === "AI_AGENT_UNAVAILABLE") {
-    return "Dịch vụ Trợ lý AI hiện đang tạm ngưng kết nối (503 Service Unavailable). Vui lòng thử lại sau ít phút.";
-  }
-  return err?.response?.data?.message || err?.message || fallback;
-};
+import { getVietnameseErrorMessage } from "@/lib/error-utils";
 
 export const useAiConversations = () => {
   return useQuery({
@@ -38,8 +33,8 @@ export const useCreateAiConversation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
-    onError: (err: any) => {
-      toast.error(getAiErrorMessage(err, "Không thể tạo cuộc hội thoại"));
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Không thể tạo cuộc hội thoại"));
     }
   });
 };
@@ -56,8 +51,24 @@ export const useSendAiMessage = (conversationId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
     },
-    onError: (err: any) => {
-      toast.error(getAiErrorMessage(err, "Lỗi khi gửi tin nhắn"));
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Lỗi khi gửi tin nhắn"));
+    }
+  });
+};
+
+export const useSendAiMessageDynamic = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { conversationId: string; content: string; courseId?: string }) => {
+      return aiApi.sendMessage(payload.conversationId, payload.content, payload.courseId);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", variables.conversationId] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
+    },
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Lỗi khi gửi tin nhắn"));
     }
   });
 };
@@ -70,8 +81,8 @@ export const useConfirmAiAction = (conversationId: string) => {
       toast.success("Đã xác nhận thao tác thành công");
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
     },
-    onError: (err: any) => {
-      toast.error(err.message || "Không thể xác nhận thao tác");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Không thể xác nhận thao tác"));
     }
   });
 };
@@ -84,8 +95,8 @@ export const useRejectAiAction = (conversationId: string) => {
       toast.success("Đã từ chối thao tác");
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
     },
-    onError: (err: any) => {
-      toast.error(err.message || "Lỗi khi từ chối thao tác");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Lỗi khi từ chối thao tác"));
     }
   });
 };

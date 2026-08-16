@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
@@ -52,42 +52,25 @@ interface MemberItem {
 
 interface StudentMemberProgressTabProps {
   courseId: string;
-  teamId: string;
   isLeader: boolean;
   membersList: MemberItem[];
 }
 
 export function StudentMemberProgressTab({
   courseId,
-  teamId,
   isLeader,
   membersList,
 }: StudentMemberProgressTabProps) {
   const { user } = useAuth();
   const currentStudentId = user?.localProfileId || "";
 
-  // State for selected student (Leader can change, Member is locked to self)
+  // State for selected student
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
 
-  useEffect(() => {
-    if (isLeader) {
-      if (currentStudentId && membersList.some((m) => m.studentId === currentStudentId)) {
-        setSelectedStudentId(currentStudentId);
-      } else if (membersList.length > 0) {
-        setSelectedStudentId(membersList[0].studentId);
-      }
-    } else {
-      if (currentStudentId) {
-        setSelectedStudentId(currentStudentId);
-      } else if (membersList.length > 0) {
-        setSelectedStudentId(membersList[0].studentId);
-      }
-    }
-  }, [isLeader, currentStudentId, membersList]);
-
-  const targetStudentId = isLeader
-    ? selectedStudentId || currentStudentId || (membersList[0]?.studentId ?? "")
-    : currentStudentId || selectedStudentId || (membersList[0]?.studentId ?? "");
+  const targetStudentId = selectedStudentId ||
+    (isLeader
+      ? (currentStudentId && membersList.some((m) => m.studentId === currentStudentId) ? currentStudentId : (membersList[0]?.studentId ?? ""))
+      : (currentStudentId || (membersList[0]?.studentId ?? "")));
 
   const { data: progressData, isLoading, error } = useStudentProgress(courseId, targetStudentId);
 
@@ -161,7 +144,7 @@ export function StudentMemberProgressTab({
           {isLeader ? (
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-bold text-muted-foreground hidden md:inline">Chọn thành viên:</span>
-              <Select value={selectedStudentId} onValueChange={setSelectedStudentId}>
+              <Select value={targetStudentId} onValueChange={setSelectedStudentId}>
                 <SelectTrigger className="w-full sm:w-[260px] h-11 rounded-xl bg-background border-border/60 font-bold text-xs shadow-sm focus:ring-primary/20">
                   <SelectValue placeholder="Chọn thành viên...">
                     {(() => {
@@ -292,13 +275,12 @@ export function StudentMemberProgressTab({
                   </span>
                   <Badge
                     variant="outline"
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      progressData.overallCompletionRate >= 70
-                        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-                        : progressData.overallCompletionRate >= 30
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${progressData.overallCompletionRate >= 70
+                      ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                      : progressData.overallCompletionRate >= 30
                         ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
                         : "bg-destructive/10 text-destructive border-destructive/20"
-                    }`}
+                      }`}
                   >
                     {progressData.overallCompletionRate >= 70 ? "Tốt" : progressData.overallCompletionRate >= 30 ? "Trung bình" : "Cần đẩy nhanh"}
                   </Badge>

@@ -19,7 +19,6 @@ interface StudentCommitsViewProps {
 
 export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
 
-  const [mounted, setMounted] = useState(false);
   const [selectedRepoId, setSelectedRepoId] = useState<string>("");
   const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [page, setPage] = useState(0);
@@ -128,7 +127,7 @@ export function StudentCommitsView({ courseId }: StudentCommitsViewProps) {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
- <div className="p-6 max-w-[1400px] mx-auto space-y-6 "> 
+      <div className="p-6 max-w-[1400px] mx-auto space-y-6 ">
 
 
 

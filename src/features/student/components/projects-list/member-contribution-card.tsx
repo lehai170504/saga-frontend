@@ -73,12 +73,12 @@ export function MemberContributionCard({
   const avatarSrc =
     member.avatarUrl ||
     member.avatar ||
-    (member as any).picture ||
-    (member as any).photoUrl ||
+    ((member as unknown as Record<string, unknown>)?.picture as string) ||
+    ((member as unknown as Record<string, unknown>)?.photoUrl as string) ||
     (currentUser &&
-    (currentUser.localProfileId === member.studentId ||
-      currentUser.email === member.email ||
-      currentUser.fullName === member.fullName)
+      (currentUser.localProfileId === member.studentId ||
+        currentUser.email === member.email ||
+        currentUser.fullName === member.fullName)
       ? currentUser.avatarUrl || currentUser.avatar
       : "") ||
     "";
@@ -127,8 +127,8 @@ export function MemberContributionCard({
               <div
                 key={idx}
                 className={`p-3.5 rounded-2xl border flex items-start gap-2.5 text-xs font-semibold ${w.severity?.toUpperCase() === "HIGH" || w.severity?.toUpperCase() === "CRITICAL"
-                    ? "bg-destructive/10 border-destructive/20 text-destructive"
-                    : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
+                  ? "bg-destructive/10 border-destructive/20 text-destructive"
+                  : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
                   }`}
               >
                 <AlertTriangle size={15} className="shrink-0 mt-0.5" />

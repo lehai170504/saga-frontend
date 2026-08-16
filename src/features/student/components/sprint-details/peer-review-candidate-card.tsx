@@ -24,26 +24,23 @@ export function PeerReviewCandidateCard({
 
   return (
     <Card
-      className={`rounded-3xl border transition-all duration-300 overflow-hidden ${
-        isReviewed
+      className={`rounded-3xl border transition-all duration-300 overflow-hidden ${isReviewed
           ? "border-emerald-500/20 bg-emerald-500/[0.02] hover:shadow-lg"
           : "border-border/50 bg-card/60 backdrop-blur-md hover:shadow-xl hover:border-border"
-      }`}
+        }`}
     >
       <CardContent className="p-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
           <Avatar
-            className={`h-14 w-14 border-2 shrink-0 ${
-              isReviewed ? "border-emerald-500/30" : "border-background shadow-md"
-            }`}
+            className={`h-14 w-14 border-2 shrink-0 ${isReviewed ? "border-emerald-500/30" : "border-background shadow-md"
+              }`}
           >
-            <AvatarImage src={(candidate.avatarUrl as string) || (candidate as any).avatar || ""} alt={candidate.fullName} />
+            <AvatarImage src={(candidate.avatarUrl as string) || ((candidate as Record<string, unknown>)?.avatar as string) || ""} alt={candidate.fullName} />
             <AvatarFallback
-              className={`font-bold text-base ${
-                isReviewed
+              className={`font-bold text-base ${isReviewed
                   ? "bg-emerald-500/10 text-emerald-500"
                   : "bg-gradient-to-br from-primary/20 to-primary/10 text-primary"
-              }`}
+                }`}
             >
               {candidate.fullName.charAt(0)}
             </AvatarFallback>

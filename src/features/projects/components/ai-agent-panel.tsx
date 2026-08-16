@@ -114,7 +114,7 @@ export function AiAgentPanel(props: { projectId?: string }) {
         <CardContent className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
           {isLoadingConversations ? (
             <div className="flex justify-center p-4"><Loader2 className="animate-spin text-muted-foreground" /></div>
-          ) : isErrorConversations || (conversationsData as any)?.status === 503 || (conversationsData as any)?.error === "AI_AGENT_UNAVAILABLE" ? (
+          ) : isErrorConversations || (conversationsData as unknown as { status?: number; error?: string })?.status === 503 || (conversationsData as unknown as { status?: number; error?: string })?.error === "AI_AGENT_UNAVAILABLE" ? (
             <div className="p-6 text-center space-y-3">
               <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto">
                 <Bot size={20} className="animate-pulse" />
@@ -186,7 +186,7 @@ export function AiAgentPanel(props: { projectId?: string }) {
                   conversationDetail.messages
                     .filter(msg => {
                       const text = msg.content || msg.text || "";
-                      if (msg.role === 'SYSTEM' || (msg as any).role === 'TOOL') return false;
+                      if (msg.role === 'SYSTEM' || (msg as unknown as { role?: string }).role === 'TOOL') return false;
                       if (/^[a-zA-Z_]+:(COMPLETED|PENDING|STARTED)$/.test(text.trim())) return false;
                       return true;
                     })

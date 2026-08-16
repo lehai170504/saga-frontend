@@ -24,8 +24,6 @@ import { MobileMenuButton } from "@/components/layout/mobile-buttons";
 import { useNotificationsList, useUnreadCount, useMarkAsRead } from "@/features/notifications/hooks/useNotifications";
 import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush";
 import { BroadcastModal } from "@/features/admin/components/system/broadcast-modal";
-import { NotificationDetailModal } from "@/features/notifications/components/notification-detail-modal";
-import { Notification } from "@/features/notifications/types";
 import { Megaphone } from "lucide-react";
 
 import { formatNotificationRelativeTime } from "@/features/notifications/utils/formatTime";
@@ -49,7 +47,6 @@ export function Header({ onMenuClick }: HeaderProps) {
   // State quản lý việc đóng/mở Profile Modal & Notification Detail
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isBroadcastOpen, setIsBroadcastOpen] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -206,10 +203,6 @@ export function Header({ onMenuClick }: HeaderProps) {
                         key={notif.id}
                         onClick={() => {
                           markAsRead(notif.id);
-                          const targetNotif = notif;
-                          setTimeout(() => {
-                            setSelectedNotification(targetNotif);
-                          }, 50);
                         }}
                         className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
                           }`}
@@ -236,10 +229,6 @@ export function Header({ onMenuClick }: HeaderProps) {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 markAsRead(notif.id);
-                                const targetNotif = notif;
-                                setTimeout(() => {
-                                  setSelectedNotification(targetNotif);
-                                }, 50);
                               }}
                               className="text-[10px] font-extrabold text-primary hover:underline flex items-center gap-0.5 cursor-pointer"
                             >

@@ -16,11 +16,13 @@ import { JiraTask } from "@/features/projects/types";
 export function TaskStatusDropdown({
   projectId,
   task,
-  onTransitionSuccess
+  onTransitionSuccess,
+  isEnded
 }: {
   projectId: string;
   task: JiraTask;
   onTransitionSuccess?: (updatedTask: JiraTask) => void;
+  isEnded?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [localStatus, setLocalStatus] = useState<string | null>(null);
@@ -115,7 +117,7 @@ export function TaskStatusDropdown({
         <Button
           variant="outline"
           size="sm"
-          disabled={isPending}
+          disabled={isPending || isEnded}
           className={`h-7 rounded-lg text-[10px] font-bold px-2.5 py-0.5 flex items-center gap-1 cursor-pointer border shadow-sm transition-all hover:opacity-90 ${getStatusStyle(displayStatusRaw)}`}
         >
           {isPending ? (

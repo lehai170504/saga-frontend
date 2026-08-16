@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -18,11 +18,10 @@ import { OverallStatsTab } from "./project-stats/overall-stats-tab";
 
 interface StudentProjectStatsViewProps {
   courseId?: string;
+  hideHeader?: boolean;
 }
 
 export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewProps) {
-  const [mounted, setMounted] = useState(false);
-
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const projectId = myTeamData?.project?.id || "";
   const teamId = myTeamData?.teamId || "";
@@ -44,15 +43,7 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
 
   const { data: stats, isLoading: isLoadingStats } = useProjectDashboardStats(projectId);
 
-  useEffect(() => {
-    let isMounted = true;
-    requestAnimationFrame(() => {
-      if (isMounted) setMounted(true);
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+
 
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full bg-background">
@@ -119,7 +110,6 @@ export function StudentProjectStatsView({ courseId }: StudentProjectStatsViewPro
               <TabsContent value="member-progress" className="outline-none">
                 <StudentMemberProgressTab
                   courseId={courseId || ""}
-                  teamId={teamId}
                   isLeader={isLeader}
                   membersList={membersList}
                 />

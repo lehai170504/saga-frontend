@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { ArrowLeft, Users, UserCheck, ShieldAlert, Lock, FolderKanban } from "lucide-react";
+import { ArrowLeft, Users, UserCheck, ShieldAlert, Lock } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useMyTeamMembers } from "@/features/courses/hooks/useCourseStudents";
@@ -28,7 +28,6 @@ interface StudentSprintDetailsViewProps {
 }
 
 export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDetailsViewProps) {
-  const [mounted, setMounted] = useState(false);
 
   const { data: myTeamData, isLoading: isLoadingTeam } = useMyTeamMembers(courseId || "");
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(courseId || "");
@@ -108,7 +107,7 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
- <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 "> 
+      <div className="relative p-6 max-w-[1400px] mx-auto space-y-6 ">
         {/* Navigation / Back Button */}
         <div className="flex items-center justify-between">
           <Link
@@ -144,9 +143,9 @@ export function StudentSprintDetailsView({ courseId, sprintId }: StudentSprintDe
             <p className="text-sm text-muted-foreground">
               {currentSprint && currentSprint.endDate
                 ? `Đợt đánh giá chéo cho ${currentSprint.sprintName} sẽ tự động mở từ ngày ${(() => {
-                    const openD = new Date(new Date(currentSprint.endDate).getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return `${String(openD.getDate()).padStart(2, '0')}-${String(openD.getMonth() + 1).padStart(2, '0')}-${openD.getFullYear()}`;
-                  })()} (trước hạn kết thúc Sprint 7 ngày).`
+                  const openD = new Date(new Date(currentSprint.endDate).getTime() - 7 * 24 * 60 * 60 * 1000);
+                  return `${String(openD.getDate()).padStart(2, '0')}-${String(openD.getMonth() + 1).padStart(2, '0')}-${openD.getFullYear()}`;
+                })()} (trước hạn kết thúc Sprint 7 ngày).`
                 : "Sprint này chưa được thiết lập lịch thời gian trên Jira để mở đợt Đánh giá chéo."}
             </p>
             <div className="pt-2">

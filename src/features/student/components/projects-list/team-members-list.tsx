@@ -25,7 +25,7 @@ export function TeamMembersList({ sortedMembers, members }: TeamMembersListProps
   const rawList = sortedMembers || members || [];
   if (!rawList || rawList.length === 0) return null;
 
-  const displayList = sortedMembers ? sortedMembers : [...rawList].sort((a, b) => (a.roleInTeam === "LEADER" ? -1 : 1));
+  const displayList = sortedMembers ? sortedMembers : [...rawList].sort((a) => (a.roleInTeam === "LEADER" ? -1 : 1));
 
   return (
     <div className="space-y-4">
@@ -40,12 +40,12 @@ export function TeamMembersList({ sortedMembers, members }: TeamMembersListProps
           const avatarSrc =
             member.avatarUrl ||
             member.avatar ||
-            (member as any).picture ||
-            (member as any).photoUrl ||
+            ((member as unknown as Record<string, unknown>)?.picture as string) ||
+            ((member as unknown as Record<string, unknown>)?.photoUrl as string) ||
             (currentUser &&
-            (currentUser.localProfileId === member.studentId ||
-              currentUser.email === member.email ||
-              currentUser.fullName === member.fullName)
+              (currentUser.localProfileId === member.studentId ||
+                currentUser.email === member.email ||
+                currentUser.fullName === member.fullName)
               ? currentUser.avatarUrl || currentUser.avatar
               : "") ||
             "";
@@ -53,22 +53,19 @@ export function TeamMembersList({ sortedMembers, members }: TeamMembersListProps
           return (
             <div
               key={member.studentId}
-              className={`glass-panel rounded-3xl p-5 flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
-                isLeader ? "border-primary/30 bg-primary/[0.03]" : "hover:border-border/80"
-              }`}
+              className={`glass-panel rounded-3xl p-5 flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isLeader ? "border-primary/30 bg-primary/[0.03]" : "hover:border-border/80"
+                }`}
             >
               <Avatar
-                className={`h-12 w-12 border-2 ${
-                  isLeader ? "border-primary shadow-[0_0_12px_rgba(234,88,12,0.3)]" : "border-background shadow-md"
-                }`}
+                className={`h-12 w-12 border-2 ${isLeader ? "border-primary shadow-[0_0_12px_rgba(234,88,12,0.3)]" : "border-background shadow-md"
+                  }`}
               >
                 <AvatarImage src={avatarSrc} alt={member.fullName} />
                 <AvatarFallback
-                  className={`font-bold text-sm ${
-                    isLeader
-                      ? "bg-gradient-to-br from-primary to-orange-600 text-white"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+                  className={`font-bold text-sm ${isLeader
+                    ? "bg-gradient-to-br from-primary to-orange-600 text-white"
+                    : "bg-muted text-muted-foreground"
+                    }`}
                 >
                   {member.fullName.charAt(0)}
                 </AvatarFallback>
@@ -85,11 +82,10 @@ export function TeamMembersList({ sortedMembers, members }: TeamMembersListProps
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
-                      isLeader
-                        ? "bg-primary/10 text-primary border-primary/20"
-                        : "bg-muted/50 text-muted-foreground border-border/40"
-                    }`}
+                    className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${isLeader
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-muted/50 text-muted-foreground border-border/40"
+                      }`}
                   >
                     {isLeader ? "Trưởng nhóm" : "Thành viên"}
                   </span>

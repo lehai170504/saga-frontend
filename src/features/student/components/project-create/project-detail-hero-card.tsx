@@ -12,6 +12,7 @@ interface ProjectDetailHeroCardProps {
   fallbackProjectName?: string;
   isLeader: boolean;
   onOpenEdit: () => void;
+  isEnded?: boolean;
 }
 
 export function ProjectDetailHeroCard({
@@ -19,6 +20,7 @@ export function ProjectDetailHeroCard({
   fallbackProjectName,
   isLeader,
   onOpenEdit,
+  isEnded,
 }: ProjectDetailHeroCardProps) {
   const formatDate = (dateStr?: string | null) => {
     if (!dateStr) return null;
@@ -62,6 +64,7 @@ export function ProjectDetailHeroCard({
               size="sm"
               className="rounded-xl font-bold text-[10px] uppercase tracking-widest border-primary/20 hover:border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-all duration-300 flex items-center gap-1.5 px-3 py-1 cursor-pointer h-7 shadow-sm hover:shadow-md"
               onClick={onOpenEdit}
+              disabled={isEnded}
             >
               <Edit2 size={11} className="transition-transform group-hover:rotate-12" />
               Sửa thông tin

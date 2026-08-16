@@ -43,10 +43,10 @@ export function TaskAssigneeDropdown({
 
   const currentAssigneeId = task.assignee?.id;
   const currentAssigneeAvatar =
-    (task.assignee as any)?.avatarUrl ||
-    (task.assignee as any)?.avatar ||
+    ((task.assignee as unknown as Record<string, unknown>)?.avatarUrl as string) ||
+    ((task.assignee as unknown as Record<string, unknown>)?.avatar as string) ||
     (currentUser &&
-    (currentUser.localProfileId === currentAssigneeId || currentUser.email === (task.assignee as any)?.email)
+      (currentUser.localProfileId === currentAssigneeId || currentUser.email === ((task.assignee as unknown as Record<string, unknown>)?.email as string))
       ? currentUser.avatarUrl || currentUser.avatar
       : "") ||
     "";
@@ -88,7 +88,7 @@ export function TaskAssigneeDropdown({
             m.avatarUrl ||
             m.avatar ||
             (currentUser &&
-            (currentUser.localProfileId === m.studentId || currentUser.email === m.email || currentUser.fullName === m.fullName)
+              (currentUser.localProfileId === m.studentId || currentUser.email === m.email || currentUser.fullName === m.fullName)
               ? currentUser.avatarUrl || currentUser.avatar
               : "") ||
             "";
@@ -97,9 +97,8 @@ export function TaskAssigneeDropdown({
             <DropdownMenuItem
               key={m.studentId}
               onClick={() => handleSelectAssignee(m.studentId, m.fullName)}
-              className={`rounded-xl px-2.5 py-2 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${
-                isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
-              }`}
+              className={`rounded-xl px-2.5 py-2 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
+                }`}
             >
               <Avatar className="h-6 w-6 shrink-0">
                 <AvatarImage src={memberAvatar} alt={m.fullName} />
@@ -117,9 +116,8 @@ export function TaskAssigneeDropdown({
 
         <DropdownMenuItem
           onClick={() => handleSelectAssignee(null)}
-          className={`rounded-xl px-2.5 py-2 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${
-            !task.assignee ? "bg-muted text-foreground font-black" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-          }`}
+          className={`rounded-xl px-2.5 py-2 text-xs font-bold flex items-center gap-2.5 cursor-pointer transition-colors ${!task.assignee ? "bg-muted text-foreground font-black" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
         >
           <div className="h-6 w-6 rounded-full bg-muted/80 text-muted-foreground flex items-center justify-center font-bold text-[10px] shrink-0 border border-border/30">
             <User size={12} />

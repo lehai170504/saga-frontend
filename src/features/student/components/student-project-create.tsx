@@ -1,11 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { PageHeader } from "@/components/shared/PageHeader";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useStudentCourse } from "@/context/StudentCourseContext";
@@ -15,6 +12,7 @@ import {
   useProjectDetail,
   useUpdateProjectDetail,
 } from "@/features/projects/hooks/useProjects";
+import { isCourseEnded } from "@/lib/course-utils";
 import { useProjectTypes } from "@/features/admin/hooks/useProjectTypes";
 import { ProjectIntegrationPanel } from "@/features/integrations/components/project-integration-panel";
 import { SyncStatusMonitor } from "@/features/integrations/components/sync-status-monitor";
@@ -27,7 +25,6 @@ import { ProjectInfoSidebar } from "./project-create/project-info-sidebar";
 import { EditProjectDialog } from "./project-create/edit-project-dialog";
 
 export function StudentProjectCreate() {
-  const router = useRouter();
   const { courseId, course, isLoading: isLoadingCourse } = useStudentCourse();
   const { user, isLoading: isLoadingAuth } = useAuth();
 
@@ -50,11 +47,11 @@ export function StudentProjectCreate() {
   const myTeam = isStudent
     ? myTeamData
       ? {
-          teamId: myTeamData.teamId,
-          teamName: myTeamData.teamName,
-          projectId: myTeamData.project?.id,
-          projectName: myTeamData.project?.name || "",
-        }
+        teamId: myTeamData.teamId,
+        teamName: myTeamData.teamName,
+        projectId: myTeamData.project?.id,
+        projectName: myTeamData.project?.name || "",
+      }
       : null
     : myStudentRecord?.team;
 
@@ -75,6 +72,7 @@ export function StudentProjectCreate() {
 
   const isLoading = isLoadingCourse || isLoadingAuth || (isStudent ? isLoadingMyTeam : isLoadingStudents);
   const refetch = isStudent ? refetchMyTeam : refetchStudents;
+  const isEnded = isCourseEnded(course?.semester?.endDate);
 
   const handleOpenEdit = () => {
     setEditName(projectDetail?.name || myTeam?.projectName || "");
@@ -157,6 +155,7 @@ export function StudentProjectCreate() {
             teamName={myTeam.teamName}
             isCreating={isCreating}
             handleCreateProject={handleCreateProject}
+            isEnded={isEnded}
           />
         ) : (
           <div className="space-y-6">
@@ -168,9 +167,10 @@ export function StudentProjectCreate() {
                   fallbackProjectName={myTeam.projectName}
                   isLeader={myRole === "LEADER"}
                   onOpenEdit={handleOpenEdit}
+                  isEnded={isEnded}
                 />
 
-                <ProjectIntegrationPanel projectId={myTeam.projectId} />
+                <ProjectIntegrationPanel projectId={myTeam.projectId} isEnded={isEnded} />
               </div>
 
               <ProjectInfoSidebar teamName={myTeam.teamName} myRole={myRole} />

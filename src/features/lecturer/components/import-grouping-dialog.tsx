@@ -5,22 +5,22 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { Users, UploadCloud, DownloadCloud, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useImportStudents } from "@/features/courses/hooks/useCourseStudents";
-import { courseApi } from "@/features/courses/api/courseApi";
+import { useImportStudents, useDownloadGroupingTemplate } from "@/features/courses/hooks/useCourseStudents";
 
 interface ImportGroupingDialogProps {
   courseId: string;
   courseClassName?: string;
   onSuccess?: () => void;
+  disabled?: boolean;
 }
 
-export function ImportGroupingDialog({ courseId, courseClassName = courseId, onSuccess }: ImportGroupingDialogProps) {
+export function ImportGroupingDialog({ courseId, courseClassName = courseId, onSuccess, disabled }: ImportGroupingDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isDownloading, setIsDownloading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const importMutation = useImportStudents();
+  const downloadTemplateMutation = useDownloadGroupingTemplate(courseClassName);
 
   const handleImport = () => {
     if (!selectedFile) {
@@ -41,35 +41,14 @@ export function ImportGroupingDialog({ courseId, courseClassName = courseId, onS
     });
   };
 
-  const handleDownloadTemplate = async () => {
-    try {
-      setIsDownloading(true);
-      toast.loading("Đang tạo file template phân nhóm...", { id: "download-template" });
-      
-      const response = await courseApi.downloadGroupingTemplate(courseId);
-      
-      // Mở blob và cho tải về
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `course-student-grouping-${courseClassName}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode?.removeChild(link);
-      
-      toast.success("Tải template thành công! Hãy mở file, điền cột Group và Leader (x) rồi upload lại.", { id: "download-template" });
-    } catch (error: unknown) {
-      const errObj = error as { response?: { data?: { message?: string } } };
-      toast.error(errObj?.response?.data?.message || "Có lỗi xảy ra khi tải template.");
-    } finally {
-      setIsDownloading(false);
-    }
+  const handleDownloadTemplate = () => {
+    downloadTemplateMutation.mutate(courseId);
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 shadow-sm bg-primary hover:bg-primary/90">
+        <Button disabled={disabled} className="gap-2 shadow-sm bg-primary hover:bg-primary/90">
           <Users size={16} />
           Phân nhóm (Excel)
         </Button>
@@ -78,24 +57,24 @@ export function ImportGroupingDialog({ courseId, courseClassName = courseId, onS
         <DialogHeader>
           <DialogTitle>Tạo Nhóm hàng loạt bằng Excel</DialogTitle>
           <DialogDescription>
-            Quy trình tạo nhóm: <br/>
-            1. Tải Template danh sách sinh viên hiện có trong lớp.<br/>
-            2. Mở file Excel, điền tên nhóm vào cột <strong>Group</strong>.<br/>
-            3. Đánh dấu <strong>x</strong> vào cột <strong>Leader</strong> cho sinh viên làm nhóm trưởng.<br/>
+            Quy trình tạo nhóm: <br />
+            1. Tải Template danh sách sinh viên hiện có trong lớp.<br />
+            2. Mở file Excel, điền tên nhóm vào cột <strong>Group</strong>.<br />
+            3. Đánh dấu <strong>x</strong> vào cột <strong>Leader</strong> cho sinh viên làm nhóm trưởng.<br />
             4. Tải file đã điền lên hệ thống.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="grid gap-2 py-4">
           <div className="flex justify-center mb-4 border-b border-border/50 pb-4">
-            <Button 
-              variant="outline" 
-              className="gap-2 text-primary border-primary/20 hover:bg-primary/10 w-full" 
+            <Button
+              variant="outline"
+              className="gap-2 text-primary border-primary/20 hover:bg-primary/10 w-full"
               onClick={handleDownloadTemplate}
-              disabled={isDownloading}
+              disabled={downloadTemplateMutation.isPending}
             >
-              {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <DownloadCloud size={16} />}
-              {isDownloading ? "Đang tải..." : "1. Tải Template có sẵn sinh viên"}
+              {downloadTemplateMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <DownloadCloud size={16} />}
+              {downloadTemplateMutation.isPending ? "Đang tải..." : "1. Tải Template có sẵn sinh viên"}
             </Button>
           </div>
 
@@ -123,7 +102,7 @@ export function ImportGroupingDialog({ courseId, courseClassName = courseId, onS
             </p>
           </div>
         </div>
-        
+
         <div className="flex justify-end gap-2">
           <Button onClick={handleImport} disabled={importMutation.isPending || !selectedFile} className="w-full gap-2">
             {importMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}

@@ -58,8 +58,8 @@ export const useCreateProjectType = () => {
       queryClient.invalidateQueries({ queryKey: ["project-types"] });
       toast.success("Tạo Project Type thành công");
     },
-    onError: (err: Error | Record<string, unknown>) => {
-      toast.error((err as Error).message || "Lỗi khi tạo Project Type");
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, "Lỗi khi tạo Project Type"));
     }
   });
 };

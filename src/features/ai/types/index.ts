@@ -11,7 +11,7 @@ export interface AiPendingAction {
   actionType: string;
   description: string;
   status: 'PENDING' | 'CONFIRMED' | 'REJECTED';
-  payload?: Record<string, any>;
+  payload?: Record<string, unknown>;
 }
 
 export interface AiMessage {

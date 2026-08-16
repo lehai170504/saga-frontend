@@ -8,6 +8,7 @@ import { useCourseStudents } from "@/features/courses/hooks/useCourseStudents";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { CourseStudent } from "@/features/courses/types";
 import { ImportGroupingDialog } from "@/features/lecturer/components/import-grouping-dialog";
+import { isCourseEnded } from "@/lib/course-utils";
 import { motion } from "framer-motion";
 
 // Subcomponents
@@ -22,6 +23,7 @@ export function StudentListClient({ courseId }: { courseId: string }) {
   const { data: studentsData, isLoading: isLoadingStudents } = useCourseStudents(courseId);
   const { data: courseData } = useCourse(courseId);
   const className = courseData?.clazz?.name || courseData?.courseCode || courseId;
+  const isEnded = isCourseEnded(courseData?.semester?.endDate);
 
   const allStudentsWithTeam = useMemo(
     () => studentsData?.studentsWithTeam.content || [],
@@ -122,6 +124,7 @@ export function StudentListClient({ courseId }: { courseId: string }) {
             courseId={courseId}
             courseClassName={className}
             onSuccess={() => window.location.reload()}
+            disabled={isEnded}
           />
         </div>
       </div>
