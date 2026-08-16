@@ -106,22 +106,8 @@ export function Header({ onMenuClick }: HeaderProps) {
           <div className="h-8 w-px bg-border/40 hidden lg:block mx-2" />
         </div>
 
-        {/* Global Search */}
-        <div className="flex-1 max-w-2xl px-2 hidden md:flex items-center relative z-10">
-          <div className="relative w-full group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input
-              placeholder="Tìm kiếm lớp học, sinh viên, tài liệu..."
-              className="w-full pl-10 bg-primary/5 border-transparent hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:bg-background transition-all duration-300 rounded-full h-11 shadow-sm text-[15px]"
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:flex items-center gap-1.5 opacity-60 group-focus-within:opacity-100 transition-opacity">
-              <kbd className="inline-flex h-6 items-center gap-1 rounded-md border border-border/50 bg-background/50 px-2 font-mono text-[10px] font-medium text-muted-foreground shadow-sm">
-                <Command size={12} /> K
-              </kbd>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 md:hidden" />
+        {/* Empty Spacer since Search is removed */}
+        <div className="flex-1" />
 
         {/* Right side: Notifications + Theme toggle + User Dropdown */}
         <div className="flex items-center gap-2.5 shrink-0 relative z-10">
@@ -309,31 +295,11 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
                 className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
-                onClick={() => {
-                  if (typeof window !== "undefined") {
-                    sessionStorage.setItem("profile_modal_tab", "profile");
-                  }
-                  setIsProfileOpen(true);
-                }}
+                onClick={() => setIsProfileOpen(true)}
               >
                 <UserIcon className="mr-3 h-4 w-4" />
-                <span>Hồ sơ cá nhân</span>
+                <span>Hồ sơ & Cài đặt</span>
               </DropdownMenuItem>
-
-              {user?.applicationRole === "STUDENT" && (
-                <DropdownMenuItem
-                  className="cursor-pointer rounded-xl font-medium px-3 py-2.5 transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary"
-                  onClick={() => {
-                    if (typeof window !== "undefined") {
-                      sessionStorage.setItem("profile_modal_tab", "settings");
-                    }
-                    setIsProfileOpen(true);
-                  }}
-                >
-                  <Settings2 className="mr-3 h-4 w-4" />
-                  <span>Cài đặt & Tích hợp</span>
-                </DropdownMenuItem>
-              )}
 
               <DropdownMenuSeparator className="bg-border/40 my-2" />
               <DropdownMenuItem
