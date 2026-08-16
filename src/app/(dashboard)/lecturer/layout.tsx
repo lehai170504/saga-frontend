@@ -11,10 +11,10 @@ export default function LecturerLayout({
 }) {
   return (
     <RouteGuard allowedRoles={["LECTURER"]}>
-      <div className="min-h-screen bg-background">
-        <main className="w-full">{children}</main>
+      <>
+        {children}
         <SagaAiWidget />
-      </div>
+      </>
     </RouteGuard>
   );
 }

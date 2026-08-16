@@ -24,6 +24,8 @@ import { MobileMenuButton } from "@/components/layout/mobile-buttons";
 import { useNotificationsList, useUnreadCount, useMarkAsRead } from "@/features/notifications/hooks/useNotifications";
 import { useFirebasePush } from "@/features/notifications/hooks/useFirebasePush";
 import { BroadcastModal } from "@/features/admin/components/system/broadcast-modal";
+import { NotificationDetailModal } from "@/features/notifications/components/notification-detail-modal";
+import { Notification } from "@/features/notifications/types";
 import { Megaphone } from "lucide-react";
 
 import { formatNotificationRelativeTime } from "@/features/notifications/utils/formatTime";
@@ -44,9 +46,10 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  // State quản lý việc đóng/mở Profile Modal
+  // State quản lý việc đóng/mở Profile Modal & Notification Detail
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isBroadcastOpen, setIsBroadcastOpen] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -70,7 +73,11 @@ export function Header({ onMenuClick }: HeaderProps) {
   const handleMarkAsRead = (id: string, actionUrl: string | null) => {
     markAsRead(id);
     if (actionUrl) {
-      router.push(actionUrl);
+      if (actionUrl.startsWith("http://") || actionUrl.startsWith("https://")) {
+        window.open(actionUrl, "_blank", "noopener,noreferrer");
+      } else {
+        router.push(actionUrl);
+      }
     }
   };
 
@@ -87,7 +94,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <>
-      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
+      <header className="h-[72px] bg-background/80 backdrop-blur-2xl border-b border-border/40 flex items-center justify-between px-4 sm:px-6 z-50 gap-4 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] w-full transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-transparent before:pointer-events-none">
         {/* Logo and Mobile Menu */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0 relative z-10">
           {onMenuClick && (
@@ -197,7 +204,13 @@ export function Header({ onMenuClick }: HeaderProps) {
                     return (
                       <DropdownMenuItem
                         key={notif.id}
-                        onClick={() => handleMarkAsRead(notif.id, notif.actionUrl)}
+                        onClick={() => {
+                          markAsRead(notif.id);
+                          const targetNotif = notif;
+                          setTimeout(() => {
+                            setSelectedNotification(targetNotif);
+                          }, 50);
+                        }}
                         className={`flex gap-3 p-3 rounded-2xl cursor-pointer transition-colors border border-transparent outline-none focus:bg-muted/40 ${notif.read ? "opacity-75 hover:bg-muted/40" : "bg-primary/5 hover:bg-primary/10 border-primary/10"
                           }`}
                       >
@@ -217,6 +230,36 @@ export function Header({ onMenuClick }: HeaderProps) {
                           <p className="text-[10px] text-muted-foreground leading-normal line-clamp-2">
                             {notif.message}
                           </p>
+                          <div className="pt-1 flex items-center gap-2.5">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                markAsRead(notif.id);
+                                const targetNotif = notif;
+                                setTimeout(() => {
+                                  setSelectedNotification(targetNotif);
+                                }, 50);
+                              }}
+                              className="text-[10px] font-extrabold text-primary hover:underline flex items-center gap-0.5 cursor-pointer"
+                            >
+                              <span>🔍 Xem chi tiết</span>
+                            </button>
+                            {notif.actionUrl && (
+                              <a
+                                href={notif.actionUrl}
+                                target={notif.actionUrl.startsWith("http") ? "_blank" : "_self"}
+                                rel="noopener noreferrer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMarkAsRead(notif.id, notif.actionUrl);
+                                }}
+                                className="text-[10px] font-bold text-muted-foreground hover:text-primary hover:underline flex items-center gap-0.5"
+                              >
+                                <span>🔗 Mở liên kết ↗</span>
+                              </a>
+                            )}
+                          </div>
                         </div>
 
                         {!notif.read && (

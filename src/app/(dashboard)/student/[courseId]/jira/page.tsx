@@ -18,7 +18,7 @@ export default function StudentJiraPage({ params }: { params: Promise<{ courseId
   const teamId = myTeamData?.teamId || "";
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col w-full bg-background">
       {/* Tab Switcher Panel */}
       <div className="px-6 pt-6 bg-background">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

@@ -20,11 +20,17 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [actionUrl, setActionUrl] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   const handleBroadcast = async () => {
     if (!title.trim() || !message.trim()) {
       toast.error("Vui lòng nhập đầy đủ tiêu đề và nội dung.");
+      return;
+    }
+
+    if (actionUrl.trim() && !actionUrl.trim().startsWith("https://")) {
+      toast.error("Liên kết đính kèm phải là đường dẫn HTTPS tuyệt đối (ví dụ: https://example.com/document).");
       return;
     }
 
@@ -37,13 +43,19 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
       setIsSending(true);
       const idempotencyKey = uuidv4();
       await notificationApi.courseBroadcast(
-        { courseIds, title, message },
+        { 
+          courseIds, 
+          title: title.trim(), 
+          message: message.trim(),
+          ...(actionUrl.trim() ? { actionUrl: actionUrl.trim() } : {})
+        },
         idempotencyKey
       );
-      toast.success("Đã gửi thông báo thành công!");
+      toast.success("Đã gửi thông báo lớp học thành công!");
       setIsOpen(false);
       setTitle("");
       setMessage("");
+      setActionUrl("");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Có lỗi xảy ra khi gửi thông báo.");
     } finally {
@@ -87,8 +99,22 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Nhập nội dung thông báo (tối đa 1000 ký tự)..."
-              className="min-h-[120px]"
+              className="min-h-[100px]"
               maxLength={1000}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="actionUrl" className="font-bold text-xs flex justify-between">
+              <span>Đường dẫn đính kèm (tùy chọn)</span>
+              <span className="text-muted-foreground font-normal">Chỉ nhận HTTPS</span>
+            </Label>
+            <Input
+              id="actionUrl"
+              value={actionUrl}
+              onChange={(e) => setActionUrl(e.target.value)}
+              placeholder="https://docs.google.com/... hoặc https://github.com/..."
+              maxLength={500}
+              className="text-xs"
             />
           </div>
         </div>

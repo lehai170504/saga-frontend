@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 
-import { Bot, X, Send, Plus, Loader2, Check, Download } from "lucide-react";
+import { Bot, X, Send, Plus, Loader2, Check, Download, Sparkles, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   useAiConversations,
@@ -68,80 +68,127 @@ export function SagaAiWidget() {
     });
   };
 
-  const renderMessageContent = (msg: any) => {
+  const renderMessageContent = (msg: AiMessage) => {
     const textStr = msg.content || msg.text || "";
+    const artifactId = typeof msg.generatedArtifact === "string" ? msg.generatedArtifact : msg.artifactId;
+
     return (
       <div className="space-y-2">
-        <p className="whitespace-pre-wrap text-sm leading-relaxed">{textStr}</p>
+        {/* Main Text Content */}
+        {textStr && (
+          <p className="whitespace-pre-wrap text-sm leading-relaxed">{textStr}</p>
+        )}
 
-        {/* Pending Action Rendering */}
-        {msg.pendingAction && msg.pendingAction.status === 'PENDING' && (
-          <div className="mt-3 p-3 bg-muted/50 rounded-xl border border-border">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-              Đề xuất hành động: {msg.pendingAction.actionType}
+        {/* Citations Metadata Badge */}
+        {msg.citations && msg.citations.length > 0 && (
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full w-fit mt-1.5 border border-emerald-500/20">
+            <Check size={12} className="text-emerald-500" />
+            <span>Đã lấy dữ liệu thực tế từ SAGA System</span>
+          </div>
+        )}
+
+        {/* Async Job Reference Rendering */}
+        {msg.jobReference && (
+          <div className="mt-2.5 p-3 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between text-xs font-semibold">
+            <div className="flex items-center gap-2">
+              <Activity size={14} className="text-primary animate-pulse" />
+              <span>Tiến trình xử lý: <strong>{msg.jobReference.status}</strong></span>
+            </div>
+            <span className={cn(
+              "px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase",
+              msg.jobReference.status === "COMPLETED" ? "bg-emerald-500/20 text-emerald-600" :
+              msg.jobReference.status === "FAILED" ? "bg-destructive/20 text-destructive" :
+              "bg-amber-500/20 text-amber-600 animate-pulse"
+            )}>
+              {msg.jobReference.status}
+            </span>
+          </div>
+        )}
+
+        {/* Pending Action Proposal Card */}
+        {msg.pendingAction && (msg.pendingAction.status === 'PENDING' || !msg.pendingAction.status) && (
+          <div className="mt-3 p-4 bg-card rounded-2xl border border-primary/30 shadow-md space-y-3">
+            <div className="flex items-center justify-between border-b border-border/40 pb-2">
+              <p className="text-xs font-extrabold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                <Sparkles size={14} />
+                Đề xuất tạo/cập nhật Task
+              </p>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 uppercase">
+                Chờ xác nhận
+              </span>
+            </div>
+
+            <div className="space-y-1.5 text-xs">
+              <p className="font-extrabold text-foreground text-sm">
+                {msg.pendingAction.description || "Tạo Task mới trên Jira"}
+              </p>
+              {msg.pendingAction.actionType && (
+                <p className="text-muted-foreground font-semibold">
+                  Loại hành động: <span className="text-foreground uppercase font-bold">{msg.pendingAction.actionType}</span>
+                </p>
+              )}
+              {msg.pendingAction.payload && (
+                <div className="bg-muted/40 p-2.5 rounded-xl space-y-1 text-[11px] font-medium border border-border/30">
+                  {Object.entries(msg.pendingAction.payload).map(([k, v]) => (
+                    <div key={k} className="flex justify-between gap-2">
+                      <span className="text-muted-foreground capitalize">{k}:</span>
+                      <span className="font-bold text-foreground truncate">{String(v)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <p className="text-[10px] text-muted-foreground italic">
+              ℹ️ Nhiệm vụ chưa được tạo. Bấm <strong>Xác nhận</strong> để thực hiện thay đổi trên Jira.
             </p>
-            <p className="text-sm mb-3">{msg.pendingAction.description}</p>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
+
+            <div className="flex gap-2 pt-1">
+              <Button 
+                size="sm" 
                 onClick={() => confirmMutation.mutate(msg.pendingAction!.id)}
                 disabled={confirmMutation.isPending}
-                className="rounded-lg h-8 px-3 bg-primary text-white"
+                className="rounded-xl h-8 px-4 bg-primary text-primary-foreground text-xs font-bold gap-1.5 cursor-pointer flex-1"
               >
-                {confirmMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Check className="w-3 h-3 mr-1" />}
+                {confirmMutation.isPending ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
                 Xác nhận
               </Button>
-              <Button
-                size="sm"
+              <Button 
+                size="sm" 
                 variant="outline"
                 onClick={() => rejectMutation.mutate(msg.pendingAction!.id)}
                 disabled={rejectMutation.isPending}
-                className="rounded-lg h-8 px-3"
+                className="rounded-xl h-8 px-3 text-xs font-bold cursor-pointer"
               >
-                <X className="w-3 h-3 mr-1" />
-                Từ chối
+                <X size={13} className="mr-1" />
+                Hủy
               </Button>
             </div>
           </div>
         )}
 
-        {/* Artifact Rendering */}
-        {(msg.generatedArtifact || msg.artifactId) && (
+        {/* Artifact Download Rendering */}
+        {artifactId && (
           <div className="mt-3">
-            <Button
-              size="sm"
+            <Button 
+              size="sm" 
               variant="outline"
-              onClick={() => aiApi.downloadArtifact(msg.generatedArtifact || msg.artifactId!)}
-              className="rounded-lg h-8 px-3 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-500/20"
+              onClick={() => aiApi.downloadArtifact(artifactId)}
+              className="rounded-xl h-8 px-3 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-500/20 text-xs font-bold gap-1.5 cursor-pointer"
             >
-              <Download className="w-3 h-3 mr-2" />
-              Tải File (Artifact)
+              <Download size={13} />
+              <span>Tải file báo cáo ({artifactId})</span>
             </Button>
           </div>
         )}
 
-        {/* Job Reference Rendering */}
-        {msg.jobReference && (
-          <div className="mt-2">
-            <span className={cn(
-              "inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold",
-              msg.jobReference.status === 'COMPLETED' ? "bg-emerald-500/15 text-emerald-600" :
-                msg.jobReference.status === 'FAILED' ? "bg-destructive/15 text-destructive" :
-                  "bg-amber-500/15 text-amber-600 animate-pulse"
-            )}>
-              {msg.jobReference.status === 'PENDING' && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
-              {msg.jobReference.status === 'RUNNING' && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
-              {msg.jobReference.status === 'WAITING_RETRY' && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
-              Trạng thái hệ thống: {msg.jobReference.status}
-            </span>
-          </div>
-        )}
         {/* Suggested Followups */}
         {msg.suggestedFollowups && msg.suggestedFollowups.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {msg.suggestedFollowups.map((followup: string, idx: number) => (
+          <div className="mt-3 pt-2 border-t border-border/30 flex flex-wrap gap-1.5">
+            {msg.suggestedFollowups.map((followup, fIdx) => (
               <button
-                key={idx}
+                key={fIdx}
+                type="button"
                 onClick={() => {
                   if (activeConversationId) {
                     sendMutation.mutate(followup);
@@ -149,10 +196,9 @@ export function SagaAiWidget() {
                     setInputText(followup);
                   }
                 }}
-                disabled={sendMutation.isPending}
-                className="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-full transition-colors text-left disabled:opacity-50"
+                className="text-[11px] font-semibold bg-muted/60 hover:bg-primary/10 hover:text-primary text-muted-foreground px-2.5 py-1 rounded-full border border-border/40 transition-colors text-left"
               >
-                {followup}
+                💡 {followup}
               </button>
             ))}
           </div>
@@ -243,12 +289,13 @@ export function SagaAiWidget() {
                       {(() => {
                         let msgList = Array.isArray(detailData?.messages) ? detailData?.messages : (detailData as any)?.messages?.content || (detailData as any)?.messages?.data || (Array.isArray(detailData) ? detailData : []);
 
-                        // Filter out tool execution logs
+                        // Filter out tool execution logs and raw metadata
                         msgList = msgList.filter((msg: any) => {
-                          const text = msg.content || msg.text || "";
+                          const text = (msg.content || msg.text || "").trim();
                           if (msg.role === 'SYSTEM' || msg.role === 'TOOL') return false;
-                          // Hide string like "discover_resource_context:COMPLETED"
-                          if (/^[a-zA-Z_]+:(COMPLETED|PENDING|STARTED)$/.test(text.trim())) return false;
+                          // Hide strings like "discover_resource_context:COMPLETED", "propose_task_create:COMPLETED", etc.
+                          if (/^[a-zA-Z0-9_]+:(COMPLETED|PENDING|STARTED|SUCCESS|FAILED|RUNNING)$/i.test(text)) return false;
+                          if (text.startsWith("tool_") || text.includes(":COMPLETED") || text.includes(":STARTED")) return false;
                           return true;
                         });
 
