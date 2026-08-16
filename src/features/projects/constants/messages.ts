@@ -39,6 +39,10 @@ export const TASK_MESSAGES = {
     SUCCESS: "Cập nhật trạng thái công việc thành công!",
     ERROR: "Có lỗi xảy ra khi cập nhật trạng thái",
   },
+  ATTACHMENT: {
+    SUCCESS: "Đính kèm bằng chứng/tệp thành công vào Task!",
+    ERROR: "Có lỗi xảy ra khi đính kèm bằng chứng vào Task",
+  },
 } as const;
 
 export const SPRINT_MESSAGES = {

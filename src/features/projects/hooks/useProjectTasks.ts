@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { taskApi, GetTasksParams, CreateTaskRequest, UpdateTaskRequest } from "../api/taskApi";
+import { taskApi, GetTasksParams, CreateTaskRequest, UpdateTaskRequest, AttachTaskEvidenceRequest } from "../api/taskApi";
 import { JiraTask } from "../types";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
@@ -340,6 +340,29 @@ export const useTransitionTask = (projectId: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
     }
+  });
+};
+
+export const useAttachTaskEvidence = (projectId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      taskId,
+      data,
+      idempotencyKey,
+    }: {
+      taskId: string;
+      data: AttachTaskEvidenceRequest;
+      idempotencyKey: string;
+    }) => taskApi.attachTaskEvidence(projectId, taskId, data, idempotencyKey),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["project-task", projectId] });
+      toast.success(TASK_MESSAGES.ATTACHMENT.SUCCESS);
+    },
+    onError: (err: unknown) => {
+      toast.error(getVietnameseErrorMessage(err, TASK_MESSAGES.ATTACHMENT.ERROR));
+    },
   });
 };
 

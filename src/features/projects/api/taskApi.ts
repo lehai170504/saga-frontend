@@ -44,6 +44,31 @@ export type TaskTransition = {
   targetStatusName: string;
 };
 
+export type AttachTaskEvidenceRequest = {
+  files?: File[];
+  link?: string;
+};
+
+export interface TaskAttachmentItem {
+  id: string;
+  externalId: string;
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
+export interface TaskWebLinkItem {
+  id: string;
+  url: string;
+  remoteLinkId: string | null;
+}
+
+export interface TaskAttachmentResponse {
+  taskId: string;
+  attachments: TaskAttachmentItem[];
+  links: TaskWebLinkItem[];
+}
+
 export const taskApi = {
   getProjectTasks: async (projectId: string, params?: GetTasksParams) => {
     const res = await axiosInstance.get<never, ProjectTasksResponse>(`/api/v1/projects/${projectId}/tasks`, {
@@ -133,6 +158,33 @@ export const taskApi = {
         "Idempotency-Key": idempotencyKey
       }
     });
+  },
+
+  attachTaskEvidence: async (
+    projectId: string,
+    taskId: string,
+    data: AttachTaskEvidenceRequest,
+    idempotencyKey: string
+  ) => {
+    const formData = new FormData();
+    if (data.files && data.files.length > 0) {
+      data.files.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+    if (data.link && data.link.trim()) {
+      formData.append("link", data.link.trim());
+    }
+
+    return axiosInstance.post<never, TaskAttachmentResponse>(
+      `/api/v1/projects/${projectId}/tasks/${taskId}/attachments`,
+      formData,
+      {
+        headers: {
+          "Idempotency-Key": idempotencyKey,
+        },
+      }
+    );
   },
 
   deleteTask: async (projectId: string, taskId: string, idempotencyKey: string) => {

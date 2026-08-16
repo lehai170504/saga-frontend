@@ -362,6 +362,26 @@ export type JiraTaskActor = {
   studentCode: string;
 };
 
+export interface TaskAttachmentItem {
+  id: string;
+  externalId: string;
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
+export interface TaskWebLinkItem {
+  id: string;
+  url: string;
+  remoteLinkId: string | null;
+}
+
+export interface TaskAttachmentResponse {
+  taskId: string;
+  attachments: TaskAttachmentItem[];
+  links: TaskWebLinkItem[];
+}
+
 export type JiraTask = {
   id: string;
   projectId: string;
@@ -388,6 +408,8 @@ export type JiraTask = {
   assignee: JiraTaskActor | null;
   reporter: JiraTaskActor | null;
   blocksTaskId: string | null;
+  attachments?: TaskAttachmentItem[];
+  links?: TaskWebLinkItem[];
 };
 
 export type ProjectTasksResponse = {
