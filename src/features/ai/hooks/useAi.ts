@@ -73,16 +73,48 @@ export const useSendAiMessageDynamic = () => {
   });
 };
 
+const getAiActionErrorMessage = (err: unknown, fallback: string) => {
+  const error = err as Record<string, unknown>;
+  const response = error?.response as Record<string, unknown>;
+  const data = response?.data as Record<string, unknown>;
+  const status = response?.status || error?.status;
+  const errorCode = String(data?.error || error?.error || "");
+
+  if (errorCode === "AI_AGENT_UNAVAILABLE" || status === 503) {
+    return "Dịch vụ AI hiện đang bận hoặc gián đoạn (503). Vui lòng thử lại sau ít phút.";
+  }
+  if (errorCode === "AI_AGENT_NOT_CONFIGURED") {
+    return "Hệ thống Trợ lý AI chưa sẵn sàng.";
+  }
+  if (errorCode === "AI_AGENT_COURSE_SCOPE_MISMATCH" || errorCode === "AI_AGENT_CONFLICT" || status === 409) {
+    return "Đề xuất đã hết hạn hoặc đã được xử lý (TTL 10 phút). Vui lòng nhờ AI đề xuất lại.";
+  }
+  if (errorCode === "AI_AGENT_COURSE_FORBIDDEN" || status === 403) {
+    return "Bạn không có quyền truy cập hoặc thực hiện thao tác này.";
+  }
+  if (errorCode === "AI_AGENT_RESOURCE_NOT_FOUND" || status === 404) {
+    return "Hội thoại hoặc đề xuất không tồn tại.";
+  }
+  if (errorCode === "AI_AGENT_ACTION_UNSUPPORTED" || errorCode === "AI_AGENT_REQUEST_INVALID" || status === 400) {
+    return "Thao tác không được hỗ trợ hoặc dữ liệu không hợp lệ.";
+  }
+  if (status === 401) {
+    return "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+  }
+  return getVietnameseErrorMessage(err, fallback);
+};
+
 export const useConfirmAiAction = (conversationId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (actionId: string) => aiApi.confirmAction(actionId),
     onSuccess: () => {
-      toast.success("Đã xác nhận thao tác thành công");
+      toast.success("Đã xác nhận tạo Task thành công!");
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: unknown) => {
-      toast.error(getVietnameseErrorMessage(err, "Không thể xác nhận thao tác"));
+      toast.error(getAiActionErrorMessage(err, "Không thể xác nhận thao tác"));
     }
   });
 };
@@ -92,11 +124,12 @@ export const useRejectAiAction = (conversationId: string) => {
   return useMutation({
     mutationFn: (actionId: string) => aiApi.rejectAction(actionId),
     onSuccess: () => {
-      toast.success("Đã từ chối thao tác");
+      toast.success("Đã từ chối đề xuất tạo Task.");
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
+      queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
     onError: (err: unknown) => {
-      toast.error(getVietnameseErrorMessage(err, "Lỗi khi từ chối thao tác"));
+      toast.error(getAiActionErrorMessage(err, "Lỗi khi từ chối thao tác"));
     }
   });
 };

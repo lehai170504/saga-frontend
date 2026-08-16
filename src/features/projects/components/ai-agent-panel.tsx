@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bot, User, Send, Plus, Loader2, MessageSquare, Clock, Download, CheckCircle, XCircle } from "lucide-react";
+import { Bot, User, Send, Plus, Loader2, MessageSquare, Clock, Download, CheckCircle, XCircle, Sparkles } from "lucide-react";
 import {
   useConversations,
   useConversation,
@@ -206,23 +206,44 @@ export function AiAgentPanel(props: { projectId?: string }) {
                           </div>
 
                           {/* Render Pending Action Buttons */}
-                          {msg.pendingAction && msg.pendingAction.status === 'PENDING' && (
-                            <div className="p-3 bg-card border border-border rounded-xl shadow-sm mt-2">
-                              <span className="text-xs font-bold flex items-center gap-2 text-foreground mb-2">
-                                <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
-                                Đề xuất hành động: {msg.pendingAction.actionType}
-                              </span>
-                              <p className="text-xs text-muted-foreground mb-3">{msg.pendingAction.description}</p>
-                              <div className="flex gap-2">
-                                <Button size="sm" variant="ghost" className="h-8 text-success hover:bg-success/20 rounded-lg" onClick={() => confirmAction(msg.pendingAction!.id)} disabled={isConfirming || isRejecting}>
-                                  <CheckCircle size={14} className="mr-1" /> Duyệt
-                                </Button>
-                                <Button size="sm" variant="ghost" className="h-8 text-destructive hover:bg-destructive/20 rounded-lg" onClick={() => rejectAction(msg.pendingAction!.id)} disabled={isConfirming || isRejecting}>
-                                  <XCircle size={14} className="mr-1" /> Hủy
-                                </Button>
+                          {(() => {
+                            const pendingAction = msg.pendingAction || (msg as any).pending_action || (msg as any).proposedAction || (msg as any).action;
+                            if (!pendingAction) return null;
+
+                            const actionId = pendingAction.id || pendingAction.actionId;
+                            const status = (pendingAction.status || "PENDING").toUpperCase();
+                            const description = pendingAction.description || pendingAction.summary || pendingAction.title || "Tạo Task mới trên Jira";
+                            const actionType = pendingAction.actionType || pendingAction.type || pendingAction.action_type;
+
+                            return (
+                              <div className="p-3.5 bg-card border border-primary/30 rounded-2xl shadow-sm mt-2 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-bold flex items-center gap-1.5 text-primary">
+                                    <Sparkles size={14} />
+                                    Đề xuất hành động: <span className="uppercase">{actionType || "TASK_CREATE"}</span>
+                                  </span>
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${status === "CONFIRMED" || status === "COMPLETED" ? "bg-emerald-500/10 text-emerald-600" : status === "REJECTED" ? "bg-muted text-muted-foreground" : "bg-amber-500/10 text-amber-600"}`}>
+                                    {status === "CONFIRMED" || status === "COMPLETED" ? "Đã xác nhận" : status === "REJECTED" ? "Đã hủy" : "Chờ xác nhận"}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-foreground font-medium">{description}</p>
+                                {status === "PENDING" && actionId ? (
+                                  <div className="flex gap-2 pt-1">
+                                    <Button size="sm" className="h-8 text-xs font-bold rounded-xl flex-1 gap-1 cursor-pointer" onClick={() => confirmAction(actionId)} disabled={isConfirming || isRejecting}>
+                                      <CheckCircle size={14} /> Xác nhận
+                                    </Button>
+                                    <Button size="sm" variant="outline" className="h-8 text-xs font-bold rounded-xl gap-1 cursor-pointer" onClick={() => rejectAction(actionId)} disabled={isConfirming || isRejecting}>
+                                      <XCircle size={14} /> Hủy
+                                    </Button>
+                                  </div>
+                                ) : status === "CONFIRMED" || status === "COMPLETED" ? (
+                                  <p className="text-xs font-bold text-emerald-600 flex items-center gap-1"><CheckCircle size={14} /> Đã tạo Task thành công trên Jira!</p>
+                                ) : (
+                                  <p className="text-xs font-medium text-muted-foreground">Đã hủy bỏ đề xuất tạo Task này.</p>
+                                )}
                               </div>
-                            </div>
-                          )}
+                            );
+                          })()}
 
                           {/* Render Artifact Download Buttons */}
                           {msg.generatedArtifact && (

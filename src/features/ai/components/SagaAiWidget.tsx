@@ -199,66 +199,96 @@ export function SagaAiWidget() {
         )}
 
         {/* Pending Action Proposal Card */}
-        {msg.pendingAction && (msg.pendingAction.status === 'PENDING' || !msg.pendingAction.status) && (
-          <div className="mt-3 p-4 bg-card rounded-2xl border border-primary/30 shadow-md space-y-3">
-            <div className="flex items-center justify-between border-b border-border/40 pb-2">
-              <p className="text-xs font-extrabold uppercase tracking-wider text-primary flex items-center gap-1.5">
-                <Sparkles size={14} />
-                Đề xuất tạo/cập nhật Task
-              </p>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 uppercase">
-                Chờ xác nhận
-              </span>
-            </div>
+        {(() => {
+          const pendingAction = msg.pendingAction || (msg as any).pending_action || (msg as any).proposedAction || (msg as any).action;
+          if (!pendingAction) return null;
 
-            <div className="space-y-1.5 text-xs">
-              <p className="font-extrabold text-foreground text-sm">
-                {msg.pendingAction.description || "Tạo Task mới trên Jira"}
-              </p>
-              {msg.pendingAction.actionType && (
-                <p className="text-muted-foreground font-semibold">
-                  Loại hành động: <span className="text-foreground uppercase font-bold">{msg.pendingAction.actionType}</span>
+          const actionId = pendingAction.id || pendingAction.actionId;
+          const status = (pendingAction.status || "PENDING").toUpperCase();
+          const description = pendingAction.description || pendingAction.summary || pendingAction.title || "Tạo Task mới trên Jira";
+          const actionType = pendingAction.actionType || pendingAction.type || pendingAction.action_type;
+          const payload = pendingAction.payload || pendingAction.parameters || pendingAction.data;
+
+          return (
+            <div className="mt-3 p-4 bg-card rounded-2xl border border-primary/30 shadow-md space-y-3">
+              <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                <p className="text-xs font-extrabold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                  <Sparkles size={14} />
+                  Đề xuất tạo/cập nhật Task
                 </p>
-              )}
-              {msg.pendingAction.payload && (
-                <div className="bg-muted/40 p-2.5 rounded-xl space-y-1 text-[11px] font-medium border border-border/30">
-                  {Object.entries(msg.pendingAction.payload).map(([k, v]) => (
-                    <div key={k} className="flex justify-between gap-2">
-                      <span className="text-muted-foreground capitalize">{k}:</span>
-                      <span className="font-bold text-foreground truncate">{String(v)}</span>
-                    </div>
-                  ))}
+                <span className={cn(
+                  "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase",
+                  status === "CONFIRMED" || status === "COMPLETED" ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" :
+                    status === "REJECTED" ? "bg-muted text-muted-foreground border border-border/40" :
+                      "bg-amber-500/10 text-amber-600 border border-amber-500/20"
+                )}>
+                  {status === "CONFIRMED" || status === "COMPLETED" ? "Đã xác nhận" :
+                    status === "REJECTED" ? "Đã hủy" : "Chờ xác nhận"}
+                </span>
+              </div>
+
+              <div className="space-y-1.5 text-xs">
+                <p className="font-extrabold text-foreground text-sm">
+                  {description}
+                </p>
+                {actionType && (
+                  <p className="text-muted-foreground font-semibold">
+                    Loại hành động: <span className="text-foreground uppercase font-bold">{actionType}</span>
+                  </p>
+                )}
+                {payload && typeof payload === "object" && (
+                  <div className="bg-muted/40 p-2.5 rounded-xl space-y-1 text-[11px] font-medium border border-border/30">
+                    {Object.entries(payload).map(([k, v]) => (
+                      <div key={k} className="flex justify-between gap-2">
+                        <span className="text-muted-foreground capitalize">{k}:</span>
+                        <span className="font-bold text-foreground truncate">{String(v)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {status === "PENDING" ? (
+                <>
+                  <p className="text-[10px] text-muted-foreground italic">
+                    ℹ️ Nhiệm vụ chưa được tạo. Bấm <strong>Xác nhận</strong> để thực hiện thay đổi trên Jira.
+                  </p>
+
+                  <div className="flex gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      onClick={() => actionId && confirmMutation.mutate(actionId)}
+                      disabled={confirmMutation.isPending || !actionId}
+                      className="rounded-xl h-8 px-4 bg-primary text-primary-foreground text-xs font-bold gap-1.5 cursor-pointer flex-1"
+                    >
+                      {confirmMutation.isPending ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
+                      Xác nhận
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => actionId && rejectMutation.mutate(actionId)}
+                      disabled={rejectMutation.isPending || !actionId}
+                      className="rounded-xl h-8 px-3 text-xs font-bold cursor-pointer"
+                    >
+                      <X size={13} className="mr-1" />
+                      Hủy
+                    </Button>
+                  </div>
+                </>
+              ) : status === "CONFIRMED" || status === "COMPLETED" ? (
+                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-2 rounded-xl border border-emerald-500/20">
+                  <Check size={14} />
+                  <span>Đã tạo Task thành công trên Jira!</span>
+                </div>
+              ) : (
+                <div className="text-xs font-semibold text-muted-foreground bg-muted p-2 rounded-xl">
+                  <span>Đã hủy bỏ đề xuất tạo Task này.</span>
                 </div>
               )}
             </div>
-
-            <p className="text-[10px] text-muted-foreground italic">
-              ℹ️ Nhiệm vụ chưa được tạo. Bấm <strong>Xác nhận</strong> để thực hiện thay đổi trên Jira.
-            </p>
-
-            <div className="flex gap-2 pt-1">
-              <Button
-                size="sm"
-                onClick={() => confirmMutation.mutate(msg.pendingAction!.id)}
-                disabled={confirmMutation.isPending}
-                className="rounded-xl h-8 px-4 bg-primary text-primary-foreground text-xs font-bold gap-1.5 cursor-pointer flex-1"
-              >
-                {confirmMutation.isPending ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
-                Xác nhận
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => rejectMutation.mutate(msg.pendingAction!.id)}
-                disabled={rejectMutation.isPending}
-                className="rounded-xl h-8 px-3 text-xs font-bold cursor-pointer"
-              >
-                <X size={13} className="mr-1" />
-                Hủy
-              </Button>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Artifact Download Rendering */}
         {artifactId && (
