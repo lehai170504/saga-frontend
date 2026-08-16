@@ -21,7 +21,7 @@ import { useCourse } from "@/features/courses/hooks/useCourses";
 import { isCourseEnded } from "@/lib/course-utils";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
-import { AiConversation, AiMessage } from "@/features/ai/types";
+import { AiConversation, AiMessage, GeneratedArtifact, getArtifactButtonLabel } from "@/features/ai/types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function AiAgentPanel(props?: { projectId?: string }) {
@@ -356,24 +356,41 @@ export function AiAgentPanel(props?: { projectId?: string }) {
                           })()}
 
                           {/* Render Artifact Download Buttons */}
-                          {typeof msg.generatedArtifact === 'string' && msg.generatedArtifact && (
-                            <div className="p-3 bg-card border border-border rounded-xl flex items-center justify-between shadow-sm mt-2">
-                              <span className="text-xs font-bold flex items-center gap-2 text-foreground">
-                                <Download size={14} className="text-primary" />
-                                Tài liệu Artifact
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-8 rounded-lg"
-                                onClick={() => handleDownloadArtifact(String(msg.generatedArtifact))}
-                                disabled={!!downloadingArtifacts[String(msg.generatedArtifact)]}
-                              >
-                                {downloadingArtifacts[String(msg.generatedArtifact)] ? <Loader2 size={14} className="animate-spin mr-1" /> : <Download size={14} className="mr-1" />}
-                                Tải xuống
-                              </Button>
-                            </div>
-                          )}
+                          {Boolean(msg.generatedArtifact) && (() => {
+                            const rawArt = msg.generatedArtifact;
+                            if (!rawArt) return null;
+                            const artObj: GeneratedArtifact = typeof rawArt === "object"
+                              ? (rawArt as GeneratedArtifact)
+                              : {
+                                  id: String(rawArt),
+                                  scopeType: "PROJECT",
+                                  scopeId: "",
+                                  filename: "saga-report.docx",
+                                  mediaType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                  artifactType: "SRS_DOCX"
+                                };
+
+                            const label = getArtifactButtonLabel(artObj.artifactType);
+
+                            return (
+                              <div className="p-3 bg-card border border-border rounded-xl flex items-center justify-between shadow-sm mt-2">
+                                <span className="text-xs font-bold flex items-center gap-2 text-foreground">
+                                  <Download size={14} className="text-primary" />
+                                  {artObj.filename || "Báo cáo AI (.docx)"}
+                                </span>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-8 rounded-lg cursor-pointer font-bold text-xs gap-1"
+                                  onClick={() => handleDownloadArtifact(artObj.id)}
+                                  disabled={!!downloadingArtifacts[artObj.id]}
+                                >
+                                  {downloadingArtifacts[artObj.id] ? <Loader2 size={14} className="animate-spin mr-1" /> : <Download size={14} className="mr-1" />}
+                                  {label}
+                                </Button>
+                              </div>
+                            );
+                          })()}
 
                           {/* Render Job Reference Status */}
                           {Boolean(msg.jobReference) && (() => {

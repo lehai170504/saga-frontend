@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { AiConversation, AiMessage } from "../types";
+import { AiConversation, AiMessage, GeneratedArtifact } from "../types";
 
 export const aiApi = {
   getConversations: async () => {
@@ -26,18 +26,23 @@ export const aiApi = {
     return axiosInstance.post<never, void>(`/api/v1/ai/pending-actions/${actionId}/reject`);
   },
   // Download artifact
-  downloadArtifact: async (artifactId: string) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "https://saga-backend-production-3951.up.railway.app"}/api/v1/ai/artifacts/${artifactId}/download`, {
-      method: "GET",
-      credentials: "include"
-    });
-    if (!response.ok) {
-      throw new Error("Failed to download artifact");
+  downloadArtifact: async (artifact: GeneratedArtifact | string) => {
+    const artifactId = typeof artifact === "string" ? artifact : artifact.id;
+    const defaultFilename = typeof artifact === "string" ? "saga-report.docx" : (artifact.filename || "saga-report.docx");
+
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://saga-backend-production-3951.up.railway.app";
+    const res = await fetch(
+      `${API_BASE}/api/v1/ai/artifacts/${artifactId}/download`,
+      { method: "GET", credentials: "include" }
+    );
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: "Không thể tải báo cáo." }));
+      throw err;
     }
 
-    // Try to extract filename from Content-Disposition
-    let filename = "saga-artifact.docx";
-    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = defaultFilename;
+    const contentDisposition = res.headers.get("Content-Disposition");
     if (contentDisposition && contentDisposition.includes("filename=")) {
       const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
       if (filenameMatch && filenameMatch.length > 1) {
@@ -45,7 +50,7 @@ export const aiApi = {
       }
     }
 
-    const blob = await response.blob();
+    const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
