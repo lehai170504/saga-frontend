@@ -44,6 +44,9 @@ export function getVietnameseErrorMessage(err: unknown, fallbackMessage: string)
   if (status === 409 && (rawMessage.includes("JIRA_WRITE_RECOVERY_REQUIRED") || rawMessage.includes("JIRA_WRITE_OPERATION_IN_PROGRESS"))) {
     return "Thao tác ghi Jira đang tạm gián đoạn. Vui lòng bấm 'Thử lại' để hoàn tất quá trình tạo Task.";
   }
+  if (status === 409 && rawMessage.includes("AI_AGENT_COURSE_SCOPE_MISMATCH")) {
+    return "Cuộc trò chuyện này gắn với một lớp học khác. Vui lòng tạo cuộc trò chuyện mới cho lớp học đang mở.";
+  }
 
   if (!rawMessage) return fallbackMessage;
 

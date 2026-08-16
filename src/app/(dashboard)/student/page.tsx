@@ -45,15 +45,14 @@ export default function StudentSelectionPage() {
     router.push(`/student/${courseId}`);
   };
 
-  const getSemesterStatus = (semId: string): "active" | "upcoming" | "completed" => {
+  const getSemesterStatus = (semId: string): "active" | "completed" => {
     const sem = semesters.find(s => s.id === semId);
     if (!sem) return "completed";
     const now = new Date();
     const start = new Date(sem.startDate);
     const end = new Date(sem.endDate);
-    if (now < start) return "upcoming";
-    if (now > end) return "completed";
-    return "active";
+    if (now >= start && now <= end) return "active";
+    return "completed";
   };
 
   const handleSemesterChange = (semId: string) => {
@@ -186,10 +185,6 @@ export default function StudentSelectionPage() {
                       {status === "active" ? (
                         <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-emerald-500/20">
                           Đang diễn ra
-                        </span>
-                      ) : status === "upcoming" ? (
-                        <span className="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-amber-500/20">
-                          Sắp diễn ra
                         </span>
                       ) : (
                         <span className="text-[10px] font-extrabold text-muted-foreground bg-muted px-2.5 py-1.5 rounded-lg uppercase tracking-wider border border-border/50">

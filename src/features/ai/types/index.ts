@@ -23,18 +23,46 @@ export interface AiJobReference {
   description?: string;
 }
 
+export interface GeneratedArtifact {
+  id: string;
+  conversationId?: string;
+  artifactType:
+    | "SRS_DOCX"
+    | "LECTURER_PROGRESS_REPORT"
+    | "ADMIN_SYSTEM_REPORT"
+    | "LEADER_TEAM_PROGRESS_REPORT";
+  scopeType: "PROJECT" | "COURSE" | "SYSTEM" | "TEAM";
+  scopeId: string;
+  filename: string;
+  mediaType: string;
+}
+
 export interface AiMessage {
   id: string;
+  conversationId?: string;
   role: 'USER' | 'ASSISTANT' | 'SYSTEM';
   content?: string; // Kept for backwards compatibility
   text?: string;
   createdAt: string;
-  pendingAction?: AiPendingAction;
-  generatedArtifact?: string;
-  artifactId?: string; // Kept for backwards compatibility if needed
-  jobReference?: {
-    status: 'PENDING' | 'RUNNING' | 'WAITING_RETRY' | 'COMPLETED' | 'FAILED';
-  };
-  citations?: string[];
+  pendingAction?: AiPendingAction | null;
+  generatedArtifact?: GeneratedArtifact | string | null;
+  artifactId?: string | null; // Kept for backwards compatibility
+  jobReference?: AiJobReference | null;
+  citations?: Array<{ tool: string; status: string }> | string[];
   suggestedFollowups?: string[];
+}
+
+export function getArtifactButtonLabel(artifactType?: string): string {
+  switch (artifactType) {
+    case "SRS_DOCX":
+      return "Tải SRS";
+    case "LECTURER_PROGRESS_REPORT":
+      return "Tải báo cáo lớp";
+    case "ADMIN_SYSTEM_REPORT":
+      return "Tải báo cáo hệ thống";
+    case "LEADER_TEAM_PROGRESS_REPORT":
+      return "Tải báo cáo nhóm";
+    default:
+      return "Tải báo cáo";
+  }
 }

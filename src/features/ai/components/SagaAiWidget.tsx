@@ -20,7 +20,7 @@ import {
   useRejectAiAction
 } from "../hooks/useAi";
 import { aiApi } from "../api/aiApi";
-import { AiMessage, AiConversation, AiPendingAction } from "../types";
+import { AiMessage, AiConversation, AiPendingAction, GeneratedArtifact, getArtifactButtonLabel } from "../types";
 
 const getConversationList = (data: unknown): AiConversation[] => {
   if (!data) return [];
@@ -220,9 +220,23 @@ export function SagaAiWidget() {
     );
   };
 
+  const formatMessageText = (text: string) => {
+    if (!text) return null;
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return (
+      <p className="whitespace-pre-wrap text-sm leading-relaxed">
+        {parts.map((part, index) => {
+          if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+            return <strong key={index} className="font-extrabold">{part.slice(2, -2)}</strong>;
+          }
+          return <React.Fragment key={index}>{part}</React.Fragment>;
+        })}
+      </p>
+    );
+  };
+
   const renderMessageContent = (msg: AiMessage) => {
     const textStr = msg.content || msg.text || "";
-    const artifactId = typeof msg.generatedArtifact === "string" ? msg.generatedArtifact : msg.artifactId;
 
     return (
       <div className="space-y-2">
@@ -370,19 +384,36 @@ export function SagaAiWidget() {
           );
         })()}
 
-        {artifactId && (
-          <div className="mt-3">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => aiApi.downloadArtifact(artifactId)}
-              className="rounded-xl h-8 px-3 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-500/20 text-xs font-bold gap-1.5 cursor-pointer"
-            >
-              <Download size={13} />
-              <span>Tải file báo cáo ({artifactId})</span>
-            </Button>
-          </div>
-        )}
+        {Boolean(msg.generatedArtifact || msg.artifactId) && (() => {
+          const rawArt = msg.generatedArtifact || msg.artifactId;
+          if (!rawArt) return null;
+          const artObj: GeneratedArtifact = typeof rawArt === "object"
+            ? (rawArt as GeneratedArtifact)
+            : {
+                id: String(rawArt),
+                scopeType: "PROJECT",
+                scopeId: "",
+                filename: "saga-report.docx",
+                mediaType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                artifactType: "SRS_DOCX"
+              };
+
+          const label = getArtifactButtonLabel(artObj.artifactType);
+
+          return (
+            <div className="mt-3">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => aiApi.downloadArtifact(artObj)}
+                className="rounded-xl h-8 px-3 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-500/20 text-xs font-bold gap-1.5 cursor-pointer"
+              >
+                <Download size={13} />
+                <span>{label}</span>
+              </Button>
+            </div>
+          );
+        })()}
 
         {msg.suggestedFollowups && msg.suggestedFollowups.length > 0 && (
           <div className="mt-3 pt-2 border-t border-border/30 flex flex-wrap gap-1.5">
