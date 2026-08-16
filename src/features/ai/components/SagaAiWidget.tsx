@@ -17,11 +17,14 @@ import {
 } from "../hooks/useAi";
 import { aiApi } from "../api/aiApi";
 import { AiMessage } from "../types";
+import { useParams } from "next/navigation";
 
 export function SagaAiWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [inputText, setInputText] = useState("");
+  const params = useParams();
+  const courseId = params?.courseId as string | undefined;
   
   const { data: conversations, isLoading: isLoadingConversations } = useAiConversations();
   const { data: detailData, isLoading: isLoadingDetail } = useAiConversationDetail(activeConversationId);
@@ -44,7 +47,7 @@ export function SagaAiWidget() {
     
     if (!activeConversationId) {
       // Create new conversation first
-      createMutation.mutate(inputText.slice(0, 30) + "...", {
+      createMutation.mutate({ title: inputText.slice(0, 30) + "...", courseId }, {
         onSuccess: (newConv) => {
           setActiveConversationId(newConv.id);
           // Note: React Query mutation success might need to trigger the actual send
@@ -56,12 +59,12 @@ export function SagaAiWidget() {
       return;
     }
 
-    sendMutation.mutate(inputText);
+    sendMutation.mutate({ content: inputText, courseId });
     setInputText("");
   };
 
   const handleCreateNew = () => {
-    createMutation.mutate("Trò chuyện mới", {
+    createMutation.mutate({ title: "Trò chuyện mới", courseId }, {
       onSuccess: (newConv) => {
         setActiveConversationId(newConv.id);
       }
@@ -117,6 +120,24 @@ export function SagaAiWidget() {
               <Download className="w-3 h-3 mr-2" />
               Tải File (Artifact)
             </Button>
+          </div>
+        )}
+
+        {/* Job Reference Rendering (e.g. Commit Review) */}
+        {msg.jobReference && (
+          <div className="mt-3 flex items-center gap-2 p-2 px-3 bg-muted/50 rounded-xl border border-border text-sm">
+            {['PENDING', 'RUNNING', 'WAITING_RETRY'].includes(msg.jobReference.status) && (
+              <Loader2 className="w-4 h-4 text-amber-500 animate-spin" />
+            )}
+            {msg.jobReference.status === 'COMPLETED' && (
+              <Check className="w-4 h-4 text-emerald-500" />
+            )}
+            {msg.jobReference.status === 'FAILED' && (
+              <X className="w-4 h-4 text-destructive" />
+            )}
+            <span className="font-medium text-muted-foreground">
+              Tiến trình: <span className="text-foreground">{msg.jobReference.status}</span>
+            </span>
           </div>
         )}
       </div>

@@ -30,7 +30,7 @@ export const notificationApi = {
     });
   },
 
-  courseBroadcast: async (payload: { courseIds: string[]; title: string; message: string; }, idempotencyKey: string): Promise<void> => {
+  courseBroadcast: async (payload: { courseIds: string[]; title: string; message: string; actionUrl?: string }, idempotencyKey: string): Promise<void> => {
     await axiosInstance.post(`/api/v1/courses/notifications/broadcast`, payload, {
       headers: {
         "Idempotency-Key": idempotencyKey

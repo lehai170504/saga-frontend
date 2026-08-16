@@ -4,7 +4,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/shared/Skeleton";
 import { Activity, Clock, AlertCircle } from "lucide-react";
-import { MemberContributionCard, MemberEvaluationItem } from "./member-contribution-card";
+import { MemberContributionCard } from "./member-contribution-card";
 import { ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
 
 interface ContributionEvaluationSectionProps {
@@ -20,7 +20,7 @@ export function ContributionEvaluationSection({
   expandedSprints,
   onToggleExpand,
 }: ContributionEvaluationSectionProps) {
-  const members = (evaluationData?.members || []) as unknown as MemberEvaluationItem[];
+  const members = (evaluationData?.members || []) as ContributionMember[];
 
   return (
     <div className="space-y-5 pt-6 border-t border-border/40 animate-in fade-in slide-in-from-bottom-4 duration-300">

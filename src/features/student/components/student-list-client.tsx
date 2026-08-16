@@ -9,6 +9,7 @@ import { useCourse } from "@/features/courses/hooks/useCourses";
 import { CourseStudent } from "@/features/courses/types";
 import { ImportGroupingDialog } from "@/features/lecturer/components/import-grouping-dialog";
 import { motion } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Subcomponents
 import { StudentListSummaryCards } from "./student-list/student-list-summary-cards";
@@ -16,6 +17,7 @@ import { StudentsTableTab } from "./student-list/students-table-tab";
 import { ProjectsGridTab, TeamGroupItem } from "./student-list/projects-grid-tab";
 
 export function StudentListClient({ courseId }: { courseId: string }) {
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"students" | "projects">("students");
 
@@ -121,7 +123,9 @@ export function StudentListClient({ courseId }: { courseId: string }) {
           <ImportGroupingDialog
             courseId={courseId}
             courseClassName={className}
-            onSuccess={() => window.location.reload()}
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ["courses", courseId, "students"] });
+            }}
           />
         </div>
       </div>

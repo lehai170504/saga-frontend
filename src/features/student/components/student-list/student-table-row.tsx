@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
 import { CourseStudent } from "@/features/courses/types";
+import { EditStudentGroupDialog } from "./edit-student-group-dialog";
 
 interface StudentTableRowProps {
   student: CourseStudent;
@@ -54,7 +55,8 @@ export function StudentTableRow({ student, index, courseId }: StudentTableRowPro
           <span className="text-muted-foreground text-xs italic">-</span>
         )}
       </TableCell>
-      <TableCell className="text-right whitespace-nowrap">
+      <TableCell className="text-right whitespace-nowrap space-x-1">
+        <EditStudentGroupDialog courseId={courseId} student={student} />
         <Button
           variant="ghost"
           size="sm"

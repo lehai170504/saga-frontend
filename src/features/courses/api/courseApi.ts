@@ -24,19 +24,11 @@ export const courseApi = {
   },
 
   adminImportStudentsTemplate: async (courseId: string, formData: FormData) => {
-    return axiosInstance.post<never, ImportStudentsResponse>(`/api/v1/courses/${courseId}/admin-import-students-template`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return axiosInstance.post<never, ImportStudentsResponse>(`/api/v1/courses/${courseId}/admin-import-students-template`, formData);
   },
 
   importStudents: async (courseId: string, formData: FormData) => {
-    return axiosInstance.post<never, ImportStudentsResponse>(`/api/v1/courses/${courseId}/import-students`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return axiosInstance.post<never, ImportStudentsResponse>(`/api/v1/courses/${courseId}/import-students`, formData);
   },
 
   downloadGroupingTemplate: async (courseId: string) => {
@@ -51,6 +43,10 @@ export const courseApi = {
 
   removeStudent: async (courseId: string, studentId: string) => {
     return axiosInstance.delete<never, RemoveStudentResponse>(`/api/v1/courses/${courseId}/students/${studentId}`);
+  },
+
+  updateStudentGroup: async (courseId: string, studentId: string, data: { group: string; leader: boolean }) => {
+    return axiosInstance.patch(`/api/v1/courses/${courseId}/students/${studentId}`, data);
   },
 
 

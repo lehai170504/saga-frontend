@@ -3,7 +3,8 @@
 import React from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, TrendingUp, Code, FileText, Palette, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, TrendingUp, Code, FileText, Beaker, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { ContributionMember } from "@/features/lecturer/types/contribution";
 
 const truncateDecimal = (val: number | undefined | null, decimals: number = 2): string => {
   if (val === undefined || val === null || isNaN(val)) {
@@ -19,34 +20,8 @@ const truncateDecimal = (val: number | undefined | null, decimals: number = 2): 
   return `${integerPart}.${decimalPart}`;
 };
 
-export interface SprintBreakdownItem {
-  sprintName: string;
-  taskScore: number;
-  retrospectiveMultiplier: number;
-  adjustedTaskScore: number;
-}
-
-export interface MemberEvaluationItem {
-  studentId: string;
-  fullName: string;
-  studentCode: string;
-  finalContributionPercentage: number;
-  peerReviewScore: number;
-  taskContributionScore: number;
-  taskContributionPercentage: number;
-  evidenceCount?: number;
-  codeContributionPercentage: number;
-  codeContributionScore: number;
-  documentContributionPercentage: number;
-  documentContributionScore: number;
-  designContributionPercentage: number;
-  designContributionScore: number;
-  warnings?: Array<{ severity: string; code: string; message: string }>;
-  sprintBreakdowns?: SprintBreakdownItem[];
-}
-
 interface MemberContributionCardProps {
-  member: MemberEvaluationItem;
+  member: ContributionMember;
   isExpanded: boolean;
   onToggleExpand: (studentId: string) => void;
 }
@@ -75,13 +50,21 @@ export function MemberContributionCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end sm:self-auto">
+        <div className="flex items-center gap-6 self-end sm:self-auto">
           <div className="text-right">
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/75">
-              Tỷ lệ đóng góp cuối
+              % Trước Peer
+            </p>
+            <span className="text-sm font-black text-muted-foreground">
+              {truncateDecimal(member.sliceContributionPercentage)}%
+            </span>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/75">
+              % Đóng góp cuối
             </p>
             <span
-              className={`text-lg font-black ${
+              className={`text-xl font-black ${
                 member.finalContributionPercentage < 50 ? "text-destructive" : "text-primary"
               }`}
             >
@@ -120,19 +103,18 @@ export function MemberContributionCard({
         {/* Summary Metrics Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-muted/10 p-4 rounded-2xl border border-border/30">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Đánh giá chéo</span>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Điểm Slice Thô</span>
             <div className="flex items-center gap-1">
-              <span className="text-sm font-extrabold text-foreground">{truncateDecimal(member.peerReviewScore)}</span>
-              <span className="text-xs text-muted-foreground">/ 5</span>
+              <span className="text-sm font-extrabold text-foreground">{truncateDecimal(member.sliceScore)}</span>
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Điểm Task</span>
-            <p className="text-sm font-extrabold text-foreground">{truncateDecimal(member.taskContributionScore)}</p>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Hệ số Peer Review</span>
+            <p className="text-sm font-extrabold text-foreground">x{truncateDecimal(member.peerReviewScore)}</p>
           </div>
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tỷ lệ Task</span>
-            <p className="text-sm font-extrabold text-foreground">{truncateDecimal(member.taskContributionPercentage)}%</p>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tỷ lệ trước Peer</span>
+            <p className="text-sm font-extrabold text-foreground">{truncateDecimal(member.sliceContributionPercentage)}%</p>
           </div>
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Số minh chứng</span>
@@ -144,67 +126,63 @@ export function MemberContributionCard({
         <div className="space-y-3">
           <h5 className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-1.5">
             <TrendingUp size={13} className="text-primary" />
-            Chi tiết đóng góp phân mảnh
+            Chi tiết 4 tiêu chí (Radar)
           </h5>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Code Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
-                  <Code size={13} className="text-blue-500" />
-                  Lập trình (Code)
+                  <Code size={13} className="text-blue-500" /> Code
                 </span>
                 <span className="text-xs font-black text-blue-500">{truncateDecimal(member.codeContributionPercentage)}%</span>
               </div>
               <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-500 rounded-full"
-                  style={{ width: `${Math.min(member.codeContributionPercentage || 0, 100)}%` }}
-                />
+                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(member.codeContributionPercentage || 0, 100)}%` }} />
               </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">
-                Điểm hoạt động: {truncateDecimal(member.codeContributionScore)}
-              </p>
+              <p className="text-[10px] text-muted-foreground font-semibold">Điểm: {truncateDecimal(member.codeContributionScore)}</p>
+            </div>
+
+            {/* Test Contribution */}
+            <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+                  <Beaker size={13} className="text-emerald-500" /> Test
+                </span>
+                <span className="text-xs font-black text-emerald-500">{truncateDecimal(member.testContributionPercentage)}%</span>
+              </div>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(member.testContributionPercentage || 0, 100)}%` }} />
+              </div>
+              <p className="text-[10px] text-muted-foreground font-semibold">Điểm: {truncateDecimal(member.testContributionScore)}</p>
             </div>
 
             {/* Document Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
-                  <FileText size={13} className="text-amber-500" />
-                  Tài liệu (Document)
+                  <FileText size={13} className="text-amber-500" /> Document
                 </span>
                 <span className="text-xs font-black text-amber-500">{truncateDecimal(member.documentContributionPercentage)}%</span>
               </div>
               <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber-500 rounded-full"
-                  style={{ width: `${Math.min(member.documentContributionPercentage || 0, 100)}%` }}
-                />
+                <div className="h-full bg-amber-500 rounded-full" style={{ width: `${Math.min(member.documentContributionPercentage || 0, 100)}%` }} />
               </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">
-                Điểm hoạt động: {truncateDecimal(member.documentContributionScore)}
-              </p>
+              <p className="text-[10px] text-muted-foreground font-semibold">Điểm: {truncateDecimal(member.documentContributionScore)}</p>
             </div>
 
-            {/* Design Contribution */}
+            {/* Research Contribution */}
             <div className="p-4 rounded-2xl border border-border/30 bg-muted/5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
-                  <Palette size={13} className="text-purple-500" />
-                  Thiết kế (Design)
+                  <Search size={13} className="text-purple-500" /> Research
                 </span>
-                <span className="text-xs font-black text-purple-500">{truncateDecimal(member.designContributionPercentage)}%</span>
+                <span className="text-xs font-black text-purple-500">{truncateDecimal(member.researchContributionPercentage)}%</span>
               </div>
               <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-purple-500 rounded-full"
-                  style={{ width: `${Math.min(member.designContributionPercentage || 0, 100)}%` }}
-                />
+                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${Math.min(member.researchContributionPercentage || 0, 100)}%` }} />
               </div>
-              <p className="text-[10px] text-muted-foreground font-semibold">
-                Điểm hoạt động: {truncateDecimal(member.designContributionScore)}
-              </p>
+              <p className="text-[10px] text-muted-foreground font-semibold">Điểm: {truncateDecimal(member.researchContributionScore)}</p>
             </div>
           </div>
         </div>
@@ -226,16 +204,16 @@ export function MemberContributionCard({
               <div className="mt-3 overflow-hidden rounded-2xl border border-border/30 bg-muted/5 divide-y divide-border/30 animate-in slide-in-from-top-2 duration-200">
                 <div className="grid grid-cols-5 p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/80 bg-muted/20">
                   <div className="col-span-2">Sprint</div>
-                  <div className="text-center">Điểm Task</div>
-                  <div className="text-center">Hệ số Retro</div>
-                  <div className="text-center">Điểm Sprint</div>
+                  <div className="text-center">Điểm Slice</div>
+                  <div className="text-center">% Trước Peer</div>
+                  <div className="text-center">% Sprint Cuối</div>
                 </div>
                 {member.sprintBreakdowns.map((s, sIdx) => (
                   <div key={sIdx} className="grid grid-cols-5 p-3.5 text-xs items-center font-semibold text-foreground">
                     <div className="col-span-2 truncate font-bold text-foreground/90">{s.sprintName}</div>
-                    <div className="text-center">{truncateDecimal(s.taskScore)}</div>
-                    <div className="text-center">x{truncateDecimal(s.retrospectiveMultiplier)}</div>
-                    <div className="text-center font-bold text-primary">{truncateDecimal(s.adjustedTaskScore)}</div>
+                    <div className="text-center">{truncateDecimal(s.sliceScore)}</div>
+                    <div className="text-center">{truncateDecimal(s.sliceContributionPercentage)}%</div>
+                    <div className="text-center font-bold text-primary">{truncateDecimal(s.contributionPercentage)}%</div>
                   </div>
                 ))}
               </div>

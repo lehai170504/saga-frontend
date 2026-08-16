@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { TemplateSelector } from "@/features/lecturer/components/evaluation-config/template-selector";
+import { CourseEvaluationConfigClient } from "@/features/lecturer/components/evaluation-config/course-evaluation-config-client";
 
 export default function ClassEvaluationConfigPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
@@ -31,7 +31,7 @@ export default function ClassEvaluationConfigPage({ params }: { params: Promise<
       </PageHeader>
 
       <div className="mt-4 outline-none animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <TemplateSelector courseId={courseId} />
+        <CourseEvaluationConfigClient courseId={courseId} />
       </div>
     </div>
   );

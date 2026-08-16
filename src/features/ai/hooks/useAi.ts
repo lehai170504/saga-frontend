@@ -20,7 +20,7 @@ export const useAiConversationDetail = (id: string | null) => {
 export const useCreateAiConversation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (title: string) => aiApi.createConversation(title),
+    mutationFn: ({ title, courseId }: { title: string; courseId?: string }) => aiApi.createConversation(title, courseId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversations"] });
     },
@@ -33,7 +33,7 @@ export const useCreateAiConversation = () => {
 export const useSendAiMessage = (conversationId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (content: string) => aiApi.sendMessage(conversationId, content),
+    mutationFn: ({ content, courseId }: { content: string; courseId?: string }) => aiApi.sendMessage(conversationId, content, courseId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ai-conversation-detail", conversationId] });
     },

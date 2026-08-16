@@ -63,6 +63,14 @@ export const useCreateProjectType = () => {
   });
 };
 
+export const useProjectGroupWeights = (projectId: string) => {
+  return useQuery({
+    queryKey: ["project-group-weights", projectId],
+    queryFn: () => projectApi.getProjectGroupWeights(projectId),
+    enabled: !!projectId,
+  });
+};
+
 export const useUpdateProjectGroupWeights = (projectId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -70,6 +78,7 @@ export const useUpdateProjectGroupWeights = (projectId: string) => {
       projectApi.updateProjectGroupWeights(projectId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-detail", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["project-group-weights", projectId] });
       toast.success("Cập nhật trọng số nhóm thành công");
     },
     onError: (err: Error | Record<string, unknown>) => {

@@ -36,8 +36,9 @@ export interface ProjectDetailResponse {
   };
   groupWeights?: {
     codeWeight: number;
+    testWeight: number;
     documentWeight: number;
-    designWeight: number;
+    researchWeight: number;
   };
 }
 

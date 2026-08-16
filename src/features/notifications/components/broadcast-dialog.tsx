@@ -20,6 +20,7 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [actionUrl, setActionUrl] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   const handleBroadcast = async () => {
@@ -33,17 +34,31 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
       return;
     }
 
+    if (actionUrl.trim() && !/^https:\/\//i.test(actionUrl.trim())) {
+      toast.error("Đường dẫn phải bắt đầu bằng https://");
+      return;
+    }
+
     try {
       setIsSending(true);
       const idempotencyKey = uuidv4();
-      await notificationApi.courseBroadcast(
-        { courseIds, title, message },
-        idempotencyKey
-      );
+      
+      const payload: { courseIds: string[]; title: string; message: string; actionUrl?: string } = {
+        courseIds,
+        title: title.trim(),
+        message: message.trim(),
+      };
+      
+      if (actionUrl.trim()) {
+        payload.actionUrl = actionUrl.trim();
+      }
+
+      await notificationApi.courseBroadcast(payload, idempotencyKey);
       toast.success("Đã gửi thông báo thành công!");
       setIsOpen(false);
       setTitle("");
       setMessage("");
+      setActionUrl("");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Có lỗi xảy ra khi gửi thông báo.");
     } finally {
@@ -89,6 +104,16 @@ export function BroadcastDialog({ courseIds, triggerClassName }: BroadcastDialog
               placeholder="Nhập nội dung thông báo (tối đa 1000 ký tự)..."
               className="min-h-[120px]"
               maxLength={1000}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="actionUrl" className="font-bold">Đường dẫn đính kèm (Tùy chọn)</Label>
+            <Input
+              id="actionUrl"
+              value={actionUrl}
+              onChange={(e) => setActionUrl(e.target.value)}
+              placeholder="https://example.com/..."
+              maxLength={500}
             />
           </div>
         </div>

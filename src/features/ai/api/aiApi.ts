@@ -8,11 +8,11 @@ export const aiApi = {
   getConversationDetail: async (id: string) => {
     return axiosInstance.get<never, { conversation: AiConversation; messages: AiMessage[] }>(`/api/v1/ai/conversations/${id}`);
   },
-  createConversation: async (title: string) => {
-    return axiosInstance.post<never, AiConversation>("/api/v1/ai/conversations", { title });
+  createConversation: async (title: string, courseId?: string) => {
+    return axiosInstance.post<never, AiConversation>("/api/v1/ai/conversations", { title, courseId });
   },
-  sendMessage: async (id: string, content: string) => {
-    return axiosInstance.post<never, AiMessage>(`/api/v1/ai/conversations/${id}/messages`, { content });
+  sendMessage: async (id: string, content: string, courseId?: string) => {
+    return axiosInstance.post<never, AiMessage>(`/api/v1/ai/conversations/${id}/messages`, { content, courseId });
   },
   confirmAction: async (actionId: string) => {
     return axiosInstance.post<never, void>(`/api/v1/ai/pending-actions/${actionId}/confirm`);

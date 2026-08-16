@@ -70,7 +70,11 @@ export function Header({ onMenuClick }: HeaderProps) {
   const handleMarkAsRead = (id: string, actionUrl: string | null) => {
     markAsRead(id);
     if (actionUrl) {
-      router.push(actionUrl);
+      if (actionUrl.startsWith("http")) {
+        window.open(actionUrl, "_blank", "noopener,noreferrer");
+      } else {
+        router.push(actionUrl);
+      }
     }
   };
 
@@ -217,6 +221,17 @@ export function Header({ onMenuClick }: HeaderProps) {
                           <p className="text-[10px] text-muted-foreground leading-normal line-clamp-2">
                             {notif.message}
                           </p>
+                          {notif.actionUrl && (
+                            <a
+                              href={notif.actionUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block mt-1 text-[10px] font-bold text-blue-500 hover:text-blue-600 hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Mở liên kết
+                            </a>
+                          )}
                         </div>
 
                         {!notif.read && (

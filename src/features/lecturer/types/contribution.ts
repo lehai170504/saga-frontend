@@ -1,10 +1,10 @@
 export interface SprintBreakdown {
   sprintId: string;
   sprintName: string;
-  taskScore: number;
-  retrospectiveMultiplier: number;
-  adjustedTaskScore: number;
-  peerReviewCount: number;
+  sliceScore: number;
+  sliceContributionPercentage: number;
+  contributionPercentage: number;
+  peerReviewCount?: number;
 }
 
 export interface ContributionWarning {
@@ -18,14 +18,18 @@ export interface ContributionMember {
   fullName: string;
   studentCode: string;
   codeContributionScore: number;
+  testContributionScore: number;
   documentContributionScore: number;
-  designContributionScore: number;
+  researchContributionScore: number;
+  
   codeContributionPercentage: number;
+  testContributionPercentage: number;
   documentContributionPercentage: number;
-  designContributionPercentage: number;
+  researchContributionPercentage: number;
+
+  sliceScore: number;
+  sliceContributionPercentage: number;
   peerReviewScore: number;
-  taskContributionScore: number;
-  taskContributionPercentage: number;
   finalContributionPercentage: number;
   evidenceCount: number;
   sprintBreakdowns: SprintBreakdown[];
@@ -58,14 +62,16 @@ export interface ContributionOverrideRequest {
 export interface CourseContributionWeightResponse {
   courseId: string;
   codeWeight: number;
+  testWeight: number;
   documentWeight: number;
-  designWeight: number;
+  researchWeight: number;
   lastUpdatedAt: string | null;
 }
 
 export interface CourseContributionWeightRequest {
   codeWeight: number;
+  testWeight: number;
   documentWeight: number;
-  designWeight: number;
+  researchWeight: number;
 }
 

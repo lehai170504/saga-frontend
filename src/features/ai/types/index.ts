@@ -13,6 +13,12 @@ export interface AiPendingAction {
   payload?: Record<string, any>;
 }
 
+export interface AiJobReference {
+  id?: string;
+  status: 'PENDING' | 'RUNNING' | 'WAITING_RETRY' | 'COMPLETED' | 'FAILED';
+  description?: string;
+}
+
 export interface AiMessage {
   id: string;
   role: 'USER' | 'ASSISTANT' | 'SYSTEM';
@@ -20,4 +26,5 @@ export interface AiMessage {
   createdAt: string;
   pendingAction?: AiPendingAction;
   artifactId?: string;
+  jobReference?: AiJobReference;
 }

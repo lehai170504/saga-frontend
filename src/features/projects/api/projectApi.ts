@@ -17,6 +17,9 @@ export const projectApi = {
   createProjectType: async (data: Omit<ProjectType, 'projectTypeId'>) => {
     return axiosInstance.post<never, ProjectType>('/api/project-types', data);
   },
+  getProjectGroupWeights: async (projectId: string) => {
+    return axiosInstance.get<never, UpdateProjectGroupWeightsRequest & { updatedAt?: string }>(`/api/projects/${projectId}/group-weights`);
+  },
   updateProjectGroupWeights: async (projectId: string, data: UpdateProjectGroupWeightsRequest) => {
     return axiosInstance.put<never, ProjectResponse>(`/api/projects/${projectId}/group-weights`, data);
   },

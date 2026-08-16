@@ -46,10 +46,10 @@ export function ImportGroupingDialog({ courseId, courseClassName = courseId, onS
       setIsDownloading(true);
       toast.loading("Đang tạo file template phân nhóm...", { id: "download-template" });
       
-      const response = await courseApi.downloadGroupingTemplate(courseId);
+      const blob = await courseApi.downloadGroupingTemplate(courseId);
       
       // Mở blob và cho tải về
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(blob as any);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `course-student-grouping-${courseClassName}.xlsx`);

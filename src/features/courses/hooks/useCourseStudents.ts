@@ -133,3 +133,17 @@ export const useRemoveStudent = () => {
     }
   });
 };
+
+export const useUpdateStudentGroup = () => {
+  return useMutation({
+    mutationFn: ({ courseId, studentId, data }: { courseId: string; studentId: string; data: { group: string; leader: boolean } }) =>
+      courseApi.updateStudentGroup(courseId, studentId, data),
+    onSuccess: () => {
+      toast.success("Cập nhật nhóm thành công");
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Cập nhật nhóm thất bại";
+      toast.error(errorMessage);
+    }
+  });
+};

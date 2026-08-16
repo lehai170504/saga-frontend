@@ -22,7 +22,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useContributionEvaluation, useOverrideContribution } from "@/features/lecturer/hooks/useContribution";
+import { useCourse } from "@/features/courses/hooks/useCourses";
 import { ContributionAdjustment, ContributionEvaluationResponse } from "@/features/lecturer/types/contribution";
+import { contributionApi } from "@/features/lecturer/api/contributionApi";
+import * as XLSX from "xlsx";
+
 import { courseApi } from "@/features/courses/api/courseApi";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -31,6 +35,8 @@ import { useParams } from "next/navigation";
 export default function LecturerContributionPage() {
   const params = useParams();
   const courseId = params.courseId as string;
+
+  const { data: courseData } = useCourse(courseId);
 
   // Fetch Danh sách Sinh viên & Lọc ra các Nhóm (Teams)
   const { data: studentsData, isLoading: isLoadingTeams } = useQuery({
@@ -76,6 +82,7 @@ export default function LecturerContributionPage() {
   // Hooks gọi API (Không cần sprintId nữa theo Swagger mới). Chỉ gọi khi có project.
   const { data: apiData, isLoading } = useContributionEvaluation(selectedTeamId, hasProject);
   const overrideMutation = useOverrideContribution();
+  const [isExporting, setIsExporting] = useState(false);
 
   // State local để quản lý Override (vì API chưa có, ta dùng state giả lập UI)
   const [localAdjustments, setLocalAdjustments] = useState<Record<string, ContributionAdjustment>>({});
@@ -102,14 +109,16 @@ export default function LecturerContributionPage() {
         role: s.team?.teamMembers?.find(tm => tm.studentId === s.studentId)?.roleInTeam || "MEMBER",
         codeContributionScore: 80 - idx * 10,
         codeContributionPercentage: 40.0 - idx * 5,
+        testContributionScore: 10 + idx * 5,
+        testContributionPercentage: 5.0 + idx * 2.5,
         documentContributionScore: 20 + idx * 10,
         documentContributionPercentage: 10.0 + idx * 5,
-        designContributionScore: 0,
-        designContributionPercentage: 0.0,
+        researchContributionScore: 10,
+        researchContributionPercentage: 5.0,
+        sliceScore: 120 + idx * 5,
+        sliceContributionPercentage: 60.0 - idx * 2.5,
+        peerReviewScore: 1.0 + (idx % 2 === 0 ? 0.1 : -0.1),
         finalContributionPercentage: 50.0,
-        taskContributionScore: 100,
-        taskContributionPercentage: 50.0,
-        peerReviewScore: 15 + (idx % 5),
         evidenceCount: 10,
         warnings: idx === 1 ? [{ code: "AI_WARN", message: "AI: Ghosting 5 ngày", severity: "HIGH" }] : [],
         sprintBreakdowns: []
@@ -190,6 +199,90 @@ export default function LecturerContributionPage() {
     }
   };
 
+  const handleExportAllGrades = async () => {
+    if (realTeams.length === 0) {
+      toast.error("Không có nhóm nào để xuất dữ liệu.");
+      return;
+    }
+
+    try {
+      setIsExporting(true);
+      toast.loading("Đang tổng hợp dữ liệu các nhóm...", { id: "export-grades" });
+
+      const allMembers = [];
+      
+      for (const team of realTeams) {
+        try {
+          const res = await contributionApi.getContributionEvaluation(team.id);
+          if (res?.members) {
+            res.members.forEach(m => {
+              // Tìm thông tin student trong studentsData để lấy role và email
+              const studentInfo = studentsData?.studentsWithTeam?.content.find(s => s.studentId === m.studentId);
+              const role = studentInfo?.team?.teamMembers.find(tm => tm.studentId === m.studentId)?.roleInTeam || "MEMBER";
+              const email = studentInfo?.email || "";
+
+              allMembers.push({
+                "Tên Nhóm": team.name,
+                "Mã SV": m.studentCode,
+                "Họ và Tên": m.fullName,
+                "Email": email,
+                "Vai Trò": role,
+                "% Code": m.codeContributionPercentage,
+                "% Test": m.testContributionPercentage,
+                "% Doc": m.documentContributionPercentage,
+                "% Research": m.researchContributionPercentage,
+                "% Trước Peer": m.sliceContributionPercentage,
+                "Hệ số Peer": m.peerReviewScore,
+                "% Hệ Thống": m.finalContributionPercentage,
+                "Cảnh báo AI": m.warnings && m.warnings.length > 0 ? m.warnings.map(w => w.message).join("; ") : "Không có"
+              });
+            });
+          }
+        } catch (err) {
+          console.warn(`Không lấy được dữ liệu cho nhóm ${team.name}`);
+        }
+      }
+
+      if (allMembers.length === 0) {
+        toast.error("Không có dữ liệu đóng góp nào để xuất.", { id: "export-grades" });
+        return;
+      }
+
+      const ws = XLSX.utils.json_to_sheet(allMembers);
+      
+      // Auto-size columns
+      const colWidths = [
+        { wch: 15 }, // Tên Nhóm
+        { wch: 15 }, // Mã SV
+        { wch: 25 }, // Họ và Tên
+        { wch: 30 }, // Email
+        { wch: 15 }, // Vai Trò
+        { wch: 10 }, // % Code
+        { wch: 10 }, // % Test
+        { wch: 10 }, // % Doc
+        { wch: 10 }, // % Research
+        { wch: 15 }, // % Trước Peer
+        { wch: 15 }, // Hệ số Peer
+        { wch: 15 }, // % Hệ Thống
+        { wch: 40 }  // Cảnh báo AI
+      ];
+      ws['!cols'] = colWidths;
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Bảng Điểm");
+
+      const courseCode = courseData?.courseCode || courseId.substring(0, 8);
+      XLSX.writeFile(wb, `Bang-diem-${courseCode}.xlsx`);
+
+      toast.success("Xuất bảng điểm thành công!", { id: "export-grades" });
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra khi xuất file.", { id: "export-grades" });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-x-hidden bg-background">
       <div className="relative p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -208,9 +301,17 @@ export default function LecturerContributionPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="rounded-xl border-border/50 h-10 font-bold text-success bg-success/10 dark:hover:bg-emerald-950/30">
-              <FileSpreadsheet size={16} className="mr-2" />
-              Xuất Excel (FAP Format)
+            <Button 
+              variant="outline" 
+              className="rounded-xl border-border/50 h-10 font-bold text-success bg-success/10 dark:hover:bg-emerald-950/30"
+              onClick={handleExportAllGrades}
+              disabled={isExporting}
+            >
+              {isExporting ? (
+                <span className="flex items-center"><div className="w-4 h-4 border-2 border-success/30 border-t-success rounded-full animate-spin mr-2" /> Đang tổng hợp...</span>
+              ) : (
+                <span className="flex items-center"><FileSpreadsheet size={16} className="mr-2" /> Xuất Excel (FAP Format)</span>
+              )}
             </Button>
             <Button
               className={`rounded-xl h-10 font-bold transition-all duration-300 ${overrideMutation.isPending || Object.keys(localAdjustments).length === 0 || !overrideReason.trim()
@@ -262,7 +363,7 @@ export default function LecturerContributionPage() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background px-4 py-2 rounded-xl border border-border/50 w-full lg:w-auto">
                 <Info size={16} className="text-primary flex-shrink-0" />
-                <span>% Hệ thống = (% Code + % Doc + % Design). Giảng viên nhập trực tiếp % mới để ghi đè.</span>
+                <span>% Trước Peer = (% Code + % Test + % Doc + % Research). % H.Thống = % Trước Peer * HS Peer.</span>
               </div>
             </div>
 
@@ -320,12 +421,14 @@ export default function LecturerContributionPage() {
                       <TableHead className="w-[100px] font-bold text-muted-foreground">Mã SV</TableHead>
                       <TableHead className="font-bold text-muted-foreground min-w-[150px]">Họ và Tên</TableHead>
                       <TableHead className="font-bold text-muted-foreground text-center">Vai trò</TableHead>
-                      <TableHead className="font-bold text-muted-foreground text-center" title="Điểm Peer Review (Max 20)">Peer Review</TableHead>
+                      <TableHead className="font-bold text-muted-foreground text-center" title="Hệ số từ Đánh giá chéo">HS Peer</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Code</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Test</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">% Doc</TableHead>
-                      <TableHead className="text-center font-bold text-muted-foreground">% Design</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Rsrch</TableHead>
+                      <TableHead className="text-center font-bold text-muted-foreground">% Trước Peer</TableHead>
                       <TableHead className="text-center font-bold text-muted-foreground">Cảnh báo AI</TableHead>
-                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]">% H.Thống</TableHead>
+                      <TableHead className="text-center bg-primary/5 font-bold text-primary border-x border-primary/20 min-w-[120px]" title="Đóng góp sau Peer">% H.Thống</TableHead>
                       <TableHead className="text-center bg-primary/5 font-bold text-primary min-w-[140px]">% GV Chốt</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -353,12 +456,14 @@ export default function LecturerContributionPage() {
                                 {student.role || "MEMBER"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-center font-medium text-muted-foreground">{student.peerReviewScore}/20</TableCell>
+                            <TableCell className="text-center font-medium text-muted-foreground">x{student.peerReviewScore.toFixed(2)}</TableCell>
 
                             {/* Slices Breakdown */}
-                            <TableCell className="text-center font-medium">{student.codeContributionPercentage}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.documentContributionPercentage}%</TableCell>
-                            <TableCell className="text-center font-medium">{student.designContributionPercentage}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.codeContributionPercentage.toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.testContributionPercentage.toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.documentContributionPercentage.toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-medium">{student.researchContributionPercentage.toFixed(1)}%</TableCell>
+                            <TableCell className="text-center font-bold text-muted-foreground">{student.sliceContributionPercentage.toFixed(1)}%</TableCell>
 
                             <TableCell className="text-center">
                               {student.warnings && student.warnings.length > 0 ? (
